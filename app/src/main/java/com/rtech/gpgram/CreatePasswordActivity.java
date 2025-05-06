@@ -16,6 +16,7 @@ import androidx.core.view.WindowInsetsCompat;
 public class CreatePasswordActivity extends AppCompatActivity {
 AppCompatButton next_btn;
 EditText password_field;
+Intent getDataIntent;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -27,22 +28,28 @@ EditText password_field;
             return insets;
         });
         init();
-        Intent intent =getIntent();
-        String token=intent.getStringExtra("token");
+        String token=getDataIntent.getStringExtra("token");
         Toast.makeText(this, token, Toast.LENGTH_SHORT).show();
         next_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String password=password_field.getText().toString();
-                Intent intent=new Intent(getApplicationContext(),EnterDobActivity.class);
-                intent.putExtra("token",token);
-                intent.putExtra("password",password);
-                startActivity(intent);
+                if(password.isEmpty()){
+                    Toast.makeText(CreatePasswordActivity.this, "password must be at least 6 character long", Toast.LENGTH_SHORT).show();
+                }else{
+                    Intent intent=new Intent(getApplicationContext(),EnterDobActivity.class);
+                    intent.putExtra("token",token);
+                    intent.putExtra("password",password);
+                    startActivity(intent);
+
+                }
+
             }
         });
     }
     protected void init(){
         next_btn=findViewById(R.id.next_btn);
         password_field=findViewById(R.id.password_Text_field);
+        getDataIntent=getIntent();
     }
 }

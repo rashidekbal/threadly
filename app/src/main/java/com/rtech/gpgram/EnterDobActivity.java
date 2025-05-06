@@ -20,6 +20,8 @@ public class EnterDobActivity extends AppCompatActivity {
 EditText dob_field;
 Calendar calendar;
 AppCompatButton next_btn;
+Intent getDataIntent;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,7 +34,7 @@ AppCompatButton next_btn;
         });
 
 
-init();
+        init();
         dob_field.setOnClickListener(view -> {
             int year = calendar.get(Calendar.YEAR);
             int month = calendar.get(Calendar.MONTH);
@@ -41,7 +43,7 @@ init();
             DatePickerDialog datePickerDialog = new DatePickerDialog(
                     this,
                     (view1, selectedYear, selectedMonth, selectedDay) -> {
-                        String dob = selectedDay + "/" + (selectedMonth + 1) + "/" + selectedYear;
+                        String dob = selectedYear  + "/" + (selectedMonth + 1) + "/" + selectedDay;
                         dob_field.setText(dob);
                     },
                     year, month, day
@@ -51,13 +53,27 @@ init();
             datePickerDialog.getDatePicker().setMaxDate(System.currentTimeMillis());
             datePickerDialog.show();
         });
+next_btn.setOnClickListener(new View.OnClickListener() {
+    @Override
+    public void onClick(View v) {
+        String dob=dob_field.getText().toString();
+        if(dob.isEmpty()){
+            Toast.makeText(EnterDobActivity.this, "Please enter a valid dob", Toast.LENGTH_SHORT).show();
+        }else{
+            String token=getDataIntent.getStringExtra("token");
+            String password=getDataIntent.getStringExtra("password");
+            Intent intent=new Intent(EnterDobActivity.this,NameEnterActivity.class);
+            intent.putExtra("token",token);
+            intent.putExtra("password",password);
+            intent.putExtra("dob",dob);
+            startActivity(intent);
 
-        Intent intent =getIntent();
-        String token=intent.getStringExtra("token");
-        String password=intent.getStringExtra("password");
-        assert password != null;
-        assert token != null;
-        Toast.makeText(this, token.concat("").concat(password), Toast.LENGTH_SHORT).show();
+        }
+
+    }
+});
+
+
 
 
     }
@@ -65,5 +81,6 @@ init();
         dob_field=findViewById(R.id.dob_field);
         calendar = Calendar.getInstance();
         next_btn=findViewById(R.id.next_btn);
+        getDataIntent=getIntent();
     }
 }
