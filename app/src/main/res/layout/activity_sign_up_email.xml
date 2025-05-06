@@ -53,6 +53,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
             <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/next_btn"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_48"
                 android:text="@string/next"
@@ -67,7 +68,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_48"
                 android:text="@string/sign_up_with_mobile_number"
-                android:background="@drawable/grey_bordewer_box_btn"
+                android:background="@drawable/grey_border_box_btn"
                 android:textColor="#4D4B4B"
                 android:textSize="@dimen/sp_16"
                 android:layout_marginTop="@dimen/dp_15"

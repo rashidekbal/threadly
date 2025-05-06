@@ -5,13 +5,14 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".SignUpMobileActivity"
+    tools:context=".VerifyEmailOtpActivity"
     android:orientation="vertical"
     android:background="@color/white">
+
     <TextView
-        android:layout_width="@dimen/dp_257"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/mobile_number_ask"
+        android:text="@string/otp_confirmation_phrase"
         android:paddingHorizontal="@dimen/dp_20"
         android:textSize="@dimen/sp_25"
         android:layout_marginTop="@dimen/dp_50"
@@ -21,37 +22,28 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/signup_screen_mobilephrase"
+        android:text="@string/enter_confirmation_code_phrase"
         android:textSize="@dimen/sp_17"
         android:paddingStart="@dimen/dp_19"
         android:paddingEnd="@dimen/dp_12"
-        android:layout_marginTop="@dimen/dp_23"
+        android:layout_marginTop="@dimen/dp_13"
         tools:ignore="RtlSymmetry"
         android:textColor="#3B3838"/>
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/dp_24"
-        android:layout_marginTop="@dimen/dp_30">
+        android:layout_marginTop="@dimen/dp_25">
         <EditText
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_62"
-            android:hint="@string/mobile_number_placeHolder"
+            android:hint="@string/confirmation_code"
             android:inputType="phone"
             android:paddingVertical="@dimen/dp_20"
             android:paddingHorizontal="@dimen/dp_14"
             android:textSize="@dimen/sp_15"
             android:background="@drawable/edit_text_style_2"/>
     </RelativeLayout>
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/phone_number_info_phrase"
-        android:textSize="@dimen/sp_14"
-        android:layout_marginHorizontal="@dimen/dp_19"
-        android:layout_marginTop="@dimen/dp_13"
-        android:textColor="#716F6F"
-        />
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -73,10 +65,10 @@
                 android:textAllCaps="false"
                 />
             <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/SignUp_with_email_btn"
+                android:id="@+id/resend_otp_btn"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_48"
-                android:text="@string/sign_up_with_email"
+                android:text="@string/resend_otp_message"
                 android:background="@drawable/grey_border_box_btn"
                 android:textColor="#4D4B4B"
                 android:textSize="@dimen/sp_16"

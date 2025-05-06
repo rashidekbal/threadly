@@ -12,7 +12,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 public class SignUpMobileActivity extends AppCompatActivity {
-AppCompatButton Signup_withEmail;
+AppCompatButton Signup_withEmail,next_btn;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,8 +30,16 @@ AppCompatButton Signup_withEmail;
                 startActivity(new Intent(SignUpMobileActivity.this, SignUpEmailActivity.class));
             }
         });
+        next_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent =new Intent(getApplicationContext(), VerifyMobileOtpActivity.class);
+                startActivity(intent);
+            }
+        });
     }
     protected void init(){
         Signup_withEmail=findViewById(R.id.SignUp_with_email_btn);
+        next_btn=findViewById(R.id.next_btn);
     }
 }

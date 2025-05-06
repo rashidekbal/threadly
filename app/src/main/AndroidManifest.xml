@@ -13,6 +13,18 @@
         android:theme="@style/Theme.GPGram"
         tools:targetApi="31">
         <activity
+            android:name=".EnterDobActivity"
+            android:exported="false" />
+        <activity
+            android:name=".VerifyMobileOtpActivity"
+            android:exported="false" />
+        <activity
+            android:name=".VerifyEmailOtpActivity"
+            android:exported="false" />
+        <activity
+            android:name=".CreatePasswordActivity"
+            android:exported="false" />
+        <activity
             android:name=".SignUpEmailActivity"
             android:exported="false" />
         <activity
@@ -33,7 +45,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
     </application>
 
 </manifest>

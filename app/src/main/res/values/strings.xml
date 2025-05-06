@@ -16,4 +16,15 @@
     <string name="email">Email</string>
     <string name="signUp_with_email_phrase">Enter you email where you can be contacted. No one will see this on your profile.</string>
     <string name="page_ask_email">What\'s your Email?</string>
+    <string name="create_a_password_txt">Create a password</string>
+    <string name="create_password_phrase_txt">Create a password with at least 6 letters or numbers. it should be something others can’t guess.</string>
+    <string name="password">Password</string>
+    <string name="resend_otp_message">I didn\'t get the code</string>
+    <string name="otp_confirmation_phrase">Enter the confirmation code</string>
+    <string name="enter_confirmation_code_phrase">To confirm you account, enter the 6-digit code we sent via SMS to placeholder</string>
+    <string name="confirmation_code">Confirmation code</string>
+    <string name="what_s_your_birthday">What’s your birthday?</string>
+    <string name="dob_phrase">Use your own birthday, even if this account is for a business, a pet or something else. No one will see this unless you choose to share it.</string>
+    <string name="faq_dob">Why do i need to provide my birthday?</string>
+    <string name="enter_date_of_birth">Enter Date of Birth</string>
 </resources>
