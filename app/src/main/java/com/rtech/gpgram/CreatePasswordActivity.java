@@ -33,10 +33,13 @@ Intent getDataIntent;
         next_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                next_btn.setEnabled(false);
                 String password=password_field.getText().toString();
-                if(password.isEmpty()){
+                if(password.isEmpty()||password.length()<6){
                     Toast.makeText(CreatePasswordActivity.this, "password must be at least 6 character long", Toast.LENGTH_SHORT).show();
+                    next_btn.setEnabled(true);
                 }else{
+                    next_btn.setEnabled(true);
                     Intent intent=new Intent(getApplicationContext(),EnterDobActivity.class);
                     intent.putExtra("token",token);
                     intent.putExtra("password",password);

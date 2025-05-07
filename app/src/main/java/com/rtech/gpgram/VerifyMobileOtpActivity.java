@@ -46,10 +46,11 @@ String api=BuildConfig.BASE_URL.concat("/otp/verifyOtpMobile");
         next_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                next_btn.setEnabled(false);
                 String otp=otp_field.getText().toString();
                 if(otp.isEmpty()||otp.length()<6){
                     Toast.makeText(VerifyMobileOtpActivity.this, "please enter 6 digit otp", Toast.LENGTH_SHORT).show();
+                    next_btn.setEnabled(true);
                 }else{
                     next_btn.setText("");
                     progressBar.setVisibility(View.VISIBLE);
@@ -63,6 +64,7 @@ String api=BuildConfig.BASE_URL.concat("/otp/verifyOtpMobile");
                             public void onResponse(JSONObject response) {
                                 progressBar.setVisibility(View.GONE);
                                 next_btn.setText("Next");
+                                next_btn.setEnabled(true);
                                 JSONObject recieved=response;
                                 try {
                                     String token=recieved.getString("token");
@@ -85,6 +87,7 @@ String api=BuildConfig.BASE_URL.concat("/otp/verifyOtpMobile");
                                 progressBar.setVisibility(View.GONE);
                                 next_btn.setText("Next");
                                 Toast.makeText(getApplicationContext(), anError.getErrorBody(), Toast.LENGTH_SHORT).show();
+                                next_btn.setEnabled(true);
 
                             }
                         });
@@ -102,6 +105,7 @@ String api=BuildConfig.BASE_URL.concat("/otp/verifyOtpMobile");
         resend_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                resend_btn.setEnabled(false);
                 String phone=getDataIntent.getStringExtra("phone");
                 resend_btn.setText("");
                 next_progressBar.setVisibility(View.VISIBLE);
@@ -116,6 +120,7 @@ String api=BuildConfig.BASE_URL.concat("/otp/verifyOtpMobile");
                                     next_progressBar.setVisibility(View.GONE);
                                   resend_btn.setText("I didn't get the code");
                                     Toast.makeText(VerifyMobileOtpActivity.this, "otp sent successfully", Toast.LENGTH_SHORT).show();
+                                    resend_btn.setEnabled(true);
 
 
                                 }
@@ -127,6 +132,7 @@ String api=BuildConfig.BASE_URL.concat("/otp/verifyOtpMobile");
                                     next_progressBar.setVisibility(View.GONE);
                                     resend_btn.setText("Next");
                                     Toast.makeText(getApplicationContext(), anError.getErrorBody(), Toast.LENGTH_SHORT).show();
+                                    resend_btn.setEnabled(true);
 
                                 }
                             });

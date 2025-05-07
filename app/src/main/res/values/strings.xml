@@ -27,4 +27,5 @@
     <string name="dob_phrase">Use your own birthday, even if this account is for a business, a pet or something else. No one will see this unless you choose to share it.</string>
     <string name="faq_dob">Why do i need to provide my birthday?</string>
     <string name="enter_date_of_birth">Enter Date of Birth</string>
+    <string name="full_name">Full name</string>
 </resources>

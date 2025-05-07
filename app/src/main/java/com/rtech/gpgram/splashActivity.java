@@ -2,6 +2,7 @@ package com.rtech.gpgram;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
@@ -28,12 +29,19 @@ public class splashActivity extends AppCompatActivity {
         });
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION|View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY|View.SYSTEM_UI_FLAG_FULLSCREEN);
 
-
+        SharedPreferences loginPreference=getSharedPreferences("loginInfo",MODE_PRIVATE);
+        boolean isLoggedIn=loginPreference.getBoolean("isLoggedIn",false);
     new Handler().postDelayed(new Runnable() {
         @Override
         public void run() {
-            startActivity(new Intent(splashActivity.this,LoginActivity.class));
-            finish();
+            if(!isLoggedIn){
+                startActivity(new Intent(splashActivity.this,LoginActivity.class));
+                finish();
+            }else{
+                startActivity(new Intent(splashActivity.this,HomeActivity.class));
+                finish();
+            }
+
         }
     },1500);
     }

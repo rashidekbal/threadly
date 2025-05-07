@@ -54,7 +54,7 @@ String api= BuildConfig.BASE_URL.concat("/otp/generateOtpMobile");
         next_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                next_btn.setEnabled(false);
                 next_btn.setText("");
                 progressBar.setVisibility(View.VISIBLE);
                 String phone =phone_field.getText().toString();
@@ -63,6 +63,7 @@ String api= BuildConfig.BASE_URL.concat("/otp/generateOtpMobile");
                     Toast.makeText(SignUpMobileActivity.this, "please enter a valid number", Toast.LENGTH_SHORT).show();
                     progressBar.setVisibility(View.GONE);
                     next_btn.setText("Next");
+                    next_btn.setEnabled(true);
 
                 }else {
                     JSONObject body=new JSONObject();
@@ -80,6 +81,7 @@ String api= BuildConfig.BASE_URL.concat("/otp/generateOtpMobile");
 
                             progressBar.setVisibility(View.GONE);
                             next_btn.setText("Next");
+                            next_btn.setEnabled(true);
                             Intent intent =new Intent(getApplicationContext(), VerifyMobileOtpActivity.class);
                             intent.putExtra("phone",phone);
                             startActivity(intent);
@@ -93,6 +95,7 @@ String api= BuildConfig.BASE_URL.concat("/otp/generateOtpMobile");
                             progressBar.setVisibility(View.GONE);
                             next_btn.setText("Next");
                             Toast.makeText(SignUpMobileActivity.this, anError.getErrorBody(), Toast.LENGTH_SHORT).show();
+                            next_btn.setEnabled(true);
 
                         }
                     });
