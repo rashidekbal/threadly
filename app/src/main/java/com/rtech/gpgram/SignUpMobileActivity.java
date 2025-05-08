@@ -1,11 +1,16 @@
 package com.rtech.gpgram;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.Toolbar;
 
@@ -29,6 +34,7 @@ AppCompatButton Signup_withEmail,next_btn;
 EditText phone_field;
 ProgressBar progressBar;
 String api= BuildConfig.BASE_URL.concat("/otp/generateOtpMobile");
+TextView msgTextView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,24 +54,35 @@ String api= BuildConfig.BASE_URL.concat("/otp/generateOtpMobile");
                 startActivity(new Intent(SignUpMobileActivity.this, SignUpEmailActivity.class));
             }
         });
-
-
-
+        
         next_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 next_btn.setEnabled(false);
                 next_btn.setText("");
                 progressBar.setVisibility(View.VISIBLE);
-                String phone =phone_field.getText().toString();
+                String phone =phone_field.getText().toString().trim();
 
                 if(phone.isEmpty()||phone.length()<10){
-                    Toast.makeText(SignUpMobileActivity.this, "please enter a valid number", Toast.LENGTH_SHORT).show();
+                    if(phone.length()<10){
+                        msgTextView.setText(R.string.number_lessthan_10_err);
+                        msgTextView.setTextColor(Color.parseColor("#D00707"));
+                        phone_field.setText("");
+                    }
+                   if(phone.isEmpty()){
+                       msgTextView.setText(R.string.empty_number);
+                       msgTextView.setTextColor(Color.parseColor("#D00707"));
+
+
+                   }
+
                     progressBar.setVisibility(View.GONE);
                     next_btn.setText("Next");
                     next_btn.setEnabled(true);
 
                 }else {
+                    msgTextView.setText(R.string.phone_number_info_phrase);
+                    msgTextView.setTextColor(Color.parseColor("#716F6F"));
                     JSONObject body=new JSONObject();
                     try {
                         body.put("phone",phone.toString());
@@ -78,23 +95,42 @@ String api= BuildConfig.BASE_URL.concat("/otp/generateOtpMobile");
                             .getAsJSONObject(new JSONObjectRequestListener() {
                         @Override
                         public void onResponse(JSONObject response) {
+                            try {
+                                int statusCode=response.getInt("statuscode");
+                                if(statusCode==200){
+                                    progressBar.setVisibility(View.GONE);
+                                    next_btn.setText("Next");
+                                    next_btn.setEnabled(true);
+                                    Intent intent =new Intent(getApplicationContext(), VerifyMobileOtpActivity.class);
+                                    intent.putExtra("phone",phone);
+                                    startActivity(intent);
 
-                            progressBar.setVisibility(View.GONE);
-                            next_btn.setText("Next");
-                            next_btn.setEnabled(true);
-                            Intent intent =new Intent(getApplicationContext(), VerifyMobileOtpActivity.class);
-                            intent.putExtra("phone",phone);
-                            startActivity(intent);
+                                }else{
+                                    msgTextView.setText("Enter a valid whatsapp number");
+                                    msgTextView.setTextColor(Color.parseColor("#D00707"));
+                                    progressBar.setVisibility(View.GONE);
+                                    next_btn.setText("Next");
+                                    next_btn.setEnabled(true);
+
+                                }
+                            } catch (JSONException e) {
+                                throw new RuntimeException(e);
+                            }
+
+
 
                         }
 
                         @Override
                         public void onError(ANError anError) {
                             int errorcode=anError.getErrorCode();
-                            Toast.makeText(SignUpMobileActivity.this, Integer.toString(errorcode), Toast.LENGTH_SHORT).show();
+                            if(errorcode==500){
+                                msgTextView.setText("Something went wrong");
+                                msgTextView.setTextColor(Color.parseColor("#D00707"));
+
+                            }
                             progressBar.setVisibility(View.GONE);
                             next_btn.setText("Next");
-                            Toast.makeText(SignUpMobileActivity.this, anError.getErrorBody(), Toast.LENGTH_SHORT).show();
                             next_btn.setEnabled(true);
 
                         }
@@ -110,5 +146,7 @@ String api= BuildConfig.BASE_URL.concat("/otp/generateOtpMobile");
         next_btn=findViewById(R.id.next_btn);
         phone_field=findViewById(R.id.phone_field);
         progressBar=findViewById(R.id.progressBar);
+        msgTextView=findViewById(R.id.msg_textView);
     }
+
 }

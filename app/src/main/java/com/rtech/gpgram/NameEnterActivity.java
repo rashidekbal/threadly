@@ -28,7 +28,7 @@ ProgressBar progressBar;
 EditText name_field;
 AppCompatButton next_btn;
 Intent getDataIntent;
-String api=BuildConfig.BASE_URL.concat("/auth/register/mobile");
+String api;
 SharedPreferences loginPreference;
 SharedPreferences.Editor preferenceEditor;
     @Override
@@ -121,6 +121,7 @@ SharedPreferences.Editor preferenceEditor;
         next_btn=findViewById(R.id.next_btn);
         loginPreference=getSharedPreferences("loginInfo",MODE_PRIVATE);
         preferenceEditor=loginPreference.edit();
+        api=getDataIntent.getStringExtra("api");
 
 
     }

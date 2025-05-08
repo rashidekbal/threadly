@@ -3,6 +3,7 @@ package com.rtech.gpgram;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -25,10 +26,10 @@ import org.w3c.dom.Text;
 
 public class VerifyMobileOtpActivity extends AppCompatActivity {
 AppCompatButton next_btn,resend_btn;
-TextView numberdetailstxt;
+TextView numberdetailstxt,msgText;
 ProgressBar progressBar,next_progressBar;
 Intent getDataIntent;
-TextView otp_field;
+EditText otp_field;
 String api=BuildConfig.BASE_URL.concat("/otp/verifyOtpMobile");
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,9 +50,11 @@ String api=BuildConfig.BASE_URL.concat("/otp/verifyOtpMobile");
                 next_btn.setEnabled(false);
                 String otp=otp_field.getText().toString();
                 if(otp.isEmpty()||otp.length()<6){
-                    Toast.makeText(VerifyMobileOtpActivity.this, "please enter 6 digit otp", Toast.LENGTH_SHORT).show();
+                    msgText.setVisibility(View.VISIBLE);
+                    msgText.setText("Please Enter 6 digit otp");
                     next_btn.setEnabled(true);
                 }else{
+                    msgText.setVisibility(View.GONE);
                     next_btn.setText("");
                     progressBar.setVisibility(View.VISIBLE);
                     JSONObject body=new JSONObject();
@@ -70,6 +73,7 @@ String api=BuildConfig.BASE_URL.concat("/otp/verifyOtpMobile");
                                     String token=recieved.getString("token");
                                     Intent intent =new Intent(getApplicationContext(),CreatePasswordActivity.class);
                                     intent.putExtra("token",token);
+                                    intent.putExtra("api",BuildConfig.BASE_URL.concat("/auth/register/mobile"));
                                     startActivity(intent);
 
 
@@ -83,10 +87,16 @@ String api=BuildConfig.BASE_URL.concat("/otp/verifyOtpMobile");
                             @Override
                             public void onError(ANError anError) {
                                 int errorcode=anError.getErrorCode();
-                                Toast.makeText(getApplicationContext(), Integer.toString(errorcode), Toast.LENGTH_SHORT).show();
+                                if(errorcode==401){
+                                    msgText.setText("Invalid otp");
+                                    msgText.setVisibility(View.VISIBLE);
+
+                                }else{
+                                    msgText.setText("Something went wrong");
+                                    msgText.setVisibility(View.VISIBLE);
+                                }
                                 progressBar.setVisibility(View.GONE);
                                 next_btn.setText("Next");
-                                Toast.makeText(getApplicationContext(), anError.getErrorBody(), Toast.LENGTH_SHORT).show();
                                 next_btn.setEnabled(true);
 
                             }
@@ -159,6 +169,7 @@ String api=BuildConfig.BASE_URL.concat("/otp/verifyOtpMobile");
         numberdetailstxt=findViewById(R.id.dynamic_message_textView);
         otp_field=findViewById(R.id.otp_field);
         progressBar=findViewById(R.id.progressBar);
+        msgText=findViewById(R.id.msg_textView);
 
     }
 }

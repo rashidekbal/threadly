@@ -69,6 +69,7 @@ next_btn.setOnClickListener(new View.OnClickListener() {
             intent.putExtra("token",token);
             intent.putExtra("password",password);
             intent.putExtra("dob",dob);
+            intent.putExtra("api",getDataIntent.getStringExtra("api"));
             startActivity(intent);
 
         }

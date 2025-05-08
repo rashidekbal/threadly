@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".fragments.homeFragment"
+    android:background="@color/white"
+    android:orientation="vertical"
+    >
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_70"
+                android:orientation="horizontal"
+                >
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/camera_icon"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="@dimen/dp_10"/>
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/instagram_logo"
+                    android:layout_centerInParent="true"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/igtv"
+                    android:layout_gravity="center_vertical"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginEnd="@dimen/dp_70"/>
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/messanger"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginEnd="@dimen/dp_10"
+
+
+                    />
+
+            </RelativeLayout>
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/Status_recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_150"/>
+
+        </LinearLayout>
+    </ScrollView>
+
+
+
+</LinearLayout>

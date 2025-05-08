@@ -34,7 +34,11 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/dp_24"
         android:layout_marginTop="@dimen/dp_25">
-        <EditText
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <EditText
             android:id="@+id/otp_field"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_62"
@@ -45,6 +49,17 @@
             android:textSize="@dimen/sp_15"
             android:background="@drawable/edit_text_style_2"
             android:maxLength="6"/>
+            <TextView
+                android:id="@+id/msg_textView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/sp_14"
+                android:layout_marginTop="@dimen/dp_5"
+                android:textColor="#D00707"
+                android:visibility="visible"
+                />
+        </LinearLayout>
+
     </RelativeLayout>
     <RelativeLayout
         android:layout_width="match_parent"
@@ -72,10 +87,10 @@
                 <ProgressBar
                     android:id="@+id/progressBar"
                     android:layout_width="@dimen/dp_45"
-                    android:layout_height="@dimen/dp_45"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="@dimen/dp_6"
                     android:indeterminate="true"
                     android:indeterminateTint="@color/white"
-                    android:layout_marginTop="@dimen/dp_3"
                     android:layout_centerInParent="true"
                     android:elevation="5dp"
                     android:visibility="gone"
@@ -99,10 +114,10 @@
     <ProgressBar
         android:id="@+id/progressBarResend"
         android:layout_width="@dimen/dp_45"
-        android:layout_height="@dimen/dp_45"
+        android:layout_height="wrap_content"
         android:indeterminate="true"
         android:indeterminateTint="@color/black"
-        android:layout_marginTop="@dimen/dp_3"
+        android:paddingTop="@dimen/dp_14"
         android:layout_centerInParent="true"
         android:elevation="5dp"
         android:visibility="gone"

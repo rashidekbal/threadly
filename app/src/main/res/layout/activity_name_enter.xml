@@ -61,10 +61,10 @@
                 <ProgressBar
                     android:id="@+id/progressBar"
                     android:layout_width="@dimen/dp_45"
-                    android:layout_height="@dimen/dp_45"
+                    android:layout_height="wrap_content"
                     android:indeterminate="true"
                     android:indeterminateTint="@color/white"
-                    android:layout_marginTop="@dimen/dp_3"
+                    android:paddingTop="@dimen/dp_6"
                     android:layout_centerInParent="true"
                     android:elevation="5dp"
                     android:visibility="gone"
