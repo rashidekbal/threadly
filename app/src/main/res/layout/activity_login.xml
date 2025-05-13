@@ -10,7 +10,7 @@
     <ImageView
         android:layout_width="@dimen/dp_113"
         android:layout_height="@dimen/dp_113"
-        android:src="@drawable/splash_icon"
+        android:src="@drawable/splash"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="@dimen/dp_105"/>
     <LinearLayout

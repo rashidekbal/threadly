@@ -25,11 +25,13 @@
                     android:src="@drawable/camera_icon"
                     android:layout_alignParentLeft="true"
                     android:layout_centerVertical="true"
-                    android:layout_marginStart="@dimen/dp_10"/>
-                <ImageView
+                    android:layout_marginStart="@dimen/dp_14"/>
+                <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/instagram_logo"
+                    android:text="Threadly"
+                    android:fontFamily="@font/dancing_script"
+                    android:textSize="@dimen/sp_30"
                     android:layout_centerInParent="true"
                     />
                 <ImageView
@@ -46,16 +48,34 @@
                     android:src="@drawable/messanger"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
-                    android:layout_marginEnd="@dimen/dp_10"
+                    android:layout_marginEnd="@dimen/dp_14"
 
 
                     />
 
             </RelativeLayout>
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/Status_recycler_view"
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_150"/>
+                android:layout_height="wrap_content">
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/Status_recycler_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp_130"
+                    />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_alignParentBottom="true"
+                    android:alpha="0.1"
+                    android:background="#262626" />
+            </RelativeLayout>
+
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/posts_recyclerView"/>
 
         </LinearLayout>
     </ScrollView>

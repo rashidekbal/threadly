@@ -129,6 +129,14 @@ TextView msgTextView;
                                 msgTextView.setTextColor(Color.parseColor("#D00707"));
 
                             }
+                            if (errorcode==409){
+                                msgTextView.setText("User Already exists");
+                                msgTextView.setTextColor(Color.parseColor("#D00707"));
+                            }
+                            if(errorcode==400){
+                                msgTextView.setText("Something went wrong");
+                                msgTextView.setTextColor(Color.parseColor("#D00707"));
+                            }
                             progressBar.setVisibility(View.GONE);
                             next_btn.setText("Next");
                             next_btn.setEnabled(true);

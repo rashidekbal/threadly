@@ -8,10 +8,10 @@
           android:endColor="#A60F93"
           android:type="linear"
           />
-<padding android:left="@dimen/dp_5"
-    android:right="@dimen/dp_5"
-    android:top="@dimen/dp_5"
-    android:bottom="@dimen/dp_5"/>
+<padding android:left="@dimen/dp_3"
+    android:right="@dimen/dp_3"
+    android:top="@dimen/dp_3"
+    android:bottom="@dimen/dp_3"/>
     </shape>
 
 </item>

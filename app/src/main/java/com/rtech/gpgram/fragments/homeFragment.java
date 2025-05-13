@@ -11,13 +11,14 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.rtech.gpgram.R;
+import com.rtech.gpgram.adapters.ImagePostsAdapter;
 import com.rtech.gpgram.adapters.StatusViewAdapter;
 
 import java.util.ArrayList;
 
 
 public class homeFragment extends Fragment {
-    RecyclerView statusrecyclerView;
+    RecyclerView statusrecyclerView,postsRecyclerView;
 
     public homeFragment() {
         // Required empty public constructor
@@ -40,8 +41,12 @@ public class homeFragment extends Fragment {
         list.add("hello");
         list.add("hi");
         StatusViewAdapter adapter=new StatusViewAdapter(view.getContext(),list);
+        ImagePostsAdapter imagePostsAdapter=new ImagePostsAdapter(view.getContext(),list);
         statusrecyclerView.setLayoutManager(layoutManager);
         statusrecyclerView.setAdapter(adapter);
+        LinearLayoutManager postsLayoutManager=new LinearLayoutManager(view.getContext(),LinearLayoutManager.VERTICAL,false);
+        postsRecyclerView.setLayoutManager(postsLayoutManager);
+        postsRecyclerView.setAdapter(imagePostsAdapter);
 
 
 
@@ -51,5 +56,6 @@ public class homeFragment extends Fragment {
 
     private void init(View v){
         statusrecyclerView=v.findViewById(R.id.Status_recycler_view);
+        postsRecyclerView=v.findViewById(R.id.posts_recyclerView);
     }
 }

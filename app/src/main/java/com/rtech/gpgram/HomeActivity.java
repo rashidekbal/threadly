@@ -1,5 +1,6 @@
 package com.rtech.gpgram;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -28,6 +29,7 @@ SharedPreferences loginInfo;
 SharedPreferences.Editor prefEditor;
 Button logOut_btn;
 BottomNavigationView bottomNavigationView;
+int currentFragment;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,22 +65,24 @@ BottomNavigationView bottomNavigationView;
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 if(item.getItemId()==R.id.home){
                     addFragment(new homeFragment());
+                    currentFragment=item.getItemId();
 
 
 
                 } else if (item.getItemId()==R.id.search) {
-
+                    currentFragment=item.getItemId();
                     addFragment(new searchFragment());
 
                 } else if (item.getItemId()==R.id.add_post) {
-                    Toast.makeText(HomeActivity.this,"opening new intent ",Toast.LENGTH_SHORT).show();
+                    startActivity(new Intent(HomeActivity.this,AddpostActivity.class));
 
 
                 } else if (item.getItemId()==R.id.notification) {
+                    currentFragment=item.getItemId();
                     addFragment(new notificationFragment());
 
                 }else if (item.getItemId()==R.id.profile){
-
+                    currentFragment=item.getItemId();
                     addFragment(new profileFragment());
                 }
 
@@ -107,4 +111,9 @@ BottomNavigationView bottomNavigationView;
 
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        bottomNavigationView.setSelectedItemId(currentFragment);
+    }
 }
