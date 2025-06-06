@@ -7,10 +7,12 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -36,6 +38,7 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 
 public class AddpostActivity extends AppCompatActivity {
+    ProgressBar progressbar;
     LinearLayout overlayLayout;
     ImageView preview_image,camera_action,gallery_action,discard_btn;
     EditText caption;
@@ -89,7 +92,11 @@ public class AddpostActivity extends AppCompatActivity {
        post_btn.setOnClickListener(new View.OnClickListener() {
            @Override
            public void onClick(View v) {
+
                if(isImageCaptured) {
+                   post_btn.setText("");
+                   post_btn.setEnabled(false);
+                   progressbar.setVisibility(View.VISIBLE);
                    String captiontext = caption.getText().toString();
                    if (captiontext.isEmpty()) captiontext = "null";
                    upload_toApi(imageFile, captiontext);
@@ -147,6 +154,7 @@ public class AddpostActivity extends AppCompatActivity {
         discard_btn=findViewById(R.id.close_btn);
         post_btn=findViewById(R.id.post_btn);
         caption=findViewById(R.id.caption_field);
+        progressbar=findViewById(R.id.progressBar);
         loginInfo=getSharedPreferences("loginInfo",MODE_PRIVATE);
         AndroidNetworking.initialize(AddpostActivity.this);
 
@@ -169,6 +177,10 @@ public class AddpostActivity extends AppCompatActivity {
 
             @Override
             public void onError(ANError anError) {
+                post_btn.setText("Post");
+                post_btn.setEnabled(true);
+                progressbar.setVisibility(View.GONE);
+                
                 Toast.makeText(getApplicationContext(),"failed".concat(anError.getErrorBody()),Toast.LENGTH_SHORT).show();
 
             }

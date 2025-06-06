@@ -69,6 +69,7 @@ int currentFragment;
 
 
 
+
                 } else if (item.getItemId()==R.id.search) {
                     currentFragment=item.getItemId();
                     addFragment(new searchFragment());

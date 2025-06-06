@@ -1,66 +1,73 @@
 package com.rtech.gpgram.fragments;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.navigation.NavigationBarView;
 import com.rtech.gpgram.R;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link profileFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+
 public class profileFragment extends Fragment {
+    SharedPreferences loginInfo;
+    TextView userid_text,username_text;
+    BottomNavigationView profile_bottom_navigation_view;
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
 
     public profileFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment profileFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static profileFragment newInstance(String param1, String param2) {
-        profileFragment fragment = new profileFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_profile, container, false);
+     View v=inflater.inflate(R.layout.fragment_profile, container, false);
+     init(v);
+     loginInfo=getContext().getSharedPreferences("loginInfo",v.getContext().MODE_PRIVATE);
+     userid_text.setText(loginInfo.getString("userid",""));
+        username_text.setText(loginInfo.getString("username",""));
+        profile_bottom_navigation_view.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                if(item.getItemId()==R.id.posts){
+                    change_fragment(new Posts_of_profile());
+
+                }else if (item.getItemId()==R.id.tags){}                return true;
+            }
+        });
+profile_bottom_navigation_view.setSelectedItemId(R.id.posts);
+        return v;
+    }
+
+
+    public void init(View v){
+        userid_text=v.findViewById(R.id.userid_text);
+        username_text=v.findViewById(R.id.username_text);
+        profile_bottom_navigation_view=v.findViewById(R.id.profile_bottom_navigation_view);
+
+    }
+    public void change_fragment(Fragment fragment){
+        getActivity()
+                .getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.fragment_container_profile_page,fragment)
+                .commit();
+
     }
 }

@@ -69,15 +69,30 @@
         android:background="@drawable/edit_text_style"
         android:layout_marginTop="@dimen/dp_10"
         android:layout_marginHorizontal="10dp"/>
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/post_btn"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_49"
-        android:background="@drawable/login_btn_background"
-        android:text="Post"
-        android:textColor="@color/white"
-        android:layout_marginHorizontal="@dimen/dp_10"
-        android:layout_marginTop="@dimen/dp_10"/>
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_10">
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/post_btn"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_49"
+            android:background="@drawable/login_btn_background"
+            android:text="Post"
+            android:textColor="@color/white"
+            android:layout_marginHorizontal="@dimen/dp_10"
+            />
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="@dimen/dp_35"
+            android:layout_height="@dimen/dp_35"
+            android:layout_centerInParent="true"
+            android:elevation="5dp"
+            android:indeterminateTint="@color/white"
+            android:visibility="gone"
+            />
+    </RelativeLayout>
+
 
 
 </LinearLayout>

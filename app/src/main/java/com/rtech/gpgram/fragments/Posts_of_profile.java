@@ -16,21 +16,27 @@ import com.rtech.gpgram.structures.SearchpagePost_data_structure_base;
 
 import java.util.ArrayList;
 
-public class searchFragment extends Fragment {
-RecyclerView search_page_recycler_view;
-ArrayList<SearchpagePost_data_structure_base> dataList;
-SearchPagePostAdapter adapter;
+public class Posts_of_profile extends Fragment {
+RecyclerView posts_all_recycler_view;
 
-    public searchFragment() {
+    public Posts_of_profile() {
         // Required empty public constructor
+    }
+
+
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view=inflater.inflate(R.layout.fragment_search, container, false);
-        init(view);
-        dataList=new ArrayList<>();
+      View v=  inflater.inflate(R.layout.fragment_posts_of_profile, container, false);
+        init(v);
+        ArrayList<SearchpagePost_data_structure_base> dataList=new ArrayList<>();
         dataList.add(new SearchpagePost_data_structure_base(1,"https://media.istockphoto.com/id/1315856341/photo/young-woman-meditating-outdoors-at-park.webp"));
         dataList.add(new SearchpagePost_data_structure_base(2,"https://cdn.pixabay.com/photo/2025/05/11/00/44/flowers-9591978_1280.jpg"));
         dataList.add(new SearchpagePost_data_structure_base(3,"https://cdn.pixabay.com/photo/2025/05/13/17/05/dove-9597944_1280.jpg"));
@@ -38,19 +44,16 @@ SearchPagePostAdapter adapter;
         dataList.add(new SearchpagePost_data_structure_base(5,"https://cdn.pixabay.com/photo/2025/05/12/18/01/tit-9595802_1280.jpg"));
         dataList.add(new SearchpagePost_data_structure_base(6,"https://cdn.pixabay.com/photo/2025/05/13/12/20/apples-9597475_1280.jpg"));
         StaggeredGridLayoutManager layoutManager=new StaggeredGridLayoutManager(3,StaggeredGridLayoutManager.VERTICAL);
-        adapter =new SearchPagePostAdapter(view.getContext(),dataList);
+        SearchPagePostAdapter adapter =new SearchPagePostAdapter(v.getContext(),dataList);
         adapter.setHasStableIds(true);
-        search_page_recycler_view.setLayoutManager(layoutManager);
-        search_page_recycler_view.setAdapter(adapter);
+        posts_all_recycler_view.setLayoutManager(layoutManager);
+        posts_all_recycler_view.setAdapter(adapter);
 
-        return view;
+
+        return v;
     }
-
-
-
-
     public void init(View v){
-        search_page_recycler_view=v.findViewById(R.id.search_page_recycler_view);
+        posts_all_recycler_view=v.findViewById(R.id.posts_all_recycler_view);
 
     }
 }

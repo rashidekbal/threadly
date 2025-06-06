@@ -124,6 +124,7 @@ TextView msgTextView;
                         @Override
                         public void onError(ANError anError) {
                             int errorcode=anError.getErrorCode();
+
                             if(errorcode==500){
                                 msgTextView.setText("Something went wrong");
                                 msgTextView.setTextColor(Color.parseColor("#D00707"));

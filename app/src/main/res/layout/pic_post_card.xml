@@ -9,6 +9,7 @@
 
         >
         <ImageView
+            android:id="@+id/userProfile_img"
             android:layout_width="@dimen/dp_40"
             android:layout_height="@dimen/dp_40"
             android:src="@drawable/test_profile"
@@ -35,6 +36,7 @@
               android:layout_gravity="center_vertical"
               >
               <TextView
+                  android:id="@+id/user_id_text"
                   android:layout_width="wrap_content"
                   android:layout_height="wrap_content"
                   android:textColor="@color/black"
@@ -50,6 +52,7 @@
 
           </LinearLayout>
             <TextView
+                android:id="@+id/user_name_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="@dimen/sp_14"
@@ -67,9 +70,11 @@
     </RelativeLayout>
 
     <ImageView
-        android:layout_width="wrap_content"
+        android:id="@+id/Content_Image"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:src="@drawable/sample_post"
+        android:minHeight="@dimen/dp_100"
+
         android:scaleType="fitStart"
         android:adjustViewBounds="true"/>
     <RelativeLayout
@@ -85,6 +90,7 @@
             android:gravity="center_vertical">
 
             <ImageView
+                android:id="@+id/like_btn_image"
                 android:layout_width="@dimen/dp_28"
                 android:layout_height="@dimen/dp_24"
                 android:layout_marginEnd="@dimen/dp_5"
@@ -93,13 +99,14 @@
                 />
 
             <TextView
+                android:id="@+id/likes_count_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/dp_8"
-                android:text="190k"
                 android:textColor="@color/black" />
 
             <ImageView
+                android:id="@+id/comment_btn"
                 android:layout_width="@dimen/dp_25"
                 android:layout_height="@dimen/dp_25"
                 android:layout_marginStart="@dimen/dp_10"
@@ -107,10 +114,10 @@
                 android:src="@drawable/comment_icon" />
 
             <TextView
+                android:id="@+id/comments_count_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/dp_8"
-                android:text="6581k"
                 android:textColor="@color/black" />
 
             <ImageView
@@ -121,9 +128,9 @@
                 android:src="@drawable/messanger" />
 
             <TextView
+                android:id="@+id/shares_count_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="5000"
                 android:textColor="@color/black" />
 
         </LinearLayout>
@@ -139,10 +146,12 @@
 
     </RelativeLayout>
     <LinearLayout
+        android:id="@+id/likedBy_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center_vertical"
+        android:visibility="gone"
         >
         <ImageView
             android:layout_width="@dimen/dp_34"
@@ -153,6 +162,7 @@
             android:scaleType="centerCrop"
             android:clipToOutline="true"
             android:layout_centerVertical="true"
+            android:visibility="gone"
             />
         <TextView
             android:layout_width="wrap_content"
@@ -161,9 +171,9 @@
             android:text="Liked by"
             />
         <TextView
+            android:id="@+id/likedBy_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="craig_love"
             android:layout_marginStart="3dp"
             android:textStyle="bold"/>
        <TextView
@@ -172,10 +182,16 @@
            android:layout_marginHorizontal="@dimen/dp_4"
            android:text="and"/>
         <TextView
+            android:id="@+id/likesCount_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textStyle="bold"
-            android:text="44,686 others"/>
+            />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:text=" others"/>
 
 
     </LinearLayout>
@@ -185,15 +201,15 @@
         android:gravity="center_vertical"
         android:orientation="vertical"
         android:paddingStart="@dimen/dp_14"
-        android:paddingTop="@dimen/dp_10"
         android:layout_marginBottom="@dimen/dp_10">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/black"
-            android:text="The game in Japan was amazing and I want to share some photos"
+           android:id="@+id/caption_text"
             />
         <TextView
+            android:id="@+id/post_creationDate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="September 19"
