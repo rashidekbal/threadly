@@ -23,6 +23,7 @@ android {
 
             buildConfigField "String", "BASE_URL",  "\"https://rjwqzfvg-8000.inc1.devtunnels.ms/api\""
 
+
         }
         release {
             buildConfigField "String", "BASE_URL",   "\"https://rjwqzfvg-8000.inc1.devtunnels.ms/api\""
@@ -48,4 +49,5 @@ dependencies {
     androidTestImplementation libs.espresso.core
     implementation 'com.github.amitshekhariitbhu.Fast-Android-Networking:android-networking:1.0.4'
     implementation 'com.github.bumptech.glide:glide:4.14.2'
+    implementation 'com.facebook.shimmer:shimmer:0.5.0'
 }

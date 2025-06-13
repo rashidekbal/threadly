@@ -10,8 +10,10 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 import com.rtech.gpgram.R;
@@ -21,6 +23,7 @@ public class profileFragment extends Fragment {
     SharedPreferences loginInfo;
     TextView userid_text,username_text;
     BottomNavigationView profile_bottom_navigation_view;
+    ImageView profileImg;
 
 
     public profileFragment() {
@@ -42,6 +45,8 @@ public class profileFragment extends Fragment {
      loginInfo=getContext().getSharedPreferences("loginInfo",v.getContext().MODE_PRIVATE);
      userid_text.setText(loginInfo.getString("userid",""));
         username_text.setText(loginInfo.getString("username",""));
+        Glide.with(v.getContext()).load(R.drawable.image_test).circleCrop().into(profileImg);
+
         profile_bottom_navigation_view.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -60,6 +65,7 @@ profile_bottom_navigation_view.setSelectedItemId(R.id.posts);
         userid_text=v.findViewById(R.id.userid_text);
         username_text=v.findViewById(R.id.username_text);
         profile_bottom_navigation_view=v.findViewById(R.id.profile_bottom_navigation_view);
+        profileImg=v.findViewById(R.id.profile_img);
 
     }
     public void change_fragment(Fragment fragment){

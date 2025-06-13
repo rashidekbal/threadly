@@ -33,4 +33,9 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="bioSample">\@Rashid ekabl btech cse computer science student lloking forward for job oppurtinity</string>
+    <string name="add_to_favourite">Add to Favourite</string>
+    <string name="download">Download</string>
+    <string name="unfollow">Unfollow</string>
+    <string name="follow">Follow</string>
+    <string name="people_you_might_know">People you might know</string>
 </resources>

@@ -7,7 +7,7 @@
     android:background="@color/white"
     android:orientation="vertical"
     >
-    <ScrollView
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <LinearLayout
@@ -71,15 +71,22 @@
                     android:alpha="0.1"
                     android:background="#262626" />
             </RelativeLayout>
-
-
+<!--shimmer post placeholder-->
+<!--            <include layout="@layout/users_card"/>-->
+            <com.facebook.shimmer.ShimmerFrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/shimmerView">
+                <include layout="@layout/shimmer_post_view"/>
+            </com.facebook.shimmer.ShimmerFrameLayout>
             <androidx.recyclerview.widget.RecyclerView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/posts_recyclerView"/>
+                android:id="@+id/posts_recyclerView"
+                android:visibility="gone"/>
 
         </LinearLayout>
-    </ScrollView>
+    </androidx.core.widget.NestedScrollView>
 
 
 

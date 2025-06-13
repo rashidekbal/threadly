@@ -8,16 +8,16 @@ android:layout_marginHorizontal="@dimen/dp_10"
     >
     <FrameLayout
         android:id="@+id/outerBorder_color"
-        android:layout_width="@dimen/dp_90"
-        android:layout_height="@dimen/dp_90"
+        android:layout_width="@dimen/dp_80"
+        android:layout_height="@dimen/dp_80"
         android:background="@drawable/red_circle"
         android:layout_marginBottom="@dimen/dp_4"
         >
 
         <ImageView
-            android:id="@+id/status_image"
-            android:layout_width="@dimen/dp_80"
-            android:layout_height="@dimen/dp_80"
+            android:id="@+id/profile_img"
+            android:layout_width="@dimen/dp_70"
+            android:layout_height="@dimen/dp_70"
             android:layout_gravity="center"
             android:background="@drawable/circle"
             android:clipToOutline="true"

@@ -4,10 +4,12 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.rtech.gpgram.R;
 
 import java.util.ArrayList;
@@ -35,6 +37,7 @@ public class StatusViewAdapter extends RecyclerView.Adapter<StatusViewAdapter.vi
 
     @Override
     public void onBindViewHolder(@NonNull StatusViewAdapter.viewHolder holder, int position) {
+        Glide.with(context).load(R.drawable.image_test).circleCrop().into(holder.profileImg);
 
     }
 
@@ -44,8 +47,10 @@ public class StatusViewAdapter extends RecyclerView.Adapter<StatusViewAdapter.vi
     }
 
     public static class viewHolder extends RecyclerView.ViewHolder {
+        ImageView profileImg;
         public viewHolder(@NonNull View itemView) {
             super(itemView);
+            profileImg=itemView.findViewById(R.id.profile_img);
         }
     }
 }

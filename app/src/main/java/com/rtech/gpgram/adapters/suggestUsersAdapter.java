@@ -1,0 +1,70 @@
+package com.rtech.gpgram.adapters;
+
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.bumptech.glide.Glide;
+import com.rtech.gpgram.R;
+import com.rtech.gpgram.structures.suggestUsersDataStructure;
+
+import java.util.ArrayList;
+
+public class suggestUsersAdapter extends RecyclerView.Adapter<suggestUsersAdapter.viewHolder>{
+    Context context;
+    ArrayList<suggestUsersDataStructure> list;
+    SharedPreferences loginInfo;
+    public suggestUsersAdapter(Context context,ArrayList<suggestUsersDataStructure> list){
+        this.list=list;
+        this.context=context;
+    }
+
+
+    @NonNull
+    @Override
+    public viewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view= LayoutInflater.from(context).inflate(R.layout.users_card,parent,false);
+        return new viewHolder(view);
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull viewHolder holder, int position) {
+        holder.username_text.setText(list.get(position).username);
+        Glide.with(context).load(list.get(position).profilepic).circleCrop().placeholder(R.drawable.blank_profile).into(holder.userProfile_img);
+
+    }
+
+    @Override
+    public int getItemCount() {
+        return list.size();
+    }
+
+    public class viewHolder extends RecyclerView.ViewHolder{
+        ImageView removeCard_imageBtn;
+        ImageView userProfile_img;
+        TextView username_text;
+        ImageView common_follower_imageView;
+        TextView common_follower_textView;
+        androidx.appcompat.widget.AppCompatButton follow_btn;
+        androidx.appcompat.widget.AppCompatButton unfollow_btn;
+
+        public viewHolder(@NonNull View itemView) {
+            super(itemView);
+            removeCard_imageBtn=itemView.findViewById(R.id.removeCard_imageBtn);
+            userProfile_img=itemView.findViewById(R.id.userProfile_img);
+            username_text=itemView.findViewById(R.id.username_text);
+            common_follower_imageView=itemView.findViewById(R.id.common_follower_imageView);
+            common_follower_textView=itemView.findViewById(R.id.common_follower_textView);
+            follow_btn=itemView.findViewById(R.id.follow_btn);
+            unfollow_btn=itemView.findViewById(R.id.unfollow_btn);
+
+        }
+    }
+}

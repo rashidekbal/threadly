@@ -21,12 +21,15 @@ import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.JSONArrayRequestListener;
+import com.androidnetworking.interfaces.JSONObjectRequestListener;
+import com.facebook.shimmer.ShimmerFrameLayout;
 import com.rtech.gpgram.AddpostActivity;
 import com.rtech.gpgram.BuildConfig;
 import com.rtech.gpgram.R;
 import com.rtech.gpgram.adapters.ImagePostsAdapter;
 import com.rtech.gpgram.adapters.StatusViewAdapter;
 import com.rtech.gpgram.structures.PostsDataStructure;
+import com.rtech.gpgram.structures.suggestUsersDataStructure;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -41,6 +44,8 @@ public class homeFragment extends Fragment {
     SharedPreferences loginInfo;
     ArrayList<PostsDataStructure> posts;
     ImageView addPost;
+    ShimmerFrameLayout shimmerFrameLayout;
+    ArrayList<suggestUsersDataStructure>suggestUsersList=new ArrayList<>();
 
     public homeFragment() {
         // Required empty public constructor
@@ -71,17 +76,56 @@ public class homeFragment extends Fragment {
         statusrecyclerView.setAdapter(adapter);
         ///  status part ends here
 
-        ///  posts section starts here
+        /// load suggested users
+        AndroidNetworking.get(BuildConfig.BASE_URL.concat("/users/getUsers"))
+                .setPriority(Priority.HIGH)
+                .addHeaders("Authorization", "Bearer ".concat(loginInfo.getString("token","null")))
+                .build().getAsJSONObject(new JSONObjectRequestListener() {
+                    @Override
+                    public void onResponse(JSONObject response) {
 
+                        try {
+                            JSONArray data=response.getJSONArray("data");
+                            for(int i=0;i<data.length();i++){
+                                JSONObject individualUser=data.getJSONObject(i);
+                                suggestUsersList.add(
+                                        new suggestUsersDataStructure(
+                                                individualUser.getString("userid")
+                                                ,individualUser.getString("username")
+                                                ,individualUser.getString("profilepic")
+                                                ,individualUser.getInt("isfollowedBy")));
+                            }
+
+
+
+                        } catch (JSONException e) {
+                            Log.d("jsonException", "onResponse: ".concat(e.toString()));
+
+
+                        }
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+                        Log.d("networkcallException", "onResponse: ".concat(anError.toString()));
+
+
+                    }
+                });
+
+        ///  posts section starts here
+        shimmerFrameLayout=view.findViewById(R.id.shimmerView);
         posts=new ArrayList<PostsDataStructure>();
-        ImagePostsAdapter imagePostsAdapter=new ImagePostsAdapter(view.getContext(),posts,loginInfo);
+        ImagePostsAdapter imagePostsAdapter=new ImagePostsAdapter(view.getContext(),posts,loginInfo,suggestUsersList);
         LinearLayoutManager postsLayoutManager=new LinearLayoutManager(view.getContext(),LinearLayoutManager.VERTICAL,false);
         imagePostsAdapter.setHasStableIds(true);
         postsRecyclerView.setLayoutManager(postsLayoutManager);
         postsRecyclerView.setNestedScrollingEnabled(true);
         postsRecyclerView.setAdapter(imagePostsAdapter);
+        postsRecyclerView.setNestedScrollingEnabled(true);
         fetchPosts(imagePostsAdapter,view);
-
+//  start shimmer effect
+        shimmerFrameLayout.startShimmer();
 
         ///  aad post screen opener
         addPost.setOnClickListener(new View.OnClickListener() {
@@ -111,8 +155,6 @@ public class homeFragment extends Fragment {
                         for(int i=0;i<response.length();i++){
                             try {
                                 JSONObject object=response.getJSONObject(i);
-
-                                Log.d("datafromserver", Integer.toString(object.getInt("isLiked")));
                                 posts.add(
                                         new PostsDataStructure(
 
@@ -136,6 +178,9 @@ public class homeFragment extends Fragment {
                             }
                         }
                         imagePostsAdapter.notifyDataSetChanged();
+                        shimmerFrameLayout.stopShimmer();
+                        shimmerFrameLayout.setVisibility(View.GONE);
+                        postsRecyclerView.setVisibility(View.VISIBLE);
 
 
                     }

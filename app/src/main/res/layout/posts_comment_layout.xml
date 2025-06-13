@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@drawable/top_radius_for_bottom_sheet"
-    android:clipToOutline="true"
-    android:orientation="vertical"
-    >
+    android:orientation="vertical">
+<!--    top bar -->
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_25"
@@ -27,74 +27,121 @@
         android:textColor="@color/black"
         android:textSize="@dimen/sp_19"
         android:textAlignment="center"
+        android:layout_marginTop="@dimen/dp_25"
         />
+
+<!--loading comment shimmer holder-->
+<com.facebook.shimmer.ShimmerFrameLayout
+    android:id="@+id/shimmer_comments_holder"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/dp_55"
+    android:visibility="visible">
+    <include layout="@layout/shimmer_post_comment_layout"
+        />
+
+</com.facebook.shimmer.ShimmerFrameLayout>
+
+<!--    when no comment found -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_centerInParent="true"
+        android:id="@+id/no_comment_msg_linear_layout"
+        android:visibility="gone"
+        >
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="No Comments yet"
+            android:textStyle="bold"
+            android:textAlignment="center"
+            android:textSize="@dimen/sp_25"
+            />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:textSize="@dimen/sp_16"
+            android:text="Start the conversation."/>
+    </LinearLayout>
+
+<!--    comments recyclerView-->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/comments_recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_65"
+        android:layout_marginBottom="@dimen/dp_75"
+        />
+
+
+<!--    for adding comments-->
+<androidx.cardview.widget.CardView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_alignParentBottom="true"
+    app:cardElevation="3dp">
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_50"
-        android:layout_marginTop="@dimen/dp_10"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="@dimen/dp_10"
+        android:paddingVertical="@dimen/dp_10"
+
+
         >
-        <LinearLayout
+        <ImageView
+            android:layout_width="@dimen/dp_45"
+            android:layout_height="@dimen/dp_45"
+            android:src="@drawable/sample_post"
+            android:background="@drawable/round_edge_pics"
+            android:clipToOutline="true"
+            android:layout_gravity="center_vertical"
+
+           />
+        <EditText
+            android:id="@+id/comment_editText"
+            android:layout_width="@dimen/dp_270"
+            android:layout_height="@dimen/dp_40"
+            android:ems="50"
+            android:hint="Add a coment"
+            android:background="@android:color/transparent"
+            android:paddingStart="@dimen/dp_10"
+            android:layout_marginStart="@dimen/dp_50"
+
+            />
+
+        <ImageView
+            android:id="@+id/post_comment_imgBtn"
+            android:layout_width="@dimen/dp_30"
+            android:layout_height="@dimen/dp_30"
+            android:src="@drawable/messanger"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_alignParentEnd="true"
+
+            />
+        <TextView
+            android:id="@+id/posting_progress_text"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_alignParentLeft="true"
-            >
-            <ImageView
-                android:layout_width="@dimen/dp_45"
-                android:layout_height="@dimen/dp_45"
-                android:src="@drawable/sample_post"
-                android:background="@drawable/circle"
-                android:clipToOutline="true"
-                android:layout_marginStart="@dimen/dp_10"
-                />
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginStart="@dimen/dp_55"
-            android:layout_marginEnd="@dimen/dp_35"
-            android:orientation="vertical"
-            android:paddingStart="@dimen/dp_10">
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="kaluadon12a"
-                android:textStyle="bold"/>
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Nice pic 🫣"
-                android:textColor="@color/black"
-                android:textSize="@dimen/sp_16"/>
+            android:layout_height="wrap_content"
+            android:text="posting..."
+            android:textColor="@color/white"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:padding="@dimen/dp_5"
+            android:background="@drawable/slight_round_btn_blue"
+            android:visibility="gone"/>
 
-
-        </LinearLayout>
-
-       <LinearLayout
-           android:layout_width="wrap_content"
-           android:layout_height="match_parent"
-           android:layout_alignParentRight="true"
-           android:gravity="bottom"
-           android:orientation="vertical"
-           android:paddingEnd="@dimen/dp_10"
-
-
-           >
-           <ImageView
-               android:layout_width="@dimen/dp_20"
-               android:layout_height="@dimen/dp_20"
-               android:src="@drawable/heart_inactive_icon"
-               />
-           <TextView
-               android:layout_width="match_parent"
-               android:layout_height="wrap_content"
-               android:text="0"
-               android:textAlignment="center"/>
-       </LinearLayout>
 
     </RelativeLayout>
+</androidx.cardview.widget.CardView>
 
 
 
 
 
-</LinearLayout>
+
+
+</RelativeLayout>

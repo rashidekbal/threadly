@@ -19,7 +19,7 @@
             android:scaleType="centerCrop"
             android:clipToOutline="true"
             android:layout_centerVertical="true"
-         />
+            />
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -28,29 +28,29 @@
             android:gravity="center_vertical"
             android:layout_centerVertical="true"
 
-           >
-          <LinearLayout
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:orientation="horizontal"
-              android:layout_gravity="center_vertical"
-              >
-              <TextView
-                  android:id="@+id/user_id_text"
-                  android:layout_width="wrap_content"
-                  android:layout_height="wrap_content"
-                  android:textColor="@color/black"
-                  android:textStyle="bold"
-                  android:textSize="@dimen/sp_18"
-                  android:text="userid"/>
-              <ImageView
-                  android:layout_width="@dimen/dp_10"
-                  android:layout_height="match_parent"
-                  android:src="@drawable/blue_tick"
-                  android:layout_marginStart="@dimen/dp_2"
-                  />
+            >
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_gravity="center_vertical"
+                >
+                <TextView
+                    android:id="@+id/user_id_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    android:textStyle="bold"
+                    android:textSize="@dimen/sp_18"
+                    android:text="userid"/>
+                <ImageView
+                    android:layout_width="@dimen/dp_10"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/blue_tick"
+                    android:layout_marginStart="@dimen/dp_2"
+                    />
 
-          </LinearLayout>
+            </LinearLayout>
             <TextView
                 android:id="@+id/user_name_text"
                 android:layout_width="wrap_content"
@@ -61,6 +61,7 @@
         </LinearLayout>
 
         <ImageView
+            android:id="@+id/options_btn"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/dp_20"
             android:src="@drawable/optiondots"
@@ -176,11 +177,11 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="3dp"
             android:textStyle="bold"/>
-       <TextView
-           android:layout_width="wrap_content"
-           android:layout_height="wrap_content"
-           android:layout_marginHorizontal="@dimen/dp_4"
-           android:text="and"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/dp_4"
+            android:text="and"/>
         <TextView
             android:id="@+id/likesCount_text"
             android:layout_width="wrap_content"
@@ -206,7 +207,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/black"
-           android:id="@+id/caption_text"
+            android:id="@+id/caption_text"
             />
         <TextView
             android:id="@+id/post_creationDate"
@@ -216,5 +217,9 @@
             android:layout_marginTop="@dimen/dp_13"
             />
     </LinearLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/light_grey_text"/>
 
 </LinearLayout>
