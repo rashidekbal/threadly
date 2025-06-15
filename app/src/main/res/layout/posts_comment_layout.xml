@@ -92,6 +92,7 @@
 
         >
         <ImageView
+            android:id="@+id/user_profile"
             android:layout_width="@dimen/dp_45"
             android:layout_height="@dimen/dp_45"
             android:src="@drawable/sample_post"

@@ -1,7 +1,9 @@
 package com.rtech.gpgram.adapters;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +16,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.rtech.gpgram.R;
 import com.rtech.gpgram.structures.suggestUsersDataStructure;
+import com.rtech.gpgram.utils.FollowManager;
+import com.rtech.gpgram.utils.NetworkCallbackIterface;
 
 import java.util.ArrayList;
 
@@ -21,9 +25,11 @@ public class suggestUsersAdapter extends RecyclerView.Adapter<suggestUsersAdapte
     Context context;
     ArrayList<suggestUsersDataStructure> list;
     SharedPreferences loginInfo;
+    FollowManager followManager;
     public suggestUsersAdapter(Context context,ArrayList<suggestUsersDataStructure> list){
         this.list=list;
         this.context=context;
+        this.followManager=new FollowManager(context);
     }
 
 
@@ -35,10 +41,53 @@ public class suggestUsersAdapter extends RecyclerView.Adapter<suggestUsersAdapte
     }
 
     @Override
-    public void onBindViewHolder(@NonNull viewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull viewHolder holder, @SuppressLint("RecyclerView") int position) {
         holder.username_text.setText(list.get(position).username);
         Glide.with(context).load(list.get(position).profilepic).circleCrop().placeholder(R.drawable.blank_profile).into(holder.userProfile_img);
+        holder.follow_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                holder.follow_btn.setEnabled(false);
+                followManager.follow(list.get(position).userid, new NetworkCallbackIterface() {
+                    @Override
+                    public void onSucess() {
+                        holder.follow_btn.setEnabled(true);
+                        holder.follow_btn.setVisibility(View.GONE);
+                        holder.unfollow_btn.setVisibility(View.VISIBLE);
 
+                    }
+
+                    @Override
+                    public void onError(String err) {
+                        Log.d("followError", "onError: ".concat(err));
+                        holder.follow_btn.setEnabled(true);
+
+                    }
+                });
+            }
+        });
+        holder.unfollow_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                followManager.unfollow(list.get(position).userid, new NetworkCallbackIterface() {
+                    @Override
+                    public void onSucess() {
+                        holder.unfollow_btn.setEnabled(true);
+                        holder.unfollow_btn.setVisibility(View.GONE);
+                        holder.follow_btn.setVisibility(View.VISIBLE);
+
+                    }
+
+                    @Override
+                    public void onError(String err) {
+                        Log.d("followError", "onError: ".concat(err));
+                        holder.unfollow_btn.setEnabled(true);
+
+                    }
+                });
+
+            }
+        });
     }
 
     @Override

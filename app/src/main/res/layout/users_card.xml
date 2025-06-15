@@ -73,7 +73,9 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_37"
             android:text="UnFollow"
+            android:textColor="@color/white"
             android:visibility="gone"
+            android:background="@drawable/slight_round_btn_grey"
             android:layout_marginHorizontal="@dimen/dp_10"
             android:layout_marginBottom="@dimen/dp_10"/>
         <androidx.appcompat.widget.AppCompatButton

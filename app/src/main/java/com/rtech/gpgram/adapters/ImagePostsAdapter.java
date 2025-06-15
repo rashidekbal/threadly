@@ -32,7 +32,6 @@ import com.rtech.gpgram.R;
 import com.rtech.gpgram.structures.PostCommentsDataStructure;
 import com.rtech.gpgram.structures.PostsDataStructure;
 import com.rtech.gpgram.structures.suggestUsersDataStructure;
-import com.rtech.gpgram.utils.FollowAction;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -103,7 +102,7 @@ public class ImagePostsAdapter extends RecyclerView.Adapter<ImagePostsAdapter.vi
         Glide.with(context).load(Uri.parse(list.get(position).userDpUrl)).circleCrop().placeholder(R.drawable.blank_profile).into(holder.userprofileImg);
         holder.user_id_text.setText(list.get(position).userId);
         holder.user_name_text.setText(list.get(position).username);
-        Glide.with(context).load(list.get(position).postUrl).circleCrop().placeholder(R.drawable.post_placeholder).into(holder.post_image);
+        Glide.with(context).load(list.get(position).postUrl).placeholder(R.drawable.post_placeholder).into(holder.post_image);
         holder.caption_text.setText(list.get(position).caption);
         holder.post_creationDate.setText(list.get(position).createdAt.split("T")[0]);
 

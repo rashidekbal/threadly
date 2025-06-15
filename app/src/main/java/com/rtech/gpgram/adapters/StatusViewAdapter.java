@@ -37,7 +37,7 @@ public class StatusViewAdapter extends RecyclerView.Adapter<StatusViewAdapter.vi
 
     @Override
     public void onBindViewHolder(@NonNull StatusViewAdapter.viewHolder holder, int position) {
-        Glide.with(context).load(R.drawable.image_test).circleCrop().into(holder.profileImg);
+        Glide.with(context).load(R.drawable.blank_profile).circleCrop().into(holder.profileImg);
 
     }
 

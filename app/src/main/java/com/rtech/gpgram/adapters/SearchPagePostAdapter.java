@@ -33,7 +33,7 @@ public class SearchPagePostAdapter extends RecyclerView.Adapter<SearchPagePostAd
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.simple_image_post,parent,false);
+        View view = LayoutInflater.from(context).inflate(R.layout.sample_post,parent,false);
         return new ViewHolder(view);
     }
 
