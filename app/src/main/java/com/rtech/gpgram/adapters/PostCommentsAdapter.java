@@ -5,7 +5,6 @@ import static android.content.Context.MODE_PRIVATE;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,15 +15,12 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.androidnetworking.AndroidNetworking;
-import com.androidnetworking.common.Priority;
-import com.androidnetworking.error.ANError;
-import com.androidnetworking.interfaces.JSONObjectRequestListener;
 import com.bumptech.glide.Glide;
 import com.rtech.gpgram.BuildConfig;
 import com.rtech.gpgram.R;
-import com.rtech.gpgram.structures.PostCommentsDataStructure;
-
-import org.json.JSONObject;
+import com.rtech.gpgram.interfaces.NetworkCallbackIterface;
+import com.rtech.gpgram.managers.LikeManager;
+import com.rtech.gpgram.models.PostCommentsDataStructure;
 
 import java.util.ArrayList;
 
@@ -34,10 +30,12 @@ public class PostCommentsAdapter extends RecyclerView.Adapter<PostCommentsAdapte
     Context context;
     ArrayList<PostCommentsDataStructure> dataList;
     SharedPreferences loginInfo;
+    LikeManager likeManager;
 
     public  PostCommentsAdapter (Context c,ArrayList<PostCommentsDataStructure> dataList){
         this.context=c;
         this.dataList=dataList;
+        this.likeManager=new LikeManager(c);
 
     }
     @NonNull
@@ -69,32 +67,30 @@ public class PostCommentsAdapter extends RecyclerView.Adapter<PostCommentsAdapte
                 isLikedByMe=dataList.get(position).isLiked;
                 holder.likeBtn.setEnabled(false);
                 /// dislike this comment
-                if(isLikedByMe){
+                if(isLikedByMe) {
                     holder.likeBtn.setImageResource(R.drawable.heart_inactive_icon);
-                    PostCommentsDataStructure object=dataList.get(position);
-                    dataList.set(position,new PostCommentsDataStructure(object.commentId, object.postId,object.likesCount-1,0,object.userId,object.username,object.userDpUrl,object.comment,object.createdAt));
+                    PostCommentsDataStructure object = dataList.get(position);
+                    dataList.set(position, new PostCommentsDataStructure(object.commentId, object.postId, object.likesCount - 1, 0, object.userId, object.username, object.userDpUrl, object.comment, object.createdAt));
                     notifyItemChanged(position);
-                    String unlikeUrl=url.concat("/like/unlikeAcomment/".concat(Integer.toString(dataList.get(position).commentId)));
-                    AndroidNetworking.get(unlikeUrl).setPriority(Priority.HIGH).addHeaders("Authorization", "Bearer ".concat(loginInfo.getString("token","null"))).build().getAsJSONObject(new JSONObjectRequestListener() {
+                    likeManager.UnLikeAComment(dataList.get(position).commentId, new NetworkCallbackIterface() {
                         @Override
-                        public void onResponse(JSONObject response) {
+                        public void onSucess() {
                             holder.likeBtn.setEnabled(true);
-                            isLikedByMe=false;
+                            isLikedByMe = false;
+
                         }
 
                         @Override
-                        public void onError(ANError anError) {
+                        public void onError(String err) {
                             holder.likeBtn.setImageResource(R.drawable.red_heart_active_icon);
-                            PostCommentsDataStructure object=dataList.get(position);
-                            dataList.set(position,new PostCommentsDataStructure(object.commentId, object.postId,object.likesCount+1,1,object.userId,object.username,object.userDpUrl,object.comment,object.createdAt));
+                            PostCommentsDataStructure object = dataList.get(position);
+                            dataList.set(position, new PostCommentsDataStructure(object.commentId, object.postId, object.likesCount + 1, 1, object.userId, object.username, object.userDpUrl, object.comment, object.createdAt));
                             notifyItemChanged(position);
                             holder.likeBtn.setEnabled(true);
-                            isLikedByMe=true;
+                            isLikedByMe = true;
 
                         }
                     });
-
-
                 }
                 //like this comment
                 else{
@@ -102,16 +98,16 @@ public class PostCommentsAdapter extends RecyclerView.Adapter<PostCommentsAdapte
                     PostCommentsDataStructure object=dataList.get(position);
                     dataList.set(position,new PostCommentsDataStructure(object.commentId, object.postId,object.likesCount+1,1,object.userId,object.username,object.userDpUrl,object.comment,object.createdAt));
                     notifyItemChanged(position);
-                    String unlikeUrl=url.concat("/like/likeAcomment/".concat(Integer.toString(dataList.get(position).commentId)));
-                    AndroidNetworking.get(unlikeUrl).setPriority(Priority.HIGH).addHeaders("Authorization", "Bearer ".concat(loginInfo.getString("token","null"))).build().getAsJSONObject(new JSONObjectRequestListener() {
+                    likeManager.LikeAComment(dataList.get(position).commentId, new NetworkCallbackIterface() {
                         @Override
-                        public void onResponse(JSONObject response) {
+                        public void onSucess() {
                             holder.likeBtn.setEnabled(true);
                             isLikedByMe=true;
+
                         }
 
                         @Override
-                        public void onError(ANError anError) {
+                        public void onError(String err) {
                             holder.likeBtn.setImageResource(R.drawable.heart_inactive_icon);
                             PostCommentsDataStructure object=dataList.get(position);
                             dataList.set(position,new PostCommentsDataStructure(object.commentId, object.postId,object.likesCount-1,0,object.userId,object.username,object.userDpUrl,object.comment,object.createdAt));
@@ -119,10 +115,8 @@ public class PostCommentsAdapter extends RecyclerView.Adapter<PostCommentsAdapte
                             holder.likeBtn.setEnabled(true);
                             isLikedByMe=false;
 
-
                         }
                     });
-
                 }
             }
         });

@@ -1,4 +1,4 @@
-package com.rtech.gpgram;
+package com.rtech.gpgram.activities;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -6,13 +6,14 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
-import android.window.SplashScreen;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+
+import com.rtech.gpgram.R;
 
 @SuppressLint("CustomSplashScreen")
 public class splashActivity extends AppCompatActivity {

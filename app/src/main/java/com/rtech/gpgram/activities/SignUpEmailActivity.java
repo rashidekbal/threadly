@@ -1,4 +1,4 @@
-package com.rtech.gpgram;
+package com.rtech.gpgram.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,6 +10,8 @@ import androidx.appcompat.widget.AppCompatButton;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+
+import com.rtech.gpgram.R;
 
 public class SignUpEmailActivity extends AppCompatActivity {
 AppCompatButton signUp_with_mobile_btn,next_btn;

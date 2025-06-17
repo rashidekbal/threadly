@@ -26,7 +26,7 @@ android {
 
         }
         release {
-            buildConfigField "String", "BASE_URL",   "\"https://rjwqzfvg-8000.inc1.devtunnels.ms/api\""
+            buildConfigField "String", "BASE_URL",   "\"https://gpgram-server.vercel.app/api\""
 
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'

@@ -22,6 +22,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
+        android:scrollbars="none"
         >
         <LinearLayout
             android:layout_width="match_parent"
@@ -53,7 +54,7 @@
                         android:layout_height="@dimen/dp_22"
                         android:src="@drawable/settings"
                         android:layout_alignParentRight="true"
-                        android:layout_marginEnd="@dimen/dp_55"
+                        android:layout_marginEnd="@dimen/dp_65"
                         android:layout_centerVertical="true"
                         />
                     <ImageView
@@ -61,7 +62,7 @@
                         android:layout_height="@dimen/dp_25"
                         android:src="@drawable/option_bar"
                         android:layout_alignParentRight="true"
-                        android:layout_marginEnd="@dimen/dp_10"
+                        android:layout_marginEnd="@dimen/dp_20"
                         android:layout_centerVertical="true"
                         />
                 </RelativeLayout>
@@ -225,7 +226,7 @@
                         >
 
                         <androidx.appcompat.widget.AppCompatButton
-                            android:layout_width="@dimen/dp_170"
+                            android:layout_width="match_parent"
                             android:layout_height="@dimen/dp_35"
                             android:layout_centerVertical="true"
                             android:background="@drawable/slight_round_btn_grey_outline"
@@ -233,16 +234,6 @@
                             android:textAllCaps="false"
                             android:layout_alignParentLeft="true"/>
 
-                        <androidx.appcompat.widget.AppCompatButton
-                            android:layout_width="@dimen/dp_170"
-                            android:layout_height="@dimen/dp_35"
-                            android:layout_alignParentRight="true"
-                            android:layout_centerVertical="true"
-                            android:background="@drawable/slight_round_btn_grey_outline"
-                            android:text="Share Profile"
-                            android:textAllCaps="false"
-
-                            />
                     </RelativeLayout>
                 </LinearLayout>
                 <androidx.cardview.widget.CardView
@@ -262,21 +253,11 @@
                         />
                 </androidx.cardview.widget.CardView>
             </LinearLayout>
-<!--            before posts are loaded-->
-            <com.facebook.shimmer.ShimmerFrameLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/shimmer_posts">
-                <include layout="@layout/profile_post_shimmer"/>
-            </com.facebook.shimmer.ShimmerFrameLayout>
-
-
-<!--          when posts are loaded -->
             <FrameLayout
                 android:id="@+id/fragment_container_profile_page"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:visibility="gone"/>
+                android:visibility="visible"/>
         </LinearLayout>
 
     </ScrollView>

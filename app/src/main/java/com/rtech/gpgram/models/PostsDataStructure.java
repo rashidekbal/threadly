@@ -1,4 +1,4 @@
-package com.rtech.gpgram.structures;
+package com.rtech.gpgram.models;
 
 public class PostsDataStructure {
    public int postId,likeCount,commentCount,shareCount;

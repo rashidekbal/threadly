@@ -13,51 +13,52 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.GPGram"
-        tools:targetApi="29"
-        >
+        tools:targetApi="29">
         <activity
-            android:name=".AddpostActivity"
+            android:name=".Post"
+            android:exported="false" />
+        <activity
+            android:name=".activities.AddpostActivity"
             android:exported="false"
-            android:screenOrientation="portrait"
-            />
+            android:screenOrientation="portrait" />
         <activity
-            android:name=".NameEnterActivity"
+            android:name=".activities.NameEnterActivity"
             android:exported="false"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
-            android:name=".EnterDobActivity"
+            android:name=".activities.EnterDobActivity"
             android:exported="false"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
-            android:name=".VerifyMobileOtpActivity"
+            android:name=".activities.VerifyMobileOtpActivity"
             android:exported="false"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
-            android:name=".VerifyEmailOtpActivity"
+            android:name=".activities.VerifyEmailOtpActivity"
             android:exported="false"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
-            android:name=".CreatePasswordActivity"
+            android:name=".activities.CreatePasswordActivity"
             android:exported="false"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
-            android:name=".SignUpEmailActivity"
+            android:name=".activities.SignUpEmailActivity"
             android:exported="false"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
-            android:name=".SignUpMobileActivity"
+            android:name=".activities.SignUpMobileActivity"
             android:exported="false"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
-            android:name=".HomeActivity"
+            android:name=".activities.HomeActivity"
             android:exported="false"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
-            android:name=".LoginActivity"
+            android:name=".activities.LoginActivity"
             android:exported="false"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
-            android:name=".splashActivity"
+            android:name=".activities.splashActivity"
             android:exported="true"
             android:screenOrientation="portrait">
             <intent-filter>

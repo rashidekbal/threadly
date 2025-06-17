@@ -1,4 +1,4 @@
-package com.rtech.gpgram.structures;
+package com.rtech.gpgram.models;
 
 public class SearchpagePost_data_structure_base {
     public String image_url;

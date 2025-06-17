@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Build;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,18 +21,18 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.androidnetworking.AndroidNetworking;
-import com.androidnetworking.common.Priority;
-import com.androidnetworking.error.ANError;
-import com.androidnetworking.interfaces.JSONObjectRequestListener;
 import com.bumptech.glide.Glide;
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
-import com.rtech.gpgram.BuildConfig;
 import com.rtech.gpgram.R;
-import com.rtech.gpgram.structures.PostCommentsDataStructure;
-import com.rtech.gpgram.structures.PostsDataStructure;
-import com.rtech.gpgram.structures.suggestUsersDataStructure;
+import com.rtech.gpgram.interfaces.NetworkCallbackInterfaceWithJsonObjectDelivery;
+import com.rtech.gpgram.interfaces.NetworkCallbackIterface;
+import com.rtech.gpgram.managers.CommentsManager;
+import com.rtech.gpgram.managers.LikeManager;
+import com.rtech.gpgram.models.PostCommentsDataStructure;
+import com.rtech.gpgram.models.PostsDataStructure;
+import com.rtech.gpgram.models.suggestUsersDataStructure;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -48,6 +49,8 @@ public class ImagePostsAdapter extends RecyclerView.Adapter<ImagePostsAdapter.vi
     BottomSheetDialog commentDialog;
     RecyclerView usersCardRecyclerView;
     ArrayList<suggestUsersDataStructure> suggestUsersList=new ArrayList<>();
+    LikeManager likeManager;
+    CommentsManager commentsManager;
 
     // Constructor for the adapter
     public ImagePostsAdapter(Context c, ArrayList<PostsDataStructure> list,SharedPreferences preferences ,ArrayList<suggestUsersDataStructure> suggestUsersList){
@@ -55,6 +58,8 @@ public class ImagePostsAdapter extends RecyclerView.Adapter<ImagePostsAdapter.vi
         this.list=list;
         this.loginInfo=preferences;
         this.suggestUsersList=suggestUsersList;
+        this.likeManager=new LikeManager(c);
+        this.commentsManager=new CommentsManager(c);
     }
 
     // Inflates the layout for each post item
@@ -124,6 +129,8 @@ public class ImagePostsAdapter extends RecyclerView.Adapter<ImagePostsAdapter.vi
         // Set like button image if already liked
         if(list.get(position).isliked){
             holder.like_btn_image.setImageResource(R.drawable.red_heart_active_icon);
+        }else{
+            holder.like_btn_image.setImageResource(R.drawable.heart_inactive_icon);
         }
 
         // Show options dialog on options button click
@@ -143,73 +150,61 @@ public class ImagePostsAdapter extends RecyclerView.Adapter<ImagePostsAdapter.vi
             public void onClick(View v) {
                 holder.is_liked=list.get(position).isliked;
                 // Like the post if not already liked
-                if(!holder.is_liked){
-                    JSONObject postid =new JSONObject();
-                    try {
-                        holder.like_btn_image.setImageResource(R.drawable.red_heart_active_icon);
-                        holder.likes+=1.0;
-                        setLikeCount(holder.likes ,holder);
-                        holder.is_liked=true;
-                        holder.like_btn_image.setEnabled(false);
-                        postid.put("postid",list.get(position).postId);
+                if(!list.get(position).isliked){
+                    holder.like_btn_image.setImageResource(R.drawable.red_heart_active_icon);
+                    holder.likes+=1.0;
+                    setLikeCount(holder.likes ,holder);
+                    holder.is_liked=true;
+                    list.get(position).isliked=true;
+                    holder.like_btn_image.setEnabled(false);
+                    likeManager.likePost(list.get(position).postId, new NetworkCallbackIterface() {
+                        @Override
+                        public void onSucess() {
+                            holder.like_btn_image.setEnabled(true);
 
-                        // Send like request to server
-                        AndroidNetworking.post(BuildConfig.BASE_URL.concat("/like/like"))
-                                .addHeaders("Authorization", "Bearer ".concat(Objects.requireNonNull(loginInfo.getString("token", null))))
-                                .addApplicationJsonBody(postid)
-                                .setPriority(Priority.HIGH).build().getAsJSONObject(new JSONObjectRequestListener() {
-                                    @Override
-                                    public void onResponse(JSONObject response) {
-                                        holder.like_btn_image.setEnabled(true);
-                                    }
-                                    @Override
-                                    public void onError(ANError anError) {
-                                        // Revert UI changes on error
-                                        holder.like_btn_image.setImageResource(R.drawable.heart_inactive_icon);
-                                        holder.likes-=1.0;
-                                        setLikeCount(holder.likes,holder);
-                                        holder.is_liked=false;
-                                        holder.like_btn_image.setEnabled(true);
-                                    }
-                                });
+                        }
 
-                    } catch (JSONException e) {
-                        throw new RuntimeException(e);
-                    }
+                        @Override
+                        public void onError(String err) {
+                            holder.like_btn_image.setImageResource(R.drawable.heart_inactive_icon);
+                            holder.likes-=1.0;
+                            setLikeCount(holder.likes,holder);
+                            holder.is_liked=false;
+                            list.get(position).isliked=false;
+                            holder.like_btn_image.setEnabled(true);
+
+                        }
+                    });
+
                     // Unlike the post if already liked
-                }else {
-                    JSONObject postid =new JSONObject();
-                    try {
-                        postid.put("postid",list.get(position).postId);
-                        holder.like_btn_image.setImageResource(R.drawable.heart_inactive_icon);
-                        holder.likes-=1.0;
-                        setLikeCount(holder.likes,holder);
-                        holder.is_liked=false;
-                        holder.like_btn_image.setEnabled(false);
+                }
+                else {
+                    holder.like_btn_image.setImageResource(R.drawable.heart_inactive_icon);
+                    holder.likes-=1.0;
+                    setLikeCount(holder.likes,holder);
+                    holder.is_liked=false;
+                    list.get(position).isliked=false;
+                    holder.like_btn_image.setEnabled(false);
+                    // Send unlike request to server
+                   likeManager.UnlikePost(list.get(position).postId, new NetworkCallbackIterface() {
+                       @Override
+                       public void onSucess() {
+                           holder.like_btn_image.setEnabled(true);
 
-                        // Send unlike request to server
-                        AndroidNetworking.post(BuildConfig.BASE_URL.concat("/like/unlike"))
-                                .addHeaders("Authorization", "Bearer ".concat(Objects.requireNonNull(loginInfo.getString("token", null))))
-                                .addApplicationJsonBody(postid)
-                                .setPriority(Priority.HIGH).build().getAsJSONObject(new JSONObjectRequestListener() {
-                                    @Override
-                                    public void onResponse(JSONObject response) {
-                                        holder.like_btn_image.setEnabled(true);
-                                    }
-                                    @Override
-                                    public void onError(ANError anError) {
-                                        // Revert UI changes on error
-                                        holder.like_btn_image.setImageResource(R.drawable.red_heart_active_icon);
-                                        holder.likes+=1.0;
-                                        setLikeCount(holder.likes ,holder);
-                                        holder.is_liked=true;
-                                        holder.like_btn_image.setEnabled(true);
-                                    }
-                                });
+                       }
 
-                    } catch (JSONException e) {
-                        throw new RuntimeException(e);
-                    }
+                       @Override
+                       public void onError(String err) {
+                           Log.d("errorUnlike", "onError: ".concat(err));
+                           holder.like_btn_image.setImageResource(R.drawable.red_heart_active_icon);
+                           holder.likes+=1.0;
+                           setLikeCount(holder.likes ,holder);
+                           holder.is_liked=true;
+                           list.get(position).isliked=true;
+                           holder.like_btn_image.setEnabled(true);
+
+                       }
+                   });
                 }
             }
         });
@@ -318,10 +313,9 @@ public class ImagePostsAdapter extends RecyclerView.Adapter<ImagePostsAdapter.vi
         noCommentsLayout.setVisibility(View.GONE);
 
         // Fetch comments from server
-        AndroidNetworking.get(BuildConfig.BASE_URL.concat("/comment/getComments/").concat(Integer.toString(postId))).setPriority(Priority.HIGH).addHeaders("Authorization", "Bearer ".concat(Objects.requireNonNull(loginInfo.getString("token", null)))).build().getAsJSONObject(new JSONObjectRequestListener() {
-            @SuppressLint("NotifyDataSetChanged")
+        commentsManager.getCommentOf(postId, new NetworkCallbackInterfaceWithJsonObjectDelivery() {
             @Override
-            public void onResponse(JSONObject response) {
+            public void onSuccess(JSONObject response) {
                 try {
                     JSONArray data=response.getJSONArray("data");
                     if(data.length()>0){
@@ -345,19 +339,19 @@ public class ImagePostsAdapter extends RecyclerView.Adapter<ImagePostsAdapter.vi
                 } catch (JSONException e) {
                     throw new RuntimeException(e);
                 }
+
             }
 
             @Override
-            public void onError(ANError anError) {
-                // Handle error fetching comments
-                Toast.makeText(context, "Error fetching comments: ".concat(Objects.requireNonNull(anError.getMessage())), Toast.LENGTH_SHORT).show();
+            public void onError(String err) {
+                Toast.makeText(context, "Error fetching comments: ".concat(Objects.requireNonNull(err)), Toast.LENGTH_SHORT).show();
                 shimmerFrameLayout.stopShimmer();
                 noCommentsLayout.setVisibility(View.VISIBLE);
                 comments_recyclerView.setVisibility(View.GONE);
                 shimmerFrameLayout.setVisibility(View.GONE);
+
             }
         });
-
         // Add comment to the post
         assert sendCommentBtn != null;
         sendCommentBtn.setOnClickListener(new View.OnClickListener() {
@@ -376,21 +370,13 @@ public class ImagePostsAdapter extends RecyclerView.Adapter<ImagePostsAdapter.vi
                     Toast.makeText(context, "Please enter a comment", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                JSONObject commentData=new JSONObject();
-                try {
-                    commentData.put("postid",postId);
-                    commentData.put("comment",commentText);
-                    // Send add comment request to server
-                    AndroidNetworking.post(BuildConfig.BASE_URL.concat("/comment/addComment"))
-                            .addHeaders("Authorization", "Bearer ".concat(Objects.requireNonNull(loginInfo.getString("token", null))))
-                            .addApplicationJsonBody(commentData)
-                            .setPriority(Priority.HIGH).build().getAsJSONObject(new JSONObjectRequestListener() {
-                                @Override
-                                public void onResponse(JSONObject response) {
+                commentsManager.addComment(postId, commentText, new NetworkCallbackInterfaceWithJsonObjectDelivery() {
+                    @Override
+                    public void onSuccess(JSONObject response) {
                                     posting_progressbar.setVisibility(View.GONE);
                                     sendCommentBtn.setVisibility(View.VISIBLE);
                                     sendCommentBtn.setClickable(true);
-                                    try{
+                                  try{
                                         int commentid=response.getInt("commnetid");
                                         // Add new comment to the top of the list
                                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
@@ -409,22 +395,17 @@ public class ImagePostsAdapter extends RecyclerView.Adapter<ImagePostsAdapter.vi
                                     }catch(JSONException jsonError){
                                         // Handle JSON error
                                     }
-                                }
 
-                                @Override
-                                public void onError(ANError anError) {
+                    }
+
+                    @Override
+                    public void onError(String err) {
                                     posting_progressbar.setVisibility(View.GONE);
                                     sendCommentBtn.setVisibility(View.VISIBLE);
                                     sendCommentBtn.setClickable(true);
-                                    Toast.makeText(context, "Error posting comment: ".concat(Objects.requireNonNull(anError.getMessage())), Toast.LENGTH_SHORT).show();
-                                }
-                            });
-                } catch (JSONException e) {
-                    posting_progressbar.setVisibility(View.GONE);
-                    sendCommentBtn.setVisibility(View.VISIBLE);
-                    sendCommentBtn.setClickable(true);
-                    throw new RuntimeException(e);
-                }
+
+                    }
+                });
             }
         });
     }

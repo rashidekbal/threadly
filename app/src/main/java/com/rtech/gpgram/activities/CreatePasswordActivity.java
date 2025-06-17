@@ -1,11 +1,10 @@
-package com.rtech.gpgram;
+package com.rtech.gpgram.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -13,6 +12,8 @@ import androidx.appcompat.widget.AppCompatButton;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+
+import com.rtech.gpgram.R;
 
 public class CreatePasswordActivity extends AppCompatActivity {
 AppCompatButton next_btn;
@@ -44,7 +45,7 @@ TextView msgText;
                 }else{
                     msgText.setVisibility(View.GONE);
                     next_btn.setEnabled(true);
-                    Intent intent=new Intent(getApplicationContext(),EnterDobActivity.class);
+                    Intent intent=new Intent(getApplicationContext(), EnterDobActivity.class);
                     intent.putExtra("token",token);
                     intent.putExtra("password",password);
                     intent.putExtra("api",getDataIntent.getStringExtra("api"));

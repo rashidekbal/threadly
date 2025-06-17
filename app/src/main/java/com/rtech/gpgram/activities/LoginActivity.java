@@ -1,4 +1,4 @@
-package com.rtech.gpgram;
+package com.rtech.gpgram.activities;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -21,6 +21,9 @@ import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.JSONObjectRequestListener;
+import com.rtech.gpgram.BuildConfig;
+import com.rtech.gpgram.R;
+import com.rtech.gpgram.constants.SharedPreferencesKeys;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -31,7 +34,7 @@ EditText userid_field,password_filed;
 SharedPreferences loginInfo;
 SharedPreferences.Editor preferenceEditor;
 ProgressBar progressBar;
-String api_login_mobile=BuildConfig.BASE_URL.concat("/auth/login/mobile");
+String api_login_mobile= BuildConfig.BASE_URL.concat("/auth/login/mobile");
 String api_login_email=BuildConfig.BASE_URL.concat("/auth/login/email");
 String api_login_userid=BuildConfig.BASE_URL.concat("/auth/login/userid");
 
@@ -88,11 +91,11 @@ String api_login_userid=BuildConfig.BASE_URL.concat("/auth/login/userid");
                                         String username=response.getString("username");
                                         String userid=response.getString("userid");
                                         String profileUrl=response.getString("profile");
-                                        preferenceEditor.putString("token",response.getString("token"));
-                                        preferenceEditor.putBoolean("isLoggedIn",true);
-                                        preferenceEditor.putString("username",username);
-                                        preferenceEditor.putString("userid",userid);
-                                        preferenceEditor.putString("profileUrl",profileUrl);
+                                        preferenceEditor.putString(SharedPreferencesKeys.JWT_TOKEN,response.getString("token"));
+                                        preferenceEditor.putBoolean(SharedPreferencesKeys.IS_LOGGED_IN,true);
+                                        preferenceEditor.putString(SharedPreferencesKeys.USER_NAME,username);
+                                        preferenceEditor.putString(SharedPreferencesKeys.USER_ID,userid);
+                                        preferenceEditor.putString(SharedPreferencesKeys.USER_PROFILE_PIC,profileUrl);
                                         preferenceEditor.apply();
                                         Intent homePage=new Intent(LoginActivity.this,HomeActivity.class);
                                         homePage.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -158,7 +161,7 @@ String api_login_userid=BuildConfig.BASE_URL.concat("/auth/login/userid");
         userid_field=findViewById(R.id.userid_field);
         password_filed=findViewById(R.id.password_field);
         progressBar=findViewById(R.id.progressBar);
-        loginInfo=getSharedPreferences("loginInfo",MODE_PRIVATE);
+        loginInfo=getSharedPreferences(SharedPreferencesKeys.SHARED_PREF_NAME,MODE_PRIVATE);
         preferenceEditor=loginInfo.edit();
         AndroidNetworking.initialize(LoginActivity.this);
 

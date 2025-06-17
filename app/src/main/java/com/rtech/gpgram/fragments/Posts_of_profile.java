@@ -1,26 +1,49 @@
 package com.rtech.gpgram.fragments;
 
+import static android.content.Context.MODE_PRIVATE;
+
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
+import com.androidnetworking.AndroidNetworking;
+import com.androidnetworking.error.ANError;
+import com.androidnetworking.interfaces.JSONObjectRequestListener;
+import com.facebook.shimmer.ShimmerFrameLayout;
+import com.rtech.gpgram.BuildConfig;
 import com.rtech.gpgram.R;
-import com.rtech.gpgram.adapters.SearchPagePostAdapter;
-import com.rtech.gpgram.structures.SearchpagePost_data_structure_base;
+import com.rtech.gpgram.adapters.GridPostAdapter;
+import com.rtech.gpgram.models.SearchpagePost_data_structure_base;
+import com.rtech.gpgram.interfaces.Post_fragmentSetCallback;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 
 public class Posts_of_profile extends Fragment {
 RecyclerView posts_all_recycler_view;
+ShimmerFrameLayout shimmer_posts;
+SharedPreferences loginInfo;
+String baseUrl= BuildConfig.BASE_URL;
+TextView NoPost_text;
+ArrayList<SearchpagePost_data_structure_base> dataList=new ArrayList<>();
+    StaggeredGridLayoutManager layoutManager;
+    GridPostAdapter adapter;
+    Post_fragmentSetCallback callback;
 
-    public Posts_of_profile() {
-        // Required empty public constructor
+    public Posts_of_profile(Post_fragmentSetCallback callback) {
+   this.callback=callback;
     }
 
 
@@ -36,15 +59,15 @@ RecyclerView posts_all_recycler_view;
                              Bundle savedInstanceState) {
       View v=  inflater.inflate(R.layout.fragment_posts_of_profile, container, false);
         init(v);
-        ArrayList<SearchpagePost_data_structure_base> dataList=new ArrayList<>();
-        dataList.add(new SearchpagePost_data_structure_base(1,"https://media.istockphoto.com/id/1315856341/photo/young-woman-meditating-outdoors-at-park.webp"));
-        dataList.add(new SearchpagePost_data_structure_base(2,"https://cdn.pixabay.com/photo/2025/05/11/00/44/flowers-9591978_1280.jpg"));
-        dataList.add(new SearchpagePost_data_structure_base(3,"https://cdn.pixabay.com/photo/2025/05/13/17/05/dove-9597944_1280.jpg"));
-        dataList.add(new SearchpagePost_data_structure_base(4,"https://cdn.pixabay.com/photo/2025/05/12/06/36/dragon-fly-9594679_1280.jpg"));
-        dataList.add(new SearchpagePost_data_structure_base(5,"https://cdn.pixabay.com/photo/2025/05/12/18/01/tit-9595802_1280.jpg"));
-        dataList.add(new SearchpagePost_data_structure_base(6,"https://cdn.pixabay.com/photo/2025/05/13/12/20/apples-9597475_1280.jpg"));
-        StaggeredGridLayoutManager layoutManager=new StaggeredGridLayoutManager(3,StaggeredGridLayoutManager.VERTICAL);
-        SearchPagePostAdapter adapter =new SearchPagePostAdapter(v.getContext(),dataList);
+        layoutManager =new StaggeredGridLayoutManager(3,StaggeredGridLayoutManager.VERTICAL);
+        adapter=new GridPostAdapter(v.getContext(), dataList, new Post_fragmentSetCallback() {
+            @Override
+            public void openPostFragment(String url, int postid) {
+                callback.openPostFragment(url, postid);
+
+
+            }
+        });
         adapter.setHasStableIds(true);
         posts_all_recycler_view.setLayoutManager(layoutManager);
         posts_all_recycler_view.setAdapter(adapter);
@@ -54,6 +77,65 @@ RecyclerView posts_all_recycler_view;
     }
     public void init(View v){
         posts_all_recycler_view=v.findViewById(R.id.posts_all_recycler_view);
+        shimmer_posts=v.findViewById(R.id.shimmer_posts);
+        loginInfo=v.getContext().getSharedPreferences("loginInfo",MODE_PRIVATE);
+        NoPost_text=v.findViewById(R.id.NoPost_text);
+        getPostsOfProfile(v);
+
+
+
+    }
+    private void getPostsOfProfile(View v) {
+        String getPostsUrl=baseUrl.concat("/posts/getUserPosts/").concat(loginInfo.getString("userid","null"));
+        // Make network request to get posts
+        AndroidNetworking.get(getPostsUrl)
+                .setPriority(com.androidnetworking.common.Priority.HIGH)
+                .addHeaders("Authorization", "Bearer ".concat(loginInfo.getString("token","null")))
+                .build()
+                .getAsJSONObject(new JSONObjectRequestListener(){
+
+                    @Override
+                    public void onResponse(JSONObject response) {
+
+                        try {
+                            JSONArray array= response.getJSONArray("data");
+
+                            if(array.length()>0){
+                                for(int i=0;i<array.length();i++){
+                                    JSONObject post=array.getJSONObject(i);
+                                    dataList.add(new SearchpagePost_data_structure_base(
+                                            post.getInt("postid"),
+                                            post.getString("imageurl")
+                                    ));
+                                }
+                                adapter.notifyDataSetChanged();
+                                shimmer_posts.setVisibility(View.GONE);
+                                posts_all_recycler_view.setVisibility(View.VISIBLE);
+                            }else{
+                                shimmer_posts.setVisibility(View.GONE);
+                                NoPost_text.setVisibility(View.VISIBLE);
+                                posts_all_recycler_view.setVisibility(View.GONE);
+
+                            }
+
+
+                        } catch (JSONException e) {
+                            Log.d("profileDataErr", e.getMessage());
+
+
+
+
+                        }
+
+
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+                        Log.d("profileDataErr", anError.getMessage());
+
+                    }
+                });
 
     }
 }

@@ -1,4 +1,4 @@
-package com.rtech.gpgram;
+package com.rtech.gpgram.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,6 +10,8 @@ import androidx.appcompat.widget.AppCompatButton;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+
+import com.rtech.gpgram.R;
 
 public class VerifyEmailOtpActivity extends AppCompatActivity {
     AppCompatButton next_btn;
@@ -27,7 +29,7 @@ public class VerifyEmailOtpActivity extends AppCompatActivity {
         next_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent =new Intent(getApplicationContext(),CreatePasswordActivity.class);
+                Intent intent =new Intent(getApplicationContext(), CreatePasswordActivity.class);
                 intent.putExtra("token","jwt token");
                 startActivity(intent);
             }

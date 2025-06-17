@@ -4,11 +4,31 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     tools:context=".fragments.Posts_of_profile"
-    android:background="@color/white">
-    <androidx.recyclerview.widget.RecyclerView
+    android:background="@color/white"
+    android:orientation="vertical">
+    <!--            before posts are loaded-->
+    <com.facebook.shimmer.ShimmerFrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/posts_all_recycler_view"/>
+        android:visibility="visible"
+        android:id="@+id/shimmer_posts">
+        <include layout="@layout/profile_post_shimmer"/>
+    </com.facebook.shimmer.ShimmerFrameLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/posts_all_recycler_view"
+        android:visibility="gone"/>
+    <TextView
+        android:id="@+id/NoPost_text"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:text="No Posts"
+        android:visibility="gone"
+        android:textSize="@dimen/sp_25"
+        />
 
 
 

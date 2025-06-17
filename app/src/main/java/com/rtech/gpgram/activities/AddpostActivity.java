@@ -1,27 +1,22 @@
-package com.rtech.gpgram;
+package com.rtech.gpgram.activities;
 
-import android.app.ComponentCaller;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
-import androidx.core.graphics.BitmapKt;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -30,6 +25,8 @@ import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.JSONObjectRequestListener;
+import com.rtech.gpgram.BuildConfig;
+import com.rtech.gpgram.R;
 
 import org.json.JSONObject;
 
@@ -46,7 +43,7 @@ public class AddpostActivity extends AppCompatActivity {
     File imageFile;
     Boolean isImageCaptured=false;
     AppCompatButton post_btn;
-    String api=BuildConfig.BASE_URL.concat("/posts/createPost");
+    String api= BuildConfig.BASE_URL.concat("/posts/createPost");
     SharedPreferences loginInfo;
     @Override
     protected void onCreate(Bundle savedInstanceState) {

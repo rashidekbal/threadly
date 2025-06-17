@@ -11,15 +11,16 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.rtech.gpgram.R;
-import com.rtech.gpgram.adapters.SearchPagePostAdapter;
-import com.rtech.gpgram.structures.SearchpagePost_data_structure_base;
+import com.rtech.gpgram.adapters.GridPostAdapter;
+import com.rtech.gpgram.models.SearchpagePost_data_structure_base;
+import com.rtech.gpgram.interfaces.Post_fragmentSetCallback;
 
 import java.util.ArrayList;
 
 public class searchFragment extends Fragment {
 RecyclerView search_page_recycler_view;
 ArrayList<SearchpagePost_data_structure_base> dataList;
-SearchPagePostAdapter adapter;
+GridPostAdapter adapter;
 
     public searchFragment() {
         // Required empty public constructor
@@ -38,7 +39,13 @@ SearchPagePostAdapter adapter;
         dataList.add(new SearchpagePost_data_structure_base(5,"https://cdn.pixabay.com/photo/2025/05/12/18/01/tit-9595802_1280.jpg"));
         dataList.add(new SearchpagePost_data_structure_base(6,"https://cdn.pixabay.com/photo/2025/05/13/12/20/apples-9597475_1280.jpg"));
         StaggeredGridLayoutManager layoutManager=new StaggeredGridLayoutManager(3,StaggeredGridLayoutManager.VERTICAL);
-        adapter =new SearchPagePostAdapter(view.getContext(),dataList);
+        adapter =new GridPostAdapter(view.getContext(), dataList, new Post_fragmentSetCallback() {
+            @Override
+            public void openPostFragment(String url,int postid) {
+
+
+            }
+        });
         adapter.setHasStableIds(true);
         search_page_recycler_view.setLayoutManager(layoutManager);
         search_page_recycler_view.setAdapter(adapter);

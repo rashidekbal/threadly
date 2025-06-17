@@ -1,6 +1,8 @@
 package com.rtech.gpgram.adapters;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,17 +13,20 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.rtech.gpgram.R;
-import com.rtech.gpgram.structures.SearchpagePost_data_structure_base;
+import com.rtech.gpgram.models.SearchpagePost_data_structure_base;
+import com.rtech.gpgram.interfaces.Post_fragmentSetCallback;
 
 import java.util.ArrayList;
 
-public class SearchPagePostAdapter extends RecyclerView.Adapter<SearchPagePostAdapter.ViewHolder> {
+public class GridPostAdapter extends RecyclerView.Adapter<GridPostAdapter.ViewHolder> {
     Context context;
     ArrayList<SearchpagePost_data_structure_base> dataList;
-    public SearchPagePostAdapter(Context c, ArrayList<SearchpagePost_data_structure_base> data){
+    Post_fragmentSetCallback post_fragmentSetCallback;
+    public GridPostAdapter(Context c, ArrayList<SearchpagePost_data_structure_base> data, Post_fragmentSetCallback callback){
         this.dataList=data;
         this.context=c;
         setHasStableIds(true);
+        this.post_fragmentSetCallback=callback;
 
     }
 
@@ -38,11 +43,13 @@ public class SearchPagePostAdapter extends RecyclerView.Adapter<SearchPagePostAd
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ViewHolder holder, @SuppressLint("RecyclerView") int position) {
         Glide.with(context).load(dataList.get(position).image_url).placeholder(R.drawable.post_placeholder).into(holder.imageView);
         holder.imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                post_fragmentSetCallback.openPostFragment(dataList.get(position).image_url,dataList.get(position).postid);
+
 
             }
         });

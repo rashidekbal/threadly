@@ -1,18 +1,19 @@
-package com.rtech.gpgram.utils;
+package com.rtech.gpgram.managers;
 
 import static android.content.Context.MODE_PRIVATE;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.os.Handler;
-import android.util.Log;
 import android.widget.Toast;
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.JSONObjectRequestListener;
-import com.rtech.gpgram.BuildConfig;
-import com.rtech.gpgram.structures.suggestUsersDataStructure;
+import com.rtech.gpgram.constants.SharedPreferencesKeys;
+import com.rtech.gpgram.interfaces.NetworkCallbackIterface;
+import com.rtech.gpgram.models.suggestUsersDataStructure;
+import com.rtech.gpgram.constants.ApiEndPoints;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 import java.util.ArrayList;
@@ -20,19 +21,19 @@ import java.util.ArrayList;
 public class FollowManager {
     SharedPreferences loginInfo;
     String myid,token;
-    String Followurl= BuildConfig.BASE_URL.concat("/follow/follow");
-    String UnFollowurl=BuildConfig.BASE_URL.concat("/follow/unfollow");
+    String Followurl= ApiEndPoints.FOLLOW;
+    String UnFollowurl=ApiEndPoints.UNFOLLOW;
     ArrayList<suggestUsersDataStructure> dataList = new ArrayList<>();
 Context context;
     public FollowManager(Context context){
         this.context=context;
         AndroidNetworking.initialize(context);
-        this.loginInfo=context.getSharedPreferences("loginInfo",MODE_PRIVATE);
-        this.myid=loginInfo.getString("userid","null");
-        this.token=loginInfo.getString("token","null");
+        this.loginInfo=context.getSharedPreferences(SharedPreferencesKeys.SHARED_PREF_NAME,MODE_PRIVATE);
+        this.myid=loginInfo.getString(SharedPreferencesKeys.USER_ID,"null");
+        this.token=loginInfo.getString(SharedPreferencesKeys.JWT_TOKEN,"null");
     }
 
-    public void  follow(String userid,NetworkCallbackIterface callbackIterface) {
+    public void  follow(String userid, NetworkCallbackIterface callbackIterface) {
 
         JSONObject packet = new JSONObject();
         try {

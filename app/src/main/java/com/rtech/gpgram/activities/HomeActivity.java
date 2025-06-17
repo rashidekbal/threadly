@@ -1,11 +1,10 @@
-package com.rtech.gpgram;
+package com.rtech.gpgram.activities;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.widget.Button;
-import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
@@ -19,10 +18,13 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
+import com.rtech.gpgram.R;
 import com.rtech.gpgram.fragments.homeFragment;
 import com.rtech.gpgram.fragments.notificationFragment;
+import com.rtech.gpgram.fragments.posts_fragment;
 import com.rtech.gpgram.fragments.profileFragment;
 import com.rtech.gpgram.fragments.searchFragment;
+import com.rtech.gpgram.interfaces.Post_fragmentSetCallback;
 
 public class HomeActivity extends AppCompatActivity {
 SharedPreferences loginInfo;
@@ -45,20 +47,6 @@ int currentFragment;
 
         init();
 
-//        TextView textView=findViewById(R.id.textView);
-//        String username=loginInfo.getString("username","madherchod");
-//        textView.setText(username);
-//        logOut_btn.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                prefEditor.clear().apply();
-//                Intent loginPage=new Intent(HomeActivity.this, LoginActivity.class);
-//                loginPage.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
-//                startActivity(loginPage);
-//                finish();
-//
-//            }
-//        });
 
         bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @Override
@@ -75,7 +63,7 @@ int currentFragment;
                     addFragment(new searchFragment());
 
                 } else if (item.getItemId()==R.id.add_post) {
-                    startActivity(new Intent(HomeActivity.this,AddpostActivity.class));
+                    startActivity(new Intent(HomeActivity.this, AddpostActivity.class));
 
 
                 } else if (item.getItemId()==R.id.notification) {
@@ -84,13 +72,28 @@ int currentFragment;
 
                 }else if (item.getItemId()==R.id.profile){
                     currentFragment=item.getItemId();
-                    addFragment(new profileFragment());
+                    addFragment(new profileFragment(new Post_fragmentSetCallback() {
+                        @Override
+                        public void openPostFragment(String url, int postid) {
+                            addFragment(new posts_fragment(), url, postid);
+                        }
+                    }));
                 }
 
                 return true;
             }
         });
         bottomNavigationView.setSelectedItemId(R.id.home);
+        getSupportFragmentManager().addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
+            @Override
+            public void onBackStackChanged() {
+                if(getSupportFragmentManager().getBackStackEntryCount() == 0) {
+
+                 HomeActivity.super.onBackPressed();
+                    }
+                }
+
+        });
 
 
 
@@ -104,17 +107,29 @@ int currentFragment;
 
     }
 
-    private void addFragment(Fragment fragment){
+    private void addFragment(Fragment fragment ){
         FragmentManager manager=getSupportFragmentManager();
         FragmentTransaction transaction=manager.beginTransaction();
         transaction.replace(R.id.fragmentHolder,fragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
+
+    }  private void addFragment(Fragment fragment,String url,int postid){
+        FragmentManager manager=getSupportFragmentManager();
+        FragmentTransaction transaction=manager.beginTransaction();
+        Bundle bundle=new Bundle();
+        bundle.putString("url",url);
+        bundle.putInt("postid",postid);
+        fragment.setArguments(bundle);
+        transaction.replace(R.id.fragmentHolder, fragment);
+        transaction.addToBackStack(null);
         transaction.commit();
 
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        bottomNavigationView.setSelectedItemId(currentFragment);
-    }
+//    @Override
+//    protected void onResume() {
+//        super.onResume();
+//        bottomNavigationView.setSelectedItemId(currentFragment);
+//    }
 }

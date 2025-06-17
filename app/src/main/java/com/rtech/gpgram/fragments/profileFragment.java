@@ -15,7 +15,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.androidnetworking.AndroidNetworking;
@@ -28,13 +27,12 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 import com.rtech.gpgram.BuildConfig;
 import com.rtech.gpgram.R;
-import com.rtech.gpgram.structures.ProfileDataStructure;
+import com.rtech.gpgram.models.ProfileDataStructure;
+import com.rtech.gpgram.interfaces.Post_fragmentSetCallback;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.util.ArrayList;
 
 
 public class profileFragment extends Fragment {
@@ -43,14 +41,15 @@ public class profileFragment extends Fragment {
     BottomNavigationView profile_bottom_navigation_view;
     ImageView profileImg;
     String baseUrl= BuildConfig.BASE_URL;
-    ShimmerFrameLayout shimmerFrameLayout,shimmer_posts;
+    ShimmerFrameLayout shimmerFrameLayout;
     LinearLayout profileLayout;
     // Base URL for the API, can be set in BuildConfig or directly here
     ProfileDataStructure userdata;
+Post_fragmentSetCallback callback;
 
-
-    public profileFragment() {
+    public profileFragment(Post_fragmentSetCallback callback) {
         // Required empty public constructor
+        this.callback=callback;
     }
 
 
@@ -71,7 +70,13 @@ public class profileFragment extends Fragment {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 if(item.getItemId()==R.id.posts){
-                    change_fragment(new Posts_of_profile());
+                    change_fragment(new Posts_of_profile(new Post_fragmentSetCallback() {
+                        @Override
+                        public void openPostFragment(String url, int postid) {
+                            callback.openPostFragment(url,postid);
+
+                        }
+                    }));
 
                 }else if (item.getItemId()==R.id.tags){}                return true;
             }
@@ -92,11 +97,11 @@ profile_bottom_navigation_view.setSelectedItemId(R.id.posts);
         bio_text=v.findViewById(R.id.bio_text);
         AndroidNetworking.initialize(v.getContext());
         shimmerFrameLayout=v.findViewById(R.id.profile_shimmer);
-        shimmer_posts=v.findViewById(R.id.shimmer_posts);
+
         profileLayout=v.findViewById(R.id.profile_layout);
         loginInfo=getContext().getSharedPreferences("loginInfo",v.getContext().MODE_PRIVATE);
         getProfileData(v);
-        getPostsOfProfile(v);
+
 
     }
     private void getProfileData(View v) {
@@ -149,45 +154,7 @@ profile_bottom_navigation_view.setSelectedItemId(R.id.posts);
 
 
     }
-    private void getPostsOfProfile(View v) {
-        String getPostsUrl=baseUrl.concat("/posts/getUsersPosts/").concat(loginInfo.getString("userid","null"));
-        // Make network request to get posts
-        AndroidNetworking.get(getPostsUrl)
-                .setPriority(com.androidnetworking.common.Priority.HIGH)
-                .addHeaders("Authorization", "Bearer ".concat(loginInfo.getString("token","null")))
-                .build()
-                .getAsJSONObject(new JSONObjectRequestListener(){
 
-                    @Override
-                    public void onResponse(JSONObject response) {
-
-                        try {
-                            JSONArray array= response.getJSONArray("data");
-                            JSONObject object=array.getJSONObject(0);
-
-
-
-
-
-
-
-                        } catch (JSONException e) {
-
-
-
-                        }
-
-
-                    }
-
-                    @Override
-                    public void onError(ANError anError) {
-                        Log.d("profileDataErr", anError.getMessage());
-
-                    }
-                });
-
-    }
     public void change_fragment(Fragment fragment){
         getActivity()
                 .getSupportFragmentManager()

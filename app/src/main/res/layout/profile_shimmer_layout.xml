@@ -78,6 +78,7 @@
                         android:gravity="center"
                         android:orientation="vertical"
                         android:layout_gravity="start"
+                        android:background="@drawable/slight_round_btn_grey"
                         android:layout_alignParentLeft="true"
 
                         >
@@ -86,7 +87,6 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:textAlignment="center"
-                            android:background="@drawable/slight_round_btn_grey"
                             android:textSize="@dimen/sp_20"
                             android:textStyle="bold" />
 
@@ -95,7 +95,6 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="2dp"
                             android:textAlignment="center"
-                            android:background="@drawable/slight_round_btn_grey"
                             android:textSize="@dimen/sp_17" />
 
                     </LinearLayout>
@@ -106,13 +105,13 @@
                             android:gravity="start"
                             android:orientation="vertical"
                             android:layout_gravity="center_horizontal"
-                            android:layout_marginLeft="@dimen/dp_81"
+                            android:layout_marginLeft="@dimen/dp_87"
+                            android:background="@drawable/slight_round_btn_grey"
                             >
 
                             <TextView
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:background="@drawable/slight_round_btn_grey"
                                 android:textAlignment="center"
                                 android:textSize="@dimen/sp_20"
                                 android:textStyle="bold" />
@@ -122,7 +121,6 @@
                                 android:textAlignment="center"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="2dp"
-                                android:background="@drawable/slight_round_btn_grey"
                                 android:textSize="@dimen/sp_17" />
 
                         </LinearLayout>
@@ -133,13 +131,13 @@
                             android:gravity="end"
                             android:orientation="vertical"
                             android:layout_alignParentRight="true"
+                            android:background="@drawable/slight_round_btn_grey"
                             >
 
                             <TextView
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:textAlignment="center"
-                                android:background="@drawable/slight_round_btn_grey"
                                 android:textSize="@dimen/sp_20"
                                 android:textStyle="bold" />
 
@@ -148,7 +146,6 @@
                                 android:layout_height="wrap_content"
                                 android:textAlignment="center"
                                 android:layout_marginTop="2dp"
-                                android:background="@drawable/slight_round_btn_grey"
                                 android:textSize="@dimen/sp_17" />
 
                         </LinearLayout></RelativeLayout>
@@ -193,22 +190,14 @@
                     >
 
                     <androidx.appcompat.widget.AppCompatButton
-                        android:layout_width="@dimen/dp_170"
+                        android:layout_width="match_parent"
                         android:layout_height="@dimen/dp_35"
                         android:layout_centerVertical="true"
                         android:background="@drawable/slight_round_btn_grey"
                         android:textColor="@color/white"
                         android:layout_alignParentLeft="true"/>
 
-                    <androidx.appcompat.widget.AppCompatButton
-                        android:layout_width="@dimen/dp_170"
-                        android:layout_height="@dimen/dp_35"
-                        android:layout_alignParentRight="true"
-                        android:layout_centerVertical="true"
-                        android:background="@drawable/slight_round_btn_grey"
 
-
-                        />
                 </RelativeLayout>
             </LinearLayout>
 

@@ -1,4 +1,4 @@
-package com.rtech.gpgram.structures;
+package com.rtech.gpgram.models;
 
 public class PostCommentsDataStructure {
     public int commentId,postId,likesCount;

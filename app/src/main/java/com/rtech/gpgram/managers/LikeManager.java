@@ -1,0 +1,110 @@
+package com.rtech.gpgram.managers;
+
+import android.content.Context;
+import android.content.SharedPreferences;
+
+import com.androidnetworking.AndroidNetworking;
+import com.androidnetworking.common.Priority;
+import com.androidnetworking.error.ANError;
+import com.androidnetworking.interfaces.JSONObjectRequestListener;
+
+import com.rtech.gpgram.constants.SharedPreferencesKeys;
+import com.rtech.gpgram.interfaces.NetworkCallbackIterface;
+import com.rtech.gpgram.constants.ApiEndPoints;
+
+import org.json.JSONObject;
+
+public class LikeManager {
+    SharedPreferences loginInfo;
+    Context context;
+    private String token;
+    public LikeManager(Context c){
+        this.context=c;
+        AndroidNetworking.initialize(c);
+        loginInfo=context.getSharedPreferences(SharedPreferencesKeys.SHARED_PREF_NAME, Context.MODE_PRIVATE);
+        this.token=loginInfo.getString(SharedPreferencesKeys.JWT_TOKEN,"null");
+
+
+    }
+
+    public void likePost(int postId, NetworkCallbackIterface callbackIterface) {
+        String url= ApiEndPoints.LIKE_POST.concat(Integer.toString(postId));
+        AndroidNetworking.get(url)
+                .setPriority(Priority.HIGH)
+                .addHeaders("Authorization","Bearer "+token)
+                .build().getAsJSONObject(new JSONObjectRequestListener() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        callbackIterface.onSucess();
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+                        callbackIterface.onError(anError.getMessage());
+
+                    }
+                });
+
+}
+
+    public void UnlikePost(int postId, NetworkCallbackIterface callbackIterface) {
+        String url=ApiEndPoints.UNLIKE_POST.concat(Integer.toString(postId));
+        AndroidNetworking.get(url)
+                .setPriority(Priority.HIGH)
+                .addHeaders("Authorization","Bearer "+token)
+                .build().getAsJSONObject(new JSONObjectRequestListener() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        callbackIterface.onSucess();
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+                        callbackIterface.onError(anError.getMessage());
+
+                    }
+                });
+
+    }
+
+    public void LikeAComment(int commentId, NetworkCallbackIterface callbackIterface) {
+        String url=ApiEndPoints.LIKE_COMMENT.concat(Integer.toString(commentId));
+        AndroidNetworking.get(url)
+                .setPriority(Priority.HIGH)
+                .addHeaders("Authorization","Bearer "+token)
+                .build().getAsJSONObject(new JSONObjectRequestListener() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        callbackIterface.onSucess();
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+                        callbackIterface.onError(anError.getMessage());
+
+                    }
+                });
+
+    }
+    public void UnLikeAComment(int commentId, NetworkCallbackIterface callbackIterface) {
+        String url=ApiEndPoints.UNLIKE_COMMENT.concat(Integer.toString(commentId));
+        AndroidNetworking.get(url)
+                .setPriority(Priority.HIGH)
+                .addHeaders("Authorization","Bearer "+token)
+                .build().getAsJSONObject(new JSONObjectRequestListener() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        callbackIterface.onSucess();
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+                        callbackIterface.onError(anError.getMessage());
+
+                    }
+                });
+
+    }
+
+
+}

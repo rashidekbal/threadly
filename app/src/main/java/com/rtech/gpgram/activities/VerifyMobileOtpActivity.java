@@ -1,4 +1,4 @@
-package com.rtech.gpgram;
+package com.rtech.gpgram.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -19,10 +19,11 @@ import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.JSONObjectRequestListener;
+import com.rtech.gpgram.BuildConfig;
+import com.rtech.gpgram.R;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
 public class VerifyMobileOtpActivity extends AppCompatActivity {
 AppCompatButton next_btn,resend_btn;
@@ -30,7 +31,7 @@ TextView numberdetailstxt,msgText;
 ProgressBar progressBar,next_progressBar;
 Intent getDataIntent;
 EditText otp_field;
-String api=BuildConfig.BASE_URL.concat("/otp/verifyOtpMobile");
+String api= BuildConfig.BASE_URL.concat("/otp/verifyOtpMobile");
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,7 +72,7 @@ String api=BuildConfig.BASE_URL.concat("/otp/verifyOtpMobile");
                                 JSONObject recieved=response;
                                 try {
                                     String token=recieved.getString("token");
-                                    Intent intent =new Intent(getApplicationContext(),CreatePasswordActivity.class);
+                                    Intent intent =new Intent(getApplicationContext(), CreatePasswordActivity.class);
                                     intent.putExtra("token",token);
                                     intent.putExtra("api",BuildConfig.BASE_URL.concat("/auth/register/mobile"));
                                     startActivity(intent);

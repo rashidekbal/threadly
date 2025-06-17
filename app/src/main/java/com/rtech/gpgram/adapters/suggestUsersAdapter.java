@@ -15,9 +15,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.rtech.gpgram.R;
-import com.rtech.gpgram.structures.suggestUsersDataStructure;
-import com.rtech.gpgram.utils.FollowManager;
-import com.rtech.gpgram.utils.NetworkCallbackIterface;
+import com.rtech.gpgram.models.suggestUsersDataStructure;
+import com.rtech.gpgram.managers.FollowManager;
+import com.rtech.gpgram.interfaces.NetworkCallbackIterface;
 
 import java.util.ArrayList;
 

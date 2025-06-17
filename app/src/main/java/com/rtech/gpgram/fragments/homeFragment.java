@@ -23,13 +23,13 @@ import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.JSONArrayRequestListener;
 import com.androidnetworking.interfaces.JSONObjectRequestListener;
 import com.facebook.shimmer.ShimmerFrameLayout;
-import com.rtech.gpgram.AddpostActivity;
+import com.rtech.gpgram.activities.AddpostActivity;
 import com.rtech.gpgram.BuildConfig;
 import com.rtech.gpgram.R;
 import com.rtech.gpgram.adapters.ImagePostsAdapter;
 import com.rtech.gpgram.adapters.StatusViewAdapter;
-import com.rtech.gpgram.structures.PostsDataStructure;
-import com.rtech.gpgram.structures.suggestUsersDataStructure;
+import com.rtech.gpgram.models.PostsDataStructure;
+import com.rtech.gpgram.models.suggestUsersDataStructure;
 
 import org.json.JSONArray;
 import org.json.JSONException;
