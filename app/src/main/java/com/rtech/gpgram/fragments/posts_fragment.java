@@ -33,12 +33,13 @@ import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.rtech.gpgram.R;
 import com.rtech.gpgram.adapters.PostCommentsAdapter;
 import com.rtech.gpgram.interfaces.NetworkCallbackInterfaceWithJsonObjectDelivery;
-import com.rtech.gpgram.interfaces.NetworkCallbackIterface;
+import com.rtech.gpgram.interfaces.NetworkCallbackInterface;
 import com.rtech.gpgram.managers.CommentsManager;
 import com.rtech.gpgram.managers.LikeManager;
 import com.rtech.gpgram.managers.PostsManager;
-import com.rtech.gpgram.models.PostCommentsDataStructure;
-import com.rtech.gpgram.models.PostsDataStructure;
+import com.rtech.gpgram.models.Posts_Comments_Model;
+import com.rtech.gpgram.models.Posts_Model;
+import com.rtech.gpgram.utils.ReUsableFunctions;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -56,7 +57,7 @@ int postId;
 PostsManager postsManager;
 LikeManager likeManager;
 CommentsManager commentsManager;
-PostsDataStructure postData;
+Posts_Model postData;
 SharedPreferences loginInfo;
 
 
@@ -78,6 +79,22 @@ SharedPreferences loginInfo;
         init(v);
         // Inflate the layout for this fragment
         Glide.with(v.getContext()).load(R.drawable.post_placeholder).into(posts_image_view);
+//        open profile on click of profile pic
+        profile_img.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ReUsableFunctions.openProfile(v.getContext(),postData.userId);
+
+            }
+        });
+//        also on click of username
+        username_text.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ReUsableFunctions.openProfile(v.getContext(),postData.userId);
+
+            }
+        });
 
         return v;
     }
@@ -122,7 +139,7 @@ SharedPreferences loginInfo;
                 int isLiked = object.optInt("isLiked");
 
 
-                postData= new PostsDataStructure(postid,
+                postData= new Posts_Model(postid,
                         userid,
                         username,
                         profilepic,
@@ -147,7 +164,7 @@ SharedPreferences loginInfo;
             }
         });
     }
-    private void  setData(View view,PostsDataStructure data){
+    private void  setData(View view, Posts_Model data){
         Glide.with(view.getContext()).load(data.postUrl).placeholder(R.drawable.post_placeholder).into(posts_image_view);
         Glide.with(view.getContext()).load(data.userDpUrl).placeholder(R.drawable.blank_profile).into(profile_img);
         username_text.setText(data.username);
@@ -171,9 +188,9 @@ SharedPreferences loginInfo;
                     data.isliked=false;
                     data.likeCount=data.likeCount-1;
                     like_count_text.setText(String.valueOf(data.likeCount));
-                    likeManager.UnlikePost(data.postId, new NetworkCallbackIterface() {
+                    likeManager.UnlikePost(data.postId, new NetworkCallbackInterface() {
                         @Override
-                        public void onSucess() {
+                        public void onSuccess() {
 
                         }
 
@@ -194,9 +211,9 @@ SharedPreferences loginInfo;
                     data.isliked=true;
                     data.likeCount=data.likeCount+1;
                     like_count_text.setText(String.valueOf(data.likeCount));
-                    likeManager.likePost(data.postId, new NetworkCallbackIterface() {
+                    likeManager.likePost(data.postId, new NetworkCallbackInterface() {
                         @Override
-                        public void onSucess() {
+                        public void onSuccess() {
 
                         }
 
@@ -245,7 +262,7 @@ SharedPreferences loginInfo;
 
 
         commentDialog.show();
-        ArrayList<PostCommentsDataStructure> dataList=new ArrayList<>();
+        ArrayList<Posts_Comments_Model> dataList=new ArrayList<>();
         PostCommentsAdapter postCommentsAdapter=new PostCommentsAdapter(v.getContext(),dataList);
         LinearLayoutManager layoutManager=new LinearLayoutManager(v.getContext(),LinearLayoutManager.VERTICAL,false);
         RecyclerView comments_recyclerView=commentDialog.findViewById(R.id.comments_recyclerView);
@@ -276,7 +293,7 @@ SharedPreferences loginInfo;
                         // Add each comment to the list
                         for (int i=0;i<data.length();i++){
                             JSONObject individualComment=data.getJSONObject(i);
-                            dataList.add(new PostCommentsDataStructure(individualComment.getInt("commentid"),individualComment.getInt("postid"),individualComment.getInt("comment_likes_count"),individualComment.getInt("isLiked"),individualComment.getString("userid"),individualComment.getString("username"),individualComment.getString("profilepic"),individualComment.getString("comment_text"),individualComment.getString("createdAt")));
+                            dataList.add(new Posts_Comments_Model(individualComment.getInt("commentid"),individualComment.getInt("postid"),individualComment.getInt("comment_likes_count"),individualComment.getInt("isLiked"),individualComment.getString("userid"),individualComment.getString("username"),individualComment.getString("profilepic"),individualComment.getString("comment_text"),individualComment.getString("createdAt")));
                         }
                         postCommentsAdapter.notifyDataSetChanged();
                         shimmerFrameLayout.stopShimmer();
@@ -334,7 +351,7 @@ SharedPreferences loginInfo;
                             int commentid=response.getInt("commnetid");
                             // Add new comment to the top of the list
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
-                                dataList.addFirst(new PostCommentsDataStructure(
+                                dataList.addFirst(new Posts_Comments_Model(
                                         commentid,postId,
                                         0,
                                         0,

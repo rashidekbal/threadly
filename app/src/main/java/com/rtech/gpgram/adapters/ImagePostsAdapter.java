@@ -27,12 +27,13 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.rtech.gpgram.R;
 import com.rtech.gpgram.interfaces.NetworkCallbackInterfaceWithJsonObjectDelivery;
-import com.rtech.gpgram.interfaces.NetworkCallbackIterface;
+import com.rtech.gpgram.interfaces.NetworkCallbackInterface;
 import com.rtech.gpgram.managers.CommentsManager;
 import com.rtech.gpgram.managers.LikeManager;
-import com.rtech.gpgram.models.PostCommentsDataStructure;
-import com.rtech.gpgram.models.PostsDataStructure;
-import com.rtech.gpgram.models.suggestUsersDataStructure;
+import com.rtech.gpgram.models.Posts_Comments_Model;
+import com.rtech.gpgram.models.Posts_Model;
+import com.rtech.gpgram.models.Suggest_Profile_Model;
+import com.rtech.gpgram.utils.ReUsableFunctions;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -44,16 +45,16 @@ import java.util.Objects;
 // Adapter for displaying image posts in a RecyclerView
 public class ImagePostsAdapter extends RecyclerView.Adapter<ImagePostsAdapter.viewHolder> {
     Context context;
-    ArrayList<PostsDataStructure> list;
+    ArrayList<Posts_Model> list;
     SharedPreferences loginInfo;
     BottomSheetDialog commentDialog;
     RecyclerView usersCardRecyclerView;
-    ArrayList<suggestUsersDataStructure> suggestUsersList=new ArrayList<>();
+    ArrayList<Suggest_Profile_Model> suggestUsersList=new ArrayList<>();
     LikeManager likeManager;
     CommentsManager commentsManager;
 
     // Constructor for the adapter
-    public ImagePostsAdapter(Context c, ArrayList<PostsDataStructure> list,SharedPreferences preferences ,ArrayList<suggestUsersDataStructure> suggestUsersList){
+    public ImagePostsAdapter(Context c, ArrayList<Posts_Model> list, SharedPreferences preferences , ArrayList<Suggest_Profile_Model> suggestUsersList){
         this.context=c;
         this.list=list;
         this.loginInfo=preferences;
@@ -157,9 +158,9 @@ public class ImagePostsAdapter extends RecyclerView.Adapter<ImagePostsAdapter.vi
                     holder.is_liked=true;
                     list.get(position).isliked=true;
                     holder.like_btn_image.setEnabled(false);
-                    likeManager.likePost(list.get(position).postId, new NetworkCallbackIterface() {
+                    likeManager.likePost(list.get(position).postId, new NetworkCallbackInterface() {
                         @Override
-                        public void onSucess() {
+                        public void onSuccess() {
                             holder.like_btn_image.setEnabled(true);
 
                         }
@@ -186,9 +187,9 @@ public class ImagePostsAdapter extends RecyclerView.Adapter<ImagePostsAdapter.vi
                     list.get(position).isliked=false;
                     holder.like_btn_image.setEnabled(false);
                     // Send unlike request to server
-                   likeManager.UnlikePost(list.get(position).postId, new NetworkCallbackIterface() {
+                   likeManager.UnlikePost(list.get(position).postId, new NetworkCallbackInterface() {
                        @Override
-                       public void onSucess() {
+                       public void onSuccess() {
                            holder.like_btn_image.setEnabled(true);
 
                        }
@@ -220,6 +221,24 @@ public class ImagePostsAdapter extends RecyclerView.Adapter<ImagePostsAdapter.vi
             usersCardRecyclerView.setAdapter(suggestAdapter);
             usersCardRecyclerView.setVisibility(View.VISIBLE);
         }
+        // open userProfile by clicking userProfilepic
+        holder.userprofileImg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ReUsableFunctions.openProfile(context,list.get(position).userId);
+
+            }
+        });
+
+//        or by clicking userid
+        holder.user_id_text.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ReUsableFunctions.openProfile(context,list.get(position).userId);
+
+            }
+        });
+
     }
 
     // Returns the total number of items
@@ -293,7 +312,7 @@ public class ImagePostsAdapter extends RecyclerView.Adapter<ImagePostsAdapter.vi
     // Shows the comments dialog for a post
     private void showComments(int postId){
         commentDialog.show();
-        ArrayList<PostCommentsDataStructure> dataList=new ArrayList<>();
+        ArrayList<Posts_Comments_Model> dataList=new ArrayList<>();
         PostCommentsAdapter postCommentsAdapter=new PostCommentsAdapter(context,dataList);
         LinearLayoutManager layoutManager=new LinearLayoutManager(context,LinearLayoutManager.VERTICAL,false);
         RecyclerView comments_recyclerView=commentDialog.findViewById(R.id.comments_recyclerView);
@@ -324,7 +343,7 @@ public class ImagePostsAdapter extends RecyclerView.Adapter<ImagePostsAdapter.vi
                         // Add each comment to the list
                         for (int i=0;i<data.length();i++){
                             JSONObject individualComment=data.getJSONObject(i);
-                            dataList.add(new PostCommentsDataStructure(individualComment.getInt("commentid"),individualComment.getInt("postid"),individualComment.getInt("comment_likes_count"),individualComment.getInt("isLiked"),individualComment.getString("userid"),individualComment.getString("username"),individualComment.getString("profilepic"),individualComment.getString("comment_text"),individualComment.getString("createdAt")));
+                            dataList.add(new Posts_Comments_Model(individualComment.getInt("commentid"),individualComment.getInt("postid"),individualComment.getInt("comment_likes_count"),individualComment.getInt("isLiked"),individualComment.getString("userid"),individualComment.getString("username"),individualComment.getString("profilepic"),individualComment.getString("comment_text"),individualComment.getString("createdAt")));
                         }
                         postCommentsAdapter.notifyDataSetChanged();
                         shimmerFrameLayout.stopShimmer();
@@ -380,7 +399,7 @@ public class ImagePostsAdapter extends RecyclerView.Adapter<ImagePostsAdapter.vi
                                         int commentid=response.getInt("commnetid");
                                         // Add new comment to the top of the list
                                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
-                                            dataList.addFirst(new PostCommentsDataStructure(
+                                            dataList.addFirst(new Posts_Comments_Model(
                                                     commentid,postId,
                                                     0,
                                                     0,
@@ -420,4 +439,6 @@ public class ImagePostsAdapter extends RecyclerView.Adapter<ImagePostsAdapter.vi
             holder.likes_count_text.setText(Integer.toString(likes.intValue()));
         }
     }
+
+
 }

@@ -15,8 +15,22 @@
         android:theme="@style/Theme.GPGram"
         tools:targetApi="29">
         <activity
-            android:name=".Post"
+            android:name=".activities.forgetPassword.ResetPasswordActivity"
             android:exported="false" />
+        <activity
+            android:name=".activities.forgetPassword.VerifyOtp_forgetPassword_Activity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.forgetPassword.ForgetPasswordActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.PostActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activities.UserProfileActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".activities.AddpostActivity"
             android:exported="false"

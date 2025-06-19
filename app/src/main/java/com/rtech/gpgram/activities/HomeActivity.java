@@ -52,8 +52,11 @@ int currentFragment;
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 if(item.getItemId()==R.id.home){
+                    getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
                     addFragment(new homeFragment());
                     currentFragment=item.getItemId();
+
+
 
 
 
@@ -92,6 +95,7 @@ int currentFragment;
                  HomeActivity.super.onBackPressed();
                     }
                 }
+
 
         });
 

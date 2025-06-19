@@ -9,7 +9,7 @@ import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.JSONObjectRequestListener;
 
 import com.rtech.gpgram.constants.SharedPreferencesKeys;
-import com.rtech.gpgram.interfaces.NetworkCallbackIterface;
+import com.rtech.gpgram.interfaces.NetworkCallbackInterface;
 import com.rtech.gpgram.constants.ApiEndPoints;
 
 import org.json.JSONObject;
@@ -27,7 +27,7 @@ public class LikeManager {
 
     }
 
-    public void likePost(int postId, NetworkCallbackIterface callbackIterface) {
+    public void likePost(int postId, NetworkCallbackInterface callbackIterface) {
         String url= ApiEndPoints.LIKE_POST.concat(Integer.toString(postId));
         AndroidNetworking.get(url)
                 .setPriority(Priority.HIGH)
@@ -35,7 +35,7 @@ public class LikeManager {
                 .build().getAsJSONObject(new JSONObjectRequestListener() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        callbackIterface.onSucess();
+                        callbackIterface.onSuccess();
                     }
 
                     @Override
@@ -47,7 +47,7 @@ public class LikeManager {
 
 }
 
-    public void UnlikePost(int postId, NetworkCallbackIterface callbackIterface) {
+    public void UnlikePost(int postId, NetworkCallbackInterface callbackIterface) {
         String url=ApiEndPoints.UNLIKE_POST.concat(Integer.toString(postId));
         AndroidNetworking.get(url)
                 .setPriority(Priority.HIGH)
@@ -55,7 +55,7 @@ public class LikeManager {
                 .build().getAsJSONObject(new JSONObjectRequestListener() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        callbackIterface.onSucess();
+                        callbackIterface.onSuccess();
                     }
 
                     @Override
@@ -67,7 +67,7 @@ public class LikeManager {
 
     }
 
-    public void LikeAComment(int commentId, NetworkCallbackIterface callbackIterface) {
+    public void LikeAComment(int commentId, NetworkCallbackInterface callbackIterface) {
         String url=ApiEndPoints.LIKE_COMMENT.concat(Integer.toString(commentId));
         AndroidNetworking.get(url)
                 .setPriority(Priority.HIGH)
@@ -75,7 +75,7 @@ public class LikeManager {
                 .build().getAsJSONObject(new JSONObjectRequestListener() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        callbackIterface.onSucess();
+                        callbackIterface.onSuccess();
                     }
 
                     @Override
@@ -86,7 +86,7 @@ public class LikeManager {
                 });
 
     }
-    public void UnLikeAComment(int commentId, NetworkCallbackIterface callbackIterface) {
+    public void UnLikeAComment(int commentId, NetworkCallbackInterface callbackIterface) {
         String url=ApiEndPoints.UNLIKE_COMMENT.concat(Integer.toString(commentId));
         AndroidNetworking.get(url)
                 .setPriority(Priority.HIGH)
@@ -94,7 +94,7 @@ public class LikeManager {
                 .build().getAsJSONObject(new JSONObjectRequestListener() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        callbackIterface.onSucess();
+                        callbackIterface.onSuccess();
                     }
 
                     @Override

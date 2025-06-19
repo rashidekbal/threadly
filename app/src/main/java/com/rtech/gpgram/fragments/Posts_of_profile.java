@@ -22,7 +22,7 @@ import com.facebook.shimmer.ShimmerFrameLayout;
 import com.rtech.gpgram.BuildConfig;
 import com.rtech.gpgram.R;
 import com.rtech.gpgram.adapters.GridPostAdapter;
-import com.rtech.gpgram.models.SearchpagePost_data_structure_base;
+import com.rtech.gpgram.models.Preview_Post_model;
 import com.rtech.gpgram.interfaces.Post_fragmentSetCallback;
 
 import org.json.JSONArray;
@@ -37,7 +37,7 @@ ShimmerFrameLayout shimmer_posts;
 SharedPreferences loginInfo;
 String baseUrl= BuildConfig.BASE_URL;
 TextView NoPost_text;
-ArrayList<SearchpagePost_data_structure_base> dataList=new ArrayList<>();
+ArrayList<Preview_Post_model> dataList=new ArrayList<>();
     StaggeredGridLayoutManager layoutManager;
     GridPostAdapter adapter;
     Post_fragmentSetCallback callback;
@@ -103,7 +103,7 @@ ArrayList<SearchpagePost_data_structure_base> dataList=new ArrayList<>();
                             if(array.length()>0){
                                 for(int i=0;i<array.length();i++){
                                     JSONObject post=array.getJSONObject(i);
-                                    dataList.add(new SearchpagePost_data_structure_base(
+                                    dataList.add(new Preview_Post_model(
                                             post.getInt("postid"),
                                             post.getString("imageurl")
                                     ));

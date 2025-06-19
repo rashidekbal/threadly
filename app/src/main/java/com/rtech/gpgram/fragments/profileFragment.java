@@ -27,8 +27,8 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 import com.rtech.gpgram.BuildConfig;
 import com.rtech.gpgram.R;
-import com.rtech.gpgram.models.ProfileDataStructure;
 import com.rtech.gpgram.interfaces.Post_fragmentSetCallback;
+import com.rtech.gpgram.models.Profile_Model;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -44,7 +44,7 @@ public class profileFragment extends Fragment {
     ShimmerFrameLayout shimmerFrameLayout;
     LinearLayout profileLayout;
     // Base URL for the API, can be set in BuildConfig or directly here
-    ProfileDataStructure userdata;
+    Profile_Model userdata;
 Post_fragmentSetCallback callback;
 
     public profileFragment(Post_fragmentSetCallback callback) {
@@ -122,7 +122,7 @@ profile_bottom_navigation_view.setSelectedItemId(R.id.posts);
 
                         ;
 
-                                userdata=new ProfileDataStructure(
+                                userdata=new Profile_Model(
                                     object.getString("userid")
                                     ,object.getString("username")
                                     ,object.getString("profilepic")
@@ -131,7 +131,7 @@ profile_bottom_navigation_view.setSelectedItemId(R.id.posts);
                                     ,object.getInt("followersCount")
                                     ,object.getInt("followingCount")
                                     ,object.getInt("PostsCount")
-                                    ,0);
+                                    ,0,0);
                                 setUserdata(v);
 
 

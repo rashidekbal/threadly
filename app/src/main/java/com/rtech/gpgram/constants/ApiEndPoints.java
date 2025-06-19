@@ -21,4 +21,20 @@ public class ApiEndPoints {
 
     // Posts
     public static final String GET_POST_BY_ID = baseUrl + "/posts/getPost/";
+    public static final String GET_USER_POSTS = baseUrl+"/posts/getUserPosts/";
+
+   // Profile
+    public static final String GET_PROFILE = baseUrl + "/users/getUser/";
+
+    // Authentication
+
+    //otp
+    public static final String SEND_MOBILE_OTP = baseUrl + "/otp/generateOtpMobile/";
+    public static final String RESEND_MOBILE_OTP = baseUrl + "/otp/resendOtpMobile/";
+    public static final String FORGET_PASSWORD_MOBILE_OTP = baseUrl + "/otp/ForgetPasswordGenerateOtpMobile";
+    public static final String FORGET_PASSWORD_EMAIL_OTP = baseUrl + "/otp/forgetPasswordEmailOtp/";
+    public static final String VERIFY_MOBILE_OTP = baseUrl + "/otp/verifyOtpMobile/";
+
+    // Reset Password
+    public static final String RESET_PASSWORD_MOBILE = baseUrl + "/resetPassword/Mobile/";
 }

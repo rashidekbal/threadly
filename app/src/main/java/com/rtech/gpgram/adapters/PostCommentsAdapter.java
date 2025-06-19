@@ -18,9 +18,10 @@ import com.androidnetworking.AndroidNetworking;
 import com.bumptech.glide.Glide;
 import com.rtech.gpgram.BuildConfig;
 import com.rtech.gpgram.R;
-import com.rtech.gpgram.interfaces.NetworkCallbackIterface;
+import com.rtech.gpgram.interfaces.NetworkCallbackInterface;
 import com.rtech.gpgram.managers.LikeManager;
-import com.rtech.gpgram.models.PostCommentsDataStructure;
+import com.rtech.gpgram.models.Posts_Comments_Model;
+import com.rtech.gpgram.utils.ReUsableFunctions;
 
 import java.util.ArrayList;
 
@@ -28,11 +29,11 @@ public class PostCommentsAdapter extends RecyclerView.Adapter<PostCommentsAdapte
     String url= BuildConfig.BASE_URL;
     boolean isLikedByMe;
     Context context;
-    ArrayList<PostCommentsDataStructure> dataList;
+    ArrayList<Posts_Comments_Model> dataList;
     SharedPreferences loginInfo;
     LikeManager likeManager;
 
-    public  PostCommentsAdapter (Context c,ArrayList<PostCommentsDataStructure> dataList){
+    public  PostCommentsAdapter (Context c,ArrayList<Posts_Comments_Model> dataList){
         this.context=c;
         this.dataList=dataList;
         this.likeManager=new LikeManager(c);
@@ -69,12 +70,12 @@ public class PostCommentsAdapter extends RecyclerView.Adapter<PostCommentsAdapte
                 /// dislike this comment
                 if(isLikedByMe) {
                     holder.likeBtn.setImageResource(R.drawable.heart_inactive_icon);
-                    PostCommentsDataStructure object = dataList.get(position);
-                    dataList.set(position, new PostCommentsDataStructure(object.commentId, object.postId, object.likesCount - 1, 0, object.userId, object.username, object.userDpUrl, object.comment, object.createdAt));
+                    Posts_Comments_Model object = dataList.get(position);
+                    dataList.set(position, new Posts_Comments_Model(object.commentId, object.postId, object.likesCount - 1, 0, object.userId, object.username, object.userDpUrl, object.comment, object.createdAt));
                     notifyItemChanged(position);
-                    likeManager.UnLikeAComment(dataList.get(position).commentId, new NetworkCallbackIterface() {
+                    likeManager.UnLikeAComment(dataList.get(position).commentId, new NetworkCallbackInterface() {
                         @Override
-                        public void onSucess() {
+                        public void onSuccess() {
                             holder.likeBtn.setEnabled(true);
                             isLikedByMe = false;
 
@@ -83,8 +84,8 @@ public class PostCommentsAdapter extends RecyclerView.Adapter<PostCommentsAdapte
                         @Override
                         public void onError(String err) {
                             holder.likeBtn.setImageResource(R.drawable.red_heart_active_icon);
-                            PostCommentsDataStructure object = dataList.get(position);
-                            dataList.set(position, new PostCommentsDataStructure(object.commentId, object.postId, object.likesCount + 1, 1, object.userId, object.username, object.userDpUrl, object.comment, object.createdAt));
+                            Posts_Comments_Model object = dataList.get(position);
+                            dataList.set(position, new Posts_Comments_Model(object.commentId, object.postId, object.likesCount + 1, 1, object.userId, object.username, object.userDpUrl, object.comment, object.createdAt));
                             notifyItemChanged(position);
                             holder.likeBtn.setEnabled(true);
                             isLikedByMe = true;
@@ -95,12 +96,12 @@ public class PostCommentsAdapter extends RecyclerView.Adapter<PostCommentsAdapte
                 //like this comment
                 else{
                     holder.likeBtn.setImageResource(R.drawable.red_heart_active_icon);
-                    PostCommentsDataStructure object=dataList.get(position);
-                    dataList.set(position,new PostCommentsDataStructure(object.commentId, object.postId,object.likesCount+1,1,object.userId,object.username,object.userDpUrl,object.comment,object.createdAt));
+                    Posts_Comments_Model object=dataList.get(position);
+                    dataList.set(position,new Posts_Comments_Model(object.commentId, object.postId,object.likesCount+1,1,object.userId,object.username,object.userDpUrl,object.comment,object.createdAt));
                     notifyItemChanged(position);
-                    likeManager.LikeAComment(dataList.get(position).commentId, new NetworkCallbackIterface() {
+                    likeManager.LikeAComment(dataList.get(position).commentId, new NetworkCallbackInterface() {
                         @Override
-                        public void onSucess() {
+                        public void onSuccess() {
                             holder.likeBtn.setEnabled(true);
                             isLikedByMe=true;
 
@@ -109,8 +110,8 @@ public class PostCommentsAdapter extends RecyclerView.Adapter<PostCommentsAdapte
                         @Override
                         public void onError(String err) {
                             holder.likeBtn.setImageResource(R.drawable.heart_inactive_icon);
-                            PostCommentsDataStructure object=dataList.get(position);
-                            dataList.set(position,new PostCommentsDataStructure(object.commentId, object.postId,object.likesCount-1,0,object.userId,object.username,object.userDpUrl,object.comment,object.createdAt));
+                            Posts_Comments_Model object=dataList.get(position);
+                            dataList.set(position,new Posts_Comments_Model(object.commentId, object.postId,object.likesCount-1,0,object.userId,object.username,object.userDpUrl,object.comment,object.createdAt));
                             notifyItemChanged(position);
                             holder.likeBtn.setEnabled(true);
                             isLikedByMe=false;
@@ -118,6 +119,22 @@ public class PostCommentsAdapter extends RecyclerView.Adapter<PostCommentsAdapte
                         }
                     });
                 }
+            }
+        });
+
+//        open userProfile on click of profilepic
+        holder.userProfileImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ReUsableFunctions.openProfile(context,dataList.get(position).userId);
+
+            }
+        });
+        holder.username.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ReUsableFunctions.openProfile(context,dataList.get(position).userId);
+
             }
         });
 
@@ -144,4 +161,5 @@ public class PostCommentsAdapter extends RecyclerView.Adapter<PostCommentsAdapte
 
         }
     }
+
 }

@@ -6,10 +6,15 @@ import android.content.SharedPreferences;
 
 import com.androidnetworking.AndroidNetworking;
 
+import com.androidnetworking.common.Priority;
+import com.androidnetworking.error.ANError;
+import com.androidnetworking.interfaces.JSONObjectRequestListener;
 import com.rtech.gpgram.constants.SharedPreferencesKeys;
 import com.rtech.gpgram.interfaces.NetworkCallbackInterfaceWithJsonObjectDelivery;
 
 import com.rtech.gpgram.constants.ApiEndPoints;
+
+import org.json.JSONObject;
 
 public class PostsManager {
     SharedPreferences loginInfo;
@@ -40,5 +45,25 @@ public class PostsManager {
                         callbackIterface.onError(anError.getMessage());
                     }
                 });
+    }
+    public void getUserPosts(String userId,NetworkCallbackInterfaceWithJsonObjectDelivery callbackIterface){
+        String url=ApiEndPoints.GET_USER_POSTS.concat(userId);
+        AndroidNetworking.get(url)
+                .setPriority(Priority.HIGH)
+                .addHeaders("Authorization","Bearer "+token)
+                .build()
+                .getAsJSONObject(new JSONObjectRequestListener() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        callbackIterface.onSuccess(response);
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+                        callbackIterface.onError(anError.getErrorDetail());
+
+                    }
+                });
+
     }
 }

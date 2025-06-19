@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -23,7 +24,9 @@ import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.JSONObjectRequestListener;
 import com.rtech.gpgram.BuildConfig;
 import com.rtech.gpgram.R;
+import com.rtech.gpgram.activities.forgetPassword.ForgetPasswordActivity;
 import com.rtech.gpgram.constants.SharedPreferencesKeys;
+import com.rtech.gpgram.utils.ReUsableFunctions;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -37,6 +40,7 @@ ProgressBar progressBar;
 String api_login_mobile= BuildConfig.BASE_URL.concat("/auth/login/mobile");
 String api_login_email=BuildConfig.BASE_URL.concat("/auth/login/email");
 String api_login_userid=BuildConfig.BASE_URL.concat("/auth/login/userid");
+TextView forgetPassword_btn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,7 +68,7 @@ String api_login_userid=BuildConfig.BASE_URL.concat("/auth/login/userid");
 
 
 
-                    if(isEmail(userid)){
+                    if(ReUsableFunctions.isEmail(userid)){
                      //executed code for emial login
                         Toast.makeText(LoginActivity.this,"email login feature not created yet",Toast.LENGTH_SHORT).show();
                         login_btn.setText("Log in");
@@ -72,7 +76,7 @@ String api_login_userid=BuildConfig.BASE_URL.concat("/auth/login/userid");
                         login_btn.setEnabled(true);
 
                     }
-                    else if (isPhone(userid)) {
+                    else if (ReUsableFunctions.isPhone(userid)) {
 
 
                         JSONObject data=new JSONObject();
@@ -154,6 +158,12 @@ String api_login_userid=BuildConfig.BASE_URL.concat("/auth/login/userid");
                 startActivity(new Intent(LoginActivity.this,SignUpMobileActivity.class));
             }
         });
+        forgetPassword_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(LoginActivity.this, ForgetPasswordActivity.class));
+            }
+        });
     }
     protected  void init(){
         login_btn=findViewById(R.id.login_btn);
@@ -163,16 +173,12 @@ String api_login_userid=BuildConfig.BASE_URL.concat("/auth/login/userid");
         progressBar=findViewById(R.id.progressBar);
         loginInfo=getSharedPreferences(SharedPreferencesKeys.SHARED_PREF_NAME,MODE_PRIVATE);
         preferenceEditor=loginInfo.edit();
+        forgetPassword_btn=findViewById(R.id.forgetPassword_btn);
         AndroidNetworking.initialize(LoginActivity.this);
 
     }
 
-    private boolean isEmail(String input){
-        return  input.matches("^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$");
-    }
-    public boolean isPhone(String input) {
-        return input.length() == 10 && input.matches("\\d+");
-    }
+
     private void showDialog(){
         AlertDialog dialog=new AlertDialog.Builder(LoginActivity.this).create();
         dialog.setTitle("That login info didn't work");

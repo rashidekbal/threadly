@@ -1,6 +1,6 @@
 package com.rtech.gpgram.models;
 
-public class PostsDataStructure {
+public class Posts_Model {
    public int postId,likeCount,commentCount,shareCount;
    public String userId;
    public  String username,likedBy;
@@ -9,7 +9,7 @@ public class PostsDataStructure {
    public String createdAt;
     public String userDpUrl;
    public Boolean isliked;
-    public PostsDataStructure
+    public Posts_Model
             (int postId,
              String userId,
              String username,

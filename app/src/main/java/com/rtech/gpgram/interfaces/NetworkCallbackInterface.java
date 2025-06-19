@@ -1,7 +1,7 @@
 package com.rtech.gpgram.interfaces;
 
-public interface NetworkCallbackIterface {
-    void onSucess();
+public interface NetworkCallbackInterface {
+    void onSuccess();
 
     void onError(String err);
 }

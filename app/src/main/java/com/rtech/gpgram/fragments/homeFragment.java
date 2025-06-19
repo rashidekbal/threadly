@@ -28,8 +28,8 @@ import com.rtech.gpgram.BuildConfig;
 import com.rtech.gpgram.R;
 import com.rtech.gpgram.adapters.ImagePostsAdapter;
 import com.rtech.gpgram.adapters.StatusViewAdapter;
-import com.rtech.gpgram.models.PostsDataStructure;
-import com.rtech.gpgram.models.suggestUsersDataStructure;
+import com.rtech.gpgram.models.Posts_Model;
+import com.rtech.gpgram.models.Suggest_Profile_Model;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -42,10 +42,10 @@ public class homeFragment extends Fragment {
     RecyclerView statusrecyclerView,postsRecyclerView;
     String api= BuildConfig.BASE_URL.concat("/posts/getPostsFeed");
     SharedPreferences loginInfo;
-    ArrayList<PostsDataStructure> posts;
+    ArrayList<Posts_Model> posts;
     ImageView addPost;
     ShimmerFrameLayout shimmerFrameLayout;
-    ArrayList<suggestUsersDataStructure>suggestUsersList=new ArrayList<>();
+    ArrayList<Suggest_Profile_Model>suggestUsersList=new ArrayList<>();
 
     public homeFragment() {
         // Required empty public constructor
@@ -89,7 +89,7 @@ public class homeFragment extends Fragment {
                             for(int i=0;i<data.length();i++){
                                 JSONObject individualUser=data.getJSONObject(i);
                                 suggestUsersList.add(
-                                        new suggestUsersDataStructure(
+                                        new Suggest_Profile_Model(
                                                 individualUser.getString("userid")
                                                 ,individualUser.getString("username")
                                                 ,individualUser.getString("profilepic")
@@ -115,7 +115,7 @@ public class homeFragment extends Fragment {
 
         ///  posts section starts here
         shimmerFrameLayout=view.findViewById(R.id.shimmerView);
-        posts=new ArrayList<PostsDataStructure>();
+        posts=new ArrayList<Posts_Model>();
         ImagePostsAdapter imagePostsAdapter=new ImagePostsAdapter(view.getContext(),posts,loginInfo,suggestUsersList);
         LinearLayoutManager postsLayoutManager=new LinearLayoutManager(view.getContext(),LinearLayoutManager.VERTICAL,false);
         imagePostsAdapter.setHasStableIds(true);
@@ -156,7 +156,7 @@ public class homeFragment extends Fragment {
                             try {
                                 JSONObject object=response.getJSONObject(i);
                                 posts.add(
-                                        new PostsDataStructure(
+                                        new Posts_Model(
 
                                                 object.getInt("postid"),
                                                 object.getString("userid"),

@@ -10,8 +10,8 @@ import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.JSONObjectRequestListener;
 import com.rtech.gpgram.constants.SharedPreferencesKeys;
-import com.rtech.gpgram.interfaces.NetworkCallbackIterface;
-import com.rtech.gpgram.models.suggestUsersDataStructure;
+import com.rtech.gpgram.interfaces.NetworkCallbackInterface;
+import com.rtech.gpgram.models.Suggest_Profile_Model;
 import com.rtech.gpgram.constants.ApiEndPoints;
 
 import org.json.JSONException;
@@ -23,7 +23,7 @@ public class FollowManager {
     String myid,token;
     String Followurl= ApiEndPoints.FOLLOW;
     String UnFollowurl=ApiEndPoints.UNFOLLOW;
-    ArrayList<suggestUsersDataStructure> dataList = new ArrayList<>();
+    ArrayList<Suggest_Profile_Model> dataList = new ArrayList<>();
 Context context;
     public FollowManager(Context context){
         this.context=context;
@@ -33,7 +33,7 @@ Context context;
         this.token=loginInfo.getString(SharedPreferencesKeys.JWT_TOKEN,"null");
     }
 
-    public void  follow(String userid, NetworkCallbackIterface callbackIterface) {
+    public void  follow(String userid, NetworkCallbackInterface callbackIterface) {
 
         JSONObject packet = new JSONObject();
         try {
@@ -42,7 +42,7 @@ Context context;
             AndroidNetworking.post(Followurl).setPriority(Priority.HIGH).addApplicationJsonBody(packet).addHeaders("Authorization", "Bearer ".concat(token)).build().getAsJSONObject(new JSONObjectRequestListener() {
                 @Override
                 public void onResponse(JSONObject response) {
-                    callbackIterface.onSucess();
+                    callbackIterface.onSuccess();
 
                 }
 
@@ -60,7 +60,7 @@ Context context;
             throw new RuntimeException(e);
         }
     }
-    public void unfollow(String userid,NetworkCallbackIterface callbackIterface) {
+    public void unfollow(String userid, NetworkCallbackInterface callbackIterface) {
         JSONObject packet = new JSONObject();
         try {
             packet.put("followingid", userid);
@@ -68,7 +68,7 @@ Context context;
             AndroidNetworking.post(UnFollowurl).setPriority(Priority.HIGH).addHeaders("Authorization", "Bearer ".concat(token)).addBodyParameter(packet).build().getAsJSONObject(new JSONObjectRequestListener() {
                 @Override
                 public void onResponse(JSONObject response) {
-                    callbackIterface.onSucess();
+                    callbackIterface.onSuccess();
 
                 }
 

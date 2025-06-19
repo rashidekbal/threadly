@@ -1100,4 +1100,5 @@
     <dimen name="sp_98">98.00sp</dimen>
     <dimen name="sp_99">99.00sp</dimen>
     <dimen name="sp_100">100.00sp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
 </resources>

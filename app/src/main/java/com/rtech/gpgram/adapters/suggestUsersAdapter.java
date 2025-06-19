@@ -15,18 +15,18 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.rtech.gpgram.R;
-import com.rtech.gpgram.models.suggestUsersDataStructure;
+import com.rtech.gpgram.models.Suggest_Profile_Model;
 import com.rtech.gpgram.managers.FollowManager;
-import com.rtech.gpgram.interfaces.NetworkCallbackIterface;
+import com.rtech.gpgram.interfaces.NetworkCallbackInterface;
 
 import java.util.ArrayList;
 
 public class suggestUsersAdapter extends RecyclerView.Adapter<suggestUsersAdapter.viewHolder>{
     Context context;
-    ArrayList<suggestUsersDataStructure> list;
+    ArrayList<Suggest_Profile_Model> list;
     SharedPreferences loginInfo;
     FollowManager followManager;
-    public suggestUsersAdapter(Context context,ArrayList<suggestUsersDataStructure> list){
+    public suggestUsersAdapter(Context context,ArrayList<Suggest_Profile_Model> list){
         this.list=list;
         this.context=context;
         this.followManager=new FollowManager(context);
@@ -48,9 +48,9 @@ public class suggestUsersAdapter extends RecyclerView.Adapter<suggestUsersAdapte
             @Override
             public void onClick(View v) {
                 holder.follow_btn.setEnabled(false);
-                followManager.follow(list.get(position).userid, new NetworkCallbackIterface() {
+                followManager.follow(list.get(position).userid, new NetworkCallbackInterface() {
                     @Override
-                    public void onSucess() {
+                    public void onSuccess() {
                         holder.follow_btn.setEnabled(true);
                         holder.follow_btn.setVisibility(View.GONE);
                         holder.unfollow_btn.setVisibility(View.VISIBLE);
@@ -69,9 +69,9 @@ public class suggestUsersAdapter extends RecyclerView.Adapter<suggestUsersAdapte
         holder.unfollow_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                followManager.unfollow(list.get(position).userid, new NetworkCallbackIterface() {
+                followManager.unfollow(list.get(position).userid, new NetworkCallbackInterface() {
                     @Override
-                    public void onSucess() {
+                    public void onSuccess() {
                         holder.unfollow_btn.setEnabled(true);
                         holder.unfollow_btn.setVisibility(View.GONE);
                         holder.follow_btn.setVisibility(View.VISIBLE);

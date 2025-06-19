@@ -13,16 +13,16 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.rtech.gpgram.R;
-import com.rtech.gpgram.models.SearchpagePost_data_structure_base;
+import com.rtech.gpgram.models.Preview_Post_model;
 import com.rtech.gpgram.interfaces.Post_fragmentSetCallback;
 
 import java.util.ArrayList;
 
 public class GridPostAdapter extends RecyclerView.Adapter<GridPostAdapter.ViewHolder> {
     Context context;
-    ArrayList<SearchpagePost_data_structure_base> dataList;
+    ArrayList<Preview_Post_model> dataList;
     Post_fragmentSetCallback post_fragmentSetCallback;
-    public GridPostAdapter(Context c, ArrayList<SearchpagePost_data_structure_base> data, Post_fragmentSetCallback callback){
+    public GridPostAdapter(Context c, ArrayList<Preview_Post_model> data, Post_fragmentSetCallback callback){
         this.dataList=data;
         this.context=c;
         setHasStableIds(true);
