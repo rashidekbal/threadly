@@ -15,18 +15,18 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.rtech.gpgram.R;
-import com.rtech.gpgram.models.Suggest_Profile_Model;
+import com.rtech.gpgram.models.Profile_Model_minimal;
 import com.rtech.gpgram.managers.FollowManager;
 import com.rtech.gpgram.interfaces.NetworkCallbackInterface;
 
 import java.util.ArrayList;
 
-public class suggestUsersAdapter extends RecyclerView.Adapter<suggestUsersAdapter.viewHolder>{
+public class SuggestUsersAdapter extends RecyclerView.Adapter<SuggestUsersAdapter.viewHolder>{
     Context context;
-    ArrayList<Suggest_Profile_Model> list;
+    ArrayList<Profile_Model_minimal> list;
     SharedPreferences loginInfo;
     FollowManager followManager;
-    public suggestUsersAdapter(Context context,ArrayList<Suggest_Profile_Model> list){
+    public SuggestUsersAdapter(Context context, ArrayList<Profile_Model_minimal> list){
         this.list=list;
         this.context=context;
         this.followManager=new FollowManager(context);

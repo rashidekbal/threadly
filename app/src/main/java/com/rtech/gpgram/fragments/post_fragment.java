@@ -50,7 +50,7 @@ import java.util.Date;
 import java.util.Objects;
 
 
-public class posts_fragment extends Fragment {
+public class post_fragment extends Fragment {
 ImageView posts_image_view,profile_img,like_btn,comment_btn;
 TextView username_text,caption_text,like_count_text,comment_count_text,share_count_text;
 int postId;
@@ -64,7 +64,7 @@ SharedPreferences loginInfo;
 
 
 
-    public posts_fragment() {
+    public post_fragment() {
         // Required empty public constructor
     }
 

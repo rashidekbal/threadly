@@ -15,6 +15,10 @@
         android:theme="@style/Theme.GPGram"
         tools:targetApi="29">
         <activity
+            android:name=".activities.FollowerFollowingList"
+            android:exported="false" />
+
+        <activity
             android:name=".activities.forgetPassword.ResetPasswordActivity"
             android:exported="false" />
         <activity

@@ -18,6 +18,8 @@ public class ApiEndPoints {
     // Follows
     public static final String FOLLOW = baseUrl + "/follow/follow";
     public static final String UNFOLLOW = baseUrl + "/follow/unfollow";
+    public static final String GET_FOLLOWERS=baseUrl+"/follow/getFollowers/";
+    public static final String GET_FOLLOWINGS=baseUrl+"/follow/getFollowings/";
 
     // Posts
     public static final String GET_POST_BY_ID = baseUrl + "/posts/getPost/";

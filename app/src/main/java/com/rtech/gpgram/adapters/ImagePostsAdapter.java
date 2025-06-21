@@ -32,7 +32,7 @@ import com.rtech.gpgram.managers.CommentsManager;
 import com.rtech.gpgram.managers.LikeManager;
 import com.rtech.gpgram.models.Posts_Comments_Model;
 import com.rtech.gpgram.models.Posts_Model;
-import com.rtech.gpgram.models.Suggest_Profile_Model;
+import com.rtech.gpgram.models.Profile_Model_minimal;
 import com.rtech.gpgram.utils.ReUsableFunctions;
 
 import org.json.JSONArray;
@@ -49,12 +49,12 @@ public class ImagePostsAdapter extends RecyclerView.Adapter<ImagePostsAdapter.vi
     SharedPreferences loginInfo;
     BottomSheetDialog commentDialog;
     RecyclerView usersCardRecyclerView;
-    ArrayList<Suggest_Profile_Model> suggestUsersList=new ArrayList<>();
+    ArrayList<Profile_Model_minimal> suggestUsersList=new ArrayList<>();
     LikeManager likeManager;
     CommentsManager commentsManager;
 
     // Constructor for the adapter
-    public ImagePostsAdapter(Context c, ArrayList<Posts_Model> list, SharedPreferences preferences , ArrayList<Suggest_Profile_Model> suggestUsersList){
+    public ImagePostsAdapter(Context c, ArrayList<Posts_Model> list, SharedPreferences preferences , ArrayList<Profile_Model_minimal> suggestUsersList){
         this.context=c;
         this.list=list;
         this.loginInfo=preferences;
@@ -214,7 +214,7 @@ public class ImagePostsAdapter extends RecyclerView.Adapter<ImagePostsAdapter.vi
         if(position==7 && !suggestUsersList.isEmpty()){
             holder.banner_txt.setVisibility(View.VISIBLE);
             LinearLayoutManager horizontalLayout=new LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL,false);
-            suggestUsersAdapter suggestAdapter=new suggestUsersAdapter(context,suggestUsersList);
+            SuggestUsersAdapter suggestAdapter=new SuggestUsersAdapter(context,suggestUsersList);
             suggestAdapter.setHasStableIds(true);
             suggestAdapter.notifyDataSetChanged();
             usersCardRecyclerView.setLayoutManager(horizontalLayout);

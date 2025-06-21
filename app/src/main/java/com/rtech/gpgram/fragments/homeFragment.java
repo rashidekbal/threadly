@@ -29,7 +29,7 @@ import com.rtech.gpgram.R;
 import com.rtech.gpgram.adapters.ImagePostsAdapter;
 import com.rtech.gpgram.adapters.StatusViewAdapter;
 import com.rtech.gpgram.models.Posts_Model;
-import com.rtech.gpgram.models.Suggest_Profile_Model;
+import com.rtech.gpgram.models.Profile_Model_minimal;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -45,7 +45,7 @@ public class homeFragment extends Fragment {
     ArrayList<Posts_Model> posts;
     ImageView addPost;
     ShimmerFrameLayout shimmerFrameLayout;
-    ArrayList<Suggest_Profile_Model>suggestUsersList=new ArrayList<>();
+    ArrayList<Profile_Model_minimal>suggestUsersList=new ArrayList<>();
 
     public homeFragment() {
         // Required empty public constructor
@@ -89,7 +89,7 @@ public class homeFragment extends Fragment {
                             for(int i=0;i<data.length();i++){
                                 JSONObject individualUser=data.getJSONObject(i);
                                 suggestUsersList.add(
-                                        new Suggest_Profile_Model(
+                                        new Profile_Model_minimal(
                                                 individualUser.getString("userid")
                                                 ,individualUser.getString("username")
                                                 ,individualUser.getString("profilepic")

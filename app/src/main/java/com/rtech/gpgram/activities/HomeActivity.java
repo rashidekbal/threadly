@@ -21,7 +21,7 @@ import com.google.android.material.navigation.NavigationBarView;
 import com.rtech.gpgram.R;
 import com.rtech.gpgram.fragments.homeFragment;
 import com.rtech.gpgram.fragments.notificationFragment;
-import com.rtech.gpgram.fragments.posts_fragment;
+import com.rtech.gpgram.fragments.post_fragment;
 import com.rtech.gpgram.fragments.profileFragment;
 import com.rtech.gpgram.fragments.searchFragment;
 import com.rtech.gpgram.interfaces.Post_fragmentSetCallback;
@@ -78,7 +78,7 @@ int currentFragment;
                     addFragment(new profileFragment(new Post_fragmentSetCallback() {
                         @Override
                         public void openPostFragment(String url, int postid) {
-                            addFragment(new posts_fragment(), url, postid);
+                            addFragment(new post_fragment(), url, postid);
                         }
                     }));
                 }

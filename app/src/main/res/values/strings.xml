@@ -84,4 +84,9 @@
     </string>
     <string name="verify_otp">Verify OTP</string>
     <string name="reset_password">Reset Password</string>
+    <string name="followers">Followers</string>
+    <string name="followings">Followings</string>
+    <string name="search_followers">Search Followers</string>
+    <string name="following">Following</string>
+    <string name="search_user">search user</string>
 </resources>

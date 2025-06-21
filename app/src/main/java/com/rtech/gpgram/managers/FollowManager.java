@@ -11,7 +11,8 @@ import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.JSONObjectRequestListener;
 import com.rtech.gpgram.constants.SharedPreferencesKeys;
 import com.rtech.gpgram.interfaces.NetworkCallbackInterface;
-import com.rtech.gpgram.models.Suggest_Profile_Model;
+import com.rtech.gpgram.interfaces.NetworkCallbackInterfaceWithJsonObjectDelivery;
+import com.rtech.gpgram.models.Profile_Model_minimal;
 import com.rtech.gpgram.constants.ApiEndPoints;
 
 import org.json.JSONException;
@@ -23,7 +24,7 @@ public class FollowManager {
     String myid,token;
     String Followurl= ApiEndPoints.FOLLOW;
     String UnFollowurl=ApiEndPoints.UNFOLLOW;
-    ArrayList<Suggest_Profile_Model> dataList = new ArrayList<>();
+    ArrayList<Profile_Model_minimal> dataList = new ArrayList<>();
 Context context;
     public FollowManager(Context context){
         this.context=context;
@@ -65,7 +66,7 @@ Context context;
         try {
             packet.put("followingid", userid);
 
-            AndroidNetworking.post(UnFollowurl).setPriority(Priority.HIGH).addHeaders("Authorization", "Bearer ".concat(token)).addBodyParameter(packet).build().getAsJSONObject(new JSONObjectRequestListener() {
+            AndroidNetworking.post(UnFollowurl).setPriority(Priority.HIGH).addHeaders("Authorization", "Bearer ".concat(token)).addApplicationJsonBody(packet).build().getAsJSONObject(new JSONObjectRequestListener() {
                 @Override
                 public void onResponse(JSONObject response) {
                     callbackIterface.onSuccess();
@@ -89,4 +90,42 @@ Context context;
         }
 
     }
+    public void getFollowers(String userid, NetworkCallbackInterfaceWithJsonObjectDelivery callback){
+        String url=ApiEndPoints.GET_FOLLOWERS.concat(userid);
+        AndroidNetworking.get(url)
+                .setPriority(Priority.HIGH)
+                .addHeaders("Authorization", "Bearer ".concat(token))
+                .build()
+                .getAsJSONObject(new JSONObjectRequestListener() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        callback.onSuccess(response);
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+                        callback.onError(anError.getErrorDetail());
+
+                    }
+                });
     }
+    public  void getFollowings(String userid, NetworkCallbackInterfaceWithJsonObjectDelivery callback){
+        String url=ApiEndPoints.GET_FOLLOWINGS.concat(userid);
+        AndroidNetworking.get(url)
+                .setPriority(Priority.HIGH)
+                .addHeaders("Authorization", "Bearer ".concat(token))
+                .build()
+                .getAsJSONObject(new JSONObjectRequestListener() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        callback.onSuccess(response);
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+                        callback.onError(anError.getErrorDetail());
+
+                    }
+                });
+    }
+}

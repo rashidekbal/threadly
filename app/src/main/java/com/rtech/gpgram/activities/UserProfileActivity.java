@@ -26,6 +26,7 @@ import com.facebook.shimmer.ShimmerFrameLayout;
 import com.rtech.gpgram.R;
 import com.rtech.gpgram.adapters.GridPostAdapter;
 import com.rtech.gpgram.constants.SharedPreferencesKeys;
+import com.rtech.gpgram.interfaces.NetworkCallbackInterface;
 import com.rtech.gpgram.interfaces.NetworkCallbackInterfaceWithJsonObjectDelivery;
 import com.rtech.gpgram.interfaces.Post_fragmentSetCallback;
 import com.rtech.gpgram.managers.FollowManager;
@@ -59,6 +60,7 @@ public class UserProfileActivity extends AppCompatActivity {
 
 
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,6 +77,27 @@ public class UserProfileActivity extends AppCompatActivity {
         getProfileData();
         // get user posts
         getPosts(intentData.getStringExtra("userid"));
+
+        //on click listeners for followers and following text views
+        followers_count_text.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent=new Intent(UserProfileActivity.this, FollowerFollowingList.class);
+                intent.putExtra("type","followers");
+                intent.putExtra("userid",intentData.getStringExtra("userid"));
+                startActivity(intent);
+            }
+        });
+        following_count_text.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent=new Intent(UserProfileActivity.this, FollowerFollowingList.class);
+                intent.putExtra("type","following");
+                intent.putExtra("userid",intentData.getStringExtra("userid"));
+                startActivity(intent);
+            }
+        });
+
 
 
 
@@ -184,20 +207,73 @@ if(data.userid.equals(loginInfo.getString(SharedPreferencesKeys.USER_ID,"null"))
 
 }else{
     if(data.isFollowedByMe){
-        unfollow_btn.setVisibility(ImageView.VISIBLE);
-        follow_btn.setVisibility(ImageView.GONE);
+        unfollow_btn.setVisibility(View.VISIBLE);
+        follow_btn.setVisibility(View.GONE);
     }else{
-        unfollow_btn.setVisibility(ImageView.GONE);
-        follow_btn.setVisibility(ImageView.VISIBLE);
+        unfollow_btn.setVisibility(View.GONE);
+        follow_btn.setVisibility(View.VISIBLE);
     }
     if(data.isFollowingMe){
-        follows_msg_Text.setVisibility(TextView.VISIBLE);
-        Not_follows_msg_Text.setVisibility(TextView.GONE);
+        follows_msg_Text.setVisibility(View.VISIBLE);
+        Not_follows_msg_Text.setVisibility(View.GONE);
 
     }else{
-        follows_msg_Text.setVisibility(TextView.GONE);
-        Not_follows_msg_Text.setVisibility(TextView.VISIBLE);
+        follows_msg_Text.setVisibility(View.GONE);
+        Not_follows_msg_Text.setVisibility(View.VISIBLE);
     }
+
+
+    follow_btn.setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            unfollow_btn.setVisibility(View.VISIBLE);
+            follow_btn.setVisibility(View.GONE);
+            follow_btn.setEnabled(false);
+            unfollow_btn.setEnabled(false);
+
+            followManager.follow(data.userid, new NetworkCallbackInterface() {
+                @Override
+                public void onSuccess() {
+                    unfollow_btn.setEnabled(true);
+
+                }
+
+                @Override
+                public void onError(String err) {
+                    follow_btn.setVisibility(View.VISIBLE);
+                    unfollow_btn.setVisibility(View.GONE);
+                    follow_btn.setEnabled(true);
+                    unfollow_btn.setEnabled(false);
+
+                }
+            });
+        }
+    });
+    unfollow_btn.setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            unfollow_btn.setVisibility(View.GONE);
+            follow_btn.setVisibility(View.VISIBLE);
+            follow_btn.setEnabled(false);
+            unfollow_btn.setEnabled(false);
+            followManager.unfollow(data.userid, new NetworkCallbackInterface() {
+                @Override
+                public void onSuccess() {
+                    follow_btn.setEnabled(true);
+                }
+
+                @Override
+                public void onError(String err) {
+                    unfollow_btn.setVisibility(View.VISIBLE);
+                    follow_btn.setVisibility(View.GONE);
+                    follow_btn.setEnabled(false);
+                    unfollow_btn.setEnabled(true);
+
+                }
+            });
+
+        }
+    });
 
 
 

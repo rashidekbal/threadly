@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".fragments.follower_following_fragments.Followers"
+    android:background="@color/white"
+    android:orientation="vertical">
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_38"
+        android:background="@drawable/edit_text_style_2"
+        android:paddingHorizontal="16dp"
+        android:hint="@string/search_user"
+        android:layout_marginTop="@dimen/dp_10"
+        android:layout_marginHorizontal="10dp"
+        />
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@drawable/bottom_stroke"
+        android:layout_marginTop="@dimen/dp_10"
+        />
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/followers_recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        />
+    <!--        when no data is found-->
+    <RelativeLayout
+        android:id="@+id/noData_relativeLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="No Followers Found !"
+            android:textSize="@dimen/sp_25"
+            android:textStyle="bold"
+            android:layout_centerInParent="true"
+            />
+    </RelativeLayout>
+<!--    loading data-->
+    <RelativeLayout
+        android:id="@+id/loadingData_relativeLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="@dimen/dp_40"
+            android:layout_height="@dimen/dp_40"
+            android:layout_centerInParent="true"/>
+    </RelativeLayout>
+
+
+
+
+
+</LinearLayout>

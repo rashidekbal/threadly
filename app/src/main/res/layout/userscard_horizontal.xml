@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/dp_75"
+    android:background="@color/white">
+    <LinearLayout
+        android:id="@+id/userProfile_img_holder"
+        android:layout_width="@dimen/dp_50"
+        android:layout_height="@dimen/dp_75"
+        android:layout_centerVertical="true"
+        android:layout_marginStart="@dimen/dp_10"
+        android:gravity="center"
+        >
+        <ImageView
+            android:id="@+id/userProfile_img"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:src="@drawable/blank_profile"
+            android:scaleType="centerCrop"
+            android:background="@drawable/circle"
+            android:adjustViewBounds="true"
+            android:clipToOutline="true"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_toEndOf="@id/userProfile_img_holder"
+        android:layout_toStartOf="@id/right_side"
+        android:paddingStart="@dimen/dp_5"
+        android:paddingTop="@dimen/dp_5"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/user_id_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_10"
+            android:layout_marginTop="@dimen/dp_10"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:text="miaisback"
+            android:textStyle="bold"
+            android:textSize="@dimen/sp_16" />
+
+        <TextView
+            android:id="@+id/username_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_10"
+            android:layout_marginTop="@dimen/dp_1"
+            android:text="username"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textSize="@dimen/sp_14" />
+
+
+    </LinearLayout>
+    <RelativeLayout
+        android:id="@+id/right_side"
+        android:layout_width="@dimen/dp_160"
+        android:layout_height="match_parent"
+        android:layout_alignParentEnd="true"
+        android:orientation="horizontal"
+        >
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/follow_btn"
+            android:layout_width="@dimen/dp_110"
+            android:layout_height="@dimen/dp_35"
+            android:background="@drawable/slight_round_btn_blue"
+            android:text="@string/follow"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:visibility="visible"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"/>
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/unfollow_btn"
+            android:layout_width="@dimen/dp_110"
+            android:layout_height="@dimen/dp_35"
+            android:background="@drawable/slight_round_btn_grey_outline"
+            android:text="@string/following"
+            android:textAllCaps="false"
+            android:textColor="@color/black"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:visibility="gone"/>
+        <ImageView
+            android:id="@+id/options_btn"
+            android:layout_width="@dimen/dp_25"
+            android:layout_height="wrap_content"
+            android:src="@drawable/optiondots"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="@dimen/dp_10"
+            android:layout_centerVertical="true"/>
+
+
+
+    </RelativeLayout>
+
+
+</RelativeLayout>

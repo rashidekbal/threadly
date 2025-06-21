@@ -2,6 +2,7 @@ package com.rtech.gpgram.fragments;
 
 import static com.bumptech.glide.Priority.HIGH;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
@@ -27,6 +28,9 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 import com.rtech.gpgram.BuildConfig;
 import com.rtech.gpgram.R;
+import com.rtech.gpgram.activities.FollowerFollowingList;
+import com.rtech.gpgram.activities.UserProfileActivity;
+import com.rtech.gpgram.constants.SharedPreferencesKeys;
 import com.rtech.gpgram.interfaces.Post_fragmentSetCallback;
 import com.rtech.gpgram.models.Profile_Model;
 
@@ -82,6 +86,27 @@ Post_fragmentSetCallback callback;
             }
         });
 profile_bottom_navigation_view.setSelectedItemId(R.id.posts);
+        followers_count_text.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent=new Intent(getContext(), FollowerFollowingList.class);
+                intent.putExtra("type","followers");
+                intent.putExtra("userid",loginInfo.getString(SharedPreferencesKeys.USER_ID,userid_text.getText().toString()));
+                startActivity(intent);
+
+            }
+        });
+        following_count_text.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {Intent intent=new Intent(getContext(), FollowerFollowingList.class);
+                intent.putExtra("type","following");
+                intent.putExtra("userid",loginInfo.getString(SharedPreferencesKeys.USER_ID,userid_text.getText().toString()));
+                startActivity(intent);
+
+
+            }
+        });
+
         return v;
     }
 
@@ -99,7 +124,7 @@ profile_bottom_navigation_view.setSelectedItemId(R.id.posts);
         shimmerFrameLayout=v.findViewById(R.id.profile_shimmer);
 
         profileLayout=v.findViewById(R.id.profile_layout);
-        loginInfo=getContext().getSharedPreferences("loginInfo",v.getContext().MODE_PRIVATE);
+        loginInfo=getContext().getSharedPreferences(SharedPreferencesKeys.SHARED_PREF_NAME,v.getContext().MODE_PRIVATE);
         getProfileData(v);
 
 
@@ -109,7 +134,7 @@ profile_bottom_navigation_view.setSelectedItemId(R.id.posts);
         // Make network request to get profile data
         AndroidNetworking.get(getProfileInfoUrl)
                 .setPriority(com.androidnetworking.common.Priority.HIGH)
-                .addHeaders("Authorization", "Bearer ".concat(loginInfo.getString("token","null")))
+                .addHeaders("Authorization", "Bearer ".concat(loginInfo.getString(SharedPreferencesKeys.JWT_TOKEN,"null")))
                 .build()
                 .getAsJSONObject(new JSONObjectRequestListener(){
 
