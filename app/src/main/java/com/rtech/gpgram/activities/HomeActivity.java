@@ -29,7 +29,6 @@ import com.rtech.gpgram.interfaces.Post_fragmentSetCallback;
 public class HomeActivity extends AppCompatActivity {
 SharedPreferences loginInfo;
 SharedPreferences.Editor prefEditor;
-Button logOut_btn;
 BottomNavigationView bottomNavigationView;
 int currentFragment;
     @Override

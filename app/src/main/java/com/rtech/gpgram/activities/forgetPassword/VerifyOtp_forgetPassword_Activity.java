@@ -91,7 +91,38 @@ public class VerifyOtp_forgetPassword_Activity extends AppCompatActivity {
 
                        }
                    });
-                }
+                }else if(type.equals("email")){
+               otpManager.VerifyOtpEmail(userid, otp, new NetworkCallbackInterfaceWithJsonObjectDelivery() {
+                   @Override
+                   public void onSuccess(JSONObject response) {
+                       progressBar.setVisibility(View.GONE);
+                       verifyOtpButton.setEnabled(true);
+                       verifyOtpButton.setText(R.string.verify_otp);
+                       try {
+                           String token=response.getString("token");
+                           Intent intent = new Intent(VerifyOtp_forgetPassword_Activity.this, ResetPasswordActivity.class);
+                           intent.putExtra("token", token);
+                           intent.putExtra("type", type);
+                           startActivity(intent);
+
+
+                       } catch (JSONException e) {
+                           throw new RuntimeException(e);
+                       }
+                   }
+
+                   @Override
+                   public void onError(String err) {
+                       otpField.setError(err);
+                       progressBar.setVisibility(View.GONE);
+                       verifyOtpButton.setEnabled(true);
+                       verifyOtpButton.setText(R.string.verify_otp);
+
+                   }
+               });
+
+
+           }
            }
 
 

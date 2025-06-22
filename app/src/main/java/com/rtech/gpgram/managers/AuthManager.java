@@ -4,11 +4,15 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 import com.androidnetworking.AndroidNetworking;
+import com.androidnetworking.common.Priority;
+import com.androidnetworking.error.ANError;
+import com.androidnetworking.interfaces.JSONObjectRequestListener;
 import com.rtech.gpgram.constants.ApiEndPoints;
 import com.rtech.gpgram.constants.SharedPreferencesKeys;
 import com.rtech.gpgram.interfaces.NetworkCallbackInterfaceWithJsonObjectDelivery;
 import com.rtech.gpgram.interfaces.NetworkCallbackInterface;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 public class AuthManager {
@@ -43,27 +47,32 @@ public class AuthManager {
         //             }
         //         });
     }
-    public void Login(String userid, String password, NetworkCallbackInterfaceWithJsonObjectDelivery callback){
-        // Implement the login logic here
-        // This could involve making a network request to your server with the provided userid and password
-        // Once the response is received, you can call the callback methods to deliver the result
+    public void LoginMobile(String mobile,String password,NetworkCallbackInterfaceWithJsonObjectDelivery callback){
+        String url=ApiEndPoints.LOGIN_MOBILE;
+        JSONObject packet=new JSONObject();
+        try {
+            packet.put("userid",mobile);
+            packet.put("password",password);
 
-        // Example:
-        // AndroidNetworking.post("YOUR_LOGIN_URL")
-        //         .addBodyParameter("userid", userid)
-        //         .addBodyParameter("password", password)
-        //         .build()
-        //         .getAsJSONObject(new JSONObjectRequestListener() {
-        //             @Override
-        //             public void onResponse(JSONObject response) {
-        //                 callback.onSuccess(response);
-        //             }
-        //
-        //             @Override
-        //             public void onError(ANError error) {
-        //                 callback.onError(error);
-        //             }
-        //         });
+            AndroidNetworking.post(url)
+                    .setPriority(Priority.HIGH)
+                    .addApplicationJsonBody(packet)
+                    .build()
+                    .getAsJSONObject(new JSONObjectRequestListener() {
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            callback.onSuccess(response);
+                        }
+
+                        @Override
+                        public void onError(ANError anError) {
+                            callback.onError(Integer.toString(anError.getErrorCode()));
+                        }
+                    });
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+
     }
     public void Logout(NetworkCallbackInterface callbackIterface){
         // Implement the logout logic here
@@ -104,4 +113,88 @@ public class AuthManager {
 
 
     }
+
+    public void ResetPasswordWithEmail(String password,String token, NetworkCallbackInterface callback) {
+        String url= ApiEndPoints.RESET_PASSWORD_EMAIL;
+        JSONObject data = new JSONObject();
+        try {
+            data.put("password", password);
+            AndroidNetworking.post(url)
+                    .setPriority(com.androidnetworking.common.Priority.HIGH)
+                    .addApplicationJsonBody(data)
+                    .addHeaders("Authorization", "Bearer " + token)
+                    .build()
+                    .getAsJSONObject(new com.androidnetworking.interfaces.JSONObjectRequestListener() {
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            callback.onSuccess();
+                        }
+
+                        @Override
+                        public void onError(com.androidnetworking.error.ANError anError) {
+                            callback.onError(anError.getMessage());
+                        }
+                    });
+        } catch (Exception e) {
+            callback.onError(e.getMessage());
+        }
+
+
+    }
+    public void LoginEmail(String email,String password,NetworkCallbackInterfaceWithJsonObjectDelivery callback){
+        String url=ApiEndPoints.LOGIN_EMAIL;
+        JSONObject packet=new JSONObject();
+        try {
+            packet.put("userid",email);
+            packet.put("password",password);
+
+            AndroidNetworking.post(url)
+                    .setPriority(Priority.HIGH)
+                    .addApplicationJsonBody(packet)
+                    .build()
+                    .getAsJSONObject(new JSONObjectRequestListener() {
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            callback.onSuccess(response);
+                        }
+
+                        @Override
+                        public void onError(ANError anError) {
+                           callback.onError(Integer.toString(anError.getErrorCode()));
+                        }
+                    });
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
+    public void LoginUserId(String email,String password,NetworkCallbackInterfaceWithJsonObjectDelivery callback){
+        String url=ApiEndPoints.LOGIN_USERID;
+        JSONObject packet=new JSONObject();
+        try {
+            packet.put("userid",email);
+            packet.put("password",password);
+
+            AndroidNetworking.post(url)
+                    .setPriority(Priority.HIGH)
+                    .addApplicationJsonBody(packet)
+                    .build()
+                    .getAsJSONObject(new JSONObjectRequestListener() {
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            callback.onSuccess(response);
+                        }
+
+                        @Override
+                        public void onError(ANError anError) {
+                            callback.onError(Integer.toString(anError.getErrorCode()));
+                        }
+                    });
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
 }

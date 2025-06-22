@@ -74,7 +74,31 @@ public class ResetPasswordActivity extends AppCompatActivity {
                             }
                         });
                     }
+                    else if (type.equals("email")) {
+                        authManager.ResetPasswordWithEmail(password, token, new NetworkCallbackInterface() {
+                            @Override
+                            public void onSuccess() {
+                                ReUsableFunctions.ShowToast(ResetPasswordActivity.this, "Password reset successfully");
+                                progressBar.setVisibility(View.GONE);
+                                resetPasswordButton.setEnabled(true);
+                                resetPasswordButton.setText("Reset Password");
+                                Intent intent = new Intent(ResetPasswordActivity.this, LoginActivity.class);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                startActivity(intent);
 
+                            }
+
+                            @Override
+                            public void onError(String err) {
+                                progressBar.setVisibility(View.GONE);
+                                resetPasswordButton.setEnabled(true);
+                                resetPasswordButton.setText("Reset Password");
+
+                            }
+                        });
+
+
+                    }
 
 
                 }

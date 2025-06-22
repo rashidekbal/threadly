@@ -179,4 +179,32 @@ public class OtpManager {
 
     }
 
+    public void ForgetPasswordOptSendEmail(String email, NetworkCallbackInterface callbackInterface){
+        String url= ApiEndPoints.FORGET_PASSWORD_EMAIL_OTP;
+        JSONObject data = new JSONObject();
+        try {
+            data.put("email", email);
+            AndroidNetworking.post(url)
+                    .setPriority(Priority.HIGH)
+                    .addApplicationJsonBody(data)
+                    .build()
+                    .getAsJSONObject(new JSONObjectRequestListener() {
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            callbackInterface.onSuccess();
+                        }
+
+                        @Override
+                        public void onError(ANError anError) {
+                            callbackInterface.onError(Integer.toString(anError.getErrorCode()));
+
+                        }
+                    });
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+
+
+    }
+
 }

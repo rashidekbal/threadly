@@ -46,11 +46,47 @@ public class ForgetPasswordActivity extends AppCompatActivity {
 
                 String userid = useridField.getText().toString().trim();
                 if(ReUsableFunctions.isEmail(userid)){
-                    //if given userid is email
-                    ReUsableFunctions.ShowToast(ForgetPasswordActivity.this,"Email feature not created yet");
-                    progressBar.setVisibility(View.GONE);
-                    forgetPasswordButton.setText(R.string.forget_password);
-                    forgetPasswordButton.setEnabled(true);
+
+
+                    otpManager.ForgetPasswordOptSendEmail(userid, new NetworkCallbackInterface() {
+                        @Override
+                        public void onSuccess() {
+                            // Hide progress bar and enable button
+                            progressBar.setVisibility(View.GONE);
+                            forgetPasswordButton.setText(R.string.forget_password);
+                            forgetPasswordButton.setEnabled(true);
+                            // Handle success, e.g., navigate to OTP verification screen
+                            ReUsableFunctions.ShowToast(ForgetPasswordActivity.this, "OTP sent to your Email");
+                            // Navigate to OTP verification activity
+                            Intent intent = new Intent(ForgetPasswordActivity.this, VerifyOtp_forgetPassword_Activity.class);
+                            intent.putExtra("userid",userid);
+                            intent.putExtra("type","email");
+                            startActivity(intent);
+
+
+
+                        }
+
+                        @Override
+                        public void onError(String err) {
+                            int errorCode=Integer.parseInt(err);
+                            if(errorCode==404){
+                                useridField.setError("User not found");
+                                progressBar.setVisibility(View.GONE);
+                                forgetPasswordButton.setText(R.string.forget_password);
+                                forgetPasswordButton.setEnabled(true);
+                            }else{
+                                useridField.setError("something went wrong");
+                                progressBar.setVisibility(View.GONE);
+                                forgetPasswordButton.setText(R.string.forget_password);
+                                forgetPasswordButton.setEnabled(true);
+
+                            }
+
+
+
+                        }
+                    });
 
                 } else if (ReUsableFunctions.isPhone(userid)) {
                     //if given userid is phone number
@@ -86,13 +122,10 @@ public class ForgetPasswordActivity extends AppCompatActivity {
                     });
 
                 }else{
-                    //if given userid is user id
-                    ReUsableFunctions.ShowToast(ForgetPasswordActivity.this,"useridFetaure not created yet");
+                    useridField.setError("Invalid userid");
                     progressBar.setVisibility(View.GONE);
                     forgetPasswordButton.setText(R.string.forget_password);
                     forgetPasswordButton.setEnabled(true);
-
-
                 }
 
             }

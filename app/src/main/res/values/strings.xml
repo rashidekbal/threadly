@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">Threadly</string>
-    <string name="usernameFieldHint">Username, email or mobile number</string>
+    <string name="usernameFieldHint">Email or mobile number</string>
     <string name="password_field_hint">Password</string>
     <string name="login_btn_txt">Log in</string>
     <string name="forgot_password_btn">Forgot password?</string>
