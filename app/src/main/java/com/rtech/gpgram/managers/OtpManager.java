@@ -117,4 +117,66 @@ public class OtpManager {
             throw new RuntimeException(e);
         }
     }
+
+
+
+//    email sections starts here
+
+    public void SendOtpEmail(String email, NetworkCallbackInterface callbackInterface){
+        String url=ApiEndPoints.SEND_EMAIL_OTP;
+        JSONObject packet=new JSONObject();
+        try {
+            packet.put("email",email);
+            AndroidNetworking.post(url)
+                    .setPriority(Priority.HIGH)
+                    .addApplicationJsonBody(packet)
+                    .build()
+                    .getAsJSONObject(new JSONObjectRequestListener() {
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            callbackInterface.onSuccess();
+                        }
+
+                        @Override
+                        public void onError(ANError anError) {
+                            callbackInterface.onError(Integer.toString(anError.getErrorCode()));
+
+                        }
+                    });
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
+    public void VerifyOtpEmail(String email, String otp, NetworkCallbackInterfaceWithJsonObjectDelivery callbackInterface) {
+        String url = ApiEndPoints.VERIFY_EMAIL_OTP;
+        JSONObject packet = new JSONObject();
+        try {
+            packet.put("email", email);
+            packet.put("otp",otp);
+            AndroidNetworking.post(url)
+                    .setPriority(Priority.HIGH)
+                    .addApplicationJsonBody(packet)
+                    .build()
+                    .getAsJSONObject(new JSONObjectRequestListener() {
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            callbackInterface.onSuccess(response);
+                        }
+
+                        @Override
+                        public void onError(ANError anError) {
+                            callbackInterface.onError(Integer.toString(anError.getErrorCode()));
+
+                        }
+                    });
+
+
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
 }

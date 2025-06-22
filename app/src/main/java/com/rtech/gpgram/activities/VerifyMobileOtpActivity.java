@@ -21,6 +21,7 @@ import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.JSONObjectRequestListener;
 import com.rtech.gpgram.BuildConfig;
 import com.rtech.gpgram.R;
+import com.rtech.gpgram.constants.ApiEndPoints;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -50,7 +51,7 @@ String api= BuildConfig.BASE_URL.concat("/otp/verifyOtpMobile");
             public void onClick(View v) {
                 next_btn.setEnabled(false);
                 String otp=otp_field.getText().toString();
-                if(otp.isEmpty()||otp.length()<6){
+                if(otp.length()!=6){
                     msgText.setVisibility(View.VISIBLE);
                     msgText.setText("Please Enter 6 digit otp");
                     next_btn.setEnabled(true);
@@ -74,7 +75,7 @@ String api= BuildConfig.BASE_URL.concat("/otp/verifyOtpMobile");
                                     String token=recieved.getString("token");
                                     Intent intent =new Intent(getApplicationContext(), CreatePasswordActivity.class);
                                     intent.putExtra("token",token);
-                                    intent.putExtra("api",BuildConfig.BASE_URL.concat("/auth/register/mobile"));
+                                    intent.putExtra("api", ApiEndPoints.REGISTER_MOBILE);
                                     startActivity(intent);
 
 

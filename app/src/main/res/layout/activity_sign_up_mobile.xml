@@ -45,16 +45,16 @@
             android:maxLength="10"
             android:background="@drawable/edit_text_style_2"/>
     </RelativeLayout>
+
     <TextView
         android:id="@+id/msg_textView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/phone_number_info_phrase"
-        android:textSize="@dimen/sp_14"
         android:layout_marginHorizontal="@dimen/dp_19"
         android:layout_marginTop="@dimen/dp_13"
+        android:text="@string/phone_number_info_phrase"
         android:textColor="#716F6F"
-        />
+        android:textSize="@dimen/sp_14" />
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

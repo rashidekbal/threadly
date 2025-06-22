@@ -10,6 +10,7 @@
     <string name="signup_screen_mobilephrase">Enter the mobile number where you can be contacted. No one will see this on your profile.</string>
     <string name="mobile_number_placeHolder">Mobile number</string>
     <string name="phone_number_info_phrase">You may receive WhatsApp and SMS notifications from us for security and login purposes.</string>
+    <string name="email_info_phrase">You may receive Emails from us for security and login purposes.</string>
     <string name="sign_up_with_email">Sign up with email</string>
     <string name="next">Next</string>
     <string name="sign_up_with_mobile_number">Sign up with mobile number</string>

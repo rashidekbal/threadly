@@ -30,13 +30,22 @@ public class ApiEndPoints {
 
     // Authentication
 
-    //otp
+    //otp mobile
     public static final String SEND_MOBILE_OTP = baseUrl + "/otp/generateOtpMobile/";
     public static final String RESEND_MOBILE_OTP = baseUrl + "/otp/resendOtpMobile/";
     public static final String FORGET_PASSWORD_MOBILE_OTP = baseUrl + "/otp/ForgetPasswordGenerateOtpMobile";
     public static final String FORGET_PASSWORD_EMAIL_OTP = baseUrl + "/otp/forgetPasswordEmailOtp/";
     public static final String VERIFY_MOBILE_OTP = baseUrl + "/otp/verifyOtpMobile/";
 
+    //otp email
+    public static final String SEND_EMAIL_OTP=baseUrl+"/otp/generateOtpEmail/";
+    public static final String VERIFY_EMAIL_OTP=baseUrl+"/otp/verifyOtpEmail/";
+
     // Reset Password
     public static final String RESET_PASSWORD_MOBILE = baseUrl + "/resetPassword/Mobile/";
+
+    // register route
+    public static final String REGISTER_MOBILE = baseUrl + "/auth/register/mobile/";
+    public static final String REGISTER_EMAIL = baseUrl + "/auth/register/email/";
+
 }

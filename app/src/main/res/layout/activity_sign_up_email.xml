@@ -34,15 +34,25 @@
         android:layout_marginHorizontal="@dimen/dp_24"
         android:layout_marginTop="@dimen/dp_25">
         <EditText
+            android:id="@+id/email_edittext"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_62"
             android:hint="@string/email"
-            android:inputType="phone"
+            android:inputType="textEmailAddress"
             android:paddingVertical="@dimen/dp_20"
             android:paddingHorizontal="@dimen/dp_14"
             android:textSize="@dimen/sp_15"
             android:background="@drawable/edit_text_style_2"/>
     </RelativeLayout>
+    <TextView
+        android:id="@+id/msg_textView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/dp_19"
+        android:layout_marginTop="@dimen/dp_13"
+        android:text="@string/email_info_phrase"
+        android:textColor="#716F6F"
+        android:textSize="@dimen/sp_14" />
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -52,17 +62,36 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/next_btn"
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_48"
-                android:text="@string/next"
-                android:background="@drawable/login_btn_background"
-                android:textColor="@color/white"
-                android:layout_marginTop="@dimen/dp_5"
-                android:textSize="@dimen/sp_16"
-                android:textAllCaps="false"
-                />
+                android:layout_height="wrap_content">
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/next_btn"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp_48"
+                    android:text="@string/next"
+                    android:background="@drawable/login_btn_background"
+                    android:textColor="@color/white"
+                    android:layout_marginTop="@dimen/dp_5"
+                    android:textSize="@dimen/sp_16"
+                    android:textAllCaps="false"
+                    />
+
+                <ProgressBar
+                    android:id="@+id/progressBar"
+                    android:layout_width="@dimen/dp_45"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="@dimen/dp_6"
+                    android:indeterminate="true"
+                    android:indeterminateTint="@color/white"
+                    android:layout_centerInParent="true"
+                    android:elevation="5dp"
+                    android:visibility="gone"
+                    />
+
+
+
+            </RelativeLayout>
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/SignUp_with_mobile_btn"
                 android:layout_width="match_parent"
