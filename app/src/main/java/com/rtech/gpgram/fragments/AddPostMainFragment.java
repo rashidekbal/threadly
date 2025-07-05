@@ -1,0 +1,188 @@
+package com.rtech.gpgram.fragments;
+
+import static androidx.camera.core.ImageCapture.CAPTURE_MODE_MAXIMIZE_QUALITY;
+import static androidx.camera.core.ImageCapture.FLASH_MODE_OFF;
+import static androidx.camera.core.ImageCapture.FLASH_MODE_ON;
+import static androidx.camera.core.ImageCapture.FLASH_MODE_SCREEN;
+
+import android.Manifest;
+import android.content.DialogInterface;
+import android.content.pm.PackageManager;
+import android.os.Bundle;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.camera.core.CameraSelector;
+import androidx.camera.core.ImageCapture;
+import androidx.camera.core.ImageCaptureException;
+import androidx.camera.core.Preview;
+import androidx.camera.lifecycle.ProcessCameraProvider;
+import androidx.camera.video.Quality;
+import androidx.camera.video.QualitySelector;
+import androidx.camera.video.Recorder;
+import androidx.camera.video.VideoCapture;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.ViewModelProvider;
+
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+
+import com.google.common.util.concurrent.ListenableFuture;
+import com.rtech.gpgram.R;
+import com.rtech.gpgram.activities.AddPostActivity;
+import com.rtech.gpgram.databinding.FragmentAddPostMainBinding;
+import com.rtech.gpgram.interfaces.AddPostMainFragmentOptionsClickInterface;
+import com.rtech.gpgram.interfaces.NetworkCallbackInterfaceWithJsonObjectDelivery;
+import com.rtech.gpgram.managers.PostsManager;
+import com.rtech.gpgram.utils.ReUsableFunctions;
+import com.rtech.gpgram.viewmodels.ProfileViewModel;
+
+import org.json.JSONObject;
+
+import java.io.File;
+import java.util.concurrent.ExecutionException;
+
+
+public class AddPostMainFragment extends Fragment {
+    FragmentAddPostMainBinding mainXml;
+    AppCompatActivity activity;
+    boolean isBackCamera=false;
+    boolean isFlashOn=false;
+    ImageCapture imageCapture;
+    Recorder recorder;
+    VideoCapture<Recorder> videoCapture;
+    AddPostMainFragmentOptionsClickInterface callback;
+    PostsManager postsManager;
+    ProfileViewModel profileViewModel;
+
+
+    public AddPostMainFragment(AddPostMainFragmentOptionsClickInterface callback) {
+        this.callback=callback;
+        // Required empty public constructor
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        mainXml=FragmentAddPostMainBinding.inflate(inflater,container,false);
+        activity=(AppCompatActivity) requireActivity();
+        postsManager=new PostsManager(activity);
+        profileViewModel=new ViewModelProvider(activity).get(ProfileViewModel.class);
+        startCamera();
+        //on close button click
+        mainXml.closeButton.setOnClickListener((View v )->{
+            activity.onBackPressed();
+        });
+
+        //toggle flash
+        mainXml.toggleFlash.setOnClickListener((View v)-> {
+            {
+                if(isFlashOn){
+                    isFlashOn=false;
+                    mainXml.toggleFlash.setImageResource(R.drawable.flash_off_icon);
+                    imageCapture.setFlashMode(ImageCapture.FLASH_MODE_OFF);
+                }else{
+                    isFlashOn=true;
+                    mainXml.toggleFlash.setImageResource(R.drawable.flash_on_icon);
+                    imageCapture.setFlashMode(ImageCapture.FLASH_MODE_ON);
+
+                }
+            }
+        });
+        // toggle camera
+        mainXml.toggleCamera.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                isBackCamera=!isBackCamera;
+                startCamera();
+            }
+        });
+
+        mainXml.captureBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                File photoFile=new File(activity.getFilesDir(),"threadly"+System.currentTimeMillis()+".png");
+                ImageCapture.OutputFileOptions outputFileOptions=new ImageCapture.OutputFileOptions.Builder(photoFile).build();
+                imageCapture.takePicture(
+                        outputFileOptions,
+                        ContextCompat.getMainExecutor(activity),
+                        new ImageCapture.OnImageSavedCallback() {
+                            @Override
+                            public void onImageSaved(@NonNull ImageCapture.OutputFileResults outputFileResults) {
+                             postsManager.uploadImagePost(photoFile, "testPic", new NetworkCallbackInterfaceWithJsonObjectDelivery() {
+                                 @Override
+                                 public void onSuccess(JSONObject response) {
+                                     ReUsableFunctions.ShowToast(activity,"upload sucess");
+                                     profileViewModel.loadLoggedInUserPosts();
+                                 }
+
+                                 @Override
+                                 public void onError(String err) {
+                                     Log.d("imageUploadError", "onError: "+err);
+                                     ReUsableFunctions.ShowToast(activity,"upload error");
+
+                                 }
+                             });
+
+                                // You can now use the saved image file
+                                // For example, you can display it in an ImageView or upload it to a server
+
+                            }
+
+                            @Override
+                            public void onError(@NonNull ImageCaptureException exception) {
+
+                            }
+                        }
+                );
+            }
+        });
+
+
+
+        return mainXml.getRoot();
+
+
+
+
+
+
+    }
+
+
+    private void startCamera() {
+        ListenableFuture<ProcessCameraProvider> cameraProviderListenableFuture = ProcessCameraProvider.getInstance(activity);
+        cameraProviderListenableFuture.addListener(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    ProcessCameraProvider cameraProvider=cameraProviderListenableFuture.get();
+                    CameraSelector cameraSelector=isBackCamera?CameraSelector.DEFAULT_BACK_CAMERA:CameraSelector.DEFAULT_FRONT_CAMERA;
+                    Preview preview=new Preview.Builder().build();
+                    preview.setSurfaceProvider(mainXml.cameraLivePreview.getSurfaceProvider());
+                    imageCapture=new ImageCapture.Builder().setCaptureMode(CAPTURE_MODE_MAXIMIZE_QUALITY).setFlashMode(FLASH_MODE_OFF).build();
+                    recorder=new Recorder.Builder().setQualitySelector(QualitySelector.from(Quality.HIGHEST)).build();
+                    videoCapture=new VideoCapture.Builder(recorder).build();
+                    cameraProvider.unbindAll();
+                    cameraProvider.bindToLifecycle((LifecycleOwner) activity,cameraSelector,preview,imageCapture,videoCapture);
+                } catch (ExecutionException e) {
+                    throw new RuntimeException(e);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        },ContextCompat.getMainExecutor(activity));
+    }
+
+
+
+
+
+}

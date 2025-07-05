@@ -6,6 +6,8 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
@@ -24,6 +26,7 @@ import com.rtech.gpgram.R;
 import com.rtech.gpgram.adapters.GridPostAdapter;
 import com.rtech.gpgram.models.Preview_Post_model;
 import com.rtech.gpgram.interfaces.Post_fragmentSetCallback;
+import com.rtech.gpgram.viewmodels.ProfileViewModel;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -41,6 +44,7 @@ ArrayList<Preview_Post_model> dataList=new ArrayList<>();
     StaggeredGridLayoutManager layoutManager;
     GridPostAdapter adapter;
     Post_fragmentSetCallback callback;
+    ProfileViewModel profileViewModel;
 
     public Posts_of_profile(Post_fragmentSetCallback callback) {
    this.callback=callback;
@@ -59,12 +63,34 @@ ArrayList<Preview_Post_model> dataList=new ArrayList<>();
                              Bundle savedInstanceState) {
       View v=  inflater.inflate(R.layout.fragment_posts_of_profile, container, false);
         init(v);
+        profileViewModel.getUserPostsLiveData().observe(getViewLifecycleOwner(), new Observer<ArrayList<Preview_Post_model>>() {
+            @Override
+            public void onChanged(ArrayList<Preview_Post_model> postsData) {
+                if(postsData.size()>0){
+                    dataList.clear();
+                    dataList.addAll(postsData);
+                    adapter.notifyDataSetChanged();
+                    shimmer_posts.setVisibility(View.GONE);
+                    posts_all_recycler_view.setVisibility(View.VISIBLE);
+                }else{
+                    shimmer_posts.setVisibility(View.GONE);
+                    NoPost_text.setVisibility(View.VISIBLE);
+                    posts_all_recycler_view.setVisibility(View.GONE);
+                }
+
+            }
+        });
         layoutManager =new StaggeredGridLayoutManager(3,StaggeredGridLayoutManager.VERTICAL);
         adapter=new GridPostAdapter(v.getContext(), dataList, new Post_fragmentSetCallback() {
             @Override
             public void openPostFragment(String url, int postid) {
                 callback.openPostFragment(url, postid);
 
+
+            }
+
+            @Override
+            public void openEditor() {
 
             }
         });
@@ -80,62 +106,11 @@ ArrayList<Preview_Post_model> dataList=new ArrayList<>();
         shimmer_posts=v.findViewById(R.id.shimmer_posts);
         loginInfo=v.getContext().getSharedPreferences("loginInfo",MODE_PRIVATE);
         NoPost_text=v.findViewById(R.id.NoPost_text);
-        getPostsOfProfile(v);
+        profileViewModel=new ViewModelProvider(requireActivity()).get(ProfileViewModel.class);
+
 
 
 
     }
-    private void getPostsOfProfile(View v) {
-        String getPostsUrl=baseUrl.concat("/posts/getUserPosts/").concat(loginInfo.getString("userid","null"));
-        // Make network request to get posts
-        AndroidNetworking.get(getPostsUrl)
-                .setPriority(com.androidnetworking.common.Priority.HIGH)
-                .addHeaders("Authorization", "Bearer ".concat(loginInfo.getString("token","null")))
-                .build()
-                .getAsJSONObject(new JSONObjectRequestListener(){
 
-                    @Override
-                    public void onResponse(JSONObject response) {
-
-                        try {
-                            JSONArray array= response.getJSONArray("data");
-
-                            if(array.length()>0){
-                                for(int i=0;i<array.length();i++){
-                                    JSONObject post=array.getJSONObject(i);
-                                    dataList.add(new Preview_Post_model(
-                                            post.getInt("postid"),
-                                            post.getString("imageurl")
-                                    ));
-                                }
-                                adapter.notifyDataSetChanged();
-                                shimmer_posts.setVisibility(View.GONE);
-                                posts_all_recycler_view.setVisibility(View.VISIBLE);
-                            }else{
-                                shimmer_posts.setVisibility(View.GONE);
-                                NoPost_text.setVisibility(View.VISIBLE);
-                                posts_all_recycler_view.setVisibility(View.GONE);
-
-                            }
-
-
-                        } catch (JSONException e) {
-                            Log.d("profileDataErr", e.getMessage());
-
-
-
-
-                        }
-
-
-                    }
-
-                    @Override
-                    public void onError(ANError anError) {
-                        Log.d("profileDataErr", anError.getMessage());
-
-                    }
-                });
-
-    }
 }

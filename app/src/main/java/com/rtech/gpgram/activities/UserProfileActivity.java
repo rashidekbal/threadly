@@ -137,6 +137,11 @@ public class UserProfileActivity extends AppCompatActivity {
                 startActivity(intent);
 
             }
+
+            @Override
+            public void openEditor() {
+
+            }
         });
         posts_recyclerView.setLayoutManager(layoutManager);
         posts_recyclerView.setAdapter(postAdapter);
@@ -150,6 +155,7 @@ public class UserProfileActivity extends AppCompatActivity {
         profileManager.GetProfile(intentData.getStringExtra("userid"), new NetworkCallbackInterfaceWithJsonObjectDelivery() {
             @Override
             public void onSuccess(JSONObject response) {
+
                 profile_shimmer.setVisibility(ShimmerFrameLayout.GONE);
                 mainProfileLayout.setVisibility(LinearLayout.VISIBLE);
                 try {

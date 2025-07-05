@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".fragments.EditProfileMainFragment"
+    android:orientation="vertical"
+    android:background="@color/white">
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"/>
+    </com.google.android.material.appbar.AppBarLayout>
+
+<ScrollView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center_horizontal"
+            android:paddingTop="@dimen/dp_25"
+            android:paddingBottom="@dimen/dp_15">
+            <ImageView
+                android:id="@+id/profile_image"
+                android:layout_height="@dimen/dp_100"
+                android:layout_width="@dimen/dp_100"
+                android:src="@drawable/blank_profile"
+                android:clipToOutline="true"
+                android:background="@drawable/circle"
+                />
+            <TextView
+                android:id="@+id/changeProfile_btn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/change_profile_picture"
+                android:textColor="#456383"
+                android:textStyle="bold"
+                android:layout_marginTop="@dimen/dp_15"
+                android:textAlignment="center"
+                />
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/name_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:focusable="true"
+            android:orientation="vertical"
+            android:background="@drawable/edit_text_style_2"
+            android:padding="@dimen/dp_15"
+            android:layout_marginHorizontal="@dimen/dp_14"
+            android:layout_marginTop="@dimen/dp_15"
+            android:clickable="true"
+            >
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/name"
+                android:textColor="@color/light_grey_text"
+                />
+            <TextView
+                android:id="@+id/name_field"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/rasid_ekbal"
+                android:textColor="@color/black"
+
+                />
+
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/username_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:focusable="true"
+            android:orientation="vertical"
+            android:background="@drawable/edit_text_style_2"
+            android:padding="@dimen/dp_15"
+            android:layout_marginHorizontal="@dimen/dp_14"
+            android:layout_marginTop="@dimen/dp_10"
+            android:clickable="true">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/username"
+                android:textColor="@color/light_grey_text"
+                />
+            <TextView
+                android:id="@+id/userid_field"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/miaisback"
+                android:textColor="@color/black"
+
+                />
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:focusable="true"
+            android:orientation="vertical"
+            android:background="@drawable/edit_text_style_2"
+            android:padding="@dimen/dp_15"
+            android:layout_marginHorizontal="@dimen/dp_14"
+            android:layout_marginTop="@dimen/dp_10"
+            android:clickable="true">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/pronouns"
+                android:textColor="@color/light_grey_text"
+                />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/rasid_ekbal"
+                android:textColor="@color/black"
+                android:visibility="invisible"
+
+                />
+
+        </LinearLayout>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:focusable="true"
+            android:text="@string/add_links"
+            android:layout_marginHorizontal="@dimen/dp_14"
+            android:textColor="@color/black"
+            android:layout_marginTop="@dimen/dp_10"
+            android:clickable="true"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:focusable="true"
+            android:text="@string/add_banners"
+            android:layout_marginHorizontal="@dimen/dp_14"
+            android:textColor="@color/black"
+            android:layout_marginTop="@dimen/dp_25"
+            android:layout_marginBottom="@dimen/dp_5"
+            android:clickable="true"/>
+        <LinearLayout
+            android:id="@+id/bio_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:focusable="true"
+            android:orientation="vertical"
+            android:background="@drawable/edit_text_style_2"
+            android:padding="@dimen/dp_15"
+            android:layout_marginHorizontal="@dimen/dp_14"
+            android:layout_marginTop="@dimen/dp_10"
+            android:clickable="true">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/bio"
+                android:textColor="@color/light_grey_text"
+                />
+            <TextView
+                android:id="@+id/bio_field"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/nothing_intresting"
+                android:textColor="@color/black"
+
+                />
+
+        </LinearLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/dp_14"
+            android:clickable="true"
+            android:layout_marginTop="@dimen/dp_10"
+            android:focusable="true">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/music"
+                android:textColor="@color/black"
+
+                android:layout_alignParentStart="true"
+                />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/add_music_to_your_profile"
+                android:textColor="@color/light_grey_text"
+                android:layout_alignParentEnd="true"/>
+
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/edit_text_style_2"
+            android:focusable="true"
+            android:padding="@dimen/dp_15"
+            android:layout_marginHorizontal="@dimen/dp_14"
+            android:layout_marginTop="@dimen/dp_10"
+            android:clickable="true">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/gender"
+                android:textColor="@color/light_grey_text"
+                android:id="@+id/genderLabel"
+                />
+            <Spinner
+                android:layout_width="@dimen/sp_25"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/male"
+                android:textColor="@color/black"
+                android:layout_below="@+id/genderLabel"/>
+
+
+
+        </RelativeLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/dp_14"
+            android:clickable="true"
+            android:layout_marginTop="@dimen/dp_10"
+            android:focusable="true">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/edit_grid"
+                android:textColor="@color/black"
+
+                android:layout_alignParentStart="true"
+                />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/New"
+                android:background="@drawable/slight_round_btn_blue"
+                android:textColor="@color/white"
+                android:paddingHorizontal="5dp"
+                android:paddingVertical="2dp"
+                android:layout_alignParentEnd="true"/>
+
+
+        </RelativeLayout>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:focusable="true"
+            android:text="@string/more_highlights"
+            android:layout_marginHorizontal="@dimen/dp_14"
+            android:textColor="@color/black"
+            android:layout_marginTop="@dimen/dp_10"
+            android:clickable="true"/>
+
+    </LinearLayout>
+</ScrollView>
+
+
+
+</LinearLayout>

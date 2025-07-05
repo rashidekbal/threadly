@@ -2,11 +2,13 @@ package com.rtech.gpgram.managers;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.JSONObjectRequestListener;
+import com.rtech.gpgram.BuildConfig;
 import com.rtech.gpgram.constants.ApiEndPoints;
 import com.rtech.gpgram.constants.SharedPreferencesKeys;
 import com.rtech.gpgram.interfaces.NetworkCallbackInterface;
@@ -66,6 +68,7 @@ public class OtpManager {
         //         });
     }
     public void ForgetPasswordOptSendMobile(String mobile, NetworkCallbackInterface callbackInterface){
+        Log.d("feddhit", "getLoggedInUserProfile: ");
         String url= ApiEndPoints.FORGET_PASSWORD_MOBILE_OTP;
         JSONObject data = new JSONObject();
         try {
@@ -82,6 +85,10 @@ public class OtpManager {
 
                         @Override
                         public void onError(ANError anError) {
+                            if(BuildConfig.DEBUG){
+                                Log.d("ApiError", "Error"+ anError.getMessage());
+
+                            }
                             callbackInterface.onError(anError.getMessage());
 
                         }
@@ -93,6 +100,7 @@ public class OtpManager {
 
     }
     public void VerifyOtpMobile(String mobile, String otp, NetworkCallbackInterfaceWithJsonObjectDelivery callbackInterface) {
+        Log.d("feddhit", "getLoggedInUserProfile: ");
         String url = ApiEndPoints.VERIFY_MOBILE_OTP;
         JSONObject data = new JSONObject();
         try {
@@ -110,6 +118,10 @@ public class OtpManager {
 
                         @Override
                         public void onError(ANError anError) {
+                            if(BuildConfig.DEBUG){
+                                Log.d("ApiError", "Error"+ anError.getMessage());
+
+                            }
                             callbackInterface.onError(anError.getMessage());
                         }
                     });
@@ -123,6 +135,7 @@ public class OtpManager {
 //    email sections starts here
 
     public void SendOtpEmail(String email, NetworkCallbackInterface callbackInterface){
+        Log.d("feddhit", "getLoggedInUserProfile: ");
         String url=ApiEndPoints.SEND_EMAIL_OTP;
         JSONObject packet=new JSONObject();
         try {
@@ -139,6 +152,10 @@ public class OtpManager {
 
                         @Override
                         public void onError(ANError anError) {
+                            if(BuildConfig.DEBUG){
+                                Log.d("ApiError", "Error"+ anError.getMessage());
+
+                            }
                             callbackInterface.onError(Integer.toString(anError.getErrorCode()));
 
                         }
@@ -150,6 +167,7 @@ public class OtpManager {
     }
 
     public void VerifyOtpEmail(String email, String otp, NetworkCallbackInterfaceWithJsonObjectDelivery callbackInterface) {
+        Log.d("feddhit", "getLoggedInUserProfile: ");
         String url = ApiEndPoints.VERIFY_EMAIL_OTP;
         JSONObject packet = new JSONObject();
         try {
@@ -167,6 +185,10 @@ public class OtpManager {
 
                         @Override
                         public void onError(ANError anError) {
+                            if(BuildConfig.DEBUG){
+                                Log.d("ApiError", "Error"+ anError.getMessage());
+
+                            }
                             callbackInterface.onError(Integer.toString(anError.getErrorCode()));
 
                         }
@@ -180,6 +202,7 @@ public class OtpManager {
     }
 
     public void ForgetPasswordOptSendEmail(String email, NetworkCallbackInterface callbackInterface){
+        Log.d("feddhit", "getLoggedInUserProfile: ");
         String url= ApiEndPoints.FORGET_PASSWORD_EMAIL_OTP;
         JSONObject data = new JSONObject();
         try {
@@ -196,6 +219,10 @@ public class OtpManager {
 
                         @Override
                         public void onError(ANError anError) {
+                            if(BuildConfig.DEBUG){
+                                Log.d("ApiError", "Error"+ anError.getMessage());
+
+                            }
                             callbackInterface.onError(Integer.toString(anError.getErrorCode()));
 
                         }

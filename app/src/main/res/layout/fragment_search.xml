@@ -8,36 +8,35 @@
     android:orientation="vertical">
 <RelativeLayout
     android:layout_width="match_parent"
-    android:layout_height="@dimen/dp_58"
-    android:paddingTop="@dimen/dp_10"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/dp_10"
     android:layout_marginBottom="@dimen/dp_5">
     <EditText
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_38"
+        android:layout_height="@dimen/dp_44"
         android:paddingStart="@dimen/dp_10"
         android:hint="Search"
         android:background="@drawable/edit_text_style_2"
         android:layout_centerVertical="true"
         android:layout_marginHorizontal="@dimen/dp_20"
+        android:textSize="@dimen/sp_16"
+        android:paddingEnd="@dimen/dp_32"
+        android:textColor="@color/light_grey_text"
         />
     <ImageView
-        android:layout_width="@dimen/dp_28"
-        android:layout_height="@dimen/dp_28"
+        android:layout_width="@dimen/dp_25"
+        android:layout_height="@dimen/dp_25"
         android:src="@drawable/search_inactive_icon_pale"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
         android:layout_marginEnd="@dimen/dp_30"/>
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:background="@color/light_grey_text"
-        android:layout_alignParentBottom="true"
-        android:alpha="0.5"/>
+  
 </RelativeLayout>
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/search_page_recycler_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_10"/>
 
 
 

@@ -15,7 +15,7 @@
           android:icon="@drawable/notificationselector"/>
     <item android:id="@+id/profile"
         android:title=""
-        android:icon="@drawable/red_circle"/>
+        android:icon="@drawable/profile_blank"/>
 
 
 </menu>

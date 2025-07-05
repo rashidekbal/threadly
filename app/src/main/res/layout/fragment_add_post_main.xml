@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".fragments.AddPostMainFragment"
+    android:background="@color/black">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="@drawable/curved_big_square_box"
+        android:layout_marginBottom="@dimen/dp_125"
+        android:clipToOutline="true"
+        >
+        <androidx.camera.view.PreviewView
+            android:clickable="true"
+            android:focusable="true"
+            android:id="@+id/cameraLivePreview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            />
+
+    </LinearLayout>
+    <ImageView
+        android:id="@+id/closeButton"
+        android:layout_width="@dimen/dp_43"
+        android:layout_height="@dimen/dp_43"
+        android:src="@drawable/white_close_button"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="@dimen/dp_10"
+        android:layout_marginStart="@dimen/dp_10"
+        android:elevation="5dp"/>
+    <ImageView
+        android:id="@+id/toggle_flash"
+        android:layout_width="@dimen/dp_40"
+        android:layout_height="@dimen/dp_40"
+        android:src="@drawable/flash_off_icon"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/dp_10"
+        android:elevation="5dp"/>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_175"
+        android:orientation="horizontal"
+        android:layout_alignParentBottom="true"
+        android:elevation="5dp"
+        android:paddingBottom="@dimen/dp_25"
+        >
+        <FrameLayout
+            android:clickable="true"
+            android:focusable="true"
+            android:id="@+id/capture_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/circle"
+            android:padding="4dp"
+            android:clipToOutline="true"
+            android:layout_marginTop="@dimen/dp_10"
+            android:layout_centerHorizontal="true">
+            <FrameLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/circle_with_grey_outline"
+                android:padding="2dp"
+                android:clipToOutline="true"
+                >
+                <View
+                    android:layout_width="@dimen/dp_68"
+                    android:layout_height="@dimen/dp_68"
+                    android:background="@drawable/circle"
+                    />
+
+            </FrameLayout>
+
+        </FrameLayout>
+        <FrameLayout
+            android:id="@+id/open_ImagePicker"
+            android:clickable="true"
+            android:focusable="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/curved_small_square_box"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="@dimen/dp_10"
+            android:padding="@dimen/dp_4"
+            android:clipToOutline="true"
+            >
+            <ImageView
+                android:layout_width="@dimen/dp_35"
+                android:layout_height="@dimen/dp_35"
+                android:src="@drawable/sample_post"
+                android:background="@drawable/curved_small_square_box"
+                android:clipToOutline="true"
+
+                />
+        </FrameLayout>
+        <ImageView
+            android:id="@+id/toggle_camera"
+            android:layout_width="@dimen/dp_50"
+            android:layout_height="@dimen/dp_50"
+            android:src="@drawable/switch_camera_icon"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="@dimen/dp_10"
+            android:layout_alignParentBottom="true"
+            android:clickable="true"
+            android:focusable="true"/>
+
+
+
+    </RelativeLayout>
+
+
+
+</RelativeLayout>

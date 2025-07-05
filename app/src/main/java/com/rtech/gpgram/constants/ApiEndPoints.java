@@ -16,17 +16,20 @@ public class ApiEndPoints {
     public static final String UNLIKE_COMMENT = baseUrl + "/like/unlikeAComment/";
 
     // Follows
-    public static final String FOLLOW = baseUrl + "/follow/follow";
-    public static final String UNFOLLOW = baseUrl + "/follow/unfollow";
+    public static final String FOLLOW = baseUrl + "/follow/follow/";
+    public static final String UNFOLLOW = baseUrl + "/follow/unfollow/";
     public static final String GET_FOLLOWERS=baseUrl+"/follow/getFollowers/";
     public static final String GET_FOLLOWINGS=baseUrl+"/follow/getFollowings/";
 
     // Posts
     public static final String GET_POST_BY_ID = baseUrl + "/posts/getPost/";
     public static final String GET_USER_POSTS = baseUrl+"/posts/getUserPosts/";
+    public static final String GET_FEED = baseUrl+"/posts/getPostsFeed/";
+    public static final String ADD_IMAGE_POST = baseUrl+"/posts/addImagePost/";
 
    // Profile
     public static final String GET_PROFILE = baseUrl + "/users/getUser/";
+    public static final String GET_LOGGED_IN_USER_PROFILE = baseUrl + "/users/getMyData/";
 
     // Authentication
 
@@ -53,5 +56,10 @@ public class ApiEndPoints {
     public static final String LOGIN_MOBILE = baseUrl + "/auth/login/mobile/";
     public static final String LOGIN_EMAIL = baseUrl + "/auth/login/email/";
     public static final String LOGIN_USERID = baseUrl + "/auth/login/userid/";
+
+    //Edit userDetails
+    public static final String EDIT_USERNAME = baseUrl + "/profile/edit/username/";
+    public static final String EDIT_USERID =baseUrl + "/profile/edit/userid/";
+    public static final String EDIT_BIO = baseUrl + "/profile/edit/bio/";
 
 }

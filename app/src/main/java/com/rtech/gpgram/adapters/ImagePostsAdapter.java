@@ -26,6 +26,7 @@ import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.rtech.gpgram.R;
+import com.rtech.gpgram.constants.SharedPreferencesKeys;
 import com.rtech.gpgram.interfaces.NetworkCallbackInterfaceWithJsonObjectDelivery;
 import com.rtech.gpgram.interfaces.NetworkCallbackInterface;
 import com.rtech.gpgram.managers.CommentsManager;
@@ -109,6 +110,10 @@ public class ImagePostsAdapter extends RecyclerView.Adapter<ImagePostsAdapter.vi
         holder.user_id_text.setText(list.get(position).userId);
         holder.user_name_text.setText(list.get(position).username);
         Glide.with(context).load(list.get(position).postUrl).placeholder(R.drawable.post_placeholder).into(holder.post_image);
+        if(list.get(position).caption.equals("null") || list.get(position).caption.isEmpty()){
+            holder.caption_text.setVisibility(View.GONE);}else{
+            holder.caption_text.setText(list.get(position).caption);
+        }
         holder.caption_text.setText(list.get(position).caption);
         holder.post_creationDate.setText(list.get(position).createdAt.split("T")[0]);
 
@@ -302,9 +307,10 @@ public class ImagePostsAdapter extends RecyclerView.Adapter<ImagePostsAdapter.vi
             if(dialogFrame!=null){
                 BottomSheetBehavior<FrameLayout> behaviour=BottomSheetBehavior.from(dialogFrame);
                 // Set bottom sheet properties
-                behaviour.setDraggable(false);
+                behaviour.setDraggable(true);
                 behaviour.setState(STATE_EXPANDED);
                 behaviour.setFitToContents(true);
+
             }
         }
     }
@@ -322,6 +328,7 @@ public class ImagePostsAdapter extends RecyclerView.Adapter<ImagePostsAdapter.vi
         EditText inputComment=commentDialog.findViewById(R.id.comment_editText);
         ImageView sendCommentBtn=commentDialog.findViewById(R.id.post_comment_imgBtn);
         TextView posting_progressbar=commentDialog.findViewById(R.id.posting_progress_text);
+        ImageView currentUserProfileImg=commentDialog.findViewById(R.id.user_profile);
         ShimmerFrameLayout shimmerFrameLayout=commentDialog.findViewById(R.id.shimmer_comments_holder);
         assert shimmerFrameLayout != null;
         shimmerFrameLayout.setVisibility(View.VISIBLE);
@@ -330,6 +337,8 @@ public class ImagePostsAdapter extends RecyclerView.Adapter<ImagePostsAdapter.vi
         comments_recyclerView.setVisibility(View.GONE);
         assert noCommentsLayout != null;
         noCommentsLayout.setVisibility(View.GONE);
+        Glide.with(context).load(loginInfo.getString(SharedPreferencesKeys.USER_PROFILE_PIC,"null")).placeholder(R.drawable.blank_profile)
+                .error(R.drawable.blank_profile).circleCrop().into(currentUserProfileImg);
 
         // Fetch comments from server
         commentsManager.getCommentOf(postId, new NetworkCallbackInterfaceWithJsonObjectDelivery() {

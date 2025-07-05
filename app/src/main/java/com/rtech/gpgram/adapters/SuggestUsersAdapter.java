@@ -43,7 +43,7 @@ public class SuggestUsersAdapter extends RecyclerView.Adapter<SuggestUsersAdapte
     @Override
     public void onBindViewHolder(@NonNull viewHolder holder, @SuppressLint("RecyclerView") int position) {
         holder.username_text.setText(list.get(position).username);
-        Glide.with(context).load(list.get(position).profilepic).circleCrop().placeholder(R.drawable.blank_profile).into(holder.userProfile_img);
+        Glide.with(context).load(list.get(position).profilepic).placeholder(R.drawable.blank_profile).circleCrop().into(holder.userProfile_img);
         holder.follow_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -2,10 +2,12 @@ package com.rtech.gpgram.managers;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 
 
 import com.androidnetworking.AndroidNetworking;
 
+import com.rtech.gpgram.BuildConfig;
 import com.rtech.gpgram.constants.SharedPreferencesKeys;
 import com.rtech.gpgram.interfaces.NetworkCallbackInterfaceWithJsonObjectDelivery;
 
@@ -32,6 +34,7 @@ public class CommentsManager {
     }
 
     public void getCommentOf(int postId, NetworkCallbackInterfaceWithJsonObjectDelivery callback) {
+        Log.d("feddhit", "getLoggedInUserProfile: ");
         String url =ApiEndPoints.GET_COMMENTS.concat(Integer.toString(postId));
         AndroidNetworking.get(url)
                 .setPriority(com.androidnetworking.common.Priority.HIGH)
@@ -40,16 +43,22 @@ public class CommentsManager {
                 .getAsJSONObject(new com.androidnetworking.interfaces.JSONObjectRequestListener() {
                     @Override
                     public void onResponse(org.json.JSONObject response) {
+                       
                         callback.onSuccess(response);
                     }
 
                     @Override
                     public void onError(com.androidnetworking.error.ANError anError) {
+                        if(BuildConfig.DEBUG){
+                            Log.d("ApiError", "Error"+ anError.getMessage());
+
+                        }
                         callback.onError(anError.getMessage());
                     }
                 });
     }
     public void addComment(int postId, String comment, NetworkCallbackInterfaceWithJsonObjectDelivery callbackIterface){
+        Log.d("feddhit", "getLoggedInUserProfile: ");
         String url = ApiEndPoints.ADD_COMMENT;
         JSONObject data=new JSONObject();
         try {
@@ -69,6 +78,10 @@ public class CommentsManager {
 
                         @Override
                         public void onError(com.androidnetworking.error.ANError anError) {
+                            if(BuildConfig.DEBUG){
+                                Log.d("ApiError", "Error"+ anError.getMessage());
+
+                            }
                             callbackIterface.onError(anError.getMessage());
                         }
                     });

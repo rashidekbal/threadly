@@ -10,8 +10,8 @@
         android:src="@drawable/sample_post"
         android:adjustViewBounds="true"
         android:minWidth="@dimen/dp_150"
-        android:paddingVertical="2dp"
-        android:paddingHorizontal="2dp"/>
+        android:paddingVertical="1dp"
+        android:paddingHorizontal="1dp"/>
 
 
 </LinearLayout>

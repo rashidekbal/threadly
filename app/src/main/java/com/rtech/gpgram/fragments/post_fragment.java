@@ -32,6 +32,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.rtech.gpgram.R;
 import com.rtech.gpgram.adapters.PostCommentsAdapter;
+import com.rtech.gpgram.constants.SharedPreferencesKeys;
 import com.rtech.gpgram.interfaces.NetworkCallbackInterfaceWithJsonObjectDelivery;
 import com.rtech.gpgram.interfaces.NetworkCallbackInterface;
 import com.rtech.gpgram.managers.CommentsManager;
@@ -168,7 +169,12 @@ SharedPreferences loginInfo;
         Glide.with(view.getContext()).load(data.postUrl).placeholder(R.drawable.post_placeholder).into(posts_image_view);
         Glide.with(view.getContext()).load(data.userDpUrl).placeholder(R.drawable.blank_profile).into(profile_img);
         username_text.setText(data.username);
-        caption_text.setText(data.caption);
+        if(data.caption.equals("null")||data.caption.isEmpty()){
+            caption_text.setVisibility(View.GONE);
+        }else{
+            caption_text.setText(data.caption);
+        }
+
         like_count_text.setText(String.valueOf(data.likeCount));
         comment_count_text.setText(String.valueOf(data.commentCount));
         share_count_text.setText(String.valueOf(data.shareCount));
@@ -271,6 +277,7 @@ SharedPreferences loginInfo;
         comments_recyclerView.setAdapter(postCommentsAdapter);
         EditText inputComment=commentDialog.findViewById(R.id.comment_editText);
         ImageView sendCommentBtn=commentDialog.findViewById(R.id.post_comment_imgBtn);
+        ImageView userProfileImg=commentDialog.findViewById(R.id.user_profile);
         TextView posting_progressbar=commentDialog.findViewById(R.id.posting_progress_text);
         ShimmerFrameLayout shimmerFrameLayout=commentDialog.findViewById(R.id.shimmer_comments_holder);
         assert shimmerFrameLayout != null;
@@ -280,6 +287,7 @@ SharedPreferences loginInfo;
         comments_recyclerView.setVisibility(View.GONE);
         assert noCommentsLayout != null;
         noCommentsLayout.setVisibility(View.GONE);
+        Glide.with(requireActivity()).load(loginInfo.getString(SharedPreferencesKeys.USER_PROFILE_PIC,"null")).placeholder(R.drawable.blank_profile).error(R.drawable.blank_profile).circleCrop().into(userProfileImg);
 
         // Fetch comments from server
         commentsManager.getCommentOf(postId, new NetworkCallbackInterfaceWithJsonObjectDelivery() {
@@ -295,7 +303,13 @@ SharedPreferences loginInfo;
                             JSONObject individualComment=data.getJSONObject(i);
                             dataList.add(new Posts_Comments_Model(individualComment.getInt("commentid"),individualComment.getInt("postid"),individualComment.getInt("comment_likes_count"),individualComment.getInt("isLiked"),individualComment.getString("userid"),individualComment.getString("username"),individualComment.getString("profilepic"),individualComment.getString("comment_text"),individualComment.getString("createdAt")));
                         }
-                        postCommentsAdapter.notifyDataSetChanged();
+                        comments_recyclerView.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                postCommentsAdapter.notifyDataSetChanged();
+
+                            }
+                        });
                         shimmerFrameLayout.stopShimmer();
                         shimmerFrameLayout.setVisibility(View.GONE);
                     }else {
@@ -348,7 +362,7 @@ SharedPreferences loginInfo;
                         sendCommentBtn.setVisibility(View.VISIBLE);
                         sendCommentBtn.setClickable(true);
                         try{
-                            int commentid=response.getInt("commnetid");
+                            int commentid=response.getInt("commentid");
                             // Add new comment to the top of the list
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
                                 dataList.addFirst(new Posts_Comments_Model(

@@ -45,6 +45,11 @@ GridPostAdapter adapter;
 
 
             }
+
+            @Override
+            public void openEditor() {
+                //no uses
+            }
         });
         adapter.setHasStableIds(true);
         search_page_recycler_view.setLayoutManager(layoutManager);

@@ -18,11 +18,17 @@ android {
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
+    buildFeatures{
+        viewBinding true
+    }
 
     buildTypes {
-        debug {\
+        debug {
 
-            buildConfigField "String", "BASE_URL",  "\"https://rjwqzfvg-8000.inc1.devtunnels.ms/api\""
+
+//            buildConfigField "String", "BASE_URL",  "\"https://threadly-server.vercel.app/api\""
+            buildConfigField "String", "BASE_URL",  "\"https://rjwqzfvg-8001.inc1.devtunnels.ms/api\""
+
 
 
         }
@@ -50,7 +56,16 @@ dependencies {
     testImplementation libs.junit
     androidTestImplementation libs.ext.junit
     androidTestImplementation libs.espresso.core
-    implementation 'com.github.amitshekhariitbhu.Fast-Android-Networking:android-networking:1.0.4'
-    implementation 'com.github.bumptech.glide:glide:4.14.2'
-    implementation 'com.facebook.shimmer:shimmer:0.5.0'
+    implementation libs.android.networking
+    implementation libs.glide
+    implementation libs.shimmer
+    def camerax_version = "1.4.2"
+    implementation libs.camera.core
+    implementation libs.camera.camera2
+    implementation libs.camera.lifecycle
+    implementation libs.camera.view
+    implementation libs.camera.video
+    implementation libs.camera.extensions
+
+
 }

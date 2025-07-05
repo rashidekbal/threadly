@@ -4,11 +4,13 @@ import static android.content.Context.MODE_PRIVATE;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 import android.widget.Toast;
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.JSONObjectRequestListener;
+import com.rtech.gpgram.BuildConfig;
 import com.rtech.gpgram.constants.SharedPreferencesKeys;
 import com.rtech.gpgram.interfaces.NetworkCallbackInterface;
 import com.rtech.gpgram.interfaces.NetworkCallbackInterfaceWithJsonObjectDelivery;
@@ -35,12 +37,16 @@ Context context;
     }
 
     public void  follow(String userid, NetworkCallbackInterface callbackIterface) {
+        String url=ApiEndPoints.FOLLOW;
 
         JSONObject packet = new JSONObject();
         try {
             packet.put("followingid", userid);
 
-            AndroidNetworking.post(Followurl).setPriority(Priority.HIGH).addApplicationJsonBody(packet).addHeaders("Authorization", "Bearer ".concat(token)).build().getAsJSONObject(new JSONObjectRequestListener() {
+            AndroidNetworking.post(url)
+                    .setPriority(Priority.HIGH)
+                    .addApplicationJsonBody(packet)
+                    .addHeaders("Authorization", "Bearer ".concat(token)).build().getAsJSONObject(new JSONObjectRequestListener() {
                 @Override
                 public void onResponse(JSONObject response) {
                     callbackIterface.onSuccess();
@@ -50,8 +56,11 @@ Context context;
 
                 @Override
                 public void onError(ANError anError) {
+                    if(BuildConfig.DEBUG){
+                        Log.d("ApiError", "Error"+ anError.getMessage());
+
+                    }
                     int errorCode=anError.getErrorCode();
-                    Toast.makeText(context, Integer.toString(errorCode), Toast.LENGTH_SHORT).show();
                     callbackIterface.onError(anError.toString());
 
                 }
@@ -62,13 +71,15 @@ Context context;
         }
     }
     public void unfollow(String userid, NetworkCallbackInterface callbackIterface) {
+        String url=ApiEndPoints.UNFOLLOW;
         JSONObject packet = new JSONObject();
         try {
             packet.put("followingid", userid);
 
-            AndroidNetworking.post(UnFollowurl).setPriority(Priority.HIGH).addHeaders("Authorization", "Bearer ".concat(token)).addApplicationJsonBody(packet).build().getAsJSONObject(new JSONObjectRequestListener() {
+            AndroidNetworking.post(url).setPriority(Priority.HIGH).addHeaders("Authorization", "Bearer ".concat(token)).addApplicationJsonBody(packet).build().getAsJSONObject(new JSONObjectRequestListener() {
                 @Override
                 public void onResponse(JSONObject response) {
+                    Log.d("unfollowerror", response.toString());
                     callbackIterface.onSuccess();
 
                 }
@@ -76,8 +87,12 @@ Context context;
 
                 @Override
                 public void onError(ANError anError) {
+
                     int errorCode=anError.getErrorCode();
-                    Toast.makeText(context, Integer.toString(errorCode), Toast.LENGTH_SHORT).show();
+                    if(BuildConfig.DEBUG){
+                        Log.d("ApiError", "Error"+ anError.getMessage());
+
+                    }
                     callbackIterface.onError(anError.toString());
 
                 }
@@ -91,6 +106,8 @@ Context context;
 
     }
     public void getFollowers(String userid, NetworkCallbackInterfaceWithJsonObjectDelivery callback){
+        Log.d("feddhit", "getFpllowers" +
+                ": ");
         String url=ApiEndPoints.GET_FOLLOWERS.concat(userid);
         AndroidNetworking.get(url)
                 .setPriority(Priority.HIGH)
@@ -99,11 +116,16 @@ Context context;
                 .getAsJSONObject(new JSONObjectRequestListener() {
                     @Override
                     public void onResponse(JSONObject response) {
+
                         callback.onSuccess(response);
                     }
 
                     @Override
                     public void onError(ANError anError) {
+                        if(BuildConfig.DEBUG){
+                            Log.d("ApiError", "Error"+ anError.getMessage());
+
+                        }
                         callback.onError(anError.getErrorDetail());
 
                     }
@@ -123,6 +145,10 @@ Context context;
 
                     @Override
                     public void onError(ANError anError) {
+                        if(BuildConfig.DEBUG){
+                            Log.d("ApiError", "Error"+ anError.getMessage());
+
+                        }
                         callback.onError(anError.getErrorDetail());
 
                     }

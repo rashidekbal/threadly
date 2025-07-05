@@ -18,16 +18,8 @@
 
 
 <!--    when data is loaded -->
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:scrollbars="none"
-        >
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -41,15 +33,17 @@
                     >
                     <TextView
                         android:id="@+id/userid_text"
-                        android:layout_width="@dimen/dp_180"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:textStyle="bold"
                         android:text="miaisback"
                         android:layout_marginStart="@dimen/dp_10"
                         android:layout_alignParentLeft="true"
                         android:layout_centerVertical="true"
+                        android:layout_toStartOf="@+id/setting_icon"
                         android:textSize="@dimen/sp_25"/>
                     <ImageView
+                        android:id="@+id/setting_icon"
                         android:layout_width="@dimen/dp_22"
                         android:layout_height="@dimen/dp_22"
                         android:src="@drawable/settings"
@@ -89,7 +83,7 @@
                             <ImageView
                                 android:id="@+id/profile_img"
                                 android:layout_width="@dimen/dp_83"
-                                android:layout_height="@dimen/dp_83"
+                                android:layout_height="wrap_content"
                                 android:layout_gravity="center"
                                 android:adjustViewBounds="true"
                                 android:background="@drawable/circle"
@@ -100,9 +94,9 @@
                         </FrameLayout>
                         <RelativeLayout
                             android:layout_width="@dimen/dp_254"
-                            android:layout_height="match_parent"
+                            android:layout_height="wrap_content"
                             android:layout_alignParentRight="true"
-                            android:layout_marginEnd="@dimen/dp_10"
+                            android:layout_marginEnd="@dimen/dp_20"
                             android:layout_centerVertical="true"
 
                             >  <LinearLayout
@@ -226,10 +220,11 @@
                         >
 
                         <androidx.appcompat.widget.AppCompatButton
+                            android:id="@+id/EditProfile_btn"
                             android:layout_width="match_parent"
                             android:layout_height="@dimen/dp_35"
                             android:layout_centerVertical="true"
-                            android:background="@drawable/slight_round_btn_grey_outline"
+                            android:background="@drawable/curved_rectangularbox_black_outline"
                             android:text="Edit profile"
                             android:textAllCaps="false"
                             android:layout_alignParentLeft="true"/>
@@ -260,6 +255,5 @@
                 android:visibility="visible"/>
         </LinearLayout>
 
-    </ScrollView>
 
-</LinearLayout>
+

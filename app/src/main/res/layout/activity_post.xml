@@ -27,7 +27,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:layout_alignParentBottom="true"
-            android:layout_marginBottom="@dimen/dp_25"
+            android:layout_marginBottom="@dimen/dp_28"
             android:gravity="center_vertical"
             android:layout_marginLeft="@dimen/dp_10">
             <FrameLayout
@@ -35,7 +35,6 @@
                 android:layout_width="@dimen/dp_50"
                 android:layout_height="@dimen/dp_50"
                 android:background="@drawable/red_circle"
-                android:layout_marginBottom="@dimen/dp_4"
 
                 >
 

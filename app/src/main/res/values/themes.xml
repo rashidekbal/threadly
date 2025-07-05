@@ -1,8 +1,12 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
     <style name="Base.Theme.GPGram" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <item name="android:navigationBarColor">#FFFF</item>
+        <item name="android:statusBarColor">#FFFF</item>
+    </style>
+    <style name="Base.Theme.GPGram.actionbar" parent="Theme.Material3.DayNight">
+        <item name="android:navigationBarColor">#FFFF</item>
+        <item name="android:statusBarColor">#FFFF</item>
     </style>
 
     <style name="Theme.GPGram" parent="Base.Theme.GPGram" />

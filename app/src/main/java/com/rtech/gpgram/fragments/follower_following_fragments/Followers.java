@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -75,6 +76,7 @@ public class Followers extends Fragment {
         followManager.getFollowers(userId, new NetworkCallbackInterfaceWithJsonObjectDelivery() {
             @Override
             public void onSuccess(JSONObject response) {
+            
                 followers_recycler_view.setVisibility(View.VISIBLE);
                 loadingData_relativeLayout.setVisibility(View.GONE);
                 try {

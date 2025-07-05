@@ -111,6 +111,7 @@ public class PostActivity extends AppCompatActivity {
         postsManager.getPostWithId(postId, new NetworkCallbackInterfaceWithJsonObjectDelivery() {
             @Override
             public void onSuccess(JSONObject response) {
+
                 JSONArray array = response.optJSONArray("data");
                 JSONObject object = array.optJSONObject(0);
                 int postid = object.optInt("postid");
@@ -151,9 +152,10 @@ public class PostActivity extends AppCompatActivity {
         });
     }
 
+
     private void setData(Posts_Model data) {
         Glide.with(PostActivity.this).load(data.postUrl).placeholder(R.drawable.post_placeholder).into(posts_image_view);
-        Glide.with(PostActivity.this).load(data.userDpUrl).placeholder(R.drawable.blank_profile).into(profile_img);
+        Glide.with(PostActivity.this).load(data.userDpUrl).placeholder(R.drawable.blank_profile).circleCrop().into(profile_img);
         username_text.setText(data.username);
         caption_text.setText(data.caption);
         like_count_text.setText(String.valueOf(data.likeCount));
@@ -257,6 +259,7 @@ public class PostActivity extends AppCompatActivity {
         comments_recyclerView.setAdapter(postCommentsAdapter);
         EditText inputComment=commentDialog.findViewById(R.id.comment_editText);
         ImageView sendCommentBtn=commentDialog.findViewById(R.id.post_comment_imgBtn);
+        ImageView userProfileImg=commentDialog.findViewById(R.id.user_profile);
         TextView posting_progressbar=commentDialog.findViewById(R.id.posting_progress_text);
         ShimmerFrameLayout shimmerFrameLayout=commentDialog.findViewById(R.id.shimmer_comments_holder);
         assert shimmerFrameLayout != null;
@@ -266,6 +269,7 @@ public class PostActivity extends AppCompatActivity {
         comments_recyclerView.setVisibility(View.GONE);
         assert noCommentsLayout != null;
         noCommentsLayout.setVisibility(View.GONE);
+        Glide.with(getApplicationContext()).load(loginInfo.getString(SharedPreferencesKeys.USER_PROFILE_PIC,"null")).placeholder(R.drawable.blank_profile).circleCrop().into(userProfileImg);
 
         // Fetch comments from server
         commentsManager.getCommentOf(postId, new NetworkCallbackInterfaceWithJsonObjectDelivery() {
@@ -334,7 +338,7 @@ public class PostActivity extends AppCompatActivity {
                         sendCommentBtn.setVisibility(View.VISIBLE);
                         sendCommentBtn.setClickable(true);
                         try{
-                            int commentid=response.getInt("commnetid");
+                            int commentid=response.getInt("commentid");
                             // Add new comment to the top of the list
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
                                 dataList.addFirst(new Posts_Comments_Model(

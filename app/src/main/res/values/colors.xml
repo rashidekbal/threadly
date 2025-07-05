@@ -5,5 +5,7 @@
     <color name="page_icon_color">#F9F5F4</color>
     <color name="edittext_border_color">#DEDADA</color>
     <color name="ui_blue">#0066E7</color>
-    <color name="light_grey_text">#8D9498</color>
+    <color name="light_grey_text">#868686</color>
+    <color name="terms_color_dark">#385168</color>
+    <color name="warning">#C32424</color>
 </resources>

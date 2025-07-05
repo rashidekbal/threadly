@@ -2,11 +2,13 @@ package com.rtech.gpgram.managers;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.JSONObjectRequestListener;
+import com.rtech.gpgram.BuildConfig;
 import com.rtech.gpgram.constants.ApiEndPoints;
 import com.rtech.gpgram.constants.SharedPreferencesKeys;
 import com.rtech.gpgram.interfaces.NetworkCallbackInterfaceWithJsonObjectDelivery;
@@ -66,10 +68,15 @@ public class AuthManager {
 
                         @Override
                         public void onError(ANError anError) {
+                            if(BuildConfig.DEBUG){
+                                Log.d("ApiError", "Error"+anError.getMessage());
+
+                            }
                             callback.onError(Integer.toString(anError.getErrorCode()));
                         }
                     });
         } catch (JSONException e) {
+
             throw new RuntimeException(e);
         }
 
@@ -87,6 +94,7 @@ public class AuthManager {
         callbackIterface.onSuccess(); // Notify success
     }
     public void ResetPasswordWithMobile(String password,String token, NetworkCallbackInterface callback) {
+
         String url= ApiEndPoints.RESET_PASSWORD_MOBILE;
         JSONObject data = new JSONObject();
         try {
@@ -104,6 +112,10 @@ public class AuthManager {
 
                         @Override
                         public void onError(com.androidnetworking.error.ANError anError) {
+                            if(BuildConfig.DEBUG){
+                                Log.d("ApiError", "Error"+anError.getMessage());
+
+                            }
                             callback.onError(anError.getMessage());
                         }
                     });
@@ -115,6 +127,7 @@ public class AuthManager {
     }
 
     public void ResetPasswordWithEmail(String password,String token, NetworkCallbackInterface callback) {
+        Log.d("feddhit", "getLoggedInUserProfile: ");
         String url= ApiEndPoints.RESET_PASSWORD_EMAIL;
         JSONObject data = new JSONObject();
         try {
@@ -132,6 +145,10 @@ public class AuthManager {
 
                         @Override
                         public void onError(com.androidnetworking.error.ANError anError) {
+                            if(BuildConfig.DEBUG){
+                                Log.d("ApiError", "Error"+ anError.getMessage());
+
+                            }
                             callback.onError(anError.getMessage());
                         }
                     });
@@ -142,6 +159,7 @@ public class AuthManager {
 
     }
     public void LoginEmail(String email,String password,NetworkCallbackInterfaceWithJsonObjectDelivery callback){
+        Log.d("feddhit", "getLoggedInUserProfile: ");
         String url=ApiEndPoints.LOGIN_EMAIL;
         JSONObject packet=new JSONObject();
         try {
@@ -160,6 +178,10 @@ public class AuthManager {
 
                         @Override
                         public void onError(ANError anError) {
+                            if(BuildConfig.DEBUG){
+                                Log.d("ApiError", "Error"+ anError.getMessage());
+
+                            }
                            callback.onError(Integer.toString(anError.getErrorCode()));
                         }
                     });
@@ -170,6 +192,7 @@ public class AuthManager {
     }
 
     public void LoginUserId(String email,String password,NetworkCallbackInterfaceWithJsonObjectDelivery callback){
+        Log.d("feddhit", "getLoggedInUserProfile: ");
         String url=ApiEndPoints.LOGIN_USERID;
         JSONObject packet=new JSONObject();
         try {
@@ -188,6 +211,10 @@ public class AuthManager {
 
                         @Override
                         public void onError(ANError anError) {
+                            if(BuildConfig.DEBUG){
+                                Log.d("ApiError", "Error"+ anError.getMessage());
+
+                            }
                             callback.onError(Integer.toString(anError.getErrorCode()));
                         }
                     });

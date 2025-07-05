@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     tools:context=".fragments.Posts_of_profile"
     android:background="@color/white"
     android:orientation="vertical">
@@ -27,6 +27,7 @@
         android:gravity="center"
         android:text="No Posts"
         android:visibility="gone"
+
         android:textSize="@dimen/sp_25"
         />
 
