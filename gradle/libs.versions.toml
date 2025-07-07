@@ -1,7 +1,7 @@
 [versions]
-agp = "8.9.3"
+agp = "8.9.2"
 androidNetworking = "1.0.4"
-cameraCore = "1.4.2"
+
 glide = "4.16.0"
 junit = "4.13.2"
 junitVersion = "1.2.1"
@@ -16,12 +16,6 @@ shimmer = "0.5.0"
 
 [libraries]
 android-networking = { module = "com.github.amitshekhariitbhu.Fast-Android-Networking:android-networking", version.ref = "androidNetworking" }
-camera-camera2 = { module = "androidx.camera:camera-camera2", version.ref = "cameraCore" }
-camera-core = { module = "androidx.camera:camera-core", version.ref = "cameraCore" }
-camera-extensions = { module = "androidx.camera:camera-extensions", version.ref = "cameraCore" }
-camera-lifecycle = { module = "androidx.camera:camera-lifecycle", version.ref = "cameraCore" }
-camera-video = { module = "androidx.camera:camera-video", version.ref = "cameraCore" }
-camera-view = { module = "androidx.camera:camera-view", version.ref = "cameraCore" }
 glide = { module = "com.github.bumptech.glide:glide", version.ref = "glide" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }

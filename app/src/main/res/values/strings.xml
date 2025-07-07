@@ -84,4 +84,7 @@
     <string name="nameLengthError">Name must be at least 3 characters long or shorter than 20 characters</string>
     <string name="bioEmptyWarning">Bio cannot be empty</string>
     <string name="BioLengthWarning">Bio cannot be longer than 150 characters</string>
+    <string name="permission_required">Permission Required</string>
+    <string name="new_post">New Post</string>
+    <string name="recents">Recents</string>
 </resources>
