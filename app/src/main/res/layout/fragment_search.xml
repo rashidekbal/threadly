@@ -21,7 +21,8 @@
         android:layout_marginHorizontal="@dimen/dp_20"
         android:textSize="@dimen/sp_16"
         android:paddingEnd="@dimen/dp_32"
-        android:textColor="@color/light_grey_text"
+        android:textColorHint="@color/DarkGreyText"
+        android:textColor="@color/black"
         />
     <ImageView
         android:layout_width="@dimen/dp_25"

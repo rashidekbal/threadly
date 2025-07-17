@@ -19,20 +19,22 @@
                 android:layout_height="@dimen/dp_70"
                 android:orientation="horizontal"
                 >
+
                 <ImageView
                     android:id="@+id/add_post_image_btn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/camera_icon"
                     android:layout_alignParentLeft="true"
                     android:layout_centerVertical="true"
-                    android:layout_marginStart="@dimen/dp_14"/>
+                    android:layout_marginStart="@dimen/dp_14"
+                    android:src="@drawable/camera_icon" />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Threadly"
                     android:fontFamily="@font/dancing_script"
                     android:textSize="@dimen/sp_30"
+                    android:textColor="@color/black"
                     android:layout_centerInParent="true"
                     />
                 <ImageView

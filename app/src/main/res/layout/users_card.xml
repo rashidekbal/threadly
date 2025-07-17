@@ -63,6 +63,7 @@
                 android:layout_height="wrap_content"
                 android:maxWidth="@dimen/dp_160"
                 android:textSize="@dimen/sp_13"
+                android:textColor="@color/DarkGreyText"
                 android:text="followed by example user"
                 android:layout_marginEnd="@dimen/dp_10"
                 android:layout_marginStart="@dimen/dp_5"/>
@@ -83,7 +84,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_37"
             android:text="Follow"
-            android:textColor="@color/white"
+            android:textColor="@color/AllWhite"
             android:background="@drawable/slight_round_btn_blue"
             android:layout_marginHorizontal="@dimen/dp_10"
             android:layout_marginBottom="@dimen/dp_10"/>

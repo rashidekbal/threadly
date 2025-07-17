@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragments.UsernameEditFragment"
+    tools:context=".fragments.profileFragments.UsernameEditFragment"
     android:orientation="vertical"
     android:background="@color/white">
 
@@ -61,6 +61,8 @@
             android:layout_marginHorizontal="@dimen/dp_14"
             android:background="@drawable/curved_rectangularbox_black_outline"
             android:hint="@string/username"
+            android:textColor="@color/black"
+            android:textColorHint="@color/DarkGreyText"
             android:layout_marginTop="@dimen/dp_20"
             />
         <TextView
@@ -80,6 +82,7 @@
             android:layout_marginHorizontal="@dimen/dp_14"
             android:layout_marginTop="@dimen/dp_20"
             android:text="@string/username_change_info"
+            android:textColor="@color/DarkGreyText"
             />
 
 
@@ -88,7 +91,7 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/dp_14"
             android:text="@string/learn_more"
-            android:textColor="@color/terms_color_dark"
+            android:textColor="@color/ui_blue"
             android:clickable="true"
             android:focusable="true"
             />
@@ -97,6 +100,7 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/dp_14"
             android:layout_marginTop="@dimen/dp_10"
+            android:textColor="@color/DarkGreyText"
             android:text="@string/username_visibility_info"
             />
 

@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:background="@color/white">
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_50"
@@ -36,6 +37,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="kaluadon12a"
+                    android:textColor="@color/black"
                     android:textStyle="bold"/>
                 <TextView
                     android:id="@+id/comment_text"
@@ -62,13 +64,14 @@
                    android:id="@+id/like_btn_image"
                    android:layout_width="@dimen/dp_20"
                    android:layout_height="@dimen/dp_20"
-                   android:src="@drawable/heart_inactive_icon"
+                   android:src="@drawable/heart_inactive"
                    />
                <TextView
                    android:id="@+id/likes_count_text"
                    android:layout_width="match_parent"
                    android:layout_height="wrap_content"
                    android:text="0"
+                   android:textColor="@color/black"
                    android:textAlignment="center"/>
            </LinearLayout>
 

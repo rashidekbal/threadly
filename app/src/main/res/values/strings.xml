@@ -87,4 +87,10 @@
     <string name="permission_required">Permission Required</string>
     <string name="new_post">New Post</string>
     <string name="recents">Recents</string>
+    <string name="add_a_caption">Add a caption</string>
+    <string name="save_draft">Save draft</string>
+    <string name="share">Share</string>
+    <string name="photo">Photo</string>
+    <string name="done">Done</string>
+    <string name="no_posts">No Posts</string>
 </resources>

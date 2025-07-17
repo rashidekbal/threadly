@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragments.EditBioFragment"
+    tools:context=".fragments.profileFragments.EditBioFragment"
     android:orientation="vertical"
     android:background="@color/white">
 
@@ -60,6 +60,8 @@
             android:layout_marginHorizontal="@dimen/dp_14"
             android:background="@drawable/curved_rectangularbox_black_outline"
             android:hint="@string/bio"
+            android:textColor="@color/black"
+            android:textColorHint="@color/DarkGreyText"
             android:layout_marginTop="@dimen/dp_20"
 
             />

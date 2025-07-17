@@ -24,7 +24,7 @@
             android:layout_height="wrap_content"
             android:text="50"
             android:textSize="@dimen/sp_16"
-            android:textColor="@color/white"
+            android:textColor="@color/AllWhite"
             android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
             android:elevation="5dp"

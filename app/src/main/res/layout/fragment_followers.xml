@@ -14,6 +14,8 @@
         android:hint="@string/search_user"
         android:layout_marginTop="@dimen/dp_10"
         android:layout_marginHorizontal="10dp"
+        android:textColor="@color/black"
+        android:textColorHint="@color/DarkGreyText"
         />
     <View
         android:layout_width="match_parent"
@@ -53,6 +55,7 @@
             android:id="@+id/progressBar"
             android:layout_width="@dimen/dp_40"
             android:layout_height="@dimen/dp_40"
+            android:indeterminateTint="@color/ui_blue"
             android:layout_centerInParent="true"/>
     </RelativeLayout>
 

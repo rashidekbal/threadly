@@ -41,6 +41,7 @@
             android:maxLines="1"
             android:text="miaisback"
             android:textStyle="bold"
+            android:textColor="@color/black"
             android:textSize="@dimen/sp_16" />
 
         <TextView
@@ -52,6 +53,7 @@
             android:text="username"
             android:ellipsize="end"
             android:maxLines="1"
+            android:textColor="@color/DarkGreyText"
             android:textSize="@dimen/sp_14" />
 
 
@@ -70,7 +72,7 @@
             android:background="@drawable/slight_round_btn_blue"
             android:text="@string/follow"
             android:textAllCaps="false"
-            android:textColor="@color/white"
+            android:textColor="@color/AllWhite"
             android:visibility="visible"
             android:layout_alignParentStart="true"
             android:layout_centerVertical="true"/>

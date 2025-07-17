@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".fragments.AddPostMainFragment"
-    android:background="@color/black"
+    android:background="@color/allBlack"
     android:orientation="vertical">
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
@@ -12,7 +12,7 @@
         <androidx.appcompat.widget.Toolbar
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/black">
+            android:background="@color/allBlack">
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
@@ -30,7 +30,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/new_post"
                     android:textStyle="bold"
-                    android:textColor="@color/white"
+                    android:textColor="@color/AllWhite"
                     android:textSize="@dimen/sp_23"
                     android:layout_toEndOf="@+id/cancel_button"
                     android:layout_marginHorizontal="@dimen/dp_28"/>
@@ -71,7 +71,7 @@
                     android:text="@string/recents"
                     android:textSize="@dimen/sp_20"
                     android:textStyle="bold"
-                    android:textColor="@color/white"
+                    android:textColor="@color/AllWhite"
                     android:layout_marginBottom="@dimen/dp_10"
                     android:layout_marginStart="@dimen/dp_10"/>
             </LinearLayout>

@@ -3,7 +3,91 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/top_radius_for_bottom_sheet"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    >
+  <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:gravity="center"
+      android:layout_marginTop="5dp">
+      <View
+          android:layout_width="@dimen/dp_60"
+          android:layout_height="@dimen/dp_7"
+          android:background="@drawable/bar_appearence"
+          android:layout_alignParentTop="true"
+          android:layout_centerHorizontal="true"
+          />
+  </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:paddingVertical="@dimen/dp_20">
+        <ImageView
+            android:id="@+id/profilePic"
+            android:layout_width="@dimen/dp_80"
+            android:layout_height="@dimen/dp_80"
+            android:src="@drawable/blank_profile"
+            android:background="@drawable/circle"
+            android:clipToOutline="true"
+            />
+    </LinearLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/light_grey_text"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="@dimen/dp_10"
+        android:layout_marginVertical="@dimen/dp_10"
+        android:textColor="@color/DarkGreyText"
+        android:text="Your profile picture will be visible to everyone.
+People can view a larger version on your profile, and you can change this in Settings Under Account Privacy"/>
+
+    <LinearLayout
+        android:id="@+id/pictureSelector_gallery_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginVertical="@dimen/dp_10">
+        <ImageView
+            android:id="@+id/galleryIcon"
+            android:layout_width="@dimen/dp_40"
+            android:layout_height="@dimen/dp_40"
+            android:src="@drawable/gallery_icon"
+            android:layout_marginStart="@dimen/dp_10"
+            />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Choose from library"
+            android:textColor="@color/black"
+            android:layout_marginStart="@dimen/dp_10"/>
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/openCameraButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginVertical="@dimen/dp_10">
+        <ImageView
+            android:id="@+id/cameraIcon"
+            android:layout_width="@dimen/dp_40"
+            android:layout_height="@dimen/dp_40"
+            android:src="@drawable/camera_icon"
+            android:layout_marginStart="@dimen/dp_10"
+            />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Take photo"
+            android:textColor="@color/black"
+            android:layout_marginStart="@dimen/dp_10"/>
+    </LinearLayout>
+
 
 
 </LinearLayout>

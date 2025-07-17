@@ -3,7 +3,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:layout_marginBottom="@dimen/dp_15">
+    android:layout_marginBottom="@dimen/dp_15"
+    android:background="@color/white">
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -63,7 +64,7 @@
 
         <ImageView
             android:id="@+id/options_btn"
-            android:layout_width="wrap_content"
+            android:layout_width="40dp"
             android:layout_height="@dimen/dp_20"
             android:src="@drawable/optiondots"
             android:layout_alignParentRight="true"
@@ -79,7 +80,7 @@
         android:maxHeight="@dimen/dp_600"
         android:scaleType="matrix"
         android:adjustViewBounds="true"
-        android:background="@color/black"/>
+        android:background="@color/allBlack"/>
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_48"
@@ -97,7 +98,7 @@
                 android:layout_width="@dimen/dp_28"
                 android:layout_height="@dimen/dp_24"
                 android:layout_marginEnd="@dimen/dp_5"
-                android:src="@drawable/heart_inactive_icon"
+                android:src="@drawable/heart_inactive"
 
                 />
 
@@ -217,6 +218,7 @@
             android:layout_height="wrap_content"
             android:text="September 19"
             android:layout_marginTop="@dimen/dp_13"
+            android:textColor="@color/DarkGreyText"
             />
     </LinearLayout>
 <!--    <View-->

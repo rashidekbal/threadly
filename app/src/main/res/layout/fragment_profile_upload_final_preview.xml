@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".fragments.profileFragments.profileUploadFinalPreview"
+    android:background="@color/white">
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <ImageView
+                    android:id="@+id/close"
+                    android:layout_width="@dimen/dp_35"
+                    android:layout_height="@dimen/dp_34"
+                    android:src="@drawable/cross"/>
+            </LinearLayout>
+        </androidx.appcompat.widget.Toolbar>
+    </com.google.android.material.appbar.AppBarLayout>
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_500"
+        android:layout_below="@id/appBar"
+        android:layout_marginTop="@dimen/dp_55"
+        >
+        <ImageView
+            android:id="@+id/previewView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:src="@drawable/sample_post_2"/>
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="@dimen/dp_50"
+            android:layout_height="@dimen/dp_50"
+            android:elevation="2dp"
+            android:indeterminateTint="@color/white"
+            android:layout_centerInParent="true"
+            android:visibility="invisible"/>
+    </RelativeLayout>
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/dp_100"
+    android:layout_alignParentBottom="true"
+    android:gravity="center_vertical"
+    android:layout_marginHorizontal="@dimen/dp_10">
+    <androidx.appcompat.widget.AppCompatButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Edit"
+        android:background="@drawable/slight_round_btn_grey"
+        />
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/uploadBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Done"
+        android:background="@drawable/slight_round_btn_blue"
+        android:layout_alignParentEnd="true"
+        android:textColor="@color/AllWhite"
+        />
+
+</RelativeLayout>
+
+</RelativeLayout>

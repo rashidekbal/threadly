@@ -3,14 +3,14 @@ plugins {
 }
 
 android {
-    namespace 'com.rtech.gpgram'
+    namespace 'com.rtech.threadly'
     compileSdk 35
     buildFeatures {
         buildConfig true
         viewBinding true// <-- Add this line to enable BuildConfig
     }
     defaultConfig {
-        applicationId "com.rtech.gpgram"
+        applicationId "com.rtech.threadly"
         minSdk 24
         targetSdk 35
         versionCode 1

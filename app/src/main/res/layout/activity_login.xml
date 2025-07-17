@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".activities.LoginActivity"
-    android:background="@color/page_icon_color">
+    android:background="@color/white">
     <ImageView
         android:layout_width="@dimen/dp_113"
         android:layout_height="@dimen/dp_113"
@@ -34,6 +34,8 @@
             android:background="@drawable/edit_text_style"
             android:inputType="text"
             tools:ignore="RtlSymmetry"
+            android:textColor="@color/black"
+            android:textColorHint="@color/DarkGreyText"
             android:autofillHints="username"/>
         <EditText
             android:id="@+id/password_field"
@@ -41,7 +43,8 @@
             android:layout_height="@dimen/dp_62"
             android:hint="@string/password_field_hint"
             android:autofillHints="password"
-
+            android:textColor="@color/white"
+            android:textColorHint="@color/DarkGreyText"
             android:inputType="textPassword"
             android:paddingVertical="@dimen/dp_20"
             android:paddingHorizontal="@dimen/dp_14"
@@ -57,7 +60,7 @@
                 android:layout_height="@dimen/dp_48"
                 android:text="@string/login_btn_txt"
                 android:background="@drawable/login_btn_background"
-                android:textColor="@color/white"
+                android:textColor="@color/AllWhite"
                 android:layout_marginTop="@dimen/dp_16"
                 android:textAllCaps="true"
                 android:textSize="@dimen/sp_16"
@@ -68,7 +71,7 @@
                 android:layout_height="wrap_content"
                 android:paddingTop="@dimen/dp_13"
                 android:indeterminate="true"
-                android:indeterminateTint="@color/white"
+                android:indeterminateTint="@color/AllWhite"
                 android:layout_centerInParent="true"
                 android:elevation="5dp"
                 android:visibility="gone"
@@ -83,6 +86,7 @@
             android:layout_marginTop="@dimen/dp_32"
             android:textSize="@dimen/sp_16"
             android:textAlignment="center"
+            android:textColor="@color/DarkGreyText"
             />
 
 
@@ -105,7 +109,7 @@
         android:layout_centerHorizontal="true"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="@dimen/dp_45"
-        android:textColor="@color/light_grey_text"
+        android:textColor="@color/DarkGreyText"
         android:text="@string/parent_company_name"/>
 
 

@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".activities.HomeActivity"
+    android:background="@color/white"
 
     >
 
@@ -13,23 +14,23 @@
         android:id="@+id/fragmentHolder"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="@dimen/dp_90"/>
+        android:layout_marginBottom="@dimen/dp_90" />
 
-<androidx.cardview.widget.CardView
+    <androidx.cardview.widget.CardView
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_alignParentBottom="true"
     app:cardElevation="@dimen/dp_10">
+
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_navigation"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_90"
-        app:menu="@menu/navigation_menu"
-        app:labelVisibilityMode="unlabeled"
         android:background="@color/white"
-        app:itemRippleColor="@android:color/transparent"
         app:itemActiveIndicatorStyle="@style/NoIndicator"
-        />
+        app:itemRippleColor="@android:color/transparent"
+        app:labelVisibilityMode="unlabeled"
+        app:menu="@menu/navigation_menu" />
 
 </androidx.cardview.widget.CardView>
 

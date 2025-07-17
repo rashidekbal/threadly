@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragments.Posts_of_profile"
+    tools:context=".fragments.profileFragments.Posts_of_profile"
     android:background="@color/white"
     android:orientation="vertical">
     <!--            before posts are loaded-->
@@ -25,9 +25,9 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
-        android:text="No Posts"
+        android:text="@string/no_posts"
         android:visibility="gone"
-
+        android:textColor="@color/black"
         android:textSize="@dimen/sp_25"
         />
 

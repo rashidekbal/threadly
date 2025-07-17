@@ -33,6 +33,8 @@
             android:paddingVertical="@dimen/dp_20"
             android:paddingHorizontal="@dimen/dp_14"
             android:textSize="@dimen/sp_15"
+            android:textColor="@color/black"
+            android:textColorHint="@color/DarkGreyText"
             android:background="@drawable/edit_text_style_2"/>
     </RelativeLayout>
     <RelativeLayout
@@ -53,7 +55,7 @@
                     android:layout_height="@dimen/dp_48"
                     android:text="@string/next"
                     android:background="@drawable/login_btn_background"
-                    android:textColor="@color/white"
+                    android:textColor="@color/AllWhite"
                     android:layout_marginTop="@dimen/dp_5"
                     android:textSize="@dimen/sp_16"
                     android:textAllCaps="false"
@@ -63,7 +65,7 @@
                     android:layout_width="@dimen/dp_45"
                     android:layout_height="wrap_content"
                     android:indeterminate="true"
-                    android:indeterminateTint="@color/white"
+                    android:indeterminateTint="@color/AllWhite"
                     android:paddingTop="@dimen/dp_6"
                     android:layout_centerInParent="true"
                     android:elevation="5dp"

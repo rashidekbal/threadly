@@ -27,7 +27,7 @@
         android:paddingEnd="@dimen/dp_12"
         android:layout_marginTop="@dimen/dp_13"
         tools:ignore="RtlSymmetry"
-        android:textColor="#3B3838"/>
+        android:textColor="@color/DarkGreyText"/>
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -53,6 +53,8 @@
             android:textAlignment="center"
             android:focusable="false"
             android:inputType="none"
+            android:textColor="@color/white"
+            android:textColorHint="@color/DarkGreyText"
             android:background="@drawable/edit_text_style_2"/>
 
 
@@ -62,7 +64,7 @@
             android:layout_height="@dimen/dp_48"
             android:text="@string/next"
             android:background="@drawable/login_btn_background"
-            android:textColor="@color/white"
+            android:textColor="@color/AllWhite"
             android:layout_marginTop="@dimen/dp_5"
             android:textSize="@dimen/sp_16"
             android:textAllCaps="false"

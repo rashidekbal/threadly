@@ -82,12 +82,14 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_alignParentBottom="true"
-    app:cardElevation="3dp">
+    app:cardElevation="3dp"
+    >
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingHorizontal="@dimen/dp_10"
         android:paddingVertical="@dimen/dp_10"
+        android:background="@color/white"
 
 
         >
@@ -110,6 +112,8 @@
             android:background="@android:color/transparent"
             android:paddingStart="@dimen/dp_10"
             android:layout_marginStart="@dimen/dp_50"
+            android:textColor="@color/black"
+            android:textColorHint="@color/DarkGreyText"
 
             />
 
@@ -128,7 +132,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="posting..."
-            android:textColor="@color/white"
+            android:textColor="@color/AllWhite"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:padding="@dimen/dp_5"
