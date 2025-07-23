@@ -31,6 +31,7 @@ import com.rtech.threadly.BuildConfig;
 import com.rtech.threadly.R;
 import com.rtech.threadly.activities.AddPostActivity;
 import com.rtech.threadly.activities.FollowerFollowingList;
+import com.rtech.threadly.activities.SettingsActivity;
 import com.rtech.threadly.constants.SharedPreferencesKeys;
 import com.rtech.threadly.core.Core;
 import com.rtech.threadly.interfaces.Post_fragmentSetCallback;
@@ -147,6 +148,9 @@ ProfileViewModel profileViewModel;
             public void onClick(View v) {
                 activity.startActivity(new Intent(activity,AddPostActivity.class));
             }
+        });
+        option_bar.setOnClickListener(v->{
+            startActivity(new Intent(requireActivity(), SettingsActivity.class));
         });
 
     }

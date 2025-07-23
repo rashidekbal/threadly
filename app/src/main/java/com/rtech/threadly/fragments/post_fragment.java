@@ -4,10 +4,13 @@ import static com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.media3.common.util.UnstableApi;
+import androidx.media3.ui.PlayerView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -39,6 +42,7 @@ import com.rtech.threadly.managers.LikeManager;
 import com.rtech.threadly.managers.PostsManager;
 import com.rtech.threadly.models.Posts_Comments_Model;
 import com.rtech.threadly.models.Posts_Model;
+import com.rtech.threadly.utils.ExoplayerUtil;
 import com.rtech.threadly.utils.ReUsableFunctions;
 
 import org.json.JSONArray;
@@ -51,14 +55,16 @@ import java.util.Objects;
 
 
 public class post_fragment extends Fragment {
-ImageView posts_image_view,profile_img,like_btn,comment_btn;
+ImageView posts_image_view,profile_img,like_btn,comment_btn,play_btn;
 TextView username_text,caption_text,like_count_text,comment_count_text,share_count_text;
+PlayerView playerView;
 int postId;
 PostsManager postsManager;
 LikeManager likeManager;
 CommentsManager commentsManager;
 Posts_Model postData;
 SharedPreferences loginInfo;
+private boolean[] isPlaying={true};
 
 
 
@@ -109,9 +115,10 @@ SharedPreferences loginInfo;
         share_count_text=v.findViewById(R.id.shares_count_text);
         like_btn=v.findViewById(R.id.like_btn_image);
         comment_btn=v.findViewById(R.id.comment_btn_image);
+        playerView=v.findViewById(R.id.videoPlayer_view);
+        play_btn=v.findViewById(R.id.play_btn);
 
         postId=getArguments().getInt("postid");
-        AndroidNetworking.initialize(v.getContext());
         loadData(v);
 
     }
@@ -119,6 +126,7 @@ SharedPreferences loginInfo;
 
     private void loadData(View v){
         postsManager.getPostWithId(postId, new NetworkCallbackInterfaceWithJsonObjectDelivery() {
+            @UnstableApi
             @Override
             public void onSuccess(JSONObject response) {
 
@@ -137,6 +145,7 @@ SharedPreferences loginInfo;
                 int commentCount = object.optInt("commentCount");
                 int shareCount = object.optInt("shareCount");
                 int isLiked = object.optInt("isLiked");
+                boolean isVideo=object.optString("type").equals("video");
 
 
                 postData= new Posts_Model(postid,
@@ -150,7 +159,8 @@ SharedPreferences loginInfo;
                         likeCount,
                         commentCount,
                         shareCount,
-                        isLiked);
+                        isLiked,
+                        isVideo);
              setData(v,postData);
 
 
@@ -164,8 +174,42 @@ SharedPreferences loginInfo;
             }
         });
     }
+
+    @UnstableApi
     private void  setData(View view, Posts_Model data){
-        Glide.with(view.getContext()).load(data.postUrl).placeholder(R.drawable.post_placeholder).into(posts_image_view);
+        if(data.isVideo){
+            playerView.setVisibility(View.VISIBLE);
+            posts_image_view.setVisibility(View.GONE);
+            ExoplayerUtil.play(Uri.parse(data.postUrl),playerView);
+            if (!isPlaying[0]){
+                play_btn.setVisibility(View.VISIBLE);
+            }else{
+                play_btn.setVisibility(View.GONE);
+            }
+            playerView.setOnClickListener(v->{
+                if(isPlaying[0]){
+                    ExoplayerUtil.pause();
+                    isPlaying[0]=false;
+                    play_btn.setVisibility(View.VISIBLE);
+                }else{
+                    ExoplayerUtil.resume();
+                    isPlaying[0]=true;
+                    play_btn.setVisibility(View.GONE);
+                }
+            });
+
+
+
+
+        }else {
+            posts_image_view.setVisibility(View.VISIBLE);
+            playerView.setVisibility(View.GONE);
+            play_btn.setVisibility(View.GONE);
+            Glide.with(view.getContext()).load(data.postUrl).placeholder(R.drawable.post_placeholder).into(posts_image_view);
+
+
+        }
+
         Glide.with(view.getContext()).load(data.userDpUrl).placeholder(R.drawable.blank_profile).into(profile_img);
         username_text.setText(data.username);
         if(data.caption.equals("null")||data.caption.isEmpty()){
@@ -394,5 +438,12 @@ SharedPreferences loginInfo;
                 });
             }
         });
+    }
+
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        ExoplayerUtil.stop();
     }
 }

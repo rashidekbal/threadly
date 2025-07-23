@@ -66,6 +66,7 @@ public class PostsViewModel extends AndroidViewModel {
                                     postObject.getInt("commentCount"),
                                     postObject.getInt("shareCount"),
                                     postObject.getInt("isLiked")
+                                    ,postObject.getString("type").equals("video")
                             ));
 
 

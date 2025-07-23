@@ -48,6 +48,30 @@ public class PostsManager {
                 });
 
     }
+    public void uploadVideoPost(File videofile,String caption, NetworkCallbackInterfaceWithJsonObjectDelivery callback){
+        String url=ApiEndPoints.ADD_VIDEO_POST;
+        AndroidNetworking.upload(url).setPriority(Priority.HIGH).setOkHttpClient(Core.getOkHttp())
+                .addHeaders("Authorization","Bearer "+getToken())
+                .addMultipartFile("video",videofile)
+                .addMultipartParameter("caption",caption)
+                .build().setUploadProgressListener(new UploadProgressListener() {
+                    @Override
+                    public void onProgress(long bytesUploaded, long totalBytes) {
+
+                    }
+                }).getAsJSONObject(new JSONObjectRequestListener() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        callback.onSuccess(response);
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+                        callback.onError(anError.toString());
+                    }
+                });
+
+    }
 
     public void getPostWithId(int postId, NetworkCallbackInterfaceWithJsonObjectDelivery callbackInterface){
 

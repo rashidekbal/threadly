@@ -52,14 +52,7 @@ public class AddPostActivity extends AppCompatActivity {
             window.getDecorView().setSystemUiVisibility(0); // clear light status flag
             window.setStatusBarColor(Color.BLACK); // or any dark color you're using
         }
-        // callback for final upload fragment
-        postUploadedCallback=new PostUploadedCallback() {
-            @Override
-            public void uploadSuccess() {
-                finish();
 
-            }
-        };
 
         // call back for cameraFragment
         cameraFragmentInterface=new CameraFragmentInterface() {
@@ -69,7 +62,7 @@ public class AddPostActivity extends AppCompatActivity {
                 bundle.putString("filePath",filePath);
                 bundle.putString("mediaType",mediaType);
                 bundle.putString("from","camera");
-                Fragment fragment=new UploadPostFinalFragment(postUploadedCallback);
+                Fragment fragment=new UploadPostFinalFragment();
                 fragment.setArguments(bundle);
                 fragmentManager(fragment);
 
@@ -94,7 +87,7 @@ public class AddPostActivity extends AppCompatActivity {
                 bundle.putString("filePath",uri);
                 bundle.putString("mediaType",type);
                 bundle.putString("from","gallery");
-                Fragment fragment=new UploadPostFinalFragment(postUploadedCallback);
+                Fragment fragment=new UploadPostFinalFragment();
                 fragment.setArguments(bundle);
                 fragmentManager(fragment);
 

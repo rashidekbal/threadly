@@ -50,8 +50,9 @@
 
                 <ImageView
                     android:id="@+id/image_view"
-                    android:layout_width="@dimen/dp_250"
-                    android:layout_height="@dimen/dp_250"
+                    android:layout_width="@dimen/dp_300"
+                    android:layout_height="wrap_content"
+                    android:maxHeight="@dimen/dp_600"
                     android:src="@drawable/sample_post"
                     android:visibility="gone"
                     android:layout_centerInParent="true"

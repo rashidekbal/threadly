@@ -6,6 +6,9 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.work.Data;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.WorkRequest;
 
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -13,11 +16,13 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.bumptech.glide.Glide;
+import com.rtech.threadly.core.Core;
 import com.rtech.threadly.databinding.FragmentUploadPostFinalBinding;
 import com.rtech.threadly.interfaces.NetworkCallbackInterfaceWithJsonObjectDelivery;
 import com.rtech.threadly.interfaces.PostUploadedCallback;
 import com.rtech.threadly.managers.PostsManager;
 import com.rtech.threadly.utils.ReUsableFunctions;
+import com.rtech.threadly.workers.UploadMediaWorker;
 
 import org.json.JSONObject;
 
@@ -32,14 +37,9 @@ public class UploadPostFinalFragment extends Fragment {
     String from;
     File file;
     AppCompatActivity activity;
-    PostsManager postsManager;
-    PostUploadedCallback callback;
+    WorkRequest uploadRequest;
+    Data data;
 
-
-    public UploadPostFinalFragment(PostUploadedCallback callback) {
-        this.callback=callback;
-        // Required empty public constructor
-    }
 
 
 
@@ -56,7 +56,7 @@ public class UploadPostFinalFragment extends Fragment {
             activity.getSupportActionBar().setTitle("New Post");
             activity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             setHasOptionsMenu(true);
-            init();
+
             getData();
             mainXml.imagePlaceHolder.setVisibility(View.GONE);
             mainXml.imageLoadProgressBar.setVisibility(View.GONE);
@@ -77,9 +77,6 @@ public class UploadPostFinalFragment extends Fragment {
             return true;
         }
         return false;
-    }
-    private void init() {
-        postsManager=new PostsManager();
     }
     private void getData(){
         Bundle bundle = getArguments();
@@ -107,38 +104,37 @@ public class UploadPostFinalFragment extends Fragment {
                 mainXml.shareBtn.setEnabled(false);
                 if(file.exists()){
                     String caption=mainXml.captionText.getText().toString().trim();
-                    postsManager.uploadImagePost(file, caption, new NetworkCallbackInterfaceWithJsonObjectDelivery() {
-                        @Override
-                        public void onSuccess(JSONObject response) {
-                            ReUsableFunctions.ShowToast(activity,"upload success");
-                            file.delete();
-                            callback.uploadSuccess();
+                    if(mediaType.equals("image")){
+                        data=new Data.Builder()
+                                .putString("type","image")
+                                .putString("path",file.getAbsolutePath())
+                                .putString("caption",caption)
+                                .build();
+                        uploadRequest=new OneTimeWorkRequest.Builder(UploadMediaWorker.class).setInputData(data).build();
+                        Core.getWorkManager().enqueue(uploadRequest);
+                        ReUsableFunctions.ShowToast("Uploading");
+                        requireActivity().finish();
 
-                        }
+                    }else{
+                        data=new Data.Builder()
+                                .putString("type","video")
+                                .putString("path",file.getAbsolutePath())
+                                .putString("caption",caption)
+                                .build();
+                        uploadRequest=new OneTimeWorkRequest.Builder(UploadMediaWorker.class).setInputData(data).build();
+                        Core.getWorkManager().enqueue(uploadRequest);
+                        ReUsableFunctions.ShowToast("Uploading");
+                        requireActivity().finish();
 
-                        @Override
-                        public void onError(String err) {
-                            ReUsableFunctions.ShowToast(activity,"upload err");
+                    }
 
-                        }
-                    });
 
                 }else {
                     ReUsableFunctions.ShowToast(activity,"no image found err");
+                    requireActivity().onBackPressed();
                 }
             }
         });
     }
 
-
-
-
-    @Override
-    public void onDestroy() {
-        if(file.exists()){
-            file.delete();
-        }
-
-        super.onDestroy();
-    }
 }

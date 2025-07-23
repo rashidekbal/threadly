@@ -135,7 +135,6 @@ public class AddPostMainFragment extends Fragment {
                 long id=cursor.getLong(idColumn);
                 int mediaType=cursor.getInt(mediaTypeColumn);
                 int durationVideo=Math.round((mediaType==MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO?cursor.getFloat(duration):0)/1000);
-                Log.d("duration", "getInternalImage_video: "+Float.toString(durationVideo));
                 Uri uri=(mediaType==MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE)?
                         ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,id)
                         :ContentUris.withAppendedId(MediaStore.Video.Media.EXTERNAL_CONTENT_URI,id);

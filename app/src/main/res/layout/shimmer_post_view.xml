@@ -4,6 +4,147 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:background="@color/white">
+<!--    <LinearLayout-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="@dimen/dp_145"-->
+<!--        android:orientation="horizontal">-->
+<!--        <LinearLayout-->
+<!--            android:orientation="vertical"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginHorizontal="@dimen/dp_10"-->
+<!--            >-->
+<!--            <FrameLayout-->
+<!--                android:layout_width="@dimen/dp_80"-->
+<!--                android:layout_height="@dimen/dp_80"-->
+<!--                android:background="@drawable/circle_grey"-->
+<!--                android:layout_marginBottom="@dimen/dp_4"-->
+<!--                >-->
+
+<!--                <ImageView-->
+<!--                    android:layout_width="@dimen/dp_70"-->
+<!--                    android:layout_height="@dimen/dp_70"-->
+<!--                    android:layout_gravity="center"-->
+<!--                    android:background="@drawable/circle_grey"-->
+<!--                    android:clipToOutline="true"-->
+<!--                    android:scaleType="centerCrop" />-->
+
+<!--            </FrameLayout>-->
+<!--            <TextView-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:background="@color/light_grey_text"-->
+<!--                android:textColor="@color/black"-->
+<!--                android:textAlignment="center"-->
+<!--                android:textSize="@dimen/sp_14"-->
+<!--                android:layout_marginTop="5dp"-->
+<!--                />-->
+
+
+<!--        </LinearLayout>-->
+<!--        <LinearLayout-->
+<!--            android:orientation="vertical"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginHorizontal="@dimen/dp_10"-->
+<!--            >-->
+<!--            <FrameLayout-->
+<!--                android:layout_width="@dimen/dp_80"-->
+<!--                android:layout_height="@dimen/dp_80"-->
+<!--                android:background="@drawable/circle_grey"-->
+<!--                android:layout_marginBottom="@dimen/dp_4"-->
+<!--                >-->
+
+<!--                <ImageView-->
+<!--                    android:layout_width="@dimen/dp_70"-->
+<!--                    android:layout_height="@dimen/dp_70"-->
+<!--                    android:layout_gravity="center"-->
+<!--                    android:background="@drawable/circle_grey"-->
+<!--                    android:clipToOutline="true"-->
+<!--                    android:scaleType="centerCrop" />-->
+
+<!--            </FrameLayout>-->
+<!--            <TextView-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:background="@color/light_grey_text"-->
+<!--                android:textColor="@color/black"-->
+<!--                android:textAlignment="center"-->
+<!--                android:textSize="@dimen/sp_14"-->
+<!--                android:layout_marginTop="5dp"-->
+<!--                />-->
+
+
+<!--        </LinearLayout>-->
+<!--        <LinearLayout-->
+<!--            android:orientation="vertical"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginHorizontal="@dimen/dp_10"-->
+<!--            >-->
+<!--            <FrameLayout-->
+<!--                android:layout_width="@dimen/dp_80"-->
+<!--                android:layout_height="@dimen/dp_80"-->
+<!--                android:background="@drawable/circle_grey"-->
+<!--                android:layout_marginBottom="@dimen/dp_4"-->
+<!--                >-->
+
+<!--                <ImageView-->
+<!--                    android:layout_width="@dimen/dp_70"-->
+<!--                    android:layout_height="@dimen/dp_70"-->
+<!--                    android:layout_gravity="center"-->
+<!--                    android:background="@drawable/circle_grey"-->
+<!--                    android:clipToOutline="true"-->
+<!--                    android:scaleType="centerCrop" />-->
+
+<!--            </FrameLayout>-->
+<!--            <TextView-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:background="@color/light_grey_text"-->
+<!--                android:textColor="@color/black"-->
+<!--                android:textAlignment="center"-->
+<!--                android:textSize="@dimen/sp_14"-->
+<!--                android:layout_marginTop="5dp"-->
+<!--                />-->
+
+
+<!--        </LinearLayout>-->
+<!--        <LinearLayout-->
+<!--            android:orientation="vertical"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginHorizontal="@dimen/dp_10"-->
+<!--            >-->
+<!--            <FrameLayout-->
+<!--                android:layout_width="@dimen/dp_80"-->
+<!--                android:layout_height="@dimen/dp_80"-->
+<!--                android:background="@drawable/circle_grey"-->
+<!--                android:layout_marginBottom="@dimen/dp_4"-->
+<!--                >-->
+
+<!--                <ImageView-->
+<!--                    android:layout_width="@dimen/dp_70"-->
+<!--                    android:layout_height="@dimen/dp_70"-->
+<!--                    android:layout_gravity="center"-->
+<!--                    android:background="@drawable/circle_grey"-->
+<!--                    android:clipToOutline="true"-->
+<!--                    android:scaleType="centerCrop" />-->
+
+<!--            </FrameLayout>-->
+<!--            <TextView-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:background="@color/light_grey_text"-->
+<!--                android:textColor="@color/black"-->
+<!--                android:textAlignment="center"-->
+<!--                android:textSize="@dimen/sp_14"-->
+<!--                android:layout_marginTop="5dp"-->
+<!--                />-->
+
+
+<!--        </LinearLayout>-->
+<!--    </LinearLayout>-->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

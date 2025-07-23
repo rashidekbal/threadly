@@ -7,13 +7,7 @@
     android:background="@color/white"
     android:orientation="vertical"
     >
-    <androidx.core.widget.NestedScrollView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_70"
@@ -59,9 +53,10 @@
             </RelativeLayout>
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:visibility="gone">
                 <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/Status_recycler_view"
+                    android:id="@+id/story_recyclerView"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/dp_130"
                     />
@@ -69,26 +64,31 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:layout_alignParentBottom="true"
+                    android:layout_below="@+id/story_recyclerView"
                     android:alpha="0.1"
                     android:background="#262626" />
             </RelativeLayout>
 <!--shimmer post placeholder-->
-<!--            <include layout="@layout/users_card"/>-->
             <com.facebook.shimmer.ShimmerFrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/shimmerView">
                 <include layout="@layout/shimmer_post_view"/>
             </com.facebook.shimmer.ShimmerFrameLayout>
-            <androidx.recyclerview.widget.RecyclerView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/posts_recyclerView"
-                android:visibility="gone"/>
+<androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+    android:id="@+id/swipeRefresh"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <androidx.recyclerview.widget.RecyclerView
 
-        </LinearLayout>
-    </androidx.core.widget.NestedScrollView>
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/posts_recyclerView"
+        android:visibility="gone"/>
+
+</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+
 
 
 

@@ -1,0 +1,95 @@
+package com.rtech.threadly.utils;
+
+import android.content.Context;
+import android.net.Uri;
+
+import androidx.annotation.OptIn;
+import androidx.media3.common.MediaItem;
+import androidx.media3.common.util.UnstableApi;
+import androidx.media3.exoplayer.ExoPlayer;
+import androidx.media3.exoplayer.source.MediaSource;
+import androidx.media3.exoplayer.source.ProgressiveMediaSource;
+import androidx.media3.ui.PlayerView;
+
+public class ExoplayerUtil {
+    private static Context cont;
+    private static ExoPlayer exoplayer;
+    public static void init(Context context){
+        exoplayer=new ExoPlayer.Builder(context).build();
+        exoplayer.setRepeatMode(ExoPlayer.REPEAT_MODE_ONE);
+cont=context;
+    }
+    public static ExoPlayer getExoplayer(){
+        return exoplayer;
+    }
+
+    @UnstableApi
+    public static void play(Uri uri, PlayerView playerView){
+        if(uri!=null){
+            MediaItem mediaItem=MediaItem.fromUri(uri);
+
+            MediaSource mediaSource = new ProgressiveMediaSource.Factory(
+                    CacheDataSourceUtil.getCacheDataSourceFactory(cont)
+            ).createMediaSource(mediaItem);
+
+            exoplayer.setMediaSource(mediaSource);
+            playerView.setPlayer(exoplayer);
+            exoplayer.prepare();
+            exoplayer.play();
+        }
+
+
+    }
+    public static void pause(){
+        if(exoplayer!=null){
+            exoplayer.setPlayWhenReady(false);
+            exoplayer.pause();
+        }
+    }
+
+    public static void resume(){
+        if(exoplayer!=null){
+            exoplayer.setPlayWhenReady(true);
+            exoplayer.play();
+        }
+    }
+    public static void stop() {
+        if (exoplayer != null) {
+            exoplayer.setPlayWhenReady(false);
+            exoplayer.stop();
+        }
+    }
+    public static void mute(){
+        if(exoplayer!=null){
+            exoplayer.setVolume(0f);
+
+        }
+    }
+    public static void unMute(){
+        if(exoplayer!=null){
+            exoplayer.setVolume(1f);
+
+        }
+    }
+    public static long[] getPlayingInfo(){
+        return new long[]{
+                exoplayer.getDuration(),exoplayer.getCurrentPosition()
+        };
+
+    }
+    public static void seekTo(long position){
+        if (exoplayer!=null){
+            exoplayer.seekTo(position);
+
+        }
+    }
+
+    @OptIn(markerClass = UnstableApi.class)
+    public static void release() {
+        if (exoplayer != null) {
+            exoplayer.release();
+            exoplayer = null;
+            ExoPlayerCache.getInstance(cont).release();
+        }
+    }
+}

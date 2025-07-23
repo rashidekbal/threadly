@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".fragments.post_fragment"
     android:background="@color/allBlack">
     <RelativeLayout
@@ -16,7 +17,25 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:adjustViewBounds="true"
-            android:scaleType="fitCenter"/>
+            android:scaleType="fitCenter"
+            android:visibility="gone"/>
+<!--        main video player -->
+        <androidx.media3.ui.PlayerView
+            android:id="@+id/videoPlayer_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:resize_mode="fit"
+            android:background="@color/allBlack"
+            app:show_buffering="when_playing"
+            app:use_controller="false"
+            android:visibility="gone"/>
+        <ImageView
+            android:layout_width="@dimen/dp_50"
+            android:layout_height="@dimen/dp_50"
+            android:src="@drawable/play_icon"
+            android:id="@+id/play_btn"
+            android:layout_centerInParent="true"
+            android:visibility="gone"/>
 <!--        user whose post is this -->
         <LinearLayout
             android:layout_width="match_parent"

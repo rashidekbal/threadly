@@ -19,4 +19,5 @@ public class Threadly extends Application {
     public static Threadly getInstance(){
         return instance;
     }
+    
 }

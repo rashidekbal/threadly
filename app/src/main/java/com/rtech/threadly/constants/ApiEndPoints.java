@@ -26,6 +26,7 @@ public class ApiEndPoints {
     public static final String GET_USER_POSTS = baseUrl+"/posts/getUserPosts/";
     public static final String GET_FEED = baseUrl+"/posts/getPostsFeed/";
     public static final String ADD_IMAGE_POST = baseUrl+"/posts/addImagePost/";
+    public static final String ADD_VIDEO_POST = baseUrl+"/posts/addVideoPost/";
 
    // Profile
     public static final String GET_PROFILE = baseUrl + "/users/getUser/";

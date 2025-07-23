@@ -22,6 +22,7 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.media3.common.util.UnstableApi;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.CustomTarget;
@@ -46,6 +47,8 @@ import com.rtech.threadly.fragments.searchFragment;
 import com.rtech.threadly.interfaces.CameraFragmentInterface;
 import com.rtech.threadly.interfaces.FragmentItemClickInterface;
 import com.rtech.threadly.interfaces.Post_fragmentSetCallback;
+import com.rtech.threadly.utils.ExoPlayerCache;
+import com.rtech.threadly.utils.ExoplayerUtil;
 
 public class HomeActivity extends AppCompatActivity {
     ActivityHomeBinding binding;
@@ -248,7 +251,8 @@ int currentFragment;
     }
 
 
-    }
+
+}
 
     //    @Override
 //    protected void onResume() {

@@ -9,6 +9,7 @@ public class Posts_Model {
    public String createdAt;
     public String userDpUrl;
    public Boolean isliked;
+   public boolean isVideo;
     public Posts_Model
             (int postId,
              String userId,
@@ -21,7 +22,8 @@ public class Posts_Model {
              int likeCount,
              int commentCount,
              int shareCount ,
-             int isLiked){
+             int isLiked,
+            boolean isVideo){
         this.postId=postId;
         this.userId=userId;
         this.username=username;
@@ -34,6 +36,7 @@ public class Posts_Model {
         this.shareCount=shareCount;
         this.isliked= isLiked>0;
         this.likedBy=likedBy;
+        this.isVideo=isVideo;
 
     }
 }
