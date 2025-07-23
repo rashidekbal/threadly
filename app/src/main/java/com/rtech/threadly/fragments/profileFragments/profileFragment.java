@@ -12,6 +12,7 @@ import androidx.appcompat.widget.AppCompatButton;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -49,6 +50,7 @@ AppCompatActivity activity;
     String baseUrl= BuildConfig.BASE_URL;
     ShimmerFrameLayout shimmerFrameLayout;
     LinearLayout profileLayout;
+    SwipeRefreshLayout swipeRefreshLayout;
     // Base URL for the API, can be set in BuildConfig or directly here
     Profile_Model userdata;
 Post_fragmentSetCallback callback;
@@ -152,6 +154,14 @@ ProfileViewModel profileViewModel;
         option_bar.setOnClickListener(v->{
             startActivity(new Intent(requireActivity(), SettingsActivity.class));
         });
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                profileViewModel.loadLoggedInUserPosts();
+                profileViewModel.loadProfile();
+                swipeRefreshLayout.setRefreshing(false);
+            }
+        });
 
     }
 
@@ -174,6 +184,7 @@ ProfileViewModel profileViewModel;
         loginInfo= Core.getPreference();
         profileViewModel=new ViewModelProvider(requireActivity()).get(ProfileViewModel.class);
         activity=(AppCompatActivity) requireActivity();
+        swipeRefreshLayout=v.findViewById(R.id.swipeRefresh);
     }
 
     public void change_fragment(Fragment fragment){

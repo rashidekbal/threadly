@@ -42,7 +42,7 @@ public class Core {
        return workManager;
    }
    public static OkHttpClient getOkHttp(){
-       return new OkHttpClient().newBuilder().connectTimeout(60, TimeUnit.SECONDS).readTimeout(120,TimeUnit.SECONDS).writeTimeout(120,TimeUnit.SECONDS).build();
+       return new OkHttpClient().newBuilder().connectTimeout(120, TimeUnit.SECONDS).readTimeout(120,TimeUnit.SECONDS).writeTimeout(300,TimeUnit.SECONDS).build();
 
    }
    public static NotificationManager getNotificationManager(){

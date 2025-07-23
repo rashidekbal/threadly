@@ -8,6 +8,7 @@ import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
@@ -33,7 +34,7 @@ SharedPreferences loginInfo;
 String baseUrl= BuildConfig.BASE_URL;
 TextView NoPost_text;
 ArrayList<Preview_Post_model> dataList=new ArrayList<>();
-    StaggeredGridLayoutManager layoutManager;
+    GridLayoutManager layoutManager;
     GridPostAdapter adapter;
     Post_fragmentSetCallback callback;
     ProfileViewModel profileViewModel;
@@ -64,6 +65,7 @@ ArrayList<Preview_Post_model> dataList=new ArrayList<>();
                     adapter.notifyDataSetChanged();
                     shimmer_posts.setVisibility(View.GONE);
                     posts_all_recycler_view.setVisibility(View.VISIBLE);
+                    NoPost_text.setVisibility(View.GONE);
                 }else{
                     shimmer_posts.setVisibility(View.GONE);
                     NoPost_text.setVisibility(View.VISIBLE);
@@ -72,7 +74,7 @@ ArrayList<Preview_Post_model> dataList=new ArrayList<>();
 
             }
         });
-        layoutManager =new StaggeredGridLayoutManager(3,StaggeredGridLayoutManager.VERTICAL);
+        layoutManager =new GridLayoutManager(requireActivity(),3 ,GridLayoutManager.VERTICAL,false);
         adapter=new GridPostAdapter(v.getContext(), dataList, new Post_fragmentSetCallback() {
             @Override
             public void openPostFragment(String url, int postid) {

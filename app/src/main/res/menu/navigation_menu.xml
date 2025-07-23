@@ -10,9 +10,9 @@
           android:title=""
           android:icon="@drawable/add_post_icon"
         />
-    <item android:id="@+id/notification"
+    <item android:id="@+id/reels"
           android:title=""
-          android:icon="@drawable/notificationselector"/>
+          android:icon="@drawable/reels_tab_selector"/>
     <item android:id="@+id/profile"
         android:title=""
         android:icon="@drawable/profile_blank"/>

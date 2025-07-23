@@ -1,5 +1,6 @@
 package com.rtech.threadly.activities;
 
+import android.Manifest;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -16,13 +17,14 @@ import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.media3.common.util.UnstableApi;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.CustomTarget;
@@ -32,6 +34,7 @@ import com.rtech.threadly.R;
 import com.rtech.threadly.constants.SharedPreferencesKeys;
 import com.rtech.threadly.core.Core;
 import com.rtech.threadly.databinding.ActivityHomeBinding;
+import com.rtech.threadly.fragments.ReelsFragment;
 import com.rtech.threadly.fragments.profileFragments.ChangeProfileCameraFragment;
 import com.rtech.threadly.fragments.profileFragments.ChangeProfileImageSelector;
 import com.rtech.threadly.fragments.profileFragments.EditBioFragment;
@@ -39,7 +42,6 @@ import com.rtech.threadly.fragments.profileFragments.EditNameFragment;
 import com.rtech.threadly.fragments.profileFragments.EditProfileMainFragment;
 import com.rtech.threadly.fragments.profileFragments.UsernameEditFragment;
 import com.rtech.threadly.fragments.homeFragment;
-import com.rtech.threadly.fragments.notificationFragment;
 import com.rtech.threadly.fragments.post_fragment;
 import com.rtech.threadly.fragments.profileFragments.profileFragment;
 import com.rtech.threadly.fragments.profileFragments.profileUploadFinalPreview;
@@ -47,7 +49,6 @@ import com.rtech.threadly.fragments.searchFragment;
 import com.rtech.threadly.interfaces.CameraFragmentInterface;
 import com.rtech.threadly.interfaces.FragmentItemClickInterface;
 import com.rtech.threadly.interfaces.Post_fragmentSetCallback;
-import com.rtech.threadly.utils.ExoPlayerCache;
 import com.rtech.threadly.utils.ExoplayerUtil;
 
 public class HomeActivity extends AppCompatActivity {
@@ -69,6 +70,7 @@ int currentFragment;
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, 0);
             return insets;
         });
+        ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.POST_NOTIFICATIONS},115);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             Window window = getWindow();
@@ -128,9 +130,9 @@ int currentFragment;
                     startActivity(new Intent(HomeActivity.this, AddPostActivity.class));
 
 
-                } else if (item.getItemId()==R.id.notification) {
+                } else if (item.getItemId()==R.id.reels) {
                     currentFragment=item.getItemId();
-                    addFragment(new notificationFragment());
+                    addFragment(new ReelsFragment());
 
                 }else if (item.getItemId()==R.id.profile){
                     currentFragment=item.getItemId();
@@ -250,9 +252,13 @@ int currentFragment;
 
     }
 
-
-
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        ExoplayerUtil.release();
+    }
 }
+
 
     //    @Override
 //    protected void onResume() {

@@ -123,14 +123,43 @@ public class PostsManager {
                 });
 
     }
-    public void getFeed(NetworkCallbackInterfaceWithJsonObjectDelivery callback){
+    public void getImageFeed(NetworkCallbackInterfaceWithJsonObjectDelivery callback){
 
         if(BuildConfig.DEBUG){
             Log.d("ApiData", "loading started");
 
         }
 
-        String url=ApiEndPoints.GET_FEED;
+        String url=ApiEndPoints.GET_IMAGE_FEED;
+        AndroidNetworking.get(url)
+                .setPriority(Priority.HIGH)
+                .addHeaders("Authorization","Bearer "+getToken())
+                .build()
+                .getAsJSONObject(new JSONObjectRequestListener() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+
+                        callback.onSuccess(response);
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+
+                        if(BuildConfig.DEBUG){
+                            Log.d("ApiError", "Error"+ anError.getMessage());
+
+                        }
+                        callback.onError(anError.getErrorDetail());
+                    }
+                });
+    }public void getVideoFeed(NetworkCallbackInterfaceWithJsonObjectDelivery callback){
+
+        if(BuildConfig.DEBUG){
+            Log.d("ApiData", "loading started");
+
+        }
+
+        String url=ApiEndPoints.GET_VIDEO_FEED;
         AndroidNetworking.get(url)
                 .setPriority(Priority.HIGH)
                 .addHeaders("Authorization","Bearer "+getToken())

@@ -18,11 +18,11 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-public class PostsViewModel extends AndroidViewModel {
+public class ImagePostsFeedViewModel extends AndroidViewModel {
     //creation of PostsManager
     //to manage posts related operations
     PostsManager postsManager;
-    public PostsViewModel(@NonNull Application application) {
+    public ImagePostsFeedViewModel(@NonNull Application application) {
         super(application);
         this.postsManager=new PostsManager();
 
@@ -44,7 +44,7 @@ public class PostsViewModel extends AndroidViewModel {
     // method to load posts from server
     public void loadFeedPosts() {
         Log.d("dataloadException", "data Loading started: ");
-            postsManager.getFeed(new NetworkCallbackInterfaceWithJsonObjectDelivery() {
+            postsManager.getImageFeed(new NetworkCallbackInterfaceWithJsonObjectDelivery() {
                 @Override
                 public void onSuccess(JSONObject response) {
 //                    Log.d("dataloadException", "data Loading sucess: "+response.toString());

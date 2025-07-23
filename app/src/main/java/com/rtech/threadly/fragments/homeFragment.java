@@ -4,38 +4,32 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.media3.common.util.UnstableApi;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.JSONObjectRequestListener;
-import com.facebook.shimmer.ShimmerFrameLayout;
 import com.rtech.threadly.BuildConfig;
-import com.rtech.threadly.R;
 import com.rtech.threadly.activities.AddPostActivity;
-import com.rtech.threadly.adapters.PostsFeedAdapter;
+import com.rtech.threadly.adapters.ImagePostsFeedAdapter;
 import com.rtech.threadly.adapters.StatusViewAdapter;
 import com.rtech.threadly.core.Core;
 import com.rtech.threadly.databinding.FragmentHomeBinding;
 import com.rtech.threadly.models.Posts_Model;
 import com.rtech.threadly.models.Profile_Model_minimal;
 import com.rtech.threadly.utils.ExoplayerUtil;
-import com.rtech.threadly.viewmodels.PostsViewModel;
-import com.rtech.threadly.viewmodels.ProfileViewModel;
+import com.rtech.threadly.viewmodels.ImagePostsFeedViewModel;
+import com.rtech.threadly.viewmodels.VideoPostsFeedViewModel;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -48,8 +42,10 @@ public class homeFragment extends Fragment {
     SharedPreferences loginInfo;
     ArrayList<Posts_Model> posts;
     ArrayList<Profile_Model_minimal> suggestUsersList = new ArrayList<>();
-    private PostsViewModel postsViewModel;
+    private ImagePostsFeedViewModel postsViewModel;
+    private VideoPostsFeedViewModel videoPostsFeedViewModel;
     FragmentHomeBinding mainXml;
+
 
     public homeFragment() {
         // Default constructor
@@ -59,7 +55,8 @@ public class homeFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate layout using ViewBinding
         mainXml = FragmentHomeBinding.inflate(inflater, container, false);
-        postsViewModel = new ViewModelProvider(requireActivity()).get(PostsViewModel.class);
+        postsViewModel = new ViewModelProvider(requireActivity()).get(ImagePostsFeedViewModel.class);
+        videoPostsFeedViewModel=new ViewModelProvider(requireActivity()).get(VideoPostsFeedViewModel.class);
         loginInfo = Core.getPreference();
 
         // -------------------------
@@ -112,7 +109,7 @@ public class homeFragment extends Fragment {
         // Setup posts RecyclerView
         // ----------------------
         posts = new ArrayList<>();
-        PostsFeedAdapter postsFeedAdapter = new PostsFeedAdapter(requireActivity(), posts, suggestUsersList);
+        ImagePostsFeedAdapter postsFeedAdapter = new ImagePostsFeedAdapter(requireActivity(), posts, suggestUsersList);
         LinearLayoutManager postsLayoutManager = new LinearLayoutManager(requireActivity(), LinearLayoutManager.VERTICAL, false);
 
         postsFeedAdapter.setHasStableIds(true);
@@ -121,17 +118,22 @@ public class homeFragment extends Fragment {
         mainXml.postsRecyclerView.setAdapter(postsFeedAdapter);
 
         // ----------------------------
+        // just load a few video feed for reels
+        videoPostsFeedViewModel.loadVideoPostFeed();
+
         // Observe LiveData from ViewModel
         // ----------------------------
         postsViewModel.getPostsLiveData().observe(getViewLifecycleOwner(), new Observer<ArrayList<Posts_Model>>() {
             @Override
             public void onChanged(ArrayList<Posts_Model> posts_liveData) {
+
                 if (posts_liveData != null && !posts_liveData.isEmpty()) {
                     Log.d("homefragmentobserver", "onChanged: " + posts_liveData.toString());
-
+                    posts.clear();
                     posts.addAll(posts_liveData);
                     postsFeedAdapter.notifyDataSetChanged();
-
+                    mainXml.swipeRefresh.setRefreshing(false);
+                    mainXml.swipeRefresh.setEnabled(true);
                     // Hide shimmer and show content
                     mainXml.shimmerView.stopShimmer();
                     mainXml.shimmerView.setVisibility(View.GONE);
@@ -140,49 +142,6 @@ public class homeFragment extends Fragment {
                     // Show shimmer if no data
                     mainXml.shimmerView.setVisibility(View.VISIBLE);
                     mainXml.shimmerView.startShimmer();
-                }
-            }
-        });
-
-        // ----------------------------------------------------
-        // Scroll listener to detect center post and autoplay
-        // ----------------------------------------------------
-        mainXml.postsRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-
-                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                    LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
-                    if (layoutManager == null) return;
-
-                    int firstVisible = layoutManager.findFirstVisibleItemPosition();
-                    int lastVisible = layoutManager.findLastVisibleItemPosition();
-
-                    int centerPosition = -1;
-                    int recyclerViewCenterY = recyclerView.getHeight() / 2;
-                    int closestDistance = Integer.MAX_VALUE;
-
-                    // Find the item closest to the center of the screen
-                    for (int i = firstVisible; i <= lastVisible; i++) {
-                        View child = layoutManager.findViewByPosition(i);
-                        if (child == null) continue;
-
-                        int childCenterY = (child.getTop() + child.getBottom()) / 2;
-                        int distance = Math.abs(childCenterY - recyclerViewCenterY);
-
-                        if (distance < closestDistance) {
-                            closestDistance = distance;
-                            centerPosition = i;
-                        }
-                    }
-
-                    // If new center position is different from currently playing one, update and notify
-                    if (centerPosition != -1 && postsFeedAdapter.PlayingPosition != centerPosition) {
-                        Log.d("ScrollListener", "Center position to play = " + centerPosition);
-                        postsFeedAdapter.PlayingPosition = centerPosition;
-                        postsFeedAdapter.notifyDataSetChanged();
-                    }
                 }
             }
         });
@@ -201,8 +160,7 @@ public class homeFragment extends Fragment {
             public void onRefresh() {
                 mainXml.swipeRefresh.setEnabled(false);
                 postsViewModel.loadFeedPosts();
-                mainXml.swipeRefresh.setRefreshing(false);
-                mainXml.swipeRefresh.setEnabled(true);
+
 
             }
         });
@@ -222,9 +180,4 @@ public class homeFragment extends Fragment {
         super.onResume();
     }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        ExoplayerUtil.release();  // Clean up ExoPlayer resources
-    }
 }

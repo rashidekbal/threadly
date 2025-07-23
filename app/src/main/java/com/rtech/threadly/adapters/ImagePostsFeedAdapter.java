@@ -15,11 +15,9 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.MediaController;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.VideoView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.OptIn;
@@ -52,7 +50,7 @@ import java.util.Date;
 import java.util.Objects;
 
 // Adapter for displaying image posts in a RecyclerView
-public class PostsFeedAdapter extends RecyclerView.Adapter<PostsFeedAdapter.viewHolder> {
+public class ImagePostsFeedAdapter extends RecyclerView.Adapter<ImagePostsFeedAdapter.viewHolder> {
     public int  PlayingPosition=-1;
     Context context;
     ArrayList<Posts_Model> list;
@@ -64,7 +62,7 @@ public class PostsFeedAdapter extends RecyclerView.Adapter<PostsFeedAdapter.view
     CommentsManager commentsManager;
 
     // Constructor for the adapter
-    public PostsFeedAdapter(Context c, ArrayList<Posts_Model> list, ArrayList<Profile_Model_minimal> suggestUsersList){
+    public ImagePostsFeedAdapter(Context c, ArrayList<Posts_Model> list, ArrayList<Profile_Model_minimal> suggestUsersList){
         this.context=c;
         this.list=list;
         this.loginInfo= Core.getPreference();
@@ -76,7 +74,7 @@ public class PostsFeedAdapter extends RecyclerView.Adapter<PostsFeedAdapter.view
     // Inflates the layout for each post item
     @NonNull
     @Override
-    public PostsFeedAdapter.viewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public ImagePostsFeedAdapter.viewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view= LayoutInflater.from(context).inflate(R.layout.dynamic_post_layout,parent,false);
         return new viewHolder(view);
     }
@@ -86,20 +84,14 @@ public class PostsFeedAdapter extends RecyclerView.Adapter<PostsFeedAdapter.view
     public long getItemId(int position) {
         return list.get(position).postId;
     }
-    @Override
-    public void onViewRecycled(@NonNull viewHolder holder) {
-        ExoplayerUtil.stop();
-        holder.Content_Video.setPlayer(null);
-        super.onViewRecycled(holder);
-    }
+
     // Binds data to each view holder
     @OptIn(markerClass = UnstableApi.class)
     @SuppressLint("SetTextI18n")
     @Override
-    public void onBindViewHolder(@NonNull PostsFeedAdapter.viewHolder holder, @SuppressLint("RecyclerView") int position) {
+    public void onBindViewHolder(@NonNull ImagePostsFeedAdapter.viewHolder holder, @SuppressLint("RecyclerView") int position) {
         // Set like, comment, and share counts
-        boolean[] isplaying={true};
-        boolean[] isMute={false};
+
         holder.is_liked=list.get(position).isliked;
         holder.likes=Double.parseDouble(Integer.toString(list.get(position).likeCount));
         double comments=Double.parseDouble(Integer.toString(list.get(position).commentCount));
@@ -121,67 +113,8 @@ public class PostsFeedAdapter extends RecyclerView.Adapter<PostsFeedAdapter.view
         }else{
             holder.shares_count_text.setText(Integer.toString((int) shares));
         }
-
-        //show post media
-        if(list.get(position).isVideo){
-            if(position==0){
-                playAt(holder,position,isMute);
-
-            }else{
-                if(PlayingPosition!=position){
-                    holder.post_image.setVisibility(View.VISIBLE);
-                    holder.playerHolder.setVisibility(View.GONE);
-                    Glide.with(context).load(list.get(position).postUrl).thumbnail(1f).into(holder.post_image);
-                    holder.Content_Video.setPlayer(null);
-
-
-                }
-                else{
-                  playAt(holder,position,isMute);
-                }
-
-            }
-
-            holder.Content_Video.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if(isplaying[0]){
-                        holder.play_btn.setVisibility(View.VISIBLE);
-                        ExoplayerUtil.pause();
-                        isplaying[0]=false;
-
-                    }else{
-                        holder.play_btn.setVisibility(View.INVISIBLE);
-                        ExoplayerUtil.resume();
-                        isplaying[0]=true;
-
-                    }
-                }
-            });
-//            dot be confused the ids are switched due to the picture type
-            //unMute btn is actually mute btn
-            holder.unMute_btn.setOnClickListener(v->{
-                holder.unMute_btn.setVisibility(View.GONE);
-                holder.mute_btn.setVisibility(View.VISIBLE);
-                isMute[0]=true;
-                ExoplayerUtil.mute();
-            });
-            //mute btn is actually unMute btn
-            holder.mute_btn.setOnClickListener(v->{
-                holder.unMute_btn.setVisibility(View.VISIBLE);
-                holder.mute_btn.setVisibility(View.GONE);
-                isMute[0]=false;
-                ExoplayerUtil.unMute();
-            });
-
-
-
-        }
-        else{
-            holder.post_image.setVisibility(View.VISIBLE);
-            holder.playerHolder.setVisibility(View.GONE);
             Glide.with(context).load(list.get(position).postUrl).placeholder(R.drawable.post_placeholder).into(holder.post_image);
-        }
+
 
         // Load user profile image and post image using Glide
         Glide.with(context).load(Uri.parse(list.get(position).userDpUrl)).circleCrop().placeholder(R.drawable.blank_profile).into(holder.userprofileImg);
@@ -324,20 +257,7 @@ public class PostsFeedAdapter extends RecyclerView.Adapter<PostsFeedAdapter.view
 
     }
 
-    private void playAt(viewHolder holder, int position, boolean[] isMute) {
-        ExoplayerUtil.unMute();
-        holder.playerHolder.setVisibility(View.VISIBLE);
-        holder.post_image.setVisibility(View.GONE);
-        if (isMute[0]){
-            holder.unMute_btn.setVisibility(View.GONE);
-            holder.mute_btn.setVisibility(View.VISIBLE);
-        }else{
-            holder.mute_btn.setVisibility(View.GONE);
-            holder.unMute_btn.setVisibility(View.VISIBLE);
-        }
-        ExoplayerUtil.stop();
-        ExoplayerUtil.play(Uri.parse(list.get(position).postUrl),holder.Content_Video);
-    }
+
 
 
     // Returns the total number of items
@@ -353,10 +273,8 @@ public class PostsFeedAdapter extends RecyclerView.Adapter<PostsFeedAdapter.view
                 post_image,
                 like_btn_image,
                 comment_btn,
-                options_btn,
-                play_btn,
-                mute_btn,
-        unMute_btn;
+                options_btn;
+
 
         TextView user_id_text,
                 user_name_text,
@@ -368,12 +286,9 @@ public class PostsFeedAdapter extends RecyclerView.Adapter<PostsFeedAdapter.view
                 likedBy_text,
                 likesCount_text,
                 banner_txt;
-       PlayerView Content_Video;
         boolean is_liked;
         Double likes;
         LinearLayout likedBy_layout;
-        View itemView;
-        RelativeLayout playerHolder;
 
         // ViewHolder constructor
         public viewHolder(@NonNull View itemView) {
@@ -396,15 +311,9 @@ public class PostsFeedAdapter extends RecyclerView.Adapter<PostsFeedAdapter.view
             likedBy_layout=itemView.findViewById(R.id.likedBy_layout);
             comment_btn=itemView.findViewById(R.id.comment_btn);
             banner_txt=itemView.findViewById(R.id.banner_txt);
-            Content_Video=itemView.findViewById(R.id.exoplayer);
-            play_btn=itemView.findViewById(R.id.play_btn);
-            mute_btn=itemView.findViewById(R.id.mute_btn);
-            unMute_btn=itemView.findViewById(R.id.unMute_btn);
-            playerHolder=itemView.findViewById(R.id.player_holder);
 
 
-            // Initialize networking and comment dialog
-            AndroidNetworking.initialize(context);
+
 
             commentDialog=new BottomSheetDialog(context,R.style.TransparentBottomSheet);
             commentDialog.setContentView(R.layout.posts_comment_layout);

@@ -43,7 +43,7 @@
             android:layout_height="@dimen/dp_62"
             android:hint="@string/password_field_hint"
             android:autofillHints="password"
-            android:textColor="@color/white"
+            android:textColor="@color/black"
             android:textColorHint="@color/DarkGreyText"
             android:inputType="textPassword"
             android:paddingVertical="@dimen/dp_20"

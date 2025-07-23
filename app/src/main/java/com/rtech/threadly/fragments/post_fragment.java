@@ -446,4 +446,10 @@ private boolean[] isPlaying={true};
         super.onPause();
         ExoplayerUtil.stop();
     }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        ExoplayerUtil.stop();
+    }
 }

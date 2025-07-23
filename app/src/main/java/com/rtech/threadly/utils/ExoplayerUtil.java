@@ -14,6 +14,7 @@ import androidx.media3.ui.PlayerView;
 public class ExoplayerUtil {
     private static Context cont;
     private static ExoPlayer exoplayer;
+    private static PlayerView currentPlayerView;
     public static void init(Context context){
         exoplayer=new ExoPlayer.Builder(context).build();
         exoplayer.setRepeatMode(ExoPlayer.REPEAT_MODE_ONE);
@@ -25,7 +26,13 @@ cont=context;
 
     @UnstableApi
     public static void play(Uri uri, PlayerView playerView){
-        if(uri!=null){
+        if(exoplayer!=null){
+
+            // Detach old surface
+            if (currentPlayerView != null) {
+                currentPlayerView.setPlayer(null);
+            }
+            currentPlayerView = playerView;
             MediaItem mediaItem=MediaItem.fromUri(uri);
 
             MediaSource mediaSource = new ProgressiveMediaSource.Factory(

@@ -53,7 +53,7 @@
             android:textAlignment="center"
             android:focusable="false"
             android:inputType="none"
-            android:textColor="@color/white"
+            android:textColor="@color/black"
             android:textColorHint="@color/DarkGreyText"
             android:background="@drawable/edit_text_style_2"/>
 
