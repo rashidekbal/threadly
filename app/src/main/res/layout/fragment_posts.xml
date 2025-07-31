@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-<!--        main image holder -->
+        <!--        main image holder -->
         <ImageView
             android:id="@+id/post_image_view"
             android:layout_width="match_parent"
@@ -19,7 +19,7 @@
             android:adjustViewBounds="true"
             android:scaleType="fitCenter"
             android:visibility="gone"/>
-<!--        main video player -->
+        <!--        main video player -->
         <androidx.media3.ui.PlayerView
             android:id="@+id/videoPlayer_view"
             android:layout_width="match_parent"
@@ -36,164 +36,174 @@
             android:id="@+id/play_btn"
             android:layout_centerInParent="true"
             android:visibility="gone"/>
-<!--        user whose post is this -->
+        <!--        user whose post is this -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
+            android:orientation="vertical"
             android:layout_alignParentBottom="true"
             android:layout_marginBottom="@dimen/dp_28"
             android:gravity="center_vertical"
             android:layout_marginLeft="@dimen/dp_10">
-            <FrameLayout
-                android:id="@+id/outerBorder_color"
-                android:layout_width="@dimen/dp_50"
-                android:layout_height="@dimen/dp_50"
-                android:background="@drawable/red_circle"
-
-                >
-
-                <ImageView
-                    android:id="@+id/profile_img"
-                    android:layout_width="@dimen/dp_40"
-                    android:layout_height="@dimen/dp_40"
-                    android:layout_gravity="center"
-                    android:background="@drawable/circle"
-                    android:clipToOutline="true"
-                    android:scaleType="centerCrop"
-                    android:src="@drawable/image_test" />
-
-            </FrameLayout>
-            <TextView
-                android:id="@+id/username_text"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/AllWhite"
-                android:textSize="@dimen/sp_16"
-                android:textStyle="bold"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginStart="@dimen/dp_10">
+                <FrameLayout
+                    android:id="@+id/outerBorder_color"
+                    android:layout_width="@dimen/dp_35"
+                    android:layout_height="@dimen/dp_35"
+                    android:background="@drawable/red_circle"
 
-                android:layout_marginLeft="@dimen/dp_5"
-                />
+                    >
+
+                    <ImageView
+                        android:id="@+id/profile_img"
+                        android:layout_width="@dimen/dp_25"
+                        android:layout_height="@dimen/dp_25"
+                        android:layout_gravity="center"
+                        android:background="@drawable/circle"
+                        android:clipToOutline="true"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/blank_profile" />
+
+                </FrameLayout>
+                <TextView
+                    android:id="@+id/username_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/AllWhite"
+                    android:textSize="@dimen/sp_16"
+                    android:textStyle="bold"
+                    android:layout_marginStart="@dimen/dp_10"
+
+                    android:layout_marginLeft="@dimen/dp_5"
+                    />
+            </LinearLayout>
+
+            <!-- caption for the post-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_alignParentBottom="true"
+                android:layout_marginTop="@dimen/dp_10"
+                android:layout_marginHorizontal="@dimen/dp_10">
+                <TextView
+                    android:id="@+id/caption_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/AllWhite"
+                    android:textSize="@dimen/sp_15"
+                    android:textStyle="bold"
+                    android:layout_marginLeft="@dimen/dp_5"
+
+                    />
+            </LinearLayout>
         </LinearLayout>
-<!-- caption for the post-->
+
+
+        <!--        control buttons for the post-->
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
+            android:orientation="vertical"
+            android:layout_alignParentRight="true"
             android:layout_alignParentBottom="true"
-            android:layout_marginBottom="@dimen/dp_10"
-            android:layout_marginLeft="@dimen/dp_10">
-            <TextView
-                android:id="@+id/caption_text"
-                android:layout_width="wrap_content"
+            android:paddingHorizontal="@dimen/dp_10"
+            android:paddingVertical="@dimen/dp_10"
+            android:layout_marginBottom="@dimen/dp_50">
+
+            <!--    like btn-->
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/AllWhite"
-                android:textSize="@dimen/sp_15"
-                android:textStyle="bold"
-                android:layout_marginLeft="@dimen/dp_5"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:layout_marginBottom="@dimen/dp_30">
+                <ImageView
+                    android:id="@+id/like_btn_image"
+                    android:layout_width="@dimen/dp_32"
+                    android:layout_height="@dimen/dp_26"
+                    android:src="@drawable/heart_inactive_icon_white"/>
+                <TextView
+                    android:id="@+id/likes_count_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:textStyle="bold"
+                    android:textColor="@color/AllWhite"
+                    android:textAlignment="center"/>
 
-                />
+
+            </LinearLayout>
+            <!-- comment button-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:layout_marginBottom="@dimen/dp_30">
+                <ImageView
+                    android:id="@+id/comment_btn_image"
+                    android:layout_width="@dimen/dp_32"
+                    android:layout_height="@dimen/dp_26"
+                    android:src="@drawable/comment_icon_white"/>
+                <TextView
+                    android:id="@+id/comments_count_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:textStyle="bold"
+                    android:textColor="@color/AllWhite"
+                    android:textAlignment="center"/>
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:layout_marginBottom="@dimen/dp_30">
+                <ImageView
+                    android:layout_width="@dimen/dp_32"
+                    android:layout_height="@dimen/dp_26"
+                    android:src="@drawable/share_icon_white"/>
+                <TextView
+                    android:id="@+id/shares_count_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:textStyle="bold"
+                    android:textColor="@color/AllWhite"
+                    android:textAlignment="center"/>
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center">
+                <ImageView
+                    android:layout_width="@dimen/dp_32"
+                    android:layout_height="@dimen/dp_26"
+                    android:src="@drawable/optiondots_white"/>
+
+
+
+            </LinearLayout>
+
+
+
+
+
         </LinearLayout>
-
-<!--        control buttons for the post-->
-<LinearLayout
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:layout_alignParentRight="true"
-    android:layout_alignParentBottom="true"
-    android:paddingHorizontal="@dimen/dp_10"
-    android:paddingVertical="@dimen/dp_10"
-    android:layout_marginBottom="@dimen/dp_50">
-
-<!--    like btn-->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:gravity="center"
-        android:layout_marginBottom="@dimen/dp_30">
-        <ImageView
-            android:id="@+id/like_btn_image"
-            android:layout_width="@dimen/dp_32"
-            android:layout_height="@dimen/dp_26"
-            android:src="@drawable/heart_inactive_icon_white"/>
-        <TextView
-            android:id="@+id/likes_count_text"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="0"
-            android:textStyle="bold"
-            android:textColor="@color/AllWhite"
-            android:textAlignment="center"/>
-
-
-    </LinearLayout>
-<!-- comment button-->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:gravity="center"
-        android:layout_marginBottom="@dimen/dp_30">
-        <ImageView
-            android:id="@+id/comment_btn_image"
-            android:layout_width="@dimen/dp_32"
-            android:layout_height="@dimen/dp_26"
-            android:src="@drawable/comment_icon_white"/>
-        <TextView
-            android:id="@+id/comments_count_text"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="0"
-            android:textStyle="bold"
-            android:textColor="@color/AllWhite"
-            android:textAlignment="center"/>
-
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:gravity="center"
-        android:layout_marginBottom="@dimen/dp_30">
-        <ImageView
-            android:layout_width="@dimen/dp_32"
-            android:layout_height="@dimen/dp_26"
-            android:src="@drawable/share_icon_white"/>
-        <TextView
-            android:id="@+id/shares_count_text"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="0"
-            android:textStyle="bold"
-            android:textColor="@color/AllWhite"
-            android:textAlignment="center"/>
-
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:gravity="center">
-        <ImageView
-            android:layout_width="@dimen/dp_32"
-            android:layout_height="@dimen/dp_26"
-            android:src="@drawable/optiondots_white"/>
-
-
-
-    </LinearLayout>
-
-
-
-
-
-</LinearLayout>
     </RelativeLayout>
 
 

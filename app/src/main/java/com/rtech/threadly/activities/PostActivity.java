@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -24,6 +25,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.media3.common.util.UnstableApi;
+import androidx.media3.ui.PlayerView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -42,6 +45,7 @@ import com.rtech.threadly.managers.LikeManager;
 import com.rtech.threadly.managers.PostsManager;
 import com.rtech.threadly.models.Posts_Comments_Model;
 import com.rtech.threadly.models.Posts_Model;
+import com.rtech.threadly.utils.ExoplayerUtil;
 import com.rtech.threadly.utils.ReUsableFunctions;
 
 import org.json.JSONArray;
@@ -60,8 +64,11 @@ public class PostActivity extends AppCompatActivity {
     CommentsManager commentsManager;
     SharedPreferences loginInfo;
     Posts_Model postData;
-    ImageView posts_image_view,profile_img,like_btn,comment_btn;
+    ImageView posts_image_view,profile_img,like_btn,comment_btn,play_btn;
     TextView username_text,caption_text,like_count_text,comment_count_text,share_count_text;
+    PlayerView playerView;
+    boolean[] isPlaying={true};
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,6 +121,8 @@ public class PostActivity extends AppCompatActivity {
         share_count_text=findViewById(R.id.shares_count_text);
         like_btn=findViewById(R.id.like_btn_image);
         comment_btn=findViewById(R.id.comment_btn_image);
+        playerView=findViewById(R.id.videoPlayer_view);
+        play_btn=findViewById(R.id.play_btn);
     }
     private void loadPost(){
         postsManager.getPostWithId(postId, new NetworkCallbackInterfaceWithJsonObjectDelivery() {
@@ -163,11 +172,17 @@ public class PostActivity extends AppCompatActivity {
     }
 
 
+    @UnstableApi
     private void setData(Posts_Model data) {
-        Glide.with(PostActivity.this).load(data.postUrl).placeholder(R.drawable.post_placeholder).into(posts_image_view);
         Glide.with(PostActivity.this).load(data.userDpUrl).placeholder(R.drawable.blank_profile).circleCrop().into(profile_img);
+        if(data.caption.equals("null")||data.caption.isEmpty()){
+          caption_text.setVisibility(View.GONE);
+        }else{
+            caption_text.setText(data.caption);
+        }
+
         username_text.setText(data.username);
-        caption_text.setText(data.caption);
+
         like_count_text.setText(String.valueOf(data.likeCount));
         comment_count_text.setText(String.valueOf(data.commentCount));
         share_count_text.setText(String.valueOf(data.shareCount));
@@ -236,6 +251,33 @@ public class PostActivity extends AppCompatActivity {
 
             }
         });
+
+        if(data.isVideo){
+            playerView.setVisibility(View.VISIBLE);
+            posts_image_view.setVisibility(View.GONE);
+            ExoplayerUtil.play(Uri.parse(data.postUrl),playerView);
+            play_btn.setVisibility(View.GONE);
+            playerView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(isPlaying[0]){
+                        ExoplayerUtil.pause();
+                        play_btn.setVisibility(View.VISIBLE);
+                        isPlaying[0]=false;
+                    }else{
+                        ExoplayerUtil.resume();
+                        play_btn.setVisibility(View.GONE);
+                        isPlaying[0]=true;
+                    }
+                }
+            });
+
+        }else{
+            posts_image_view.setVisibility(View.VISIBLE);
+            playerView.setVisibility(View.GONE);
+            Glide.with(PostActivity.this).load(data.postUrl).placeholder(R.drawable.post_placeholder).into(posts_image_view);
+
+        }
 
 
 
@@ -385,4 +427,9 @@ public class PostActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        ExoplayerUtil.stop();
+    }
 }

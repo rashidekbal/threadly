@@ -65,4 +65,9 @@ public class ApiEndPoints {
     public static final String EDIT_BIO = baseUrl + "/profile/edit/bio/";
     public static final String EDIT_PROFILE_PICTURE = baseUrl +"/profile/edit/profile";
 
+    // story routes
+    public static String ADD_STORY = baseUrl + "/story/addStory/";
+    public static String GET_STORIES = baseUrl + "/story/getStories/";
+
+
 }

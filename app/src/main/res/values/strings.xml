@@ -93,4 +93,8 @@
     <string name="photo">Photo</string>
     <string name="done">Done</string>
     <string name="no_posts">No Posts</string>
+    <string name="playbtn">playBtn</string>
+    <string name="likes">Likes</string>
+    <string name="addstory">AddStory</string>
+    <string name="your_story">Your Story</string>
 </resources>

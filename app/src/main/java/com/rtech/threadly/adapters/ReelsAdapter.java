@@ -115,6 +115,21 @@ public class ReelsAdapter extends RecyclerView.Adapter<ReelsAdapter.viewHolder> 
         holder.likes=Double.parseDouble(Integer.toString(dataList.get(position).likeCount));
         double comments=Double.parseDouble(Integer.toString(dataList.get(position).commentCount));
         double shares=Double.parseDouble(Integer.toString(dataList.get(position).shareCount));
+        if(dataList.get(position).likeCount>0){
+            holder.likes_count_text.setVisibility(View.VISIBLE);
+        }else{
+            holder.likes_count_text.setVisibility(View.GONE);
+        }
+        if(dataList.get(position).commentCount>0){
+            holder.comments_count_text.setVisibility(View.VISIBLE);
+        }else{
+            holder.comments_count_text.setVisibility(View.GONE);
+        }
+        if(dataList.get(position).shareCount>0){
+            holder.shares_count_text.setVisibility(View.VISIBLE);
+        }else{
+            holder.shares_count_text.setVisibility(View.GONE);
+        }
 
         setLikeCount(holder.likes,holder);
 

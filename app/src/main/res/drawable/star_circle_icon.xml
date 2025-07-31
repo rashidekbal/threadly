@@ -1,0 +1,21 @@
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+  <item>
+    <shape android:shape="oval">
+      <solid android:color="@color/AllWhite"
+        />
+
+    </shape>
+  </item>
+  <item>
+    <vector xmlns:android="http://schemas.android.com/apk/res/android"
+        android:width="800dp"
+        android:height="800dp"
+        android:viewportWidth="24"
+        android:viewportHeight="24">
+      <path
+          android:pathData="M2,12C2,6.477 6.477,2 12,2C17.523,2 22,6.477 22,12C22,17.523 17.523,22 12,22C6.477,22 2,17.523 2,12ZM10.507,6.653C11.02,5.267 12.98,5.267 13.493,6.653L14.121,8.347C14.266,8.74 14.64,9 15.059,9L16.527,9C17.961,9 18.68,10.734 17.666,11.749L16.131,13.283C15.894,13.52 15.792,13.859 15.857,14.187L16.226,16.032C16.494,17.373 15.033,18.387 13.871,17.667L12.526,16.835C12.204,16.636 11.796,16.636 11.474,16.835L10.129,17.667C8.967,18.387 7.506,17.373 7.774,16.032L8.143,14.187C8.208,13.859 8.106,13.52 7.869,13.283L6.293,11.707C5.294,10.708 6.001,9 7.414,9L8.941,9C9.36,9 9.734,8.74 9.879,8.347L10.507,6.653Z"
+          android:fillColor="#1ECD4B"
+          android:fillType="evenOdd"/>
+    </vector>
+  </item>
+</layer-list>

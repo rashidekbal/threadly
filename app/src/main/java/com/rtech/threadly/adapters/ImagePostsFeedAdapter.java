@@ -135,6 +135,12 @@ public class ImagePostsFeedAdapter extends RecyclerView.Adapter<ImagePostsFeedAd
                 showComments(list.get(position).postId);
             }
         });
+        if(list.get(position).likeCount>0){
+            holder.likes_count_text.setVisibility(View.VISIBLE);
+        }else{
+            holder.likes_count_text.setVisibility(View.GONE);
+        }
+
 
         // Show liked by layout if likes > 1
         if(holder.likes>1){

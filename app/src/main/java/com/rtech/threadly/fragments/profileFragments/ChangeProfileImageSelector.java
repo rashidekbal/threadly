@@ -114,8 +114,9 @@ public class ChangeProfileImageSelector extends Fragment {
                 Uri uri= ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,cursor.getLong(idColumn));
                 uris.add(uri);
             }
+            if(!uris.isEmpty()){
             mainXml.selectImagePreview.setImageURI(uris.get(0));
-            pickedUri=uris.get(0);
+            pickedUri=uris.get(0);}
         }
         setOnclickListeners();
 

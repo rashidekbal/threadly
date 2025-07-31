@@ -3,11 +3,20 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragments.ReelsFragment">
+    tools:context=".fragments.ReelsFragment"
+    android:orientation="vertical">
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/reels_viewpager"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:visibility="gone"/>
+<!--    when loading the reels -->
+    <com.facebook.shimmer.ShimmerFrameLayout
+        android:layout_width="match_parent"
+        android:id="@+id/shimmer"
+        android:layout_height="match_parent">
+        <include layout="@layout/reels_shimmer_layout"/>
+    </com.facebook.shimmer.ShimmerFrameLayout>
 
 
 

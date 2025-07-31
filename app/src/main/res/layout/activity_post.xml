@@ -7,12 +7,12 @@
     android:layout_height="match_parent"
     tools:context=".activities.UserProfileActivity"
     android:orientation="vertical"
+    android:background="@color/allBlack"
     >
     <RelativeLayout
         android:id="@+id/post_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/allBlack">
+        android:layout_height="match_parent">
 
         <!--        main image holder -->
         <ImageView
@@ -20,62 +20,93 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:adjustViewBounds="true"
-            android:scaleType="fitCenter"/>
+            android:scaleType="fitCenter"
+            android:visibility="gone"/>
+        <!--        main video player -->
+        <androidx.media3.ui.PlayerView
+            android:id="@+id/videoPlayer_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:resize_mode="fit"
+            android:background="@color/allBlack"
+            app:show_buffering="when_playing"
+            app:use_controller="false"
+            android:visibility="gone"/>
+        <ImageView
+            android:layout_width="@dimen/dp_50"
+            android:layout_height="@dimen/dp_50"
+            android:src="@drawable/play_icon"
+            android:id="@+id/play_btn"
+            android:layout_centerInParent="true"
+            android:visibility="gone"/>
         <!--        user whose post is this -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
+            android:orientation="vertical"
             android:layout_alignParentBottom="true"
             android:layout_marginBottom="@dimen/dp_28"
             android:gravity="center_vertical"
             android:layout_marginLeft="@dimen/dp_10">
-            <FrameLayout
-                android:id="@+id/outerBorder_color"
-                android:layout_width="@dimen/dp_50"
-                android:layout_height="@dimen/dp_50"
-                android:background="@drawable/red_circle"
-
-                >
-
-                <ImageView
-                    android:id="@+id/profile_img"
-                    android:layout_width="@dimen/dp_40"
-                    android:layout_height="@dimen/dp_40"
-                    android:layout_gravity="center"
-                    android:background="@drawable/circle"
-                    android:clipToOutline="true"
-                    android:scaleType="centerCrop"
-                    android:src="@drawable/image_test" />
-
-            </FrameLayout>
-            <TextView
-                android:id="@+id/username_text"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/AllWhite"
-                android:textSize="@dimen/sp_16"
-                android:layout_marginLeft="@dimen/dp_5"
-                />
-        </LinearLayout>
-        <!-- caption for the post-->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_alignParentBottom="true"
-            android:layout_marginBottom="@dimen/dp_10"
-            android:layout_marginLeft="@dimen/dp_10">
-            <TextView
-                android:id="@+id/caption_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/AllWhite"
-                android:textSize="@dimen/sp_15"
-                android:layout_marginLeft="@dimen/dp_5"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginStart="@dimen/dp_10">
+                <FrameLayout
+                    android:id="@+id/outerBorder_color"
+                    android:layout_width="@dimen/dp_35"
+                    android:layout_height="@dimen/dp_35"
+                    android:background="@drawable/red_circle"
 
-                />
+                    >
+
+                    <ImageView
+                        android:id="@+id/profile_img"
+                        android:layout_width="@dimen/dp_25"
+                        android:layout_height="@dimen/dp_25"
+                        android:layout_gravity="center"
+                        android:background="@drawable/circle"
+                        android:clipToOutline="true"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/blank_profile" />
+
+                </FrameLayout>
+                <TextView
+                    android:id="@+id/username_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/AllWhite"
+                    android:textSize="@dimen/sp_16"
+                    android:textStyle="bold"
+                    android:layout_marginStart="@dimen/dp_10"
+
+                    android:layout_marginLeft="@dimen/dp_5"
+                    />
+            </LinearLayout>
+
+            <!-- caption for the post-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_alignParentBottom="true"
+                android:layout_marginTop="@dimen/dp_10"
+                android:layout_marginHorizontal="@dimen/dp_10">
+                <TextView
+                    android:id="@+id/caption_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/AllWhite"
+                    android:textSize="@dimen/sp_15"
+                    android:textStyle="bold"
+                    android:layout_marginLeft="@dimen/dp_5"
+
+                    />
+            </LinearLayout>
         </LinearLayout>
+
 
         <!--        control buttons for the post-->
         <LinearLayout
@@ -105,6 +136,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="0"
+                    android:textStyle="bold"
                     android:textColor="@color/AllWhite"
                     android:textAlignment="center"/>
 
@@ -127,6 +159,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="0"
+                    android:textStyle="bold"
                     android:textColor="@color/AllWhite"
                     android:textAlignment="center"/>
 
@@ -148,6 +181,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="0"
+                    android:textStyle="bold"
                     android:textColor="@color/AllWhite"
                     android:textAlignment="center"/>
 

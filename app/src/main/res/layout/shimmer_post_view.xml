@@ -158,7 +158,7 @@
 
                 android:layout_width="@dimen/dp_40"
                 android:layout_height="@dimen/dp_40"
-                android:background="@color/light_grey_text"
+                android:background="@drawable/curved_small_square_box_light_grey"
                 android:layout_marginLeft="@dimen/dp_10"
                 android:layout_marginVertical="@dimen/dp_11"
                 android:scaleType="centerCrop"
@@ -179,32 +179,34 @@
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:layout_gravity="center_vertical"
+                    android:layout_marginBottom="@dimen/dp_5"
                     >
                     <TextView
 
                         android:layout_width="@dimen/dp_105"
-                        android:layout_height="wrap_content"
+                        android:layout_height="@dimen/dp_10"
                         android:textColor="@color/black"
                         android:textStyle="bold"
                         android:textSize="@dimen/sp_18"
-                        android:background="@color/light_grey_text"/>
+                        android:background="@drawable/curved_small_square_box_light_grey"/>
 
 
                 </LinearLayout>
                 <TextView
 
                     android:layout_width="@dimen/dp_105"
-                    android:layout_height="wrap_content"
+                    android:layout_height="@dimen/dp_10"
                     android:textSize="@dimen/sp_14"
                     android:layout_marginTop="2dp"
                     android:textColor="@color/black"
-                    android:background="@color/light_grey_text"/>
+                    android:background="@drawable/curved_small_square_box_light_grey"/>
+
             </LinearLayout>
 
             <ImageView
                 android:layout_width="@dimen/dp_45"
                 android:layout_height="@dimen/dp_20"
-                android:background="@color/light_grey_text"
+                android:background="@drawable/curved_small_square_box_light_grey"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"/>
 
@@ -228,7 +230,7 @@
                 android:layout_height="match_parent"
                 android:layout_marginStart="@dimen/dp_10"
                 android:layout_marginTop="@dimen/dp_5"
-                android:background="@color/light_grey_text">
+                android:background="@drawable/curved_small_square_box_light_grey">
 
 
             </LinearLayout>
@@ -243,7 +245,7 @@
                 android:background="@color/light_grey_text"/>
 
         </RelativeLayout>
-        +<LinearLayout
+   <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
@@ -255,7 +257,7 @@
 
             android:layout_width="@dimen/dp_100"
             android:layout_height="wrap_content"
-            android:background="@color/light_grey_text"
+            android:background="@drawable/curved_small_square_box_light_grey"
             android:layout_marginTop="@dimen/dp_13"
             />
     </LinearLayout>
@@ -274,7 +276,7 @@
 
                 android:layout_width="@dimen/dp_40"
                 android:layout_height="@dimen/dp_40"
-                android:background="@color/light_grey_text"
+                android:background="@drawable/curved_small_square_box_light_grey"
                 android:layout_marginLeft="@dimen/dp_10"
                 android:layout_marginVertical="@dimen/dp_11"
                 android:scaleType="centerCrop"
@@ -295,39 +297,40 @@
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:layout_gravity="center_vertical"
+                    android:layout_marginBottom="@dimen/dp_5"
                     >
                     <TextView
 
                         android:layout_width="@dimen/dp_105"
-                        android:layout_height="wrap_content"
+                        android:layout_height="@dimen/dp_10"
                         android:textColor="@color/black"
                         android:textStyle="bold"
                         android:textSize="@dimen/sp_18"
-                        android:background="@color/light_grey_text"/>
+                        android:background="@drawable/curved_small_square_box_light_grey"/>
 
 
                 </LinearLayout>
                 <TextView
 
                     android:layout_width="@dimen/dp_105"
-                    android:layout_height="wrap_content"
+                    android:layout_height="@dimen/dp_10"
                     android:textSize="@dimen/sp_14"
                     android:layout_marginTop="2dp"
                     android:textColor="@color/black"
-                    android:background="@color/light_grey_text"/>
+                    android:background="@drawable/curved_small_square_box_light_grey"/>
+
             </LinearLayout>
 
             <ImageView
                 android:layout_width="@dimen/dp_45"
                 android:layout_height="@dimen/dp_20"
-                android:background="@color/light_grey_text"
+                android:background="@drawable/curved_small_square_box_light_grey"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"/>
 
         </RelativeLayout>
 
         <ImageView
-
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:minHeight="@dimen/dp_400"
@@ -345,7 +348,7 @@
                 android:layout_height="match_parent"
                 android:layout_marginStart="@dimen/dp_10"
                 android:layout_marginTop="@dimen/dp_5"
-                android:background="@color/light_grey_text">
+                android:background="@drawable/curved_small_square_box_light_grey">
 
 
             </LinearLayout>
@@ -360,22 +363,23 @@
                 android:background="@color/light_grey_text"/>
 
         </RelativeLayout>
-        +<LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:orientation="vertical"
-        android:paddingStart="@dimen/dp_14"
-        android:layout_marginBottom="@dimen/dp_10">
-
-        <TextView
-
-            android:layout_width="@dimen/dp_100"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/light_grey_text"
-            android:layout_marginTop="@dimen/dp_13"
-            />
-    </LinearLayout>
+            android:gravity="center_vertical"
+            android:orientation="vertical"
+            android:paddingStart="@dimen/dp_14"
+            android:layout_marginBottom="@dimen/dp_10">
+
+            <TextView
+
+                android:layout_width="@dimen/dp_100"
+                android:layout_height="wrap_content"
+                android:background="@drawable/curved_small_square_box_light_grey"
+                android:layout_marginTop="@dimen/dp_13"
+                />
+        </LinearLayout>
 
     </LinearLayout>
+
 </LinearLayout>

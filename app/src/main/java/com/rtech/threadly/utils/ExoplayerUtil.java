@@ -1,6 +1,7 @@
 package com.rtech.threadly.utils;
 
 import android.content.Context;
+import android.media.browse.MediaBrowser;
 import android.net.Uri;
 
 import androidx.annotation.OptIn;
@@ -10,6 +11,8 @@ import androidx.media3.exoplayer.ExoPlayer;
 import androidx.media3.exoplayer.source.MediaSource;
 import androidx.media3.exoplayer.source.ProgressiveMediaSource;
 import androidx.media3.ui.PlayerView;
+
+import java.io.File;
 
 public class ExoplayerUtil {
     private static Context cont;
@@ -40,6 +43,42 @@ cont=context;
             ).createMediaSource(mediaItem);
 
             exoplayer.setMediaSource(mediaSource);
+            playerView.setPlayer(exoplayer);
+            exoplayer.prepare();
+            exoplayer.play();
+        }
+
+
+    }
+    @UnstableApi
+    public static void play(File file, PlayerView playerView){
+        if(exoplayer!=null){
+
+            // Detach old surface
+            if (currentPlayerView != null) {
+                currentPlayerView.setPlayer(null);
+            }
+            currentPlayerView = playerView;
+            MediaItem mediaItem=MediaItem.fromUri(Uri.fromFile(file));
+            exoplayer.setMediaItem(mediaItem);
+            playerView.setPlayer(exoplayer);
+            exoplayer.prepare();
+            exoplayer.play();
+        }
+
+
+    }
+    @UnstableApi
+    public static void playFromLocalUri(Uri uri, PlayerView playerView){
+        if(exoplayer!=null){
+
+            // Detach old surface
+            if (currentPlayerView != null) {
+                currentPlayerView.setPlayer(null);
+            }
+            currentPlayerView = playerView;
+            MediaItem mediaItem=MediaItem.fromUri(uri);
+            exoplayer.setMediaItem(mediaItem);
             playerView.setPlayer(exoplayer);
             exoplayer.prepare();
             exoplayer.play();

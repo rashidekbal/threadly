@@ -18,13 +18,9 @@ import android.view.ViewGroup;
 import com.bumptech.glide.Glide;
 import com.rtech.threadly.core.Core;
 import com.rtech.threadly.databinding.FragmentUploadPostFinalBinding;
-import com.rtech.threadly.interfaces.NetworkCallbackInterfaceWithJsonObjectDelivery;
-import com.rtech.threadly.interfaces.PostUploadedCallback;
-import com.rtech.threadly.managers.PostsManager;
 import com.rtech.threadly.utils.ReUsableFunctions;
 import com.rtech.threadly.workers.UploadMediaWorker;
 
-import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;

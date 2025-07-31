@@ -53,6 +53,8 @@ public class ReelsFragment extends Fragment {
                     reelsList.clear();
                     reelsList.addAll(postsModels);
                     adapter.notifyDataSetChanged();
+                    mainXml.shimmer.setVisibility(View.GONE);
+                    mainXml.reelsViewpager.setVisibility(View.VISIBLE);
                 }
             }
         });

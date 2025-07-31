@@ -61,22 +61,97 @@
                     />
 
             </RelativeLayout>
-            <RelativeLayout
+            <androidx.core.widget.NestedScrollView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/storyRecyclerView"
+                android:layout_height="@dimen/dp_132"
+         >
+                <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/dp_130"
-                    />
+                    android:layout_height="@dimen/dp_132"
+                    android:paddingHorizontal="@dimen/dp_10">
+                    <LinearLayout
+                        android:id="@+id/myStoryLayout"
+                        android:layout_width="wrap_content"
+                        android:layout_height="@dimen/dp_132"
+                        android:orientation="vertical"
+                        android:visibility="visible"
+                        android:gravity="center">
+                        <RelativeLayout
+                            android:layout_width="@dimen/dp_86"
+                            android:layout_height="@dimen/dp_86"
+                            android:gravity="center">
+                            <ImageView
+                                android:id="@+id/addStorySymbol"
+                                android:layout_width="@dimen/dp_28"
+                                android:layout_height="@dimen/dp_28"
+                                android:contentDescription="@string/addstory"
+                                android:src="@drawable/plus_circle_filled"
+                                android:layout_alignParentEnd="true"
+                                android:layout_alignParentBottom="true"
+                                android:layout_marginEnd="@dimen/dp_8"
+                                android:layout_marginBottom="@dimen/dp_10"
+                                android:elevation="2dp"
+                                android:visibility="visible"/>
+                            <FrameLayout
+                                android:id="@+id/StoryOuterBorder_color"
+                                android:layout_width="@dimen/dp_80"
+                                android:layout_height="@dimen/dp_80"
+                                android:layout_marginBottom="@dimen/dp_4"
+                                >
 
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_alignParentBottom="true"
-                    android:alpha="0.1"
-                    android:background="#262626" />
-            </RelativeLayout>
+                                <ImageView
+                                    android:id="@+id/profile_img"
+                                    android:layout_width="@dimen/dp_70"
+                                    android:layout_height="@dimen/dp_70"
+                                    android:layout_gravity="center"
+                                    android:background="@drawable/circle"
+                                    android:clipToOutline="true"
+                                    android:scaleType="centerCrop"
+                                    android:src="@drawable/image_test"
+                                    />
+                            </FrameLayout>
+
+
+                        </RelativeLayout>
+                        <TextView
+                            android:id="@+id/MyStoryUsername"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/addstory"
+                            android:textColor="@color/black"
+                            android:textSize="@dimen/sp_14"
+                            android:textStyle="bold"
+
+                            />
+
+
+                    </LinearLayout>
+
+
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/storyRecyclerView"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:visibility="gone"
+                        android:layout_toEndOf="@id/myStoryLayout"
+                        />
+                    <com.facebook.shimmer.ShimmerFrameLayout
+                        android:id="@+id/stories_shimmer"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:visibility="gone">
+                        <include layout="@layout/stories_shimmer"/>
+                    </com.facebook.shimmer.ShimmerFrameLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_alignParentBottom="true"
+                        android:alpha="0.1"
+                        android:background="#262626" />
+                </RelativeLayout>
+            </androidx.core.widget.NestedScrollView>
             <!--shimmer post placeholder-->
             <!--            <include layout="@layout/users_card"/>-->
             <com.facebook.shimmer.ShimmerFrameLayout
