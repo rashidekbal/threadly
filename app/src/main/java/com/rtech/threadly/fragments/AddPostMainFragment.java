@@ -11,14 +11,12 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 
 import android.provider.MediaStore;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.bumptech.glide.Glide;
-import com.rtech.threadly.R;
-import com.rtech.threadly.adapters.AddPostShowMediaAdapter;
+import com.rtech.threadly.adapters.mediaExplorerAdapter.AddPostShowMediaAdapter;
 import com.rtech.threadly.databinding.FragmentAddPostMainBinding;
 import com.rtech.threadly.interfaces.AddPostMainFragmentOptionsClickInterface;
 import com.rtech.threadly.models.MediaModel;

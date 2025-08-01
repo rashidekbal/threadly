@@ -1,4 +1,4 @@
-package com.rtech.threadly.fragments;
+package com.rtech.threadly.fragments.storiesFragment;
 
 import android.net.Uri;
 import android.os.Bundle;
@@ -20,7 +20,6 @@ import com.rtech.threadly.core.Core;
 import com.rtech.threadly.databinding.FragmentUploadStoryFinalBinding;
 import com.rtech.threadly.utils.ExoplayerUtil;
 import com.rtech.threadly.utils.ReUsableFunctions;
-import com.rtech.threadly.workers.UploadMediaWorker;
 import com.rtech.threadly.workers.UploadStoriesWorker;
 
 import java.io.File;

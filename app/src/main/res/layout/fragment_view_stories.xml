@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".fragments.storiesFragment.ViewStoriesFragment"
+    android:background="@color/allBlack">
+    <LinearLayout
+        android:id="@+id/count_layout"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_50"
+        android:orientation="horizontal">
+    </LinearLayout>
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/viewPager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/count_layout"
+        android:visibility="gone"/>
+
+   <ProgressBar
+       android:id="@+id/progressBar"
+       android:layout_width="@dimen/dp_50"
+       android:layout_height="@dimen/dp_50"
+       android:indeterminateTint="@color/AllWhite"
+       android:layout_centerInParent="true"
+       android:elevation="@dimen/dp_5"/>
+
+</RelativeLayout>

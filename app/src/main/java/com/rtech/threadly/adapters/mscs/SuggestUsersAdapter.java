@@ -1,4 +1,4 @@
-package com.rtech.threadly.adapters;
+package com.rtech.threadly.adapters.mscs;
 
 import android.annotation.SuppressLint;
 import android.content.Context;

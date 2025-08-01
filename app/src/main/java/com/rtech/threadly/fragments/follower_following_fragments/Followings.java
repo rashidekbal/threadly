@@ -12,7 +12,7 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
 import com.rtech.threadly.R;
-import com.rtech.threadly.adapters.FollowerFollowing_UserList_adapter;
+import com.rtech.threadly.adapters.followersAdapters.FollowerFollowing_UserList_adapter;
 import com.rtech.threadly.interfaces.NetworkCallbackInterfaceWithJsonObjectDelivery;
 import com.rtech.threadly.managers.FollowManager;
 import com.rtech.threadly.models.Profile_Model_minimal;

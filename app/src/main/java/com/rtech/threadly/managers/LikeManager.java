@@ -125,6 +125,44 @@ public class LikeManager {
                 });
 
     }
+    public void LikeStory(int StoryId,NetworkCallbackInterface callbackInterface){
+        String Url=ApiEndPoints.LIKE_STORY+Integer.toString(StoryId);
+        AndroidNetworking.get(Url)
+                .setPriority(Priority.HIGH)
+                .addHeaders("Authorization","Bearer "+loginInfo.getString(SharedPreferencesKeys.JWT_TOKEN,"null"))
+                .build()
+                .getAsJSONObject(new JSONObjectRequestListener() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        callbackInterface.onSuccess();
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+callbackInterface.onError(anError.toString());
+                    }
+                });
+    }
+    public void UnLikeStory(int StoryId,NetworkCallbackInterface callbackInterface){
+        String Url=ApiEndPoints.UNLIKE_STORY+Integer.toString(StoryId);
+        AndroidNetworking.get(Url)
+                .setPriority(Priority.HIGH)
+                .addHeaders("Authorization","Bearer "+loginInfo.getString(SharedPreferencesKeys.JWT_TOKEN,"null"))
+                .build()
+                .getAsJSONObject(new JSONObjectRequestListener() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        callbackInterface.onSuccess();
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+callbackInterface.onError(anError.toString());
+                    }
+                });
+    }
+
+
 
 
 }

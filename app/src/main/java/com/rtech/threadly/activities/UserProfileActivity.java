@@ -22,7 +22,7 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import com.bumptech.glide.Glide;
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.rtech.threadly.R;
-import com.rtech.threadly.adapters.GridPostAdapter;
+import com.rtech.threadly.adapters.postsAdapters.GridPostAdapter;
 import com.rtech.threadly.constants.SharedPreferencesKeys;
 import com.rtech.threadly.core.Core;
 import com.rtech.threadly.interfaces.NetworkCallbackInterface;

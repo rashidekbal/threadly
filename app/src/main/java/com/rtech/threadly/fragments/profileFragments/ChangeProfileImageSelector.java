@@ -16,9 +16,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.rtech.threadly.R;
 import com.rtech.threadly.Threadly;
-import com.rtech.threadly.adapters.uploadProfileAdapter;
+import com.rtech.threadly.adapters.mediaExplorerAdapter.uploadProfileAdapter;
 import com.rtech.threadly.databinding.FragmentChangeProfileImageSelectorBinding;
 import com.rtech.threadly.interfaces.NetworkCallbackInterfaceWithJsonObjectDelivery;
 import com.rtech.threadly.interfaces.uploadProfileSelectCallbackInterface;

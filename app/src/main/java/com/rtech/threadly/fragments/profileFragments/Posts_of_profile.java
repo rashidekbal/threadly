@@ -10,7 +10,6 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,7 +19,7 @@ import android.widget.TextView;
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.rtech.threadly.BuildConfig;
 import com.rtech.threadly.R;
-import com.rtech.threadly.adapters.GridPostAdapter;
+import com.rtech.threadly.adapters.postsAdapters.GridPostAdapter;
 import com.rtech.threadly.models.Preview_Post_model;
 import com.rtech.threadly.interfaces.Post_fragmentSetCallback;
 import com.rtech.threadly.viewmodels.ProfileViewModel;

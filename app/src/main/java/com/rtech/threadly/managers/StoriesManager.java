@@ -70,4 +70,27 @@ public class StoriesManager {
                     }
                 });
     }
+    public void getStoriesOf(String Userid,NetworkCallbackInterfaceWithJsonObjectDelivery callbackInterfaceWithJsonObjectDelivery){
+        String Url=ApiEndPoints.GET_STORIES+Userid;
+        AndroidNetworking.get(Url)
+                .setPriority(Priority.HIGH)
+                .addHeaders("Authorization" , "Bearer "+loginInfo.getString(SharedPreferencesKeys.JWT_TOKEN,"null"))
+                .build()
+                .getAsJSONObject(new JSONObjectRequestListener() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+
+                        callbackInterfaceWithJsonObjectDelivery.onSuccess(response);
+
+
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+                        callbackInterfaceWithJsonObjectDelivery.onError(anError.getMessage());
+
+                    }
+                });
+
+    }
 }

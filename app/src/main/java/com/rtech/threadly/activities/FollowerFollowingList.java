@@ -12,7 +12,7 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
 import com.rtech.threadly.R;
-import com.rtech.threadly.adapters.Follower_Following_ViewPagerAdapter;
+import com.rtech.threadly.adapters.followersAdapters.Follower_Following_ViewPagerAdapter;
 
 public class FollowerFollowingList extends AppCompatActivity {
     Intent intentData;

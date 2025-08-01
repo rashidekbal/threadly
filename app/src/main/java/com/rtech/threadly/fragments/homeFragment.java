@@ -19,13 +19,16 @@ import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.JSONObjectRequestListener;
+import com.bumptech.glide.Glide;
 import com.rtech.threadly.BuildConfig;
-import com.rtech.threadly.activities.AddPostActivity;
+import com.rtech.threadly.R;
 import com.rtech.threadly.activities.AddStoryActivity;
-import com.rtech.threadly.adapters.ImagePostsFeedAdapter;
-import com.rtech.threadly.adapters.StatusViewAdapter;
+import com.rtech.threadly.adapters.postsAdapters.ImagePostsFeedAdapter;
+import com.rtech.threadly.adapters.storiesAdapters.StatusViewAdapter;
+import com.rtech.threadly.constants.SharedPreferencesKeys;
 import com.rtech.threadly.core.Core;
 import com.rtech.threadly.databinding.FragmentHomeBinding;
+import com.rtech.threadly.interfaces.StoryOpenCallback;
 import com.rtech.threadly.models.Posts_Model;
 import com.rtech.threadly.models.Profile_Model_minimal;
 import com.rtech.threadly.models.StoriesModel;
@@ -50,9 +53,11 @@ public class homeFragment extends Fragment {
     FragmentHomeBinding mainXml;
     StoriesViewModel storiesViewModel;
     ArrayList<StoriesModel> storiesData;
+    StoryOpenCallback callback;
 
 
-    public homeFragment() {
+    public homeFragment(StoryOpenCallback callback) {
+        this.callback=callback;
         // Default constructor
     }
 
@@ -69,9 +74,15 @@ public class homeFragment extends Fragment {
         // -------------------------
         // Setup  stories/status
         // -------------------------
-
+        Glide.with(this).load(loginInfo.getString(SharedPreferencesKeys.USER_PROFILE_PIC,"null")).placeholder(R.drawable.blank_profile).circleCrop().into(mainXml.profileImg);
         LinearLayoutManager layoutManager = new LinearLayoutManager(requireActivity(), LinearLayoutManager.HORIZONTAL, false);
-        StatusViewAdapter StoriesAdapter = new StatusViewAdapter(requireActivity(), storiesData);
+        StatusViewAdapter StoriesAdapter = new StatusViewAdapter(requireActivity(), storiesData, new StoryOpenCallback() {
+            @Override
+            public void openStoryOf(String userid,String profilePic) {
+                callback.openStoryOf(userid,profilePic);
+
+            }
+        });
         mainXml.storyRecyclerView.setLayoutManager(layoutManager);
         mainXml.storyRecyclerView.setAdapter(StoriesAdapter);
 
@@ -91,7 +102,8 @@ public class homeFragment extends Fragment {
             public void onChanged(ArrayList<StoriesModel> storiesModels) {
 
                 if(storiesModels.isEmpty()){
-                    Log.d("storyloaded", "onResponse: empty list");
+                    mainXml.storiesShimmer.setVisibility(View.GONE);
+                    mainXml.myStoryLayout.setVisibility(View.VISIBLE);
 
                 }
                 else{
@@ -190,7 +202,7 @@ public class homeFragment extends Fragment {
         mainXml.addPostImageBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getContext().startActivity(new Intent(getContext(), AddStoryActivity.class));
+                requireActivity().startActivity(new Intent(getContext(), AddStoryActivity.class));
             }
         });
         mainXml.swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -198,6 +210,7 @@ public class homeFragment extends Fragment {
             public void onRefresh() {
                 mainXml.swipeRefresh.setEnabled(false);
                 postsViewModel.loadFeedPosts();
+                storiesViewModel.loadStories();
 
 
             }
@@ -217,5 +230,6 @@ public class homeFragment extends Fragment {
     public void onResume() {
         super.onResume();
     }
+
 
 }

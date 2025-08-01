@@ -11,7 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.rtech.threadly.R;
-import com.rtech.threadly.adapters.GridPostAdapter;
+import com.rtech.threadly.adapters.postsAdapters.GridPostAdapter;
 import com.rtech.threadly.models.Preview_Post_model;
 import com.rtech.threadly.interfaces.Post_fragmentSetCallback;
 

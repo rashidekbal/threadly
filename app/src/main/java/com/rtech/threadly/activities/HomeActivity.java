@@ -46,9 +46,11 @@ import com.rtech.threadly.fragments.post_fragment;
 import com.rtech.threadly.fragments.profileFragments.profileFragment;
 import com.rtech.threadly.fragments.profileFragments.profileUploadFinalPreview;
 import com.rtech.threadly.fragments.searchFragment;
+import com.rtech.threadly.fragments.storiesFragment.ViewStoriesFragment;
 import com.rtech.threadly.interfaces.CameraFragmentInterface;
 import com.rtech.threadly.interfaces.FragmentItemClickInterface;
 import com.rtech.threadly.interfaces.Post_fragmentSetCallback;
+import com.rtech.threadly.interfaces.StoryOpenCallback;
 import com.rtech.threadly.utils.ExoplayerUtil;
 
 public class HomeActivity extends AppCompatActivity {
@@ -114,7 +116,19 @@ int currentFragment;
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 if(item.getItemId()==R.id.home){
                     getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-                    addFragment(new homeFragment());
+                    addFragment(new homeFragment((userid,profilePic) -> {
+                        ViewStoriesFragment fragment=new ViewStoriesFragment(()->{
+                            binding.bottomNavigation.setVisibility(View.VISIBLE);
+                            binding.cardView.setBackgroundColor(Color.WHITE);
+                        });
+                        Bundle bundle=new Bundle();
+                        bundle.putString("userId",userid);
+                        bundle.putString("profilePic",profilePic);
+                        fragment.setArguments(bundle);
+                        addFragment(fragment);
+                        binding.bottomNavigation.setVisibility(View.INVISIBLE);
+                        binding.cardView.setBackgroundColor(Color.BLACK);
+                    }));
                     currentFragment=item.getItemId();
 
 

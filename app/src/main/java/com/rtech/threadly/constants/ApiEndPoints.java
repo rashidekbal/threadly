@@ -14,6 +14,8 @@ public class ApiEndPoints {
     public static final String UNLIKE_POST = baseUrl + "/like/unlikePost/";
     public static final String LIKE_COMMENT = baseUrl + "/like/likeAComment/";
     public static final String UNLIKE_COMMENT = baseUrl + "/like/unlikeAComment/";
+    public static final String LIKE_STORY = baseUrl + "/like/likeStory/";
+    public static final String UNLIKE_STORY = baseUrl + "/like/unlikeStory/";
 
     // Follows
     public static final String FOLLOW = baseUrl + "/follow/follow/";

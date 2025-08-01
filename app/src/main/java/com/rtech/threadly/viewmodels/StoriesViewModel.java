@@ -11,6 +11,7 @@ import androidx.lifecycle.MutableLiveData;
 import com.rtech.threadly.interfaces.NetworkCallbackInterfaceWithJsonObjectDelivery;
 import com.rtech.threadly.managers.StoriesManager;
 import com.rtech.threadly.models.StoriesModel;
+import com.rtech.threadly.models.StoryMediaModel;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -34,7 +35,7 @@ public class StoriesViewModel extends AndroidViewModel {
         return mutableLiveData;
     }
 
-    private void loadStories() {
+    public void loadStories() {
         ArrayList<StoriesModel> arrayList=new ArrayList<>();
         storiesManager.getStories(new NetworkCallbackInterfaceWithJsonObjectDelivery() {
             @Override
@@ -59,6 +60,53 @@ public class StoriesViewModel extends AndroidViewModel {
             @Override
             public void onError(String err) {
                 mutableLiveData.postValue(new ArrayList<>());
+
+            }
+        });
+
+    }
+
+
+    MutableLiveData<ArrayList<StoryMediaModel>> mutableStoryMediaModelData=new MutableLiveData<>();
+
+    public LiveData<ArrayList<StoryMediaModel>> getStoryOf(String userid){
+        if(mutableStoryMediaModelData.getValue()==null){
+            loadStoryOf(userid);
+
+        }
+        return mutableStoryMediaModelData;
+    }
+    private void loadStoryOf(String Userid){
+        ArrayList<StoryMediaModel> arrayList=new ArrayList<>();
+        storiesManager.getStoriesOf(Userid, new NetworkCallbackInterfaceWithJsonObjectDelivery() {
+            @Override
+            public void onSuccess(JSONObject response) {
+                try {
+                    JSONArray array=response.getJSONArray("data");
+                    for(int i=0;i<array.length();i++){
+                        JSONObject object =array.getJSONObject(i);
+                        arrayList.add(new StoryMediaModel(
+                                object.getString("userid"),
+                                object.getInt("id"),
+                                object.getString("storyUrl"),
+                                object.getString("type"),
+                                object.getString("createdAt"),
+                                object.getInt("isLiked")
+                                ));
+
+                    }
+                    mutableStoryMediaModelData.postValue(arrayList);
+
+                } catch (JSONException e) {
+                    mutableStoryMediaModelData.postValue(new ArrayList<>());
+                    throw new RuntimeException(e);
+                }
+
+            }
+
+            @Override
+            public void onError(String err) {
+                mutableStoryMediaModelData.postValue(new ArrayList<>());
 
             }
         });

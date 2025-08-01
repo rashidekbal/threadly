@@ -14,8 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.rtech.threadly.R;
-import com.rtech.threadly.adapters.ReelsAdapter;
+import com.rtech.threadly.adapters.postsAdapters.ReelsAdapter;
 import com.rtech.threadly.databinding.FragmentReelsBinding;
 import com.rtech.threadly.models.Posts_Model;
 import com.rtech.threadly.utils.ExoplayerUtil;

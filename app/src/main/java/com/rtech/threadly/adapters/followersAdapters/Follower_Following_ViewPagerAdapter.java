@@ -1,4 +1,4 @@
-package com.rtech.threadly.adapters;
+package com.rtech.threadly.adapters.followersAdapters;
 
 import android.os.Bundle;
 

@@ -1,4 +1,4 @@
-package com.rtech.threadly.adapters;
+package com.rtech.threadly.adapters.mediaExplorerAdapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;

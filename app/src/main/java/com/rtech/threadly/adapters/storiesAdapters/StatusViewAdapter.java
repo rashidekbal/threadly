@@ -1,4 +1,4 @@
-package com.rtech.threadly.adapters;
+package com.rtech.threadly.adapters.storiesAdapters;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -13,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.rtech.threadly.R;
+import com.rtech.threadly.interfaces.StoryOpenCallback;
 import com.rtech.threadly.models.StoriesModel;
 
 import java.util.ArrayList;
@@ -20,10 +22,12 @@ import java.util.ArrayList;
 public class StatusViewAdapter extends RecyclerView.Adapter<StatusViewAdapter.viewHolder> {
     Context context;
     ArrayList<StoriesModel> list;
-    public StatusViewAdapter(Context c, ArrayList<StoriesModel> list){
+    StoryOpenCallback callback;
+    public StatusViewAdapter(Context c, ArrayList<StoriesModel> list, StoryOpenCallback callback){
         this.context=c;
         this.list=list;
         setHasStableIds(true);
+        this.callback=callback;
     }
 
     @Override
@@ -40,6 +44,9 @@ public class StatusViewAdapter extends RecyclerView.Adapter<StatusViewAdapter.vi
 
     @Override
     public void onBindViewHolder(@NonNull StatusViewAdapter.viewHolder holder, int position) {
+        holder.storyLayout.setOnClickListener(v->{
+            callback.openStoryOf(list.get(position).userid,list.get(position).userProfile);
+        });
         if(list.get(position).isSeen){
             holder.dpBorder.setBackground(context.getDrawable(R.drawable.circle_grey));
         }else{
@@ -60,11 +67,13 @@ public class StatusViewAdapter extends RecyclerView.Adapter<StatusViewAdapter.vi
         TextView userid;
         ImageView profileImg;
         FrameLayout dpBorder;
+        LinearLayout storyLayout;
         public viewHolder(@NonNull View itemView) {
             super(itemView);
             profileImg=itemView.findViewById(R.id.profile_img);
             userid=itemView.findViewById(R.id.userid);
             dpBorder=itemView.findViewById(R.id.StoryOuterBorder_color);
+            storyLayout=itemView.findViewById(R.id.storyLayout);
         }
     }
 }
