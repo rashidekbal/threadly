@@ -12,25 +12,79 @@
         <ProgressBar
             android:id="@+id/progressBar"
             android:layout_width="match_parent"
-            android:layout_height="5dp"
+            android:layout_height="2dp"
             style="@android:style/Widget.ProgressBar.Horizontal"
+            android:progressBackgroundTint="@color/light_grey_text"
+            android:progressTint="@color/AllWhite"
             />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_below="@id/progressBar"
+            android:elevation="20dp"
+            android:paddingVertical="5dp"
+            android:paddingHorizontal="@dimen/dp_15"
+            android:gravity="center_vertical">
+            <ImageView
+                android:id="@+id/userProfile_img"
+                android:layout_width="@dimen/dp_40"
+                android:layout_height="@dimen/dp_40"
+                android:background="@drawable/circle"
+                android:clipToOutline="true"
+                android:src="@drawable/blank_profile"
+                android:layout_marginEnd="@dimen/dp_10"/>
+            <TextView
+                android:id="@+id/userid"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="kalua don"
+                android:textSize="@dimen/sp_16"
+                android:layout_marginStart="5dp"
+                android:textColor="@color/AllWhite"/>
+            <TextView
+                android:id="@+id/time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="19hr ago"
+                android:textColor="@color/AllWhite"
+                android:textStyle="bold"
+                android:layout_marginStart="@dimen/dp_10"
+                android:textSize="@dimen/sp_16"
+                />
+
+        </LinearLayout>
         <RelativeLayout
+            android:id="@+id/playerRelativeLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@id/progressBar">
+            android:layout_below="@id/progressBar"
+            android:layout_marginTop="@dimen/dp_15">
+            <androidx.media3.ui.PlayerView
+                android:id="@+id/videoPlayer_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clickable="true"
+                android:visibility="visible"
+                app:use_controller="false"
+                app:show_buffering="when_playing"
+                app:resize_mode="fit"
+
+                />
             <View
                 android:id="@+id/previous_btn"
                 android:layout_width="@dimen/dp_60"
                 android:layout_height="match_parent"
                 android:layout_alignParentStart="true"
-                android:elevation="@dimen/dp_5"/>
+                android:elevation="@dimen/dp_10"
+                android:layout_marginTop="@dimen/dp_55"/>
             <View
                 android:id="@+id/next_btn"
                 android:layout_width="@dimen/dp_60"
                 android:layout_height="match_parent"
                 android:layout_alignParentEnd="true"
-                android:elevation="@dimen/dp_5"/>
+                android:elevation="@dimen/dp_5"
+                android:layout_marginTop="@dimen/dp_55"/>
             <ImageView
                 android:id="@+id/post_image_view"
                 android:layout_width="match_parent"
@@ -38,15 +92,14 @@
                 android:longClickable="true"
                 tools:src="@drawable/sample_post_2"
                 android:visibility="gone"/>
-            <androidx.media3.ui.PlayerView
-                android:id="@+id/videoPlayer_view"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:longClickable="true"
-                android:visibility="visible"
-                app:use_controller="false"
-                app:show_buffering="when_playing"
-                />
+
+            <ImageView
+                android:layout_width="@dimen/dp_50"
+                android:layout_height="@dimen/dp_50"
+                android:src="@drawable/play_icon"
+                android:layout_centerInParent="true"
+                android:id="@+id/play_btn"
+                android:visibility="gone"/>
 
 
 
@@ -59,7 +112,6 @@
         android:id="@+id/controller_layout"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_70"
-        android:gravity="center_vertical"
         android:layout_alignParentBottom="true">
         <ImageView
             android:id="@+id/share_btn"
@@ -67,25 +119,31 @@
             android:layout_height="@dimen/dp_27"
             android:src="@drawable/messenger_white"
             android:layout_alignParentEnd="true"
-            android:layout_marginEnd="@dimen/dp_15"/>
+            android:layout_marginEnd="@dimen/dp_15"
+            android:layout_centerVertical="true"/>
         <EditText
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_29"
-            android:background="@drawable/curved_small_square_box"
+            android:layout_height="@dimen/dp_45"
+            android:background="@drawable/stories_edit_text_view"
             android:layout_toStartOf="@id/share_btn"
             android:layout_toEndOf="@id/like_btn_image"
             android:hint="write something ..."
-            android:textColor="@color/black"
+            android:textColorHint="@color/AllWhite"
+            android:textColor="@color/AllWhite"
             android:paddingHorizontal="@dimen/dp_10"
+            android:paddingVertical="@dimen/dp_10"
             android:layout_marginHorizontal="@dimen/dp_10"
-            android:visibility="invisible"/>
+            android:visibility="visible"
+            android:layout_centerVertical="true"
+            android:clipToOutline="true"/>
 
         <ImageView
             android:id="@+id/like_btn_image"
-            android:layout_width="@dimen/dp_29"
-            android:layout_height="@dimen/dp_29"
+            android:layout_width="@dimen/dp_32"
+            android:layout_height="@dimen/dp_32"
             android:src="@drawable/heart_inactive_icon_white"
             android:layout_marginStart="@dimen/dp_10"
+            android:layout_centerVertical="true"
              />
 
     </RelativeLayout>

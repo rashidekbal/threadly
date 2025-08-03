@@ -9,6 +9,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
@@ -49,15 +50,24 @@ import com.rtech.threadly.fragments.searchFragment;
 import com.rtech.threadly.fragments.storiesFragment.ViewStoriesFragment;
 import com.rtech.threadly.interfaces.CameraFragmentInterface;
 import com.rtech.threadly.interfaces.FragmentItemClickInterface;
+import com.rtech.threadly.interfaces.OnDestroyFragmentCallback;
 import com.rtech.threadly.interfaces.Post_fragmentSetCallback;
+import com.rtech.threadly.interfaces.StoriesBackAndForthInterface;
 import com.rtech.threadly.interfaces.StoryOpenCallback;
+import com.rtech.threadly.models.StoriesModel;
 import com.rtech.threadly.utils.ExoplayerUtil;
+import com.rtech.threadly.utils.ReUsableFunctions;
+
+import java.util.ArrayList;
 
 public class HomeActivity extends AppCompatActivity {
     ActivityHomeBinding binding;
 SharedPreferences loginInfo;
 SharedPreferences.Editor prefEditor;
 int permissionCode=786;
+StoryOpenCallback storyOpenCallback;
+OnDestroyFragmentCallback onDestroyStoriesFragmentCallback;
+StoriesBackAndForthInterface storiesBackAndForthInterface;
 
 
 int currentFragment;
@@ -81,6 +91,58 @@ int currentFragment;
         }
 
         init();
+
+        onDestroyStoriesFragmentCallback=new OnDestroyFragmentCallback() {
+            @Override
+            public void onDestroy() {
+                binding.bottomNavigation.setVisibility(View.VISIBLE);
+                binding.cardView.setBackgroundColor(getResources().getColor(R.color.white));
+
+            }
+        };
+
+        storyOpenCallback =new StoryOpenCallback() {
+            @Override
+            public void openStoryOf(String userid, String profilePic, ArrayList<StoriesModel> list, int position) {
+                ViewStoriesFragment fragment=new ViewStoriesFragment(onDestroyStoriesFragmentCallback, new StoriesBackAndForthInterface() {
+                    @Override
+                    public void previous(int position2) {
+                        if(position>0) {
+                            storyOpenCallback.openStoryOf(list.get(position - 1).userid, list.get(position - 1).userProfile, list, position - 1);
+                        }else{
+//                            getSupportFragmentManager().popBackStack();
+                            addFragment(new homeFragment(storyOpenCallback));
+                            binding.bottomNavigation.setVisibility(View.VISIBLE);
+                            binding.cardView.setBackgroundColor(getResources().getColor(R.color.white));
+
+                        }
+                    }
+
+                    @Override
+                    public void next(int position2, int size) {
+                        if(position<list.size()-1){
+                            storyOpenCallback.openStoryOf(list.get(position+1).userid,list.get(position+1).userProfile,list,position+1);
+                        }else{
+//                            getSupportFragmentManager().popBackStack();
+                            addFragment(new homeFragment(storyOpenCallback));
+                            binding.bottomNavigation.setVisibility(View.VISIBLE);
+                    binding.cardView.setBackgroundColor(getResources().getColor(R.color.white));
+                        }
+
+                    }
+                });
+//                ReUsableFunctions.ShowToast("opening for " +userid);
+                Bundle bundle=new Bundle();
+                bundle.putString("userId",userid);
+                bundle.putString("profilePic",profilePic);
+                fragment.setArguments(bundle);
+                addFragment(fragment);
+                binding.bottomNavigation.setVisibility(View.INVISIBLE);
+                binding.cardView.setBackgroundColor(Color.BLACK);
+
+
+            }
+        };
         binding.bottomNavigation.setItemIconTintList(null);
         Glide.with(HomeActivity.this).asBitmap()
                         .load(loginInfo.getString(SharedPreferencesKeys.USER_PROFILE_PIC,"null")).error(R.drawable.blank_profile).placeholder(R.drawable.blank_profile).circleCrop()
@@ -116,19 +178,34 @@ int currentFragment;
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 if(item.getItemId()==R.id.home){
                     getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-                    addFragment(new homeFragment((userid,profilePic) -> {
-                        ViewStoriesFragment fragment=new ViewStoriesFragment(()->{
-                            binding.bottomNavigation.setVisibility(View.VISIBLE);
-                            binding.cardView.setBackgroundColor(Color.WHITE);
-                        });
-                        Bundle bundle=new Bundle();
-                        bundle.putString("userId",userid);
-                        bundle.putString("profilePic",profilePic);
-                        fragment.setArguments(bundle);
-                        addFragment(fragment);
-                        binding.bottomNavigation.setVisibility(View.INVISIBLE);
-                        binding.cardView.setBackgroundColor(Color.BLACK);
-                    }));
+                    addFragment(
+                            new homeFragment(
+//                                    (userid,profilePic) -> {
+//                        ViewStoriesFragment fragment=new ViewStoriesFragment(() -> {
+//                            binding.bottomNavigation.setVisibility(View.VISIBLE);
+//                            binding.cardView.setBackgroundColor(Color.WHITE);
+//                        }, new StoriesBackAndForthInterface() {
+//                            @Override
+//                            public void previous(int position) {
+//
+//                            }
+//
+//                            @Override
+//                            public void next(int position, int size) {
+//
+//                            }
+//                        });
+//                        Bundle bundle=new Bundle();
+//                        bundle.putString("userId",userid);
+//                        bundle.putString("profilePic",profilePic);
+//                        fragment.setArguments(bundle);
+//                        addFragment(fragment);
+//                        binding.bottomNavigation.setVisibility(View.INVISIBLE);
+//                        binding.cardView.setBackgroundColor(Color.BLACK);
+//                    }
+                                    storyOpenCallback
+                  )
+                    );
                     currentFragment=item.getItemId();
 
 
@@ -141,7 +218,7 @@ int currentFragment;
                     addFragment(new searchFragment());
 
                 } else if (item.getItemId()==R.id.add_post) {
-                    startActivity(new Intent(HomeActivity.this, AddPostActivity.class));
+                    startActivity(new Intent(HomeActivity.this, AddPostActivity.class).putExtra("title","New Post"));
 
 
                 } else if (item.getItemId()==R.id.reels) {

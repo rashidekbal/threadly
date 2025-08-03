@@ -45,7 +45,8 @@ public class StatusViewAdapter extends RecyclerView.Adapter<StatusViewAdapter.vi
     @Override
     public void onBindViewHolder(@NonNull StatusViewAdapter.viewHolder holder, int position) {
         holder.storyLayout.setOnClickListener(v->{
-            callback.openStoryOf(list.get(position).userid,list.get(position).userProfile);
+
+            callback.openStoryOf(list.get(position).userid,list.get(position).userProfile,list,position);
         });
         if(list.get(position).isSeen){
             holder.dpBorder.setBackground(context.getDrawable(R.drawable.circle_grey));

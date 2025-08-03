@@ -36,6 +36,7 @@ public class AddStoryActivity extends AppCompatActivity
     AddPostMainFragmentOptionsClickInterface addPostMainFragmentOptionsClickInterface;
     CameraFragmentInterface cameraFragmentInterface;
     private final static int permissionCode = 786;
+    String title;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,7 +44,7 @@ public class AddStoryActivity extends AppCompatActivity
         EdgeToEdge.enable(this);
         mainXml = ActivityAddStoryBinding.inflate(getLayoutInflater());
         setContentView(mainXml.getRoot());
-
+       title=getIntent().getStringExtra("title");
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, 0);
@@ -194,7 +195,11 @@ public class AddStoryActivity extends AppCompatActivity
 
     }
     private void openMainFragment(){
-        fragmentManager(new AddPostMainFragment(addPostMainFragmentOptionsClickInterface));
+        AddPostMainFragment fragment=new AddPostMainFragment(addPostMainFragmentOptionsClickInterface);
+        Bundle bundle=new Bundle();
+        bundle.putString("title",title);
+        fragment.setArguments(bundle);
+        fragmentManager(fragment);
     }
 
 }

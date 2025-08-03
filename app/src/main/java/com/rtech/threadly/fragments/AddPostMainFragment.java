@@ -47,6 +47,11 @@ public class AddPostMainFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         mainXml=FragmentAddPostMainBinding.inflate(inflater,container,false);
+        Bundle bundle=getArguments();
+        if(bundle!=null){
+            mainXml.title.setText(getArguments().getString("title"));
+
+        }
 
         StartMainFunction();
 

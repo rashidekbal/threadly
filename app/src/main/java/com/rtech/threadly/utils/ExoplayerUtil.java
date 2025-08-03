@@ -51,6 +51,29 @@ cont=context;
 
     }
     @UnstableApi
+    public static void playNoLoop(Uri uri, PlayerView playerView){
+        if(exoplayer!=null){
+            exoplayer.setRepeatMode(ExoPlayer.REPEAT_MODE_OFF);
+            // Detach old surface
+            if (currentPlayerView != null) {
+                currentPlayerView.setPlayer(null);
+            }
+            currentPlayerView = playerView;
+            MediaItem mediaItem=MediaItem.fromUri(uri);
+
+            MediaSource mediaSource = new ProgressiveMediaSource.Factory(
+                    CacheDataSourceUtil.getCacheDataSourceFactory(cont)
+            ).createMediaSource(mediaItem);
+
+            exoplayer.setMediaSource(mediaSource);
+            playerView.setPlayer(exoplayer);
+            exoplayer.prepare();
+            exoplayer.play();
+        }
+
+
+    }
+    @UnstableApi
     public static void play(File file, PlayerView playerView){
         if(exoplayer!=null){
 

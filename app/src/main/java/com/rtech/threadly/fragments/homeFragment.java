@@ -78,8 +78,8 @@ public class homeFragment extends Fragment {
         LinearLayoutManager layoutManager = new LinearLayoutManager(requireActivity(), LinearLayoutManager.HORIZONTAL, false);
         StatusViewAdapter StoriesAdapter = new StatusViewAdapter(requireActivity(), storiesData, new StoryOpenCallback() {
             @Override
-            public void openStoryOf(String userid,String profilePic) {
-                callback.openStoryOf(userid,profilePic);
+            public void openStoryOf(String userid,String profilePic,ArrayList<StoriesModel> list,int position) {
+                callback.openStoryOf(userid,profilePic,list,position);
 
             }
         });
@@ -88,7 +88,9 @@ public class homeFragment extends Fragment {
 
         mainXml.myStoryLayout.setOnClickListener(v->{
             if(mainXml.addStorySymbol.getVisibility()==View.VISIBLE){
-                startActivity(new Intent(requireActivity(), AddStoryActivity.class));
+                Intent intent=new Intent(requireActivity(),AddStoryActivity.class);
+                intent.putExtra("title","New Story");
+                startActivity(intent);
             }else{
 
 
@@ -178,7 +180,7 @@ public class homeFragment extends Fragment {
             public void onChanged(ArrayList<Posts_Model> posts_liveData) {
 
                 if (posts_liveData != null && !posts_liveData.isEmpty()) {
-                    Log.d("homefragmentobserver", "onChanged: " + posts_liveData.toString());
+//                    Log.d("homefragmentobserver", "onChanged: " + posts_liveData.toString());
                     posts.clear();
                     posts.addAll(posts_liveData);
                     postsFeedAdapter.notifyDataSetChanged();
@@ -202,7 +204,7 @@ public class homeFragment extends Fragment {
         mainXml.addPostImageBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                requireActivity().startActivity(new Intent(getContext(), AddStoryActivity.class));
+                requireActivity().startActivity(new Intent(getContext(), AddStoryActivity.class).putExtra("title","New Story"));
             }
         });
         mainXml.swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {

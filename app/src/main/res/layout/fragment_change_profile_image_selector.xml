@@ -61,7 +61,7 @@
                     android:id="@+id/select_image_preview"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/sample_post_2"
+                    android:src="@color/white"
                     android:maxHeight="@dimen/dp_400"
                     android:adjustViewBounds="true"
                     android:scaleType="centerCrop"
