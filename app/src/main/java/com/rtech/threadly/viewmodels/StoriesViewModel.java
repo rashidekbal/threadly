@@ -1,7 +1,6 @@
 package com.rtech.threadly.viewmodels;
 
 import android.app.Application;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -69,16 +68,16 @@ public class StoriesViewModel extends AndroidViewModel {
 
     MutableLiveData<ArrayList<StoryMediaModel>> mutableStoryMediaModelData=new MutableLiveData<>();
 
-    public LiveData<ArrayList<StoryMediaModel>> getStoryOf(String userid){
+    public LiveData<ArrayList<StoryMediaModel>> getMyStories(){
         if(mutableStoryMediaModelData.getValue()==null){
-            loadStoryOf(userid);
+            loadMyStories();
 
         }
         return mutableStoryMediaModelData;
     }
-    private void loadStoryOf(String Userid){
+    public void loadMyStories(){
         ArrayList<StoryMediaModel> arrayList=new ArrayList<>();
-        storiesManager.getStoriesOf(Userid, new NetworkCallbackInterfaceWithJsonObjectDelivery() {
+        storiesManager.getMyStories( new NetworkCallbackInterfaceWithJsonObjectDelivery() {
             @Override
             public void onSuccess(JSONObject response) {
                 try {

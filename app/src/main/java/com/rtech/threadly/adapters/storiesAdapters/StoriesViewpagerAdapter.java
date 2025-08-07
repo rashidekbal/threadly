@@ -2,6 +2,7 @@ package com.rtech.threadly.adapters.storiesAdapters;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.ImageDecoder;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
@@ -25,8 +26,10 @@ import com.rtech.threadly.interfaces.StoriesBackAndForthInterface;
 import com.rtech.threadly.managers.LikeManager;
 import com.rtech.threadly.models.StoryMediaModel;
 import com.rtech.threadly.utils.ExoplayerUtil;
+import com.rtech.threadly.utils.ReUsableFunctions;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 public class StoriesViewpagerAdapter extends RecyclerView.Adapter<StoriesViewpagerAdapter.viewHolder> {
 
@@ -106,6 +109,8 @@ public class StoriesViewpagerAdapter extends RecyclerView.Adapter<StoriesViewpag
     public void onBindViewHolder(@NonNull viewHolder holder, @SuppressLint("RecyclerView") int position) {
         currentHolder = holder;
         currentPosition = position;
+         holder.time.setText(getHoursAgo(storiesData.get(position).getCreatedAt()));
+
 
         stopProgressListener();
 
@@ -151,7 +156,26 @@ public class StoriesViewpagerAdapter extends RecyclerView.Adapter<StoriesViewpag
 
         setOnclickListeners(holder, position);
     }
+    String getHoursAgo(String createdAt){
+        String createdTime=createdAt.split("T")[1];
+        int createdHour=(int)(Float.parseFloat(createdTime.split(":")[0])+6.35);
+        String  intermediate=createdAt.split("-")[2];
+        intermediate=intermediate.split(" ")[0];
+        intermediate=intermediate.split("T")[0];
+        int createdDate=Integer.parseInt(intermediate);
 
+        Date currentDate=new Date();
+        int currentDay=currentDate.getDate();
+        int currentHour=currentDate.getHours();
+
+        if(createdDate==currentDay){
+            if(currentHour-createdHour<1){
+                return "last hour";
+            }
+            return Integer.toString(currentHour-createdHour).concat("hr ago");
+        }else{
+            return Integer.toString(24-createdHour+currentHour).concat("hr ago");
+        }}
     private void startProgressListener(ExoPlayer player, viewHolder holder, int position) {
         stopProgressListener(); // Ensure no duplicate runnable
         progressRunnable = new Runnable() {

@@ -70,7 +70,7 @@ public class ApiEndPoints {
     // story routes
     public static String ADD_STORY = baseUrl + "/story/addStory/";
     public static String GET_STORIES = baseUrl + "/story/getStories/";
-    public static String GET_My_STORIES = baseUrl + "/story/getMyStories/";
+    public static String GET_MY_STORIES = baseUrl + "/story/getMyStories/";
 
 
 }

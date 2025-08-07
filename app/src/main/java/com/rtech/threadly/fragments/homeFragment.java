@@ -32,6 +32,7 @@ import com.rtech.threadly.interfaces.StoryOpenCallback;
 import com.rtech.threadly.models.Posts_Model;
 import com.rtech.threadly.models.Profile_Model_minimal;
 import com.rtech.threadly.models.StoriesModel;
+import com.rtech.threadly.models.StoryMediaModel;
 import com.rtech.threadly.utils.ExoplayerUtil;
 import com.rtech.threadly.viewmodels.ImagePostsFeedViewModel;
 import com.rtech.threadly.viewmodels.StoriesViewModel;
@@ -56,9 +57,12 @@ public class homeFragment extends Fragment {
     StoryOpenCallback callback;
 
 
+public homeFragment(){
+    //empty constructor
+}
     public homeFragment(StoryOpenCallback callback) {
         this.callback=callback;
-        // Default constructor
+        // main constructor
     }
 
     @Override
@@ -86,16 +90,30 @@ public class homeFragment extends Fragment {
         mainXml.storyRecyclerView.setLayoutManager(layoutManager);
         mainXml.storyRecyclerView.setAdapter(StoriesAdapter);
 
-        mainXml.myStoryLayout.setOnClickListener(v->{
-            if(mainXml.addStorySymbol.getVisibility()==View.VISIBLE){
-                Intent intent=new Intent(requireActivity(),AddStoryActivity.class);
-                intent.putExtra("title","New Story");
-                startActivity(intent);
-            }else{
+        //load my stories
+        storiesViewModel.getMyStories().observe(getViewLifecycleOwner(), new Observer<ArrayList<StoryMediaModel>>() {
+            @Override
+            public void onChanged(ArrayList<StoryMediaModel> storyMediaModels) {
+                if(!storyMediaModels.isEmpty()){
+                    mainXml.StoryOuterBorderColor.setBackground(getResources().getDrawable(R.drawable.red_circle));
+                    mainXml.addStorySymbol.setVisibility(View.GONE);
+                    mainXml.MyStoryUsername.setText(R.string.your_story);
+                    mainXml.myStoryLayoutMain.setVisibility(View.VISIBLE);
 
+                }else{
+                    mainXml.myStoryLayoutMain.setVisibility(View.VISIBLE);
+                    mainXml.addStorySymbol.setVisibility(View.VISIBLE);
 
+                }
             }
         });
+
+        setMyStoryClickCallback(loginInfo.getString(SharedPreferencesKeys.USER_ID,"null"),loginInfo.getString(SharedPreferencesKeys.USER_PROFILE_PIC,"null"),new ArrayList<>(),0);
+
+
+
+
+
         // loadStories
 
 
@@ -105,7 +123,6 @@ public class homeFragment extends Fragment {
 
                 if(storiesModels.isEmpty()){
                     mainXml.storiesShimmer.setVisibility(View.GONE);
-                    mainXml.myStoryLayout.setVisibility(View.VISIBLE);
 
                 }
                 else{
@@ -114,7 +131,6 @@ public class homeFragment extends Fragment {
                     StoriesAdapter.notifyDataSetChanged();
                    mainXml.storiesShimmer.setVisibility(View.GONE);
                    mainXml.storyRecyclerView.setVisibility(View.VISIBLE);
-                   mainXml.myStoryLayout.setVisibility(View.VISIBLE);
                 }
             }
         });
@@ -213,12 +229,25 @@ public class homeFragment extends Fragment {
                 mainXml.swipeRefresh.setEnabled(false);
                 postsViewModel.loadFeedPosts();
                 storiesViewModel.loadStories();
+                storiesViewModel.loadMyStories();
 
 
             }
         });
 
         return mainXml.getRoot();
+    }
+
+    private void setMyStoryClickCallback(String userid, String profile, ArrayList<StoryMediaModel> storyMediaModels, int i) {
+    mainXml.myStoryLayoutMain.setOnClickListener(v->{
+        if(mainXml.addStorySymbol.getVisibility()==View.VISIBLE){
+            Intent intent=new Intent(requireActivity(),AddStoryActivity.class);
+            intent.putExtra("title","New Story");
+            startActivity(intent);
+        }else{
+            callback.openStoryOf(userid,profile,new ArrayList<>(),i);
+        }
+    });
     }
 
 

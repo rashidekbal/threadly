@@ -26,6 +26,7 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.media3.exoplayer.ExoPlayer;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.CustomTarget;
@@ -82,6 +83,7 @@ int currentFragment;
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, 0);
             return insets;
         });
+
         ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.POST_NOTIFICATIONS},115);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -344,11 +346,19 @@ int currentFragment;
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        ExoplayerUtil.init(this);
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
         ExoplayerUtil.release();
     }
+
 }
+
 
 
     //    @Override

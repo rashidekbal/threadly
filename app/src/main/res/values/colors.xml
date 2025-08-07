@@ -11,4 +11,5 @@
     <color name="DarkGreyText">#3B3838</color>
     <color name="AllWhite">#FFFF</color>
     <color name="allBlack">#000000</color>
+    <color name="settings_background">#EFEFEF</color>
 </resources>

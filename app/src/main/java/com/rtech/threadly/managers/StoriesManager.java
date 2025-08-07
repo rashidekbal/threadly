@@ -1,7 +1,6 @@
 package com.rtech.threadly.managers;
 
 import android.content.SharedPreferences;
-import android.util.Log;
 
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
@@ -94,7 +93,7 @@ public class StoriesManager {
 
     }
     public void getMyStories(NetworkCallbackInterfaceWithJsonObjectDelivery callbackInterfaceWithJsonObjectDelivery){
-        String Url=ApiEndPoints.GET_My_STORIES;
+        String Url=ApiEndPoints.GET_MY_STORIES;
         AndroidNetworking.get(Url)
                 .setPriority(Priority.HIGH)
                 .addHeaders("Authorization" , "Bearer "+loginInfo.getString(SharedPreferencesKeys.JWT_TOKEN,"null"))

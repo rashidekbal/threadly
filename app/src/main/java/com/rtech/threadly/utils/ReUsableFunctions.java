@@ -3,11 +3,17 @@ package com.rtech.threadly.utils;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.webkit.MimeTypeMap;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+
 import com.rtech.threadly.Threadly;
+import com.rtech.threadly.activities.LoginActivity;
 import com.rtech.threadly.activities.UserProfileActivity;
+import com.rtech.threadly.core.Core;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -31,6 +37,16 @@ public class ReUsableFunctions {
     }
     public static void ShowToast( String message) {
         android.widget.Toast.makeText(Threadly.getGlobalContext(), message, android.widget.Toast.LENGTH_SHORT).show();
+    }
+    public static void logout(AppCompatActivity activity){
+        SharedPreferences loginInfo= Core.getPreference();
+        SharedPreferences.Editor editor=loginInfo.edit();
+        editor.clear();
+        editor.apply();
+        Intent intent=new Intent(activity,LoginActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        activity.startActivity(intent);
+        activity.finish();
     }
 
     public static File getFileFromUri(Context context, Uri uri) throws IOException {

@@ -9,6 +9,8 @@ import androidx.media3.common.util.UnstableApi;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
+
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -107,9 +109,9 @@ public class ViewStoriesFragment extends Fragment {
                         mainXml.viewPager.setVisibility(View.VISIBLE);
                     }
                 } catch (JSONException e) {
-                    ReUsableFunctions.ShowToast("something went Wrong!");
+                    ReUsableFunctions.ShowToast("something went Wrong!"+e);
+                    e.printStackTrace();
                     requireActivity().onBackPressed();
-                    throw new RuntimeException(e);
                 }
 
             }

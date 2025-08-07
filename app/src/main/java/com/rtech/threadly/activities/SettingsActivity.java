@@ -15,6 +15,8 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.rtech.threadly.R;
 import com.rtech.threadly.databinding.ActivitySettingsBinding;
+import com.rtech.threadly.fragments.settingFragments.setting_main_fragments;
+import com.rtech.threadly.utils.ReUsableFunctions;
 
 public class SettingsActivity extends AppCompatActivity {
     ActivitySettingsBinding mainXml;
@@ -37,6 +39,13 @@ public class SettingsActivity extends AppCompatActivity {
         }
 
 
+        openMain();
 
+
+
+    }
+
+    private void openMain() {
+        getSupportFragmentManager().beginTransaction().replace(mainXml.settingContainer.getId(),new setting_main_fragments()).commit();
     }
 }

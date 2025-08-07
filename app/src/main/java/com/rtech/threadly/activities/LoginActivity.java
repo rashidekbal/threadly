@@ -18,11 +18,13 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import com.rtech.threadly.R;
+import com.rtech.threadly.Threadly;
 import com.rtech.threadly.activities.forgetPassword.ForgetPasswordActivity;
 import com.rtech.threadly.constants.SharedPreferencesKeys;
 import com.rtech.threadly.core.Core;
 import com.rtech.threadly.interfaces.NetworkCallbackInterfaceWithJsonObjectDelivery;
 import com.rtech.threadly.managers.AuthManager;
+import com.rtech.threadly.utils.ExoplayerUtil;
 import com.rtech.threadly.utils.ReUsableFunctions;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -212,6 +214,7 @@ AuthManager authManager;
         preferenceEditor=loginInfo.edit();
         forgetPassword_btn=findViewById(R.id.forgetPassword_btn);
         authManager=new AuthManager();
+        ExoplayerUtil.init(Threadly.getGlobalContext());
 
     }
 

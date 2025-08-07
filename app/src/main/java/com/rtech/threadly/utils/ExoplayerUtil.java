@@ -19,8 +19,11 @@ public class ExoplayerUtil {
     private static ExoPlayer exoplayer;
     private static PlayerView currentPlayerView;
     public static void init(Context context){
-        exoplayer=new ExoPlayer.Builder(context).build();
-        exoplayer.setRepeatMode(ExoPlayer.REPEAT_MODE_ONE);
+        if(exoplayer==null){
+            exoplayer=new ExoPlayer.Builder(context).build();
+            exoplayer.setRepeatMode(ExoPlayer.REPEAT_MODE_ONE);
+        }
+
 cont=context;
     }
     public static ExoPlayer getExoplayer(){
@@ -158,7 +161,6 @@ cont=context;
         if (exoplayer != null) {
             exoplayer.release();
             exoplayer = null;
-            ExoPlayerCache.getInstance(cont).release();
         }
     }
 }

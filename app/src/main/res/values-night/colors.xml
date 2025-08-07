@@ -9,4 +9,5 @@
     <color name="terms_color_dark">#385168</color>
     <color name="warning">#C32424</color>
     <color name="DarkGreyText">#DEDADA</color>
+    <color name="settings_background">#868686</color>
 </resources>

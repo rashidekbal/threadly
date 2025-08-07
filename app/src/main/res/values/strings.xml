@@ -95,6 +95,15 @@
     <string name="no_posts">No Posts</string>
     <string name="playbtn">playBtn</string>
     <string name="likes">Likes</string>
-    <string name="addstory">AddStory</string>
+    <string name="addstory">Add Story</string>
     <string name="your_story">Your Story</string>
+    <string name="settings_and_activity_heading">Settings and activity</string>
+    <string name="search">Search</string>
+    <string name="your_account">Your account</string>
+    <string name="how_you_use_threadly">How you use Threadly</string>
+    <string name="saved">Saved</string>
+    <string name="archived">Archive</string>
+    <string name="who_can_see_your_content">Who can see your content</string>
+    <string name="blocked">Blocked</string>
+    <string name="log_out">Log out</string>
 </resources>
