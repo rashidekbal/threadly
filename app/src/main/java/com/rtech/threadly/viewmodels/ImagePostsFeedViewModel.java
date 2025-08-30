@@ -9,7 +9,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.rtech.threadly.interfaces.NetworkCallbackInterfaceWithJsonObjectDelivery;
-import com.rtech.threadly.managers.PostsManager;
+import com.rtech.threadly.network_managers.PostsManager;
 import com.rtech.threadly.models.Posts_Model;
 
 import org.json.JSONArray;
@@ -67,6 +67,7 @@ public class ImagePostsFeedViewModel extends AndroidViewModel {
                                     postObject.getInt("shareCount"),
                                     postObject.getInt("isLiked")
                                     ,postObject.getString("type").equals("video")
+                                    ,postObject.optInt("isFollowed")>0
                             ));
 
 

@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activities.MessangerActivity"
+    android:background="@color/AllWhite">
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/newMsgBtn"
+        android:layout_width="@dimen/dp_80"
+        android:layout_height="@dimen/dp_80"
+        android:importantForAccessibility="no"
+        android:src="@drawable/messanger"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="@dimen/dp_20"
+        android:layout_marginBottom="20dp"
+        android:tooltipText="new message"/>
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appBar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:gravity="center_vertical"
+        android:background="@color/AllWhite">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <ImageView
+                android:id="@+id/back_Btn"
+                android:layout_width="@dimen/dp_35"
+                android:layout_height="@dimen/dp_35"
+                android:src="@drawable/back_arrow"
+                android:layout_marginStart="@dimen/dp_10"/>
+            <TextView
+                android:id="@+id/myID"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="holder userid"
+                android:textStyle="bold"
+                android:textSize="@dimen/sp_24"
+                android:layout_marginStart="@dimen/dp_42"/>
+
+        </LinearLayout>
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <TextView
+        android:id="@+id/no_msg_placeholder"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Start new conversation"
+        android:layout_centerInParent="true"
+        android:textSize="@dimen/sp_24"
+        android:textColor="@color/light_grey_text"
+        android:visibility="gone"
+        />
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/UsersList_RecyclerView"
+         android:layout_below="@+id/appBar"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="visible"/>
+<FrameLayout
+    android:id="@+id/usersListFrameLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:elevation="6dp"
+    android:background="@color/white"
+    android:visibility="gone"
+    />
+
+
+</RelativeLayout>

@@ -8,8 +8,8 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.rtech.threadly.interfaces.NetworkCallbackInterfaceWithJsonObjectDelivery;
-import com.rtech.threadly.managers.PostsManager;
-import com.rtech.threadly.managers.ProfileManager;
+import com.rtech.threadly.network_managers.PostsManager;
+import com.rtech.threadly.network_managers.ProfileManager;
 import com.rtech.threadly.models.Preview_Post_model;
 import com.rtech.threadly.models.Profile_Model;
 

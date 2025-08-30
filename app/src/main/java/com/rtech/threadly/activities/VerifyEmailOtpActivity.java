@@ -18,7 +18,7 @@ import androidx.core.view.WindowInsetsCompat;
 import com.rtech.threadly.R;
 import com.rtech.threadly.constants.ApiEndPoints;
 import com.rtech.threadly.interfaces.NetworkCallbackInterfaceWithJsonObjectDelivery;
-import com.rtech.threadly.managers.OtpManager;
+import com.rtech.threadly.network_managers.OtpManager;
 
 import org.json.JSONException;
 import org.json.JSONObject;

@@ -2,7 +2,10 @@ package com.rtech.threadly.fragments;
 
 import static com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_EXPANDED;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Build;
@@ -36,9 +39,9 @@ import com.rtech.threadly.constants.SharedPreferencesKeys;
 import com.rtech.threadly.core.Core;
 import com.rtech.threadly.interfaces.NetworkCallbackInterfaceWithJsonObjectDelivery;
 import com.rtech.threadly.interfaces.NetworkCallbackInterface;
-import com.rtech.threadly.managers.CommentsManager;
-import com.rtech.threadly.managers.LikeManager;
-import com.rtech.threadly.managers.PostsManager;
+import com.rtech.threadly.network_managers.CommentsManager;
+import com.rtech.threadly.network_managers.LikeManager;
+import com.rtech.threadly.network_managers.PostsManager;
 import com.rtech.threadly.models.Posts_Comments_Model;
 import com.rtech.threadly.models.Posts_Model;
 import com.rtech.threadly.utils.ExoplayerUtil;
@@ -54,7 +57,7 @@ import java.util.Objects;
 
 
 public class post_fragment extends Fragment {
-ImageView posts_image_view,profile_img,like_btn,comment_btn,play_btn;
+ImageView posts_image_view,profile_img,like_btn,comment_btn,play_btn,options_btn;
 TextView username_text,caption_text,like_count_text,comment_count_text,share_count_text;
 PlayerView playerView;
 int postId;
@@ -116,6 +119,7 @@ private boolean[] isPlaying={true};
         comment_btn=v.findViewById(R.id.comment_btn_image);
         playerView=v.findViewById(R.id.videoPlayer_view);
         play_btn=v.findViewById(R.id.play_btn);
+        options_btn=v.findViewById(R.id.optionsBtn);
 
         postId=getArguments().getInt("postid");
         loadData(v);
@@ -145,6 +149,7 @@ private boolean[] isPlaying={true};
                 int shareCount = object.optInt("shareCount");
                 int isLiked = object.optInt("isLiked");
                 boolean isVideo=object.optString("type").equals("video");
+                boolean isFollowed=object.optInt("isFollowed")>0;
 
 
                 postData= new Posts_Model(postid,
@@ -159,7 +164,7 @@ private boolean[] isPlaying={true};
                         commentCount,
                         shareCount,
                         isLiked,
-                        isVideo);
+                        isVideo,isFollowed);
              setData(v,postData);
 
 
@@ -209,7 +214,7 @@ private boolean[] isPlaying={true};
 
         }
 
-        Glide.with(view.getContext()).load(data.userDpUrl).placeholder(R.drawable.blank_profile).into(profile_img);
+        Glide.with(view.getContext()).load(data.userDpUrl).placeholder(R.drawable.blank_profile).circleCrop().into(profile_img);
         username_text.setText(data.username);
         if(data.caption.equals("null")||data.caption.isEmpty()){
             caption_text.setVisibility(View.GONE);
@@ -287,7 +292,11 @@ private boolean[] isPlaying={true};
         });
 
 
-
+       options_btn.setOnClickListener(v->{
+           showOptions(
+                   data
+           );
+       });
     }
 
 
@@ -439,7 +448,79 @@ private boolean[] isPlaying={true};
         });
     }
 
+private void showOptions(Posts_Model data){
+        BottomSheetDialog optionDialog=new BottomSheetDialog(requireContext(),R.style.TransparentBottomSheet);
+        optionDialog.setContentView(R.layout.user_post_options_layout);
+        optionDialog.setCancelable(true);
+        FrameLayout dialogFrame=optionDialog.findViewById(com.google.android.material.R.id.design_bottom_sheet);
+        if(dialogFrame!=null){
+            BottomSheetBehavior<FrameLayout> behavior=BottomSheetBehavior.from(dialogFrame);
+            behavior.setState(STATE_EXPANDED);
+            behavior.setFitToContents(true);
 
+        }
+        setOptionsBehaviour(optionDialog,data);
+
+
+        optionDialog.show();
+
+}
+private void setOptionsBehaviour(BottomSheetDialog Optionsdialog,Posts_Model data){
+        LinearLayout download_btn,archive_btn,toggle_like_btn,toggle_share_btn,toggle_commenting_btn,edit_caption_btn,delete_btn;
+        download_btn=Optionsdialog.findViewById(R.id.download_btn);
+        archive_btn=Optionsdialog.findViewById(R.id.archive_btn);
+        toggle_like_btn=Optionsdialog.findViewById(R.id.toggle_like_btn);
+        toggle_share_btn=Optionsdialog.findViewById(R.id.toggle_share_btn);
+        toggle_commenting_btn=Optionsdialog.findViewById(R.id.toggle_commenting_btn);
+        edit_caption_btn=Optionsdialog.findViewById(R.id.edit_caption_btn);
+        delete_btn=Optionsdialog.findViewById(R.id.delete_btn);
+
+        delete_btn.setOnClickListener(v->{
+            delete_btn.setEnabled(false);
+            new AlertDialog.Builder(requireActivity()).setTitle("Delete post").setMessage("Do you want to delete post")
+                            .setCancelable(true)
+                                    .setPositiveButton("yes", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            postsManager.RemovePost(data.postId, new NetworkCallbackInterface() {
+                                                @Override
+                                                public void onSuccess() {
+                                                    dialog.dismiss();
+                                                    delete_btn.setEnabled(true);
+                                                    ReUsableFunctions.ShowToast("post remove success");
+                                                    Optionsdialog.hide();
+                                                    requireActivity().onBackPressed();
+                                                }
+
+                                                @Override
+                                                public void onError(String err) {
+                                                    delete_btn.setEnabled(true);
+                                                    Optionsdialog.hide();
+                                                    dialog.dismiss();
+                                                    ReUsableFunctions.ShowToast("Something went wrong ..");
+
+                                                }
+                                            });
+
+                                        }
+                                    }).setNegativeButton("no", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            Optionsdialog.hide();
+                            dialog.dismiss();
+                            delete_btn.setEnabled(true);
+
+                        }
+                    }).setCancelable(false).show();
+
+
+
+        });
+
+
+
+
+}
     @Override
     public void onPause() {
         super.onPause();

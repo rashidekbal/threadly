@@ -7,4 +7,5 @@ public class SharedPreferencesKeys {
     public static final String IS_LOGGED_IN = "isLoggedIn";
     public static final String USER_PROFILE_PIC = "profileUrl";
     public static final String JWT_TOKEN = "token";
+    public static final String UUID="uuid";
 }

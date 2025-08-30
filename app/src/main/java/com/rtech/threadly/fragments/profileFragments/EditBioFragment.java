@@ -18,7 +18,7 @@ import android.view.inputmethod.InputMethodManager;
 import com.rtech.threadly.R;
 import com.rtech.threadly.databinding.FragmentEditBioBinding;
 import com.rtech.threadly.interfaces.NetworkCallbackInterface;
-import com.rtech.threadly.managers.ProfileEditorManager;
+import com.rtech.threadly.network_managers.ProfileEditorManager;
 import com.rtech.threadly.models.Profile_Model;
 import com.rtech.threadly.utils.ReUsableFunctions;
 import com.rtech.threadly.viewmodels.ProfileViewModel;

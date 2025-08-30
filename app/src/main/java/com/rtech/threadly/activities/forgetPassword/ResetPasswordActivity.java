@@ -16,7 +16,7 @@ import androidx.core.view.WindowInsetsCompat;
 import com.rtech.threadly.R;
 import com.rtech.threadly.activities.LoginActivity;
 import com.rtech.threadly.interfaces.NetworkCallbackInterface;
-import com.rtech.threadly.managers.AuthManager;
+import com.rtech.threadly.network_managers.AuthManager;
 import com.rtech.threadly.utils.ReUsableFunctions;
 
 public class ResetPasswordActivity extends AppCompatActivity {

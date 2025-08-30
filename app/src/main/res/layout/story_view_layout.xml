@@ -70,6 +70,8 @@
                 app:show_buffering="when_playing"
                 app:resize_mode="fit"
 
+
+
                 />
             <View
                 android:id="@+id/previous_btn"
@@ -105,7 +107,21 @@
 
 
         </RelativeLayout>
-
+        <ImageView
+            android:id="@+id/options_btn"
+            android:layout_width="@dimen/dp_30"
+            android:layout_height="@dimen/dp_30"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentTop="true"
+            android:src="@drawable/optiondots_white"
+            android:rotation="90"
+            android:layout_marginEnd="5dp"
+            android:layout_marginTop="10dp"
+            android:elevation="5dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:visibility="gone"
+            />
     </RelativeLayout>
 
     <RelativeLayout

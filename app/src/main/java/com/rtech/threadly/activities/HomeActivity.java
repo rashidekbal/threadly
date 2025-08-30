@@ -216,73 +216,82 @@ int currentFragment;
 
 
                 } else if (item.getItemId()==R.id.search) {
-                    currentFragment=item.getItemId();
-                    addFragment(new searchFragment());
+                    if(currentFragment!=R.id.search){
+                        currentFragment=item.getItemId();
+                        addFragment(new searchFragment());
+                    }
+
 
                 } else if (item.getItemId()==R.id.add_post) {
+
                     startActivity(new Intent(HomeActivity.this, AddPostActivity.class).putExtra("title","New Post"));
 
 
                 } else if (item.getItemId()==R.id.reels) {
+                    if(currentFragment!=R.id.reels){
                     currentFragment=item.getItemId();
-                    addFragment(new ReelsFragment());
+                    addFragment(new ReelsFragment());}
 
                 }else if (item.getItemId()==R.id.profile){
-                    currentFragment=item.getItemId();
-                    addFragment(new profileFragment(new Post_fragmentSetCallback() {
-                        @Override
-                        public void openPostFragment(String url, int postid) {
-                            addFragment(new post_fragment(), url, postid);
-                        }
+                    if(currentFragment!=R.id.profile){
+                        currentFragment=item.getItemId();
+                        addFragment(new profileFragment(new Post_fragmentSetCallback() {
+                            @Override
+                            public void openPostFragment(String url, int postid) {
+                                addFragment(new post_fragment(), url, postid);
+                            }
 
-                        @Override
-                        public void openEditor() {
+                            @Override
+                            public void openEditor() {
 
-                            addFragment(new EditProfileMainFragment(new FragmentItemClickInterface() {
-                                @Override
-                                public void onItemClick(@Nullable  View v) {
+                                addFragment(new EditProfileMainFragment(new FragmentItemClickInterface() {
+                                    @Override
+                                    public void onItemClick(@Nullable  View v) {
 
-                                    if(v.getId()==R.id.name_layout){
+                                        if(v.getId()==R.id.name_layout){
 
-                                        addFragment(new EditNameFragment());
+                                            addFragment(new EditNameFragment());
 
-                                    }else if(v.getId()==R.id.username_layout){
-                                        addFragment(new UsernameEditFragment());
+                                        }else if(v.getId()==R.id.username_layout){
+                                            addFragment(new UsernameEditFragment());
 
 
-                                    }else if(v.getId()==R.id.bio_layout){
-                                        addFragment(new EditBioFragment());
+                                        }else if(v.getId()==R.id.bio_layout){
+                                            addFragment(new EditBioFragment());
 
-                                    } else if (v.getId()==R.id.openCameraButton) {
-                                        addFragmentNoBackStack(new ChangeProfileCameraFragment(new CameraFragmentInterface() {
-                                            @Override
-                                            public void onCapture(String filePath, String mediaType) {
-                                                Bundle bundle =new Bundle();
-                                                bundle.putString("path",filePath);
-                                                profileUploadFinalPreview fragment=new profileUploadFinalPreview();
-                                                fragment.setArguments(bundle);
-                                                addFragmentNoBackStack(fragment);
-                                            }
-                                        }));
+                                        } else if (v.getId()==R.id.openCameraButton) {
+                                            addFragmentNoBackStack(new ChangeProfileCameraFragment(new CameraFragmentInterface() {
+                                                @Override
+                                                public void onCapture(String filePath, String mediaType) {
+                                                    Bundle bundle =new Bundle();
+                                                    bundle.putString("path",filePath);
+                                                    profileUploadFinalPreview fragment=new profileUploadFinalPreview();
+                                                    fragment.setArguments(bundle);
+                                                    addFragmentNoBackStack(fragment);
+                                                }
+                                            }));
 
-                                    }else if(v.getId()==R.id.pictureSelector_gallery_btn){
-                                        addFragment(new ChangeProfileImageSelector());
+                                        }else if(v.getId()==R.id.pictureSelector_gallery_btn){
+                                            addFragment(new ChangeProfileImageSelector());
+
+                                        }
 
                                     }
 
-                                }
+                                    @Override
+                                    public void onfragmentDestroy() {
+                                        binding.bottomNavigation.setVisibility(View.VISIBLE);
 
-                                @Override
-                                public void onfragmentDestroy() {
-                                    binding.bottomNavigation.setVisibility(View.VISIBLE);
+                                    }
+                                }));
+                                binding.bottomNavigation.setVisibility(View.INVISIBLE);
 
-                                }
-                            }));
-                            binding.bottomNavigation.setVisibility(View.INVISIBLE);
+                            }
 
-                        }
+                        }));
+                    }
 
-                    }));
+
                 }
 
                 return true;
@@ -355,6 +364,9 @@ int currentFragment;
     protected void onDestroy() {
         super.onDestroy();
         ExoplayerUtil.release();
+
+
+
     }
 
 }

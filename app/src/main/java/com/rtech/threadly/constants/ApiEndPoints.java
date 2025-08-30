@@ -72,5 +72,13 @@ public class ApiEndPoints {
     public static String GET_STORIES = baseUrl + "/story/getStories/";
     public static String GET_MY_STORIES = baseUrl + "/story/getMyStories/";
 
+    // delete
+    public static String DELETE_POST = baseUrl + "/posts/removePost/";
+    public static String DELETE_STORY = baseUrl + "/story/removeStory/";
+
+
+    //socket address
+    public static final String SOCKET_ID = "https://rjwqzfvg-8001.inc1.devtunnels.ms";
+
 
 }

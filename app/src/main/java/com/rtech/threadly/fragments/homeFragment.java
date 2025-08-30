@@ -23,6 +23,7 @@ import com.bumptech.glide.Glide;
 import com.rtech.threadly.BuildConfig;
 import com.rtech.threadly.R;
 import com.rtech.threadly.activities.AddStoryActivity;
+import com.rtech.threadly.activities.MessangerActivity;
 import com.rtech.threadly.adapters.postsAdapters.ImagePostsFeedAdapter;
 import com.rtech.threadly.adapters.storiesAdapters.StatusViewAdapter;
 import com.rtech.threadly.constants.SharedPreferencesKeys;
@@ -139,6 +140,11 @@ public homeFragment(){
 
         // -------------------------
         // -------------------------
+
+        mainXml.MessageBtn.setOnClickListener(v->{
+            requireActivity().startActivity(new Intent(requireActivity(), MessangerActivity.class));
+
+        });
 
 
         // -----------------------------------

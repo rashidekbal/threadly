@@ -33,7 +33,8 @@ android {
 
         }
         release {
-            buildConfigField "String", "BASE_URL",   "\"https://gpgram-server.vercel.app/api\""
+            buildConfigField "String", "BASE_URL",   "\"https://threadlyserver.onrender.com/api\""
+
 
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
@@ -78,6 +79,12 @@ dependencies {
 // (Optional) for cache
     implementation libs.media3.exoplayer.dash
     implementation libs.media3.datasource
+    implementation ('io.socket:socket.io-client:2.0.0') {
+        exclude group: 'org.json', module: 'json'
+    }
+//    room database
+    implementation "androidx.room:room-runtime:2.6.1"
+    annotationProcessor "androidx.room:room-compiler:2.6.1"
 
 
 

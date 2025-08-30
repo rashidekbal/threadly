@@ -20,6 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.widget.AppCompatButton;
 import androidx.media3.common.util.UnstableApi;
 import androidx.media3.ui.PlayerView;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -35,8 +36,9 @@ import com.rtech.threadly.constants.SharedPreferencesKeys;
 import com.rtech.threadly.core.Core;
 import com.rtech.threadly.interfaces.NetworkCallbackInterface;
 import com.rtech.threadly.interfaces.NetworkCallbackInterfaceWithJsonObjectDelivery;
-import com.rtech.threadly.managers.CommentsManager;
-import com.rtech.threadly.managers.LikeManager;
+import com.rtech.threadly.network_managers.CommentsManager;
+import com.rtech.threadly.network_managers.FollowManager;
+import com.rtech.threadly.network_managers.LikeManager;
 import com.rtech.threadly.models.Posts_Comments_Model;
 import com.rtech.threadly.models.Posts_Model;
 import com.rtech.threadly.utils.ExoplayerUtil;
@@ -57,6 +59,7 @@ public class ReelsAdapter extends RecyclerView.Adapter<ReelsAdapter.viewHolder> 
       BottomSheetDialog commentDialog;
       SharedPreferences loginInfo;
       CommentsManager commentsManager;
+      FollowManager followManager;
 
 
     public ReelsAdapter(Context context, ArrayList<Posts_Model> reelsList) {
@@ -64,6 +67,7 @@ public class ReelsAdapter extends RecyclerView.Adapter<ReelsAdapter.viewHolder> 
         this.context=context;
         this.likeManager=new LikeManager();
         this.commentsManager=new CommentsManager();
+        this.followManager=new FollowManager();
 
     }
 
@@ -86,6 +90,7 @@ public class ReelsAdapter extends RecyclerView.Adapter<ReelsAdapter.viewHolder> 
     @UnstableApi
     @Override
     public void onBindViewHolder(@NonNull viewHolder holder, @SuppressLint("RecyclerView") int position) {
+
         holder.videoPlayer_view.setPlayer(null);
         if(holder.isPlaying[0]){
             holder.play_btn.setVisibility(View.GONE);
@@ -105,7 +110,35 @@ public class ReelsAdapter extends RecyclerView.Adapter<ReelsAdapter.viewHolder> 
             }
         });
 
+        if(dataList.get(position).isFollowed||dataList.get(position).userId.equals(loginInfo.getString(SharedPreferencesKeys.USER_ID,"null"))){
+            holder.followBtn.setVisibility(View.GONE);
+        }else{
+            holder.followBtn.setVisibility(View.VISIBLE);
+            holder.followBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    holder.followBtn.setEnabled(false);
+                    holder.followBtn.setVisibility(View.GONE);
+                    followManager.follow(dataList.get(position).userId, new NetworkCallbackInterface() {
+                        @Override
+                        public void onSuccess() {
+                            dataList.get(position).isFollowed=true;
+                            holder.followBtn.setEnabled(true);
+                            ReUsableFunctions.ShowToast("Following");
 
+                        }
+
+                        @Override
+                        public void onError(String err) {
+                            holder.followBtn.setVisibility(View.VISIBLE);
+                            holder.followBtn.setEnabled(true);
+                            ReUsableFunctions.ShowToast("something went wrong..");
+
+                        }
+                    });
+                }
+            });
+        }
 
 
 
@@ -288,6 +321,7 @@ public class ReelsAdapter extends RecyclerView.Adapter<ReelsAdapter.viewHolder> 
         boolean is_liked;
         Double likes;
         boolean []isPlaying={true};
+        AppCompatButton followBtn;
 
         public viewHolder(@NonNull View itemView) {
             super(itemView);
@@ -303,6 +337,7 @@ public class ReelsAdapter extends RecyclerView.Adapter<ReelsAdapter.viewHolder> 
             share_icon_white=itemView.findViewById(R.id.share_icon_white);
             shares_count_text=itemView.findViewById(R.id.shares_count_text);
             optionDots_white=itemView.findViewById(R.id.optionDots_white);
+            followBtn=itemView.findViewById(R.id.FollowBtn);
 
 
             loginInfo= Core.getPreference();

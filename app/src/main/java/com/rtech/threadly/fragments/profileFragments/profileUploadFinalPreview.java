@@ -2,22 +2,18 @@ package com.rtech.threadly.fragments.profileFragments;
 
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.bumptech.glide.Glide;
-import com.rtech.threadly.R;
 import com.rtech.threadly.databinding.FragmentProfileUploadFinalPreviewBinding;
 import com.rtech.threadly.interfaces.NetworkCallbackInterfaceWithJsonObjectDelivery;
-import com.rtech.threadly.managers.ProfileEditorManager;
-import com.rtech.threadly.managers.ProfileManager;
+import com.rtech.threadly.network_managers.ProfileEditorManager;
 import com.rtech.threadly.utils.ReUsableFunctions;
 import com.rtech.threadly.viewmodels.ProfileViewModel;
 

@@ -50,6 +50,7 @@
                     android:layout_centerVertical="true"
                     android:layout_marginEnd="@dimen/dp_70"/>
                 <ImageView
+                    android:id="@+id/MessageBtn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:src="@drawable/messanger"
@@ -147,13 +148,16 @@
                         android:visibility="gone"
                         android:layout_toEndOf="@id/myStoryLayout"
                         />
+
                     <com.facebook.shimmer.ShimmerFrameLayout
-                        android:layout_toEndOf="@+id/myStoryLayout"
                         android:id="@+id/stories_shimmer"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
+                        android:layout_marginStart="-7dp"
+                        android:layout_toEndOf="@+id/myStoryLayout"
                         android:visibility="visible">
-                        <include layout="@layout/stories_shimmer"/>
+
+                        <include layout="@layout/stories_shimmer" />
                     </com.facebook.shimmer.ShimmerFrameLayout>
 
                     <View
@@ -167,11 +171,13 @@
             <!--shimmer post placeholder-->
             <!--            <include layout="@layout/users_card"/>-->
             <com.facebook.shimmer.ShimmerFrameLayout
+                android:id="@+id/shimmerView"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/shimmerView">
-                <include layout="@layout/shimmer_post_view"/>
+                android:layout_height="wrap_content">
+
+                <include layout="@layout/shimmer_post_view" />
             </com.facebook.shimmer.ShimmerFrameLayout>
+
             <androidx.recyclerview.widget.RecyclerView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

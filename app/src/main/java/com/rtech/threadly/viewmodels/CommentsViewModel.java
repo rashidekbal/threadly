@@ -8,9 +8,8 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.rtech.threadly.interfaces.NetworkCallbackInterfaceWithJsonObjectDelivery;
-import com.rtech.threadly.managers.CommentsManager;
+import com.rtech.threadly.network_managers.CommentsManager;
 import com.rtech.threadly.models.Posts_Comments_Model;
-import com.rtech.threadly.models.Posts_Model;
 
 import org.json.JSONArray;
 import org.json.JSONException;

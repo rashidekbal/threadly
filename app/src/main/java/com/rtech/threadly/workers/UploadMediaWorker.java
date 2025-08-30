@@ -14,7 +14,7 @@ import com.rtech.threadly.Threadly;
 import com.rtech.threadly.constants.Constants;
 import com.rtech.threadly.core.Core;
 import com.rtech.threadly.interfaces.NetworkCallbackInterfaceWithJsonObjectDelivery;
-import com.rtech.threadly.managers.PostsManager;
+import com.rtech.threadly.network_managers.PostsManager;
 
 import org.json.JSONObject;
 
@@ -27,7 +27,6 @@ public class UploadMediaWorker extends Worker {
     File media;
     private int UPLOAD_COMPLETE_CODE=100;
     private int UPLOAD_FAILED_CODE=101;
-    Notification notification;
     public UploadMediaWorker(@NonNull Context context, @NonNull WorkerParameters workerParams) {
         super(context, workerParams);
     }

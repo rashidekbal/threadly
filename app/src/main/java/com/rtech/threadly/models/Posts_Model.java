@@ -9,7 +9,7 @@ public class Posts_Model {
    public String createdAt;
     public String userDpUrl;
    public Boolean isliked;
-   public boolean isVideo;
+   public boolean isVideo,isFollowed;
     public Posts_Model
             (int postId,
              String userId,
@@ -23,7 +23,8 @@ public class Posts_Model {
              int commentCount,
              int shareCount ,
              int isLiked,
-            boolean isVideo){
+            boolean isVideo,
+            boolean isFollowed){
         this.postId=postId;
         this.userId=userId;
         this.username=username;
@@ -37,6 +38,7 @@ public class Posts_Model {
         this.isliked= isLiked>0;
         this.likedBy=likedBy;
         this.isVideo=isVideo;
+        this.isFollowed=isFollowed;
 
     }
 }

@@ -29,7 +29,6 @@ import com.google.common.util.concurrent.ListenableFuture;
 import com.rtech.threadly.R;
 import com.rtech.threadly.databinding.FragmentPostAddCameraBinding;
 import com.rtech.threadly.interfaces.CameraFragmentInterface;
-import com.rtech.threadly.managers.PostsManager;
 import com.rtech.threadly.viewmodels.ProfileViewModel;
 
 import java.io.File;

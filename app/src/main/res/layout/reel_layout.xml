@@ -18,7 +18,7 @@
             android:layout_height="match_parent"
             app:resize_mode="fit"
             android:background="@color/allBlack"
-            app:show_buffering="never"
+            app:show_buffering="when_playing"
             app:use_controller="false"
             android:visibility="visible"/>
         <ImageView
@@ -44,7 +44,8 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:gravity="center_vertical"
-                android:layout_marginStart="@dimen/dp_10">
+                android:layout_marginStart="@dimen/dp_10"
+                android:layout_marginEnd="@dimen/dp_20">
                 <FrameLayout
                     android:id="@+id/outerBorder_color"
                     android:layout_width="@dimen/dp_35"
@@ -67,14 +68,24 @@
                 <TextView
                     android:id="@+id/username_text"
                     android:layout_width="wrap_content"
+                    android:maxWidth="@dimen/dp_150"
                     android:layout_height="wrap_content"
                     android:textColor="@color/AllWhite"
                     android:textSize="@dimen/sp_16"
                     android:textStyle="bold"
                     android:layout_marginStart="@dimen/dp_10"
-
+                    android:text="name"
                     android:layout_marginLeft="@dimen/dp_5"
                     />
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/FollowBtn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/dp_28"
+                    android:background="@drawable/white_border_btn_transparent_background_curved"
+                    android:textColor="@color/AllWhite"
+                    android:layout_marginStart="@dimen/dp_5"
+                    android:text="Follow"/>
+
             </LinearLayout>
 
             <!-- caption for the post-->

@@ -106,4 +106,9 @@
     <string name="who_can_see_your_content">Who can see your content</string>
     <string name="blocked">Blocked</string>
     <string name="log_out">Log out</string>
+    <string name="hide_like_count">Hide like count</string>
+    <string name="hide_share_count">Hide share count</string>
+    <string name="turn_off_commenting">Turn off commenting</string>
+    <string name="edit_caption">Edit caption</string>
+    <string name="delete">Delete</string>
 </resources>

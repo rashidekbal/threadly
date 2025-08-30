@@ -20,7 +20,7 @@ import com.rtech.threadly.activities.UserProfileActivity;
 import com.rtech.threadly.constants.SharedPreferencesKeys;
 import com.rtech.threadly.core.Core;
 import com.rtech.threadly.interfaces.NetworkCallbackInterface;
-import com.rtech.threadly.managers.FollowManager;
+import com.rtech.threadly.network_managers.FollowManager;
 import com.rtech.threadly.models.Profile_Model_minimal;
 
 import java.util.ArrayList;

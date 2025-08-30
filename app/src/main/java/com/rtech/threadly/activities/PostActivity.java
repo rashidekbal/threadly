@@ -21,6 +21,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.OptIn;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -40,9 +41,9 @@ import com.rtech.threadly.constants.SharedPreferencesKeys;
 import com.rtech.threadly.core.Core;
 import com.rtech.threadly.interfaces.NetworkCallbackInterface;
 import com.rtech.threadly.interfaces.NetworkCallbackInterfaceWithJsonObjectDelivery;
-import com.rtech.threadly.managers.CommentsManager;
-import com.rtech.threadly.managers.LikeManager;
-import com.rtech.threadly.managers.PostsManager;
+import com.rtech.threadly.network_managers.CommentsManager;
+import com.rtech.threadly.network_managers.LikeManager;
+import com.rtech.threadly.network_managers.PostsManager;
 import com.rtech.threadly.models.Posts_Comments_Model;
 import com.rtech.threadly.models.Posts_Model;
 import com.rtech.threadly.utils.ExoplayerUtil;
@@ -126,6 +127,7 @@ public class PostActivity extends AppCompatActivity {
     }
     private void loadPost(){
         postsManager.getPostWithId(postId, new NetworkCallbackInterfaceWithJsonObjectDelivery() {
+            @OptIn(markerClass = UnstableApi.class)
             @Override
             public void onSuccess(JSONObject response) {
 
@@ -144,6 +146,7 @@ public class PostActivity extends AppCompatActivity {
                 int shareCount = object.optInt("shareCount");
                 int isLiked = object.optInt("isLiked");
                 boolean isVideo=object.optString("type").equals("video");
+                boolean isFollowed=object.optInt("isFollowed")>0;
 
 
                 postData= new Posts_Model(postid,
@@ -158,7 +161,7 @@ public class PostActivity extends AppCompatActivity {
                         commentCount,
                         shareCount,
                         isLiked,
-                        isVideo);
+                        isVideo,isFollowed);
                 setData(postData);
 
 

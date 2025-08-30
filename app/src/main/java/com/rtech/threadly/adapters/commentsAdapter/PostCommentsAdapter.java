@@ -15,7 +15,7 @@ import com.androidnetworking.AndroidNetworking;
 import com.bumptech.glide.Glide;
 import com.rtech.threadly.R;
 import com.rtech.threadly.interfaces.NetworkCallbackInterface;
-import com.rtech.threadly.managers.LikeManager;
+import com.rtech.threadly.network_managers.LikeManager;
 import com.rtech.threadly.models.Posts_Comments_Model;
 import com.rtech.threadly.utils.ReUsableFunctions;
 

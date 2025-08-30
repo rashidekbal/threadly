@@ -15,7 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.rtech.threadly.R;
 import com.rtech.threadly.models.Profile_Model_minimal;
-import com.rtech.threadly.managers.FollowManager;
+import com.rtech.threadly.network_managers.FollowManager;
 import com.rtech.threadly.interfaces.NetworkCallbackInterface;
 
 import java.util.ArrayList;

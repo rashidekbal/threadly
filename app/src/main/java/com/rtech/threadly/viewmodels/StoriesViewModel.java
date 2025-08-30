@@ -8,7 +8,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.rtech.threadly.interfaces.NetworkCallbackInterfaceWithJsonObjectDelivery;
-import com.rtech.threadly.managers.StoriesManager;
+import com.rtech.threadly.network_managers.StoriesManager;
 import com.rtech.threadly.models.StoriesModel;
 import com.rtech.threadly.models.StoryMediaModel;
 

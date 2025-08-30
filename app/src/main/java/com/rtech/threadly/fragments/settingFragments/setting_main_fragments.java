@@ -1,5 +1,7 @@
 package com.rtech.threadly.fragments.settingFragments;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -34,8 +36,28 @@ FragmentSettingMainFragmentsBinding mainXml;
 
     private void setOnclickListeners() {
         mainXml.logoutBtn.setOnClickListener(v->{
-            ReUsableFunctions.logout((AppCompatActivity) requireActivity());
-            ReUsableFunctions.ShowToast("logged out");
+            mainXml.logoutBtn.setEnabled(false);
+            new AlertDialog.Builder(requireActivity()).setTitle("Logout").setMessage("Do you want to logout ?")
+                            .setPositiveButton("yes", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                    ReUsableFunctions.logout((AppCompatActivity) requireActivity());
+                                    ReUsableFunctions.ShowToast("logged out");
+
+                                }
+                            }).setNegativeButton("no", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            mainXml.logoutBtn.setEnabled(true);
+                            dialog.dismiss();
+
+                        }
+                    }).show();
+
+        });
+        mainXml.backBtn.setOnClickListener(v->{
+            requireActivity().finish();
         });
     }
 }

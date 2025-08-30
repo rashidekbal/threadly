@@ -21,7 +21,7 @@ import com.rtech.threadly.adapters.mediaExplorerAdapter.uploadProfileAdapter;
 import com.rtech.threadly.databinding.FragmentChangeProfileImageSelectorBinding;
 import com.rtech.threadly.interfaces.NetworkCallbackInterfaceWithJsonObjectDelivery;
 import com.rtech.threadly.interfaces.uploadProfileSelectCallbackInterface;
-import com.rtech.threadly.managers.ProfileEditorManager;
+import com.rtech.threadly.network_managers.ProfileEditorManager;
 import com.rtech.threadly.utils.PermissionManagementUtil;
 import com.rtech.threadly.utils.ReUsableFunctions;
 import com.rtech.threadly.viewmodels.ProfileViewModel;

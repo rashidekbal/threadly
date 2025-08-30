@@ -14,7 +14,7 @@ import com.rtech.threadly.Threadly;
 import com.rtech.threadly.constants.Constants;
 import com.rtech.threadly.core.Core;
 import com.rtech.threadly.interfaces.NetworkCallbackInterface;
-import com.rtech.threadly.managers.StoriesManager;
+import com.rtech.threadly.network_managers.StoriesManager;
 
 import java.io.File;
 
