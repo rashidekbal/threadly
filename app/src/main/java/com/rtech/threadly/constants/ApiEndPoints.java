@@ -33,6 +33,7 @@ public class ApiEndPoints {
 
    // Profile
     public static final String GET_PROFILE = baseUrl + "/users/getUser/";
+    public static final String GET_PROFILE_BY_UUID = baseUrl + "/users/getUserByUUid/";
     public static final String GET_LOGGED_IN_USER_PROFILE = baseUrl + "/users/getMyData/";
 
     // Authentication

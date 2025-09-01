@@ -52,6 +52,31 @@ public class ProfileManager {
 
 
     }
+    public final void GetProfileByUuid(String uuid, NetworkCallbackInterfaceWithJsonObjectDelivery callback){
+        String url= ApiEndPoints.GET_PROFILE_BY_UUID.concat(uuid);
+        AndroidNetworking.get(url).setPriority(Priority.HIGH)
+                .addHeaders("Authorization", "Bearer "+getToken())
+                .build()
+                .getAsJSONObject(new JSONObjectRequestListener() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+
+                        callback.onSuccess(response);
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+                        if(BuildConfig.DEBUG){
+                            Log.d("ApiError", "Error"+ anError.getMessage());
+
+                        }
+                        callback.onError(anError.getMessage());
+
+                    }
+                });
+
+
+    }
     public final void getLoggedInUserProfile(NetworkCallbackInterfaceWithJsonObjectDelivery callback){
 
         String url=ApiEndPoints.GET_LOGGED_IN_USER_PROFILE;

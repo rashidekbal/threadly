@@ -3,6 +3,8 @@
     <style name="Base.Theme.GPGram" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="android:navigationBarColor">#FFFF</item>
         <item name="android:statusBarColor">#FFFF</item>
+        <item name="android:windowTranslucentStatus">false</item>
+        <item name="android:windowFullscreen">false</item>
     </style>
     <style name="Base.Theme.GPGram.actionbar" parent="Theme.Material3.DayNight">
         <item name="android:navigationBarColor">#FFFF</item>
@@ -18,5 +20,6 @@
     <style name="MyBottomSheet" parent="Widget.Design.BottomSheet.Modal">
         <item name="android:background">@android:color/transparent</item>
     </style>
+
 
 </resources>

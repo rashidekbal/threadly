@@ -7,10 +7,10 @@ import androidx.room.RoomDatabase;
 import com.rtech.threadly.RoomDb.Dao.HistoryOperator;
 import com.rtech.threadly.RoomDb.Dao.operator;
 import com.rtech.threadly.RoomDb.schemas.HistorySchema;
-import com.rtech.threadly.RoomDb.schemas.MessageScema;
+import com.rtech.threadly.RoomDb.schemas.MessageSchema;
 import com.rtech.threadly.Threadly;
 
-@Database(entities = {MessageScema.class, HistorySchema.class},version = 1,exportSchema = false)
+@Database(entities = {MessageSchema.class, HistorySchema.class},version = 1,exportSchema = false)
 public abstract class DataBase extends RoomDatabase {
     public static final String DB_NAME="Threadly";
     public static DataBase instance ;

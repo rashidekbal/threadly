@@ -20,6 +20,7 @@ import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.JSONObjectRequestListener;
 import com.rtech.threadly.R;
+import com.rtech.threadly.constants.SharedPreferencesKeys;
 import com.rtech.threadly.core.Core;
 
 import org.json.JSONException;
@@ -77,6 +78,7 @@ SharedPreferences.Editor preferenceEditor;
                                     preferenceEditor.putString("username",username);
                                     preferenceEditor.putString("userid",userid);
                                     preferenceEditor.putString("profileUrl",profileUrl);
+                                    preferenceEditor.putString(SharedPreferencesKeys.UUID,response.getString("uuid"));
                                     preferenceEditor.apply();
                                     Toast.makeText(NameEnterActivity.this, "Account created", Toast.LENGTH_SHORT).show();
                                     Intent homePage=new Intent(NameEnterActivity.this,HomeActivity.class);

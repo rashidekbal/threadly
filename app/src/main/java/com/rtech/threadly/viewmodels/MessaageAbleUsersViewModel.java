@@ -1,6 +1,7 @@
 package com.rtech.threadly.viewmodels;
 
 import android.app.Application;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -39,8 +40,10 @@ public class MessaageAbleUsersViewModel extends AndroidViewModel {
                 try {
                     JSONArray list=response.getJSONArray("data");
                     if(list.length()>0){
+
                         ArrayList <UsersModel> array=new ArrayList<>();
-                        for(int i=0;i<response.length();i++){
+                        for(int i=0;i<list.length();i++){
+
                             JSONObject object=list.getJSONObject(i);
                             array.add(new UsersModel(object.getString("uuid"),
                                     object.getString("username"),
@@ -50,6 +53,8 @@ public class MessaageAbleUsersViewModel extends AndroidViewModel {
                         }
                         mutableLiveDataUsers.postValue(array);
 
+                    }else{
+                        mutableLiveDataUsers.postValue(new ArrayList<>());
                     }
                 } catch (JSONException e) {
 

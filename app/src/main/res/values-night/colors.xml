@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="white">#FF000000</color>
+    <color name="white">#1B1A1A</color>
     <color name="black">#FFFFFFFF</color>
     <color name="page_icon_color">#F9F5F4</color>
     <color name="edittext_border_color">#DEDADA</color>
@@ -10,4 +10,5 @@
     <color name="warning">#C32424</color>
     <color name="DarkGreyText">#DEDADA</color>
     <color name="settings_background">#868686</color>
+    <color name="received_msg_bg_color">#232020</color>
 </resources>

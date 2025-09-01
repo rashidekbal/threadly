@@ -1,19 +1,20 @@
 package com.rtech.threadly.RoomDb.Dao;
 
+import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.Query;
 
-import com.rtech.threadly.RoomDb.schemas.HistorySchema;
-import com.rtech.threadly.RoomDb.schemas.MessageScema;
+import com.rtech.threadly.RoomDb.schemas.MessageSchema;
+
+import java.util.List;
 
 @Dao
 public interface operator {
     @Insert
-    void insertMessage(MessageScema message);
-    @Query("select * from messages where conversationId=:conversationId")
-    MessageScema getMessagesCid(long conversationId);
-    @Query("select * from messages group by conversationId ")
-    MessageScema[] getAllCid();
+    void insertMessage(MessageSchema message);
+    @Query("select * from messages where conversationId=:conversationId order by timestamp desc")
+    LiveData<List<MessageSchema>> getMessagesCid(String conversationId);
+
 
 }

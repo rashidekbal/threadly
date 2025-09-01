@@ -40,7 +40,7 @@ public class HistoryListAdapter extends RecyclerView.Adapter<HistoryListAdapter.
 
     @Override
     public void onBindViewHolder(@NonNull viewHolder holder, int position) {
-        holder.parent.setEnabled(true);
+
         holder.user_id_text.setText(list.get(position).getUserId());
         holder.username_text.setText(list.get(position).getUsername());
         holder.follow_btn.setVisibility(View.GONE);
@@ -48,7 +48,6 @@ public class HistoryListAdapter extends RecyclerView.Adapter<HistoryListAdapter.
         Glide.with(context).load(list.get(position).getProfilePic()).placeholder(R.drawable.blank_profile).circleCrop()
                 .into(holder.userProfile_img);
         holder.parent.setOnClickListener(v->{
-            holder.parent.setEnabled(false);
             onUserSelectedListener.onSelect(new UsersModel(list.get(position).getUuid(),list.get(position).getUsername(),list.get(position).getUserId(),list.get(position).getProfilePic()));
         });
 

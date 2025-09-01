@@ -2,15 +2,18 @@ package com.rtech.threadly.RoomDb.schemas;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 @Entity(tableName = "messages")
-public class MessageScema {
+public class MessageSchema {
     @PrimaryKey(autoGenerate = true)
     private long msgId;
+    @ColumnInfo(name = "messageUid")
+    private String messageUid;
     @ColumnInfo(name = "conversationId")
-    private long conversationId;
+    private String conversationId;
     @ColumnInfo(name = "replyToMsgId")
-    private  long replyToMsgId;
+    private  String replyToMsgId;
     @ColumnInfo(name="senderId")
     private String senderId;
     @ColumnInfo(name="receiverId")
@@ -26,8 +29,24 @@ public class MessageScema {
     @ColumnInfo(name = "isDeleted")
     private boolean isDeleted;
 
-    public MessageScema(long msgId, long conversationId, long replyToMsgId, String senderId, String receiverId, String msg, String type, String timestamp, int deliveryStatus, boolean isDeleted) {
+
+    public MessageSchema(long msgId, String messageUid, String conversationId, String replyToMsgId, String senderId, String receiverId, String msg, String type, String timestamp, int deliveryStatus, boolean isDeleted) {
         this.msgId = msgId;
+        this.messageUid = messageUid;
+        this.conversationId = conversationId;
+        this.replyToMsgId = replyToMsgId;
+        this.senderId = senderId;
+        this.receiverId = receiverId;
+        this.msg = msg;
+        this.type = type;
+        this.timestamp = timestamp;
+        this.deliveryStatus = deliveryStatus;
+        this.isDeleted = isDeleted;
+    }
+    @Ignore
+
+    public MessageSchema(String messageUid, String conversationId, String replyToMsgId, String senderId, String receiverId, String msg, String type, String timestamp, int deliveryStatus, boolean isDeleted) {
+        this.messageUid = messageUid;
         this.conversationId = conversationId;
         this.replyToMsgId = replyToMsgId;
         this.senderId = senderId;
@@ -39,14 +58,6 @@ public class MessageScema {
         this.isDeleted = isDeleted;
     }
 
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
     public long getMsgId() {
         return msgId;
     }
@@ -55,19 +66,27 @@ public class MessageScema {
         this.msgId = msgId;
     }
 
-    public long getConversationId() {
+    public String getMessageUid() {
+        return messageUid;
+    }
+
+    public void setMessageUid(String messageUid) {
+        this.messageUid = messageUid;
+    }
+
+    public String getConversationId() {
         return conversationId;
     }
 
-    public void setConversationId(long conversationId) {
+    public void setConversationId(String conversationId) {
         this.conversationId = conversationId;
     }
 
-    public long getReplyToMsgId() {
+    public String getReplyToMsgId() {
         return replyToMsgId;
     }
 
-    public void setReplyToMsgId(long replyToMsgId) {
+    public void setReplyToMsgId(String replyToMsgId) {
         this.replyToMsgId = replyToMsgId;
     }
 
@@ -93,6 +112,14 @@ public class MessageScema {
 
     public void setMsg(String msg) {
         this.msg = msg;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
     public String getTimestamp() {

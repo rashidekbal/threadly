@@ -81,9 +81,11 @@ AuthManager authManager;
                                     preferenceEditor.putString(SharedPreferencesKeys.USER_ID,userid);
                                     preferenceEditor.putString(SharedPreferencesKeys.USER_PROFILE_PIC,profileUrl);
                                     preferenceEditor.apply();
+
                                     Intent homePage=new Intent(LoginActivity.this,HomeActivity.class);
                                     homePage.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                     startActivity(homePage);
+                                    Core.startSocketEvents();
                                     finish();
                                 } catch (JSONException e) {
                                     throw new RuntimeException(e);
@@ -125,6 +127,7 @@ AuthManager authManager;
                                     Intent homePage=new Intent(LoginActivity.this,HomeActivity.class);
                                     homePage.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                     startActivity(homePage);
+                                    Core.startSocketEvents();
                                     finish();
                                 } catch (JSONException e) {
                                     throw new RuntimeException(e);
@@ -166,6 +169,7 @@ AuthManager authManager;
                                     Intent homePage=new Intent(LoginActivity.this,HomeActivity.class);
                                     homePage.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                     startActivity(homePage);
+                                    Core.startSocketEvents();
                                     finish();
                                 } catch (JSONException e) {
                                     throw new RuntimeException(e);
