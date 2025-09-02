@@ -81,5 +81,9 @@ public class ApiEndPoints {
     //socket address
     public static final String SOCKET_ID = "https://rjwqzfvg-8001.inc1.devtunnels.ms";
 
+    //FCM apis
+
+    public static final String FCM_TOKEN_UPDATE= baseUrl+"/fcm/updateToken/";
+
 
 }

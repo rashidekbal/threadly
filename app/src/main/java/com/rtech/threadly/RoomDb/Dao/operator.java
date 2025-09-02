@@ -13,7 +13,7 @@ import java.util.List;
 public interface operator {
     @Insert
     void insertMessage(MessageSchema message);
-    @Query("select * from messages where conversationId=:conversationId order by timestamp desc")
+    @Query("select * from messages where conversationId=:conversationId order by timestamp asc")
     LiveData<List<MessageSchema>> getMessagesCid(String conversationId);
 
 

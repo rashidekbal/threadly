@@ -8,17 +8,22 @@ import android.net.Uri;
 import android.webkit.MimeTypeMap;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
 
+import com.rtech.threadly.RoomDb.DataBase;
+import com.rtech.threadly.RoomDb.schemas.MessageSchema;
 import com.rtech.threadly.Threadly;
 import com.rtech.threadly.activities.LoginActivity;
 import com.rtech.threadly.activities.UserProfileActivity;
+import com.rtech.threadly.constants.SharedPreferencesKeys;
 import com.rtech.threadly.core.Core;
+
+import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.concurrent.Executors;
 
 public class ReUsableFunctions {
     public static void  openProfile(Context c, String userid){
@@ -77,6 +82,33 @@ public class ReUsableFunctions {
         inputStream.close();
 
         return file;
+    }
+    public static void addMessageToDb(JSONObject object){
+        String ConversationId=object.optString("senderUuid")+Core.getPreference().getString(SharedPreferencesKeys.UUID, "null");
+        String senderUuid=object.optString("senderUuid");
+        String message =object.optString("message");
+        String MessageUid=object.optString("MsgUid");
+        String ReplyTOMessageUid=object.optString("ReplyTOMsgUid");
+        String type=object.optString("type");
+        String timestamp=object.optString("timestamp");
+        Executors.newSingleThreadExecutor().execute(new Runnable() {
+            @Override
+            public void run() {
+                DataBase.getInstance().dao().insertMessage(new MessageSchema(
+                        MessageUid,
+                        ConversationId,
+                        ReplyTOMessageUid,
+                        senderUuid,
+                        Core.getPreference().getString(SharedPreferencesKeys.UUID,null),
+                        message,
+                        type,
+                        timestamp,
+                        -1,
+                        false
+                ));
+            }
+        });
+
     }
 
 

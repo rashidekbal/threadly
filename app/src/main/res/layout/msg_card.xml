@@ -16,7 +16,7 @@
             android:layout_height="@dimen/dp_25"
             android:background="@drawable/circle"
             android:clipToOutline="true"
-            android:src="@drawable/blank_profile"
+           tools:src="@drawable/blank_profile"
             android:visibility="visible"/>
 
       <RelativeLayout
@@ -49,7 +49,7 @@
               tools:text="recieved message this is  so desing it in such way"
               android:layout_alignParentEnd="true"
               android:background="@drawable/sent_msg_bg"
-              android:textColor="@color/white"
+              android:textColor="@color/AllWhite"
               android:paddingVertical="@dimen/dp_10"
               android:paddingHorizontal="@dimen/dp_15"/>
       </RelativeLayout>

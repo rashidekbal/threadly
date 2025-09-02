@@ -49,6 +49,7 @@ public class Core {
        workManager=WorkManager.getInstance(context);
        notificationManager=(NotificationManager) context.getSystemService(context.NOTIFICATION_SERVICE);
        notificationManager.createNotificationChannel(new NotificationChannel(Constants.MEDIA_UPLOAD_CHANNEL.toString(),"media Upload Notification", NotificationManager.IMPORTANCE_DEFAULT));
+       notificationManager.createNotificationChannel(new NotificationChannel(Constants.MESSAGE_RECEIVED_CHANNEL.toString(),"for receiving messages",NotificationManager.IMPORTANCE_HIGH));
        String uuid=getPreference().getString(SharedPreferencesKeys.UUID,null) ;
        if(uuid!=null){
            startSocketEvents();
@@ -73,6 +74,7 @@ public class Core {
        @Override
        public void call(Object... args) {
            JSONObject object =(JSONObject) args[0];
+
            String ConversationId=object.optString("senderUuid")+getPreference().getString(SharedPreferencesKeys.UUID, "null");
            String senderUuid=object.optString("senderUuid");
            String username=object.optString("username");
@@ -89,6 +91,7 @@ public class Core {
                    DataBase.getInstance().historyOperator().insertHistory(new HistorySchema(ConversationId,username,userid,profile,senderUuid,latestMsg));
                    Log.d("Stoc", "call:  added new Conversation");
                }
+               Log.d("StoC", "call: "+timestamp);
                DataBase.getInstance().dao().insertMessage(new MessageSchema(
                        MessageUid,
                        ConversationId,
