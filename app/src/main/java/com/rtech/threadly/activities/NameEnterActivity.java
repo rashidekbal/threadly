@@ -22,6 +22,7 @@ import com.androidnetworking.interfaces.JSONObjectRequestListener;
 import com.rtech.threadly.R;
 import com.rtech.threadly.constants.SharedPreferencesKeys;
 import com.rtech.threadly.core.Core;
+import com.rtech.threadly.utils.ReUsableFunctions;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -84,6 +85,8 @@ SharedPreferences.Editor preferenceEditor;
                                     Intent homePage=new Intent(NameEnterActivity.this,HomeActivity.class);
                                     homePage.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                     startActivity(homePage);
+                                    Core.startSocketEvents();
+                                    ReUsableFunctions.updateFcmTokenToServer();
                                     finish();
 
                                 } catch (JSONException e) {

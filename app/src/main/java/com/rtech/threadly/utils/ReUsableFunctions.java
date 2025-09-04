@@ -1,14 +1,22 @@
 package com.rtech.threadly.utils;
 
+
+import static com.rtech.threadly.RoomDb.DataBase.getInstance;
+
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
+
 import android.webkit.MimeTypeMap;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.rtech.threadly.RoomDb.DataBase;
 import com.rtech.threadly.RoomDb.schemas.MessageSchema;
 import com.rtech.threadly.Threadly;
@@ -16,13 +24,22 @@ import com.rtech.threadly.activities.LoginActivity;
 import com.rtech.threadly.activities.UserProfileActivity;
 import com.rtech.threadly.constants.SharedPreferencesKeys;
 import com.rtech.threadly.core.Core;
+import com.rtech.threadly.interfaces.NetworkCallbackInterface;
+import com.rtech.threadly.network_managers.FcmManager;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
+import java.util.TimeZone;
+import java.util.UUID;
 import java.util.concurrent.Executors;
 
 public class ReUsableFunctions {
@@ -83,18 +100,20 @@ public class ReUsableFunctions {
 
         return file;
     }
-    public static void addMessageToDb(JSONObject object){
-        String ConversationId=object.optString("senderUuid")+Core.getPreference().getString(SharedPreferencesKeys.UUID, "null");
+    public static void addMessageToDb(JSONObject object,String s_r_type){
+        String ConversationId=object.optString(s_r_type.equals("s")?"receiverUuid":"senderUuid")+Core.getPreference().getString(SharedPreferencesKeys.UUID, "null");
         String senderUuid=object.optString("senderUuid");
         String message =object.optString("message");
         String MessageUid=object.optString("MsgUid");
         String ReplyTOMessageUid=object.optString("ReplyTOMsgUid");
         String type=object.optString("type");
         String timestamp=object.optString("timestamp");
+        int deliveryStatus=object.optInt("deliveryStatus");
+        boolean isDeleted=object.optBoolean("isDeleted");
         Executors.newSingleThreadExecutor().execute(new Runnable() {
             @Override
             public void run() {
-                DataBase.getInstance().dao().insertMessage(new MessageSchema(
+                getInstance().dao().insertMessage(new MessageSchema(
                         MessageUid,
                         ConversationId,
                         ReplyTOMessageUid,
@@ -103,13 +122,98 @@ public class ReUsableFunctions {
                         message,
                         type,
                         timestamp,
-                        -1,
-                        false
+                        deliveryStatus,
+                        isDeleted
                 ));
             }
         });
 
     }
+    public static void updateFcmTokenToServer(){
+        FirebaseMessaging.getInstance().getToken().addOnCompleteListener(new OnCompleteListener<String>() {
+            @Override
+            public void onComplete(@NonNull Task<String> task) {
+                String token=task.getResult();
+                if(token!=null){
+                    FcmManager.UpdateFcmToken(token, new NetworkCallbackInterface() {
+                        @Override
+                        public void onSuccess() {
+
+                            Core.getPreference().edit().putBoolean(SharedPreferencesKeys.IS_FCM_TOKEN_UPLOADED,true).apply();
+                        }
+
+                        @Override
+                        public void onError(String err) {
+
+
+                        }
+                    });
+
+                }
+            }
+        });
+
+
+
+    }
+    public static String GenerateUUid(){
+        return ( UUID.randomUUID().toString());
+
+    }
+    public static String getTimestamp(){
+
+        Date now = new Date();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+        return sdf.format(now);
+
+
+    }
+    public static void updateMessageStatus(String MsgUid,int status){
+        Executors.newSingleThreadExecutor().execute(new Runnable() {
+            @Override
+            public void run() {
+                getInstance().dao().updateDeliveryStatus(MsgUid,status);
+            }
+        });
+    }
+    public static void resendPendingMessages(){
+        Executors.newSingleThreadExecutor().execute(new Runnable() {
+            @Override
+            public void run() {
+                List<MessageSchema> pendingToSendMessagesList=DataBase.getInstance().dao().getPendingToSendMessages();
+                if(pendingToSendMessagesList.size()>0){
+                    for(MessageSchema msg:pendingToSendMessagesList){
+                        try {
+                            Core.sendCtoS(msg);
+                        } catch (JSONException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    public static String toIso8601Utc(String mysqlTimestamp) {
+        try {
+            // Step 1: Parse MySQL timestamp (local time)
+            SimpleDateFormat mysqlFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+            mysqlFormat.setTimeZone(TimeZone.getDefault()); // interpret as local
+
+            Date date = mysqlFormat.parse(mysqlTimestamp);
+
+            // Step 2: Convert to ISO 8601 (UTC)
+            SimpleDateFormat isoFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault());
+            isoFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+
+            return isoFormat.format(date);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+
 
 
 }

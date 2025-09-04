@@ -16,6 +16,6 @@ public interface HistoryOperator {
     void insertHistory(HistorySchema history);
     @Query("select * from UsersHistory")
     LiveData<List<HistorySchema>> getAllHistory();
-    @Query("select * from UsersHistory where conversationId=:conversationId")
+    @Query("select * from UsersHistory where conversationId=:conversationId group by conversationId")
     HistorySchema getHistory(String conversationId);
 }

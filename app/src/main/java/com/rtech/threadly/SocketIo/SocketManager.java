@@ -10,7 +10,7 @@ import io.socket.emitter.Emitter;
 
 public class SocketManager {
     private static SocketManager instance;
-    private Socket msocket;
+    private final Socket msocket;
 
     private SocketManager(){
         try {

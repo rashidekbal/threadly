@@ -39,19 +39,38 @@
               android:paddingVertical="@dimen/dp_10"
 
               />
-          <TextView
-              android:id="@+id/sent_text_msg"
+          <LinearLayout
+              android:id="@+id/sent_msg_layout"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
-              android:maxWidth="@dimen/dp_270"
-              android:minWidth="@dimen/dp_40"
-              android:textAlignment="textEnd"
-              tools:text="recieved message this is  so desing it in such way"
+              android:orientation="vertical"
               android:layout_alignParentEnd="true"
+              android:gravity="end"
               android:background="@drawable/sent_msg_bg"
-              android:textColor="@color/AllWhite"
-              android:paddingVertical="@dimen/dp_10"
-              android:paddingHorizontal="@dimen/dp_15"/>
+              >
+
+
+              <TextView
+                  android:id="@+id/sent_text_msg"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:maxWidth="@dimen/dp_270"
+                  android:minWidth="@dimen/dp_40"
+                  android:textAlignment="textEnd"
+                  tools:text="recieved message this is  so desing it in such way"
+                  android:layout_alignParentEnd="true"
+                  android:textColor="@color/AllWhite"
+                  android:paddingVertical="@dimen/dp_10"
+                  android:paddingHorizontal="@dimen/dp_15"/>
+              <ImageView
+                  android:id="@+id/status_img"
+                  android:layout_width="20dp"
+                  android:layout_height="20dp"
+                  tools:src="@drawable/msg_pending"
+                  android:layout_marginEnd="@dimen/dp_5"
+                  />
+          </LinearLayout>
+
       </RelativeLayout>
 
     </RelativeLayout>

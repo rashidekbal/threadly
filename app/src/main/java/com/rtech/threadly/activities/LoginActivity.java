@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ProgressBar;
@@ -12,18 +13,26 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+
+import com.google.android.datatransport.runtime.dagger.Reusable;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.rtech.threadly.R;
 import com.rtech.threadly.Threadly;
 import com.rtech.threadly.activities.forgetPassword.ForgetPasswordActivity;
 import com.rtech.threadly.constants.SharedPreferencesKeys;
 import com.rtech.threadly.core.Core;
+import com.rtech.threadly.interfaces.NetworkCallbackInterface;
 import com.rtech.threadly.interfaces.NetworkCallbackInterfaceWithJsonObjectDelivery;
 import com.rtech.threadly.network_managers.AuthManager;
+import com.rtech.threadly.network_managers.FcmManager;
 import com.rtech.threadly.utils.ExoplayerUtil;
 import com.rtech.threadly.utils.ReUsableFunctions;
 import org.json.JSONException;
@@ -86,6 +95,7 @@ AuthManager authManager;
                                     homePage.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                     startActivity(homePage);
                                     Core.startSocketEvents();
+                                    ReUsableFunctions.updateFcmTokenToServer();
                                     finish();
                                 } catch (JSONException e) {
                                     throw new RuntimeException(e);
@@ -128,6 +138,7 @@ AuthManager authManager;
                                     homePage.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                     startActivity(homePage);
                                     Core.startSocketEvents();
+                                    ReUsableFunctions.updateFcmTokenToServer();
                                     finish();
                                 } catch (JSONException e) {
                                     throw new RuntimeException(e);
@@ -170,6 +181,7 @@ AuthManager authManager;
                                     homePage.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                     startActivity(homePage);
                                     Core.startSocketEvents();
+                                    ReUsableFunctions.updateFcmTokenToServer();
                                     finish();
                                 } catch (JSONException e) {
                                     throw new RuntimeException(e);
@@ -243,4 +255,6 @@ AuthManager authManager;
         dialog.show();
 
     }
+
+
 }

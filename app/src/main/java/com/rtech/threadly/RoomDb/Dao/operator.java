@@ -15,6 +15,11 @@ public interface operator {
     void insertMessage(MessageSchema message);
     @Query("select * from messages where conversationId=:conversationId order by timestamp asc")
     LiveData<List<MessageSchema>> getMessagesCid(String conversationId);
+    @Query("update messages set deliveryStatus=:deliveryStatus where messageUid=:msgUid")
+    void updateDeliveryStatus(String msgUid,int deliveryStatus);
+    @Query("select * from messages where deliveryStatus=0")
+    List<MessageSchema> getPendingToSendMessages();
+
 
 
 }

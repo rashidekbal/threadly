@@ -82,8 +82,14 @@ public class ApiEndPoints {
     public static final String SOCKET_ID = "https://rjwqzfvg-8001.inc1.devtunnels.ms";
 
     //FCM apis
-
     public static final String FCM_TOKEN_UPDATE= baseUrl+"/fcm/updateToken/";
+
+    //Message Routes
+    public static final String CHECK_PENDING_MESSAGES=baseUrl+"/messages/checkPendingMessages/";
+    public static final String GET_PENDING_MESSAGES=baseUrl+"/messages/getPendingMessages/";
+    public static final String SEND_MESSAGE=baseUrl+"/messages/sendMessage/";
+
+
 
 
 }

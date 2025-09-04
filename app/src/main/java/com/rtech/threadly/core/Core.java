@@ -9,7 +9,6 @@ import android.util.Log;
 
 import androidx.work.WorkManager;
 import com.androidnetworking.AndroidNetworking;
-import com.google.gson.JsonArray;
 import com.rtech.threadly.RoomDb.DataBase;
 import com.rtech.threadly.RoomDb.schemas.HistorySchema;
 import com.rtech.threadly.RoomDb.schemas.MessageSchema;
@@ -18,6 +17,7 @@ import com.rtech.threadly.SocketIo.SocketManager;
 import com.rtech.threadly.constants.Constants;
 import com.rtech.threadly.constants.SharedPreferencesKeys;
 import com.rtech.threadly.interfaces.NetworkCallbackInterfaceWithJsonObjectDelivery;
+import com.rtech.threadly.network_managers.MessageManager;
 import com.rtech.threadly.network_managers.ProfileManager;
 import com.rtech.threadly.utils.ExoplayerUtil;
 import com.rtech.threadly.utils.ReUsableFunctions;
@@ -26,7 +26,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
@@ -107,37 +106,25 @@ public class Core {
            });
        }
    };
-   public static Emitter.Listener msgUuidGenerated=new Emitter.Listener() {
+   public static Emitter.Listener MsgStatusUpdate=new Emitter.Listener() {
 
        @Override
        public void call(Object... args) {
            JSONObject object =(JSONObject) args[0];
-           String ConversationId=object.optString("receiverUuid")+getPreference().getString(SharedPreferencesKeys.UUID, "null");
-           String senderUuid=object.optString("senderUuid");
-           String latestMsg=object.optString("msg");
            String MessageUid=object.optString("MsgUid");
-           String ReplyTOMessageUid=object.optString("ReplyTOMsgUid");
-           String type=object.optString("type");
-           String receiverUid=object.optString("receiverUuid");
-           String timestamp=object.optString("timestamp");
            int deliveryStatus=object.optInt("deliveryStatus");
+           ReUsableFunctions.updateMessageStatus(MessageUid,deliveryStatus);
 
-           Executors.newSingleThreadExecutor().execute(() -> {
-               DataBase.getInstance().dao().insertMessage(new MessageSchema(
-                       MessageUid,
-                       ConversationId,
-                       ReplyTOMessageUid,
-                       senderUuid,
-                       receiverUid,
-                       latestMsg,
-                       type,
-                       timestamp,
-                       deliveryStatus,
-                       false
-               ));
-               AddNewConversationHistory(receiverUid);
-           });
 
+       }
+   };
+   public static Emitter.Listener msg_status_changed_event=new Emitter.Listener() {
+       @Override
+       public void call(Object... args) {
+           JSONObject object=(JSONObject) args[0];
+           String MsgUid=object.optString("MsgUid");
+           int deliveryStatus=object.optInt("deliveryStatus");
+           ReUsableFunctions.updateMessageStatus(MsgUid,deliveryStatus);
 
        }
    };
@@ -149,26 +136,87 @@ public class Core {
        //for sending the uuid on connection
        SocketManager.getInstance().getSocket().emit("onConnect",getPreference().getString(SharedPreferencesKeys.UUID,"null"));
        SocketManager.getInstance().getSocket().on("StoC",StoC_Listener);
-       SocketManager.getInstance().getSocket().on("msgUuidGenerated",msgUuidGenerated);
+       SocketManager.getInstance().getSocket().on("MsgStatusUpdate",MsgStatusUpdate);
+       SocketManager.getInstance().getSocket().on("msg_status_changed_event",msg_status_changed_event);
 
    }
    public static void sendCtoS(String uuid,String msg)throws JSONException {
+       String timestamp=ReUsableFunctions.getTimestamp();
+       String MsgUid=ReUsableFunctions.GenerateUUid();
+       String senderUuid=Core.getPreference().getString(SharedPreferencesKeys.UUID,"null");
+       String senderName=Core.getPreference().getString(SharedPreferencesKeys.USER_NAME,"null");
+       String senderUserId=Core.getPreference().getString(SharedPreferencesKeys.USER_ID,"null");
+       String senderProfilePic=Core.getPreference().getString(SharedPreferencesKeys.USER_PROFILE_PIC,"null");
        JSONObject object=new JSONObject();
-       object.put("senderUuid",Core.getPreference().getString(SharedPreferencesKeys.UUID,"null"));
+       object.put("timestamp",timestamp);
+       object.put("MsgUid",MsgUid);
+       object.put("senderUuid",senderUuid);
        object.put("receiverUuid",uuid);
-       object.put("senderName",Core.getPreference().getString(SharedPreferencesKeys.USER_NAME,"null"));
-       object.put("senderUserId",Core.getPreference().getString(SharedPreferencesKeys.USER_ID,"null"));
-       object.put("senderProfilePic",Core.getPreference().getString(SharedPreferencesKeys.USER_PROFILE_PIC,"null"));
+       object.put("senderName",senderName);
+       object.put("senderUserId",senderUserId);
+       object.put("senderProfilePic",senderProfilePic);
        object.put("msg",msg);
-       SocketManager.getInstance().getSocket().emit("CToS",object);
-   }
-   public static void AddNewConversationHistory(String ReceiverUuid) {
 
-       String ConversationId = ReceiverUuid + getPreference().getString(SharedPreferencesKeys.UUID, "null");
+       if (!SocketManager.getInstance().getSocket().connected()){
+           Log.d(Constants.NETWORK_ERROR_TAG.toString(), "sendCtoS: socket not connected adding fall back");
+           MessageManager.sendMessage(object);
+
+       }else{
+           SocketManager.getInstance().getSocket().emit("CToS",object);
+       }
+       Executors.newSingleThreadExecutor().execute(new Runnable() {
+           @Override
+           public void run() {
+               AddNewConversationHistory(uuid);
+               DataBase.getInstance().dao().insertMessage(new MessageSchema(
+                       MsgUid,
+                       uuid+senderUuid,
+                       "null",
+                       senderUuid,
+                       uuid,
+                       msg,
+                       "text",
+                       timestamp,
+                       0,
+                       false
+               ));
+           }
+       });
+
+   }
+    public static void sendCtoS(MessageSchema messageSchema)throws JSONException {
+        String timestamp=messageSchema.getTimestamp();
+        String MsgUid=messageSchema.getMessageUid();
+        String senderUuid=messageSchema.getSenderId();
+        String senderName=Core.getPreference().getString(SharedPreferencesKeys.USER_NAME,"null");
+        String senderUserId=Core.getPreference().getString(SharedPreferencesKeys.USER_ID,"null");
+        String senderProfilePic=Core.getPreference().getString(SharedPreferencesKeys.USER_PROFILE_PIC,"null");
+        JSONObject object=new JSONObject();
+        object.put("timestamp",timestamp);
+        object.put("MsgUid",MsgUid);
+        object.put("senderUuid",senderUuid);
+        object.put("receiverUuid",messageSchema.getReceiverId());
+        object.put("senderName",senderName);
+        object.put("senderUserId",senderUserId);
+        object.put("senderProfilePic",senderProfilePic);
+        object.put("msg",messageSchema.getMsg());
+
+        if (!SocketManager.getInstance().getSocket().connected()){
+            Log.d(Constants.NETWORK_ERROR_TAG.toString(), "sendCtoS: socket not connected adding fall back");
+            MessageManager.sendMessage(object);
+
+        }else{
+            SocketManager.getInstance().getSocket().emit("CToS",object);
+        }
+    }
+   public static void AddNewConversationHistory(String uuid) {
+
+       String ConversationId = uuid + getPreference().getString(SharedPreferencesKeys.UUID, "null");
+
        HistorySchema history = DataBase.getInstance().historyOperator().getHistory(ConversationId);
        if (history == null) {
            Log.d("notfound", "history not found ");
-           new ProfileManager().GetProfileByUuid(ReceiverUuid, new NetworkCallbackInterfaceWithJsonObjectDelivery() {
+           new ProfileManager().GetProfileByUuid(uuid, new NetworkCallbackInterfaceWithJsonObjectDelivery() {
                @Override
                public void onSuccess(JSONObject response) {
                    JSONArray Array = response.optJSONArray("data");
@@ -181,8 +229,8 @@ public class Core {
                        Executors.newSingleThreadExecutor().execute(new Runnable() {
                            @Override
                            public void run() {
-                               DataBase.getInstance().historyOperator().insertHistory(new HistorySchema(ReceiverUuid + getPreference().getString(SharedPreferencesKeys.UUID, "null")
-                                       , username, userid, profile, ReceiverUuid, "null"));
+                               DataBase.getInstance().historyOperator().insertHistory(new HistorySchema(uuid + getPreference().getString(SharedPreferencesKeys.UUID, "null")
+                                       , username, userid, profile, uuid, "null"));
                                Log.d("notfound", "data inserted ");
                            }
                        });
