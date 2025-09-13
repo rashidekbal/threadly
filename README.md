@@ -29,26 +29,35 @@ Threadly is an Android social media app under development. Key features:
 | Notifications                         | ⚠ work in progress        |
 
 ---
-
 ## 📸 Screenshots
 
 Here are some screenshots of the app in action:
 
-![Screenshot 1](screenshots/1.jpg)  
-![Screenshot 2](screenshots/2.jpg)  
-![Screenshot 3](screenshots/3.jpg)  
-![Screenshot 4](screenshots/4.jpg)  
-![Screenshot 5](screenshots/5.jpg)  
-![Screenshot 6](screenshots/6.jpg)  
-![Screenshot 7](screenshots/7.jpg)  
-![Screenshot 8](screenshots/8.jpg)  
-![Screenshot 9](screenshots/9.jpg)  
-![Screenshot 10](screenshots/10.jpg)  
-![Screenshot 11](screenshots/11.jpg)  
-![Screenshot 12](screenshots/12.jpg)
+<p align="center">
+  <img src="screenshots/1.jpg" alt="Screenshot 1" width="250"/>
+  <img src="screenshots/2.jpg" alt="Screenshot 2" width="250"/>
+  <img src="screenshots/3.jpg" alt="Screenshot 3" width="250"/>
+</p>
+
+<p align="center">
+  <img src="screenshots/4.jpg" alt="Screenshot 4" width="250"/>
+  <img src="screenshots/5.jpg" alt="Screenshot 5" width="250"/>
+  <img src="screenshots/6.jpg" alt="Screenshot 6" width="250"/>
+</p>
+
+<p align="center">
+  <img src="screenshots/7.jpg" alt="Screenshot 7" width="250"/>
+  <img src="screenshots/8.jpg" alt="Screenshot 8" width="250"/>
+  <img src="screenshots/9.jpg" alt="Screenshot 9" width="250"/>
+</p>
+
+<p align="center">
+  <img src="screenshots/10.jpg" alt="Screenshot 10" width="250"/>
+  <img src="screenshots/11.jpg" alt="Screenshot 11" width="250"/>
+  <img src="screenshots/12.jpg" alt="Screenshot 12" width="250"/>
+</p>
 
 ---
-
 ## 🛠 Tech Stack
 
 - **Android (frontend)** – Native Java
