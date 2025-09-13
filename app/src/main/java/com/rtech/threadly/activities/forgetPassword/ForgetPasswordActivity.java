@@ -14,47 +14,48 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.rtech.threadly.R;
+import com.rtech.threadly.databinding.ActivityForgetPasswordBinding;
 import com.rtech.threadly.interfaces.NetworkCallbackInterface;
 import com.rtech.threadly.network_managers.OtpManager;
 import com.rtech.threadly.utils.ReUsableFunctions;
 
 public class ForgetPasswordActivity extends AppCompatActivity {
+    ActivityForgetPasswordBinding mainXml;
     // Declare UI components
-    AppCompatButton forgetPasswordButton;
-    EditText useridField;
+
+
     OtpManager otpManager;
-    ProgressBar progressBar;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        mainXml=ActivityForgetPasswordBinding.inflate(getLayoutInflater());
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_forget_password);
+        setContentView(mainXml.getRoot());
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-        init();
-        forgetPasswordButton.setOnClickListener(new View.OnClickListener() {
+        otpManager = new OtpManager();
+        mainXml.forgetPasswordBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // Handle forget password button click
-                forgetPasswordButton.setEnabled(false);
-                forgetPasswordButton.setText("");
-                progressBar.setVisibility(View.VISIBLE);
+                mainXml.forgetPasswordBtn.setEnabled(false);
+                mainXml.forgetPasswordBtn.setText("");
+                mainXml.progressBar.setVisibility(View.VISIBLE);
 
-                String userid = useridField.getText().toString().trim();
+                String userid = mainXml.useridField.getText().toString().trim();
                 if(ReUsableFunctions.isEmail(userid)){
-
-
                     otpManager.ForgetPasswordOptSendEmail(userid, new NetworkCallbackInterface() {
                         @Override
                         public void onSuccess() {
                             // Hide progress bar and enable button
-                            progressBar.setVisibility(View.GONE);
-                            forgetPasswordButton.setText(R.string.forget_password);
-                            forgetPasswordButton.setEnabled(true);
+                            mainXml.progressBar.setVisibility(View.GONE);
+                            mainXml.forgetPasswordBtn.setText(R.string.forget_password);
+                            mainXml.forgetPasswordBtn.setEnabled(true);
                             // Handle success, e.g., navigate to OTP verification screen
                             ReUsableFunctions.ShowToast(ForgetPasswordActivity.this, "OTP sent to your Email");
                             // Navigate to OTP verification activity
@@ -71,15 +72,15 @@ public class ForgetPasswordActivity extends AppCompatActivity {
                         public void onError(String err) {
                             int errorCode=Integer.parseInt(err);
                             if(errorCode==404){
-                                useridField.setError("User not found");
-                                progressBar.setVisibility(View.GONE);
-                                forgetPasswordButton.setText(R.string.forget_password);
-                                forgetPasswordButton.setEnabled(true);
+                                mainXml.useridField.setError("User not found");
+                                mainXml.progressBar.setVisibility(View.GONE);
+                                mainXml.forgetPasswordBtn.setText(R.string.forget_password);
+                                mainXml.forgetPasswordBtn.setEnabled(true);
                             }else{
-                                useridField.setError("something went wrong");
-                                progressBar.setVisibility(View.GONE);
-                                forgetPasswordButton.setText(R.string.forget_password);
-                                forgetPasswordButton.setEnabled(true);
+                                mainXml.useridField.setError("something went wrong");
+                                mainXml.progressBar.setVisibility(View.GONE);
+                                mainXml.forgetPasswordBtn.setText(R.string.forget_password);
+                                mainXml.forgetPasswordBtn.setEnabled(true);
 
                             }
 
@@ -94,9 +95,9 @@ public class ForgetPasswordActivity extends AppCompatActivity {
                         @Override
                         public void onSuccess() {
                             // Hide progress bar and enable button
-                            progressBar.setVisibility(View.GONE);
-                            forgetPasswordButton.setText(R.string.forget_password);
-                            forgetPasswordButton.setEnabled(true);
+                            mainXml.progressBar.setVisibility(View.GONE);
+                            mainXml.forgetPasswordBtn.setText(R.string.forget_password);
+                            mainXml.forgetPasswordBtn.setEnabled(true);
                             // Handle success, e.g., navigate to OTP verification screen
                             ReUsableFunctions.ShowToast(ForgetPasswordActivity.this, "OTP sent to your mobile number");
                             // Navigate to OTP verification activity
@@ -113,30 +114,24 @@ public class ForgetPasswordActivity extends AppCompatActivity {
                         public void onError(String err) {
                             // Handle error, e.g., show a dialog or toast
                             ReUsableFunctions.ShowToast(ForgetPasswordActivity.this, err);
-                            progressBar.setVisibility(View.GONE);
-                            forgetPasswordButton.setText(R.string.forget_password);
-                            forgetPasswordButton.setEnabled(true);
+                            mainXml.progressBar.setVisibility(View.GONE);
+                            mainXml.forgetPasswordBtn.setText(R.string.forget_password);
+                            mainXml.forgetPasswordBtn.setEnabled(true);
 
 
                         }
                     });
 
                 }else{
-                    useridField.setError("Invalid userid");
-                    progressBar.setVisibility(View.GONE);
-                    forgetPasswordButton.setText(R.string.forget_password);
-                    forgetPasswordButton.setEnabled(true);
+                    mainXml.useridField.setError("Invalid userid");
+                    mainXml.progressBar.setVisibility(View.GONE);
+                    mainXml.forgetPasswordBtn.setText(R.string.forget_password);
+                    mainXml.forgetPasswordBtn.setEnabled(true);
                 }
 
             }
         });
 
     }
-    private void init() {
-        // Initialize UI components here if needed
-        forgetPasswordButton = findViewById(R.id.forgetPassword_btn);
-        useridField = findViewById(R.id.userid_field);
-        progressBar = findViewById(R.id.progressBar);
-        otpManager = new OtpManager();
-    }
+
 }

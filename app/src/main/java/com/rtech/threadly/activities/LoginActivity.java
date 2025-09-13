@@ -33,6 +33,7 @@ import com.rtech.threadly.interfaces.NetworkCallbackInterface;
 import com.rtech.threadly.interfaces.NetworkCallbackInterfaceWithJsonObjectDelivery;
 import com.rtech.threadly.network_managers.AuthManager;
 import com.rtech.threadly.network_managers.FcmManager;
+import com.rtech.threadly.network_managers.MessageManager;
 import com.rtech.threadly.utils.ExoplayerUtil;
 import com.rtech.threadly.utils.ReUsableFunctions;
 import org.json.JSONException;
@@ -95,6 +96,7 @@ AuthManager authManager;
                                     homePage.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                     startActivity(homePage);
                                     Core.startSocketEvents();
+                                    MessageManager.checkAndGetPendingMessages();
                                     ReUsableFunctions.updateFcmTokenToServer();
                                     finish();
                                 } catch (JSONException e) {

@@ -15,20 +15,20 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.rtech.threadly.R;
 import com.rtech.threadly.activities.LoginActivity;
+import com.rtech.threadly.databinding.ActivityResetPasswordBinding;
 import com.rtech.threadly.interfaces.NetworkCallbackInterface;
 import com.rtech.threadly.network_managers.AuthManager;
 import com.rtech.threadly.utils.ReUsableFunctions;
 
 public class ResetPasswordActivity extends AppCompatActivity {
-    TextView password_Text_field;
-    AppCompatButton resetPasswordButton;
-    ProgressBar progressBar;
+    ActivityResetPasswordBinding mainXml;
     AuthManager authManager;
     Intent PageDataIntent;
     String token,type;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        mainXml=ActivityResetPasswordBinding.inflate(getLayoutInflater());
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_reset_password);
@@ -38,27 +38,27 @@ public class ResetPasswordActivity extends AppCompatActivity {
             return insets;
         });
         init();
-        resetPasswordButton.setOnClickListener(new View.OnClickListener() {
+        mainXml.resetPasswordBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String password = password_Text_field.getText().toString().trim();
+                String password = mainXml.passwordTextField.getText().toString().trim();
                 if (password.isEmpty()) {
-                    password_Text_field.setError("Password cannot be empty");
+                    mainXml.passwordTextField.setError("Password cannot be empty");
 
                 } else if (password.length()<6) {
-                    password_Text_field.setError("Password must be at least 6 characters long");
+                    mainXml.passwordTextField.setError("Password must be at least 6 characters long");
                 } else {
-                    progressBar.setVisibility(View.VISIBLE);
-                    resetPasswordButton.setEnabled(false);
-                    resetPasswordButton.setText("");
+                    mainXml.progressBar.setVisibility(View.VISIBLE);
+                    mainXml.resetPasswordBtn.setEnabled(false);
+                    mainXml.resetPasswordBtn.setText("");
                     if(type.equals("mobile")){
                         authManager.ResetPasswordWithMobile(password, token, new NetworkCallbackInterface() {
                             @Override
                             public void onSuccess() {
                                 ReUsableFunctions.ShowToast(ResetPasswordActivity.this, "Password reset successfully");
-                                progressBar.setVisibility(View.GONE);
-                                resetPasswordButton.setEnabled(true);
-                                resetPasswordButton.setText("Reset Password");
+                                mainXml.progressBar.setVisibility(View.GONE);
+                                mainXml.resetPasswordBtn.setEnabled(true);
+                                mainXml.resetPasswordBtn.setText("Reset Password");
                                 Intent intent = new Intent(ResetPasswordActivity.this, LoginActivity.class);
                                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                                 startActivity(intent);
@@ -67,9 +67,9 @@ public class ResetPasswordActivity extends AppCompatActivity {
 
                             @Override
                             public void onError(String err) {
-                                progressBar.setVisibility(View.GONE);
-                                resetPasswordButton.setEnabled(true);
-                                resetPasswordButton.setText("Reset Password");
+                                mainXml.progressBar.setVisibility(View.GONE);
+                                mainXml.resetPasswordBtn.setEnabled(true);
+                                mainXml.resetPasswordBtn.setText("Reset Password");
 
                             }
                         });
@@ -79,9 +79,9 @@ public class ResetPasswordActivity extends AppCompatActivity {
                             @Override
                             public void onSuccess() {
                                 ReUsableFunctions.ShowToast(ResetPasswordActivity.this, "Password reset successfully");
-                                progressBar.setVisibility(View.GONE);
-                                resetPasswordButton.setEnabled(true);
-                                resetPasswordButton.setText("Reset Password");
+                                mainXml.progressBar.setVisibility(View.GONE);
+                                mainXml.resetPasswordBtn.setEnabled(true);
+                                mainXml.resetPasswordBtn.setText("Reset Password");
                                 Intent intent = new Intent(ResetPasswordActivity.this, LoginActivity.class);
                                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                                 startActivity(intent);
@@ -90,9 +90,9 @@ public class ResetPasswordActivity extends AppCompatActivity {
 
                             @Override
                             public void onError(String err) {
-                                progressBar.setVisibility(View.GONE);
-                                resetPasswordButton.setEnabled(true);
-                                resetPasswordButton.setText("Reset Password");
+                                mainXml.progressBar.setVisibility(View.GONE);
+                                mainXml.resetPasswordBtn.setEnabled(true);
+                                mainXml.resetPasswordBtn.setText("Reset Password");
 
                             }
                         });
@@ -109,9 +109,6 @@ public class ResetPasswordActivity extends AppCompatActivity {
     }
 
     private void init() {
-        password_Text_field = findViewById(R.id.password_Text_field);
-        resetPasswordButton = findViewById(R.id.reset_password_btn);
-        progressBar= findViewById(R.id.progressBar);
         authManager = new AuthManager();
         PageDataIntent = getIntent();
         token= PageDataIntent.getStringExtra("token");
