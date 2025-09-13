@@ -78,7 +78,7 @@ Here are some screenshots of the app in action:
 3. Set up your Firebase project for FCM (server key + config files)
 4. Backend setup:
    ```bash
-   cd backend
+   git clone https://github.com/rashidekbal/threadlyServer
    npm install
    ```
    - Configure MySQL credentials (user, password, host, port)
