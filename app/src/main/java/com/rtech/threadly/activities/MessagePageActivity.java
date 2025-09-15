@@ -98,6 +98,7 @@ public class MessagePageActivity extends AppCompatActivity {
                         //new unread message arrived or already exists
                         // update local db as seen and send message to global db to set as seen
                         try {
+                            //to be replaced by socket driven handler
                             MessageManager.setSeenMessage(uuid,Core.getPreference().getString(SharedPreferencesKeys.UUID,"null"));
                         } catch (JSONException e) {
                             throw new RuntimeException(e);
