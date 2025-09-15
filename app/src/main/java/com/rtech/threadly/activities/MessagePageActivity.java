@@ -22,6 +22,7 @@ import com.bumptech.glide.Glide;
 import com.rtech.threadly.R;
 import com.rtech.threadly.RoomDb.DataBase;
 import com.rtech.threadly.RoomDb.schemas.MessageSchema;
+import com.rtech.threadly.SocketIo.SocketEmitterEvents;
 import com.rtech.threadly.SocketIo.SocketManager;
 import com.rtech.threadly.adapters.messanger.MessageAdapter;
 import com.rtech.threadly.constants.SharedPreferencesKeys;
@@ -99,7 +100,12 @@ public class MessagePageActivity extends AppCompatActivity {
                         // update local db as seen and send message to global db to set as seen
                         try {
                             //to be replaced by socket driven handler
-                            MessageManager.setSeenMessage(uuid,Core.getPreference().getString(SharedPreferencesKeys.UUID,"null"));
+
+                            if(SocketManager.getInstance().getSocket().connected()){
+                                SocketEmitterEvents.UpdateSeenMsg_status(uuid,Core.getPreference().getString(SharedPreferencesKeys.USER_ID,"null"));
+                            }else{
+                                                            MessageManager.setSeenMessage(uuid,Core.getPreference().getString(SharedPreferencesKeys.UUID,"null"));
+                            }
                         } catch (JSONException e) {
                             throw new RuntimeException(e);
                         }
