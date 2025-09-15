@@ -36,6 +36,7 @@ import com.rtech.threadly.models.StoriesModel;
 import com.rtech.threadly.models.StoryMediaModel;
 import com.rtech.threadly.utils.ExoplayerUtil;
 import com.rtech.threadly.viewmodels.ImagePostsFeedViewModel;
+import com.rtech.threadly.viewmodels.MessagesViewModel;
 import com.rtech.threadly.viewmodels.StoriesViewModel;
 import com.rtech.threadly.viewmodels.VideoPostsFeedViewModel;
 
@@ -56,6 +57,7 @@ public class homeFragment extends Fragment {
     StoriesViewModel storiesViewModel;
     ArrayList<StoriesModel> storiesData;
     StoryOpenCallback callback;
+    MessagesViewModel messagesViewModel;
 
 
 public homeFragment(){
@@ -73,6 +75,7 @@ public homeFragment(){
         postsViewModel = new ViewModelProvider(requireActivity()).get(ImagePostsFeedViewModel.class);
         videoPostsFeedViewModel=new ViewModelProvider(requireActivity()).get(VideoPostsFeedViewModel.class);
         loginInfo = Core.getPreference();
+        messagesViewModel=new ViewModelProvider(this).get(MessagesViewModel.class);
         storiesViewModel=new ViewModelProvider(requireActivity()).get(StoriesViewModel.class);
         storiesData= new ArrayList<>();
 
@@ -139,6 +142,20 @@ public homeFragment(){
 
 
         // -------------------------
+        //observe and display count of unread messages
+        messagesViewModel.getUnreadMsg_count(Core.getPreference().getString(SharedPreferencesKeys.UUID,"null")).observe(getViewLifecycleOwner(), new Observer<Integer>() {
+            @Override
+            public void onChanged(Integer integer) {
+                if(integer>0){
+                    mainXml.unreadMessageCounterLayout.setVisibility(View.VISIBLE);
+                    mainXml.unreadMessagesCounterText.setText(Integer.toString(integer));
+
+                }else{
+                    mainXml.unreadMessageCounterLayout.setVisibility(View.GONE);
+                }
+
+            }
+        });
         // -------------------------
 
         mainXml.MessageBtn.setOnClickListener(v->{

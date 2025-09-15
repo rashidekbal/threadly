@@ -108,7 +108,7 @@ Here are some screenshots of the app in action:
 Contributions are welcome!
 
 - Open an issue for bugs or feature requests
-- Create a Pull Request following the existing code style (Java + kotlin)
+- Create a Pull Request following the existing code style (Java + Node.js)
 - Add tests where possible
 
 ---
@@ -116,6 +116,6 @@ Contributions are welcome!
 ## 🙋 Contact
 
 - GitHub: [rashidekbal](https://github.com/rashidekbal)
-- Email: _[rtechdevlopment123@gmail.com]_
+- Email: _[your email here]_
 
 ---

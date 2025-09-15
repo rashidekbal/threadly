@@ -1,6 +1,7 @@
 package com.rtech.threadly.activities;
 
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
@@ -15,15 +16,18 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.room.Database;
 
 import com.bumptech.glide.Glide;
 import com.rtech.threadly.R;
+import com.rtech.threadly.RoomDb.DataBase;
 import com.rtech.threadly.RoomDb.schemas.MessageSchema;
 import com.rtech.threadly.SocketIo.SocketManager;
 import com.rtech.threadly.adapters.messanger.MessageAdapter;
 import com.rtech.threadly.constants.SharedPreferencesKeys;
 import com.rtech.threadly.core.Core;
 import com.rtech.threadly.databinding.ActivityMessagePageBinding;
+import com.rtech.threadly.network_managers.MessageManager;
 import com.rtech.threadly.utils.ReUsableFunctions;
 import com.rtech.threadly.viewmodels.MessagesViewModel;
 
@@ -33,6 +37,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 public class MessagePageActivity extends AppCompatActivity {
     ActivityMessagePageBinding mainXml;
@@ -85,6 +90,29 @@ public class MessagePageActivity extends AppCompatActivity {
             conversationId=uuid+Core.getPreference().getString(SharedPreferencesKeys.UUID,null);
             mainXml.username.setText(userdata.getString("username"));
             mainXml.userId.setText(userdata.getString("userid"));
+//            //update database and set message seen
+            messagesViewModel.getConversationUnreadMsg_count(conversationId,Core.getPreference().getString(SharedPreferencesKeys.UUID,"null")).observe(this, new Observer<Integer>() {
+                @Override
+                public void onChanged(Integer integer) {
+                    if(integer>0){
+                        //new unread message arrived or already exists
+                        // update local db as seen and send message to global db to set as seen
+                        try {
+                            MessageManager.setSeenMessage(uuid,Core.getPreference().getString(SharedPreferencesKeys.UUID,"null"));
+                        } catch (JSONException e) {
+                            throw new RuntimeException(e);
+                        }
+                        Executors.newSingleThreadExecutor().execute(new Runnable() {
+                            @Override
+                            public void run() {
+                                DataBase.getInstance().dao().updateMessagesSeen(conversationId,Core.getPreference().getString(SharedPreferencesKeys.UUID,"null"));
+
+                            }
+                        });
+                    }
+                }
+            });
+
 
             Glide.with(MessagePageActivity.this).load(userdata.getString("profilePic")).placeholder(R.drawable.blank_profile).circleCrop().into(mainXml.profile);
 

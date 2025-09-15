@@ -19,6 +19,12 @@ public interface operator {
     void updateDeliveryStatus(String msgUid,int deliveryStatus);
     @Query("select * from messages where deliveryStatus=0")
     List<MessageSchema> getPendingToSendMessages();
+    @Query("select count(distinct messageUid)as count from messages where deliveryStatus=-1 and receiverId=:rid" )
+    LiveData<Integer> getUnreadMessagesCount(String rid);
+    @Query("update messages set deliveryStatus=-2 where conversationId=:conversationId and receiverId=:rid")
+    void updateMessagesSeen(String conversationId,String rid);
+    @Query("select count(distinct messageUid) from messages where deliveryStatus=-1 and receiverId=:rid and conversationId=:cid")
+    LiveData<Integer> getConversationUnreadMessagesCount(String cid,String rid);
 
 
 

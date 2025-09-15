@@ -21,6 +21,7 @@ import org.json.JSONObject;
 import java.util.concurrent.Executors;
 
 public class MessageManager {
+    static String TAG="MessageManager";
     public static void sendMessage(JSONObject object){
         String url= ApiEndPoints.SEND_MESSAGE;
         AndroidNetworking.post(url).setPriority(Priority.HIGH)
@@ -137,5 +138,27 @@ public class MessageManager {
 
                     }
                 });
+    }
+    public static void setSeenMessage(String senderUUid,String receiverUUid)throws JSONException{
+     String Url=ApiEndPoints.UPDATE_MSG_SEEN_STATUS;
+     JSONObject object=new JSONObject();
+     object.put("senderUUid",senderUUid);
+     object.put("receiverUUid",receiverUUid);
+     AndroidNetworking.post(Url).setPriority(Priority.HIGH)
+             .addHeaders("Authorization","Bearer "+Core.getPreference().getString(SharedPreferencesKeys.JWT_TOKEN,"null"))
+             .addApplicationJsonBody(object)
+             .build()
+             .getAsJSONObject(new JSONObjectRequestListener() {
+                 @Override
+                 public void onResponse(JSONObject response) {
+                     Log.d(TAG, "done");
+                 }
+
+                 @Override
+                 public void onError(ANError anError) {
+                     Log.d(TAG, "onError: "+anError.getErrorDetail());
+                 }
+             });
+
     }
 }
