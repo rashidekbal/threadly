@@ -116,6 +116,6 @@ Contributions are welcome!
 ## 🙋 Contact
 
 - GitHub: [rashidekbal](https://github.com/rashidekbal)
-- Email: _[your email here]_
+- Email: _[rtechdevlopment123@gmail.com]_
 
 ---
