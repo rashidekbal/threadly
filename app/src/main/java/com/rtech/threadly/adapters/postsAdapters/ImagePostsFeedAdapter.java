@@ -40,6 +40,7 @@ import com.rtech.threadly.network_managers.LikeManager;
 import com.rtech.threadly.models.Posts_Comments_Model;
 import com.rtech.threadly.models.Posts_Model;
 import com.rtech.threadly.models.Profile_Model_minimal;
+import com.rtech.threadly.utils.DownloadManagerUtil;
 import com.rtech.threadly.utils.ReUsableFunctions;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -161,7 +162,16 @@ public class ImagePostsFeedAdapter extends RecyclerView.Adapter<ImagePostsFeedAd
             public void onClick(View v) {
                 BottomSheetDialog OptionsDialog =new BottomSheetDialog(context,R.style.TransparentBottomSheet);
                 OptionsDialog.setContentView(R.layout.posts_action_options_layout);
+                LinearLayout downloadBtnLayout=OptionsDialog.findViewById(R.id.download_btn);
+                downloadBtnLayout.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        DownloadManagerUtil.downloadFromUri(context,Uri.parse(list.get(position).postUrl));
+                        OptionsDialog.dismiss();
+                    }
+                });
                 OptionsDialog.setCancelable(true);
+
                 OptionsDialog.show();
             }
         });

@@ -182,7 +182,4 @@ public class MessagePageActivity extends AppCompatActivity {
         mainXml.RecyclerView.setLayoutManager(new LinearLayoutManager(MessagePageActivity.this,LinearLayoutManager.VERTICAL,false));
         mainXml.RecyclerView.setAdapter(messageAdapter);
     }
-
-
-
 }

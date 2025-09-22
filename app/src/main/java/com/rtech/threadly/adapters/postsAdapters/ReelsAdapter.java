@@ -41,6 +41,7 @@ import com.rtech.threadly.network_managers.FollowManager;
 import com.rtech.threadly.network_managers.LikeManager;
 import com.rtech.threadly.models.Posts_Comments_Model;
 import com.rtech.threadly.models.Posts_Model;
+import com.rtech.threadly.utils.DownloadManagerUtil;
 import com.rtech.threadly.utils.ExoplayerUtil;
 import com.rtech.threadly.utils.ReUsableFunctions;
 
@@ -212,6 +213,14 @@ public class ReelsAdapter extends RecyclerView.Adapter<ReelsAdapter.viewHolder> 
             public void onClick(View v) {
                 BottomSheetDialog OptionsDialog =new BottomSheetDialog(context,R.style.TransparentBottomSheet);
                 OptionsDialog.setContentView(R.layout.posts_action_options_layout);
+                LinearLayout downloadBtnLayout=OptionsDialog.findViewById(R.id.download_btn);
+                downloadBtnLayout.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        DownloadManagerUtil.downloadFromUri(context,Uri.parse(dataList.get(position).postUrl));
+                        OptionsDialog.dismiss();
+                    }
+                });
                 OptionsDialog.setCancelable(true);
                 OptionsDialog.show();
             }

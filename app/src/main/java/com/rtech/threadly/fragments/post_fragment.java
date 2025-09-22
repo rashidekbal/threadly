@@ -7,6 +7,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.graphics.Path;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -44,6 +45,7 @@ import com.rtech.threadly.network_managers.LikeManager;
 import com.rtech.threadly.network_managers.PostsManager;
 import com.rtech.threadly.models.Posts_Comments_Model;
 import com.rtech.threadly.models.Posts_Model;
+import com.rtech.threadly.utils.DownloadManagerUtil;
 import com.rtech.threadly.utils.ExoplayerUtil;
 import com.rtech.threadly.utils.ReUsableFunctions;
 
@@ -515,6 +517,10 @@ private void setOptionsBehaviour(BottomSheetDialog Optionsdialog,Posts_Model dat
 
 
 
+        });
+        download_btn.setOnClickListener(v->{
+            DownloadManagerUtil.downloadFromUri(requireActivity(),Uri.parse(data.postUrl));
+            Optionsdialog.dismiss();
         });
 
 

@@ -1,6 +1,7 @@
 package com.rtech.threadly.activities;
 
 import static com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_EXPANDED;
+import static com.google.android.material.bottomsheet.BottomSheetBehavior.from;
 
 import android.content.Context;
 import android.content.Intent;
@@ -39,6 +40,7 @@ import com.rtech.threadly.R;
 import com.rtech.threadly.adapters.commentsAdapter.PostCommentsAdapter;
 import com.rtech.threadly.constants.SharedPreferencesKeys;
 import com.rtech.threadly.core.Core;
+import com.rtech.threadly.databinding.ActivityPostBinding;
 import com.rtech.threadly.interfaces.NetworkCallbackInterface;
 import com.rtech.threadly.interfaces.NetworkCallbackInterfaceWithJsonObjectDelivery;
 import com.rtech.threadly.network_managers.CommentsManager;
@@ -46,6 +48,7 @@ import com.rtech.threadly.network_managers.LikeManager;
 import com.rtech.threadly.network_managers.PostsManager;
 import com.rtech.threadly.models.Posts_Comments_Model;
 import com.rtech.threadly.models.Posts_Model;
+import com.rtech.threadly.utils.DownloadManagerUtil;
 import com.rtech.threadly.utils.ExoplayerUtil;
 import com.rtech.threadly.utils.ReUsableFunctions;
 
@@ -58,6 +61,7 @@ import java.util.Date;
 import java.util.Objects;
 
 public class PostActivity extends AppCompatActivity {
+    ActivityPostBinding mainXml;
     Intent intentData;
     int postId;
     PostsManager postsManager;
@@ -65,17 +69,16 @@ public class PostActivity extends AppCompatActivity {
     CommentsManager commentsManager;
     SharedPreferences loginInfo;
     Posts_Model postData;
-    ImageView posts_image_view,profile_img,like_btn,comment_btn,play_btn;
-    TextView username_text,caption_text,like_count_text,comment_count_text,share_count_text;
-    PlayerView playerView;
+
     boolean[] isPlaying={true};
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        mainXml=ActivityPostBinding.inflate(getLayoutInflater());
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_post);
+        setContentView(mainXml.getRoot());
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
@@ -89,7 +92,7 @@ public class PostActivity extends AppCompatActivity {
         }
         init();
         loadPost();
-        profile_img.setOnClickListener(new View.OnClickListener() {
+        mainXml.profileImg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 ReUsableFunctions.openProfile(PostActivity.this,postData.userId);
@@ -97,13 +100,14 @@ public class PostActivity extends AppCompatActivity {
             }
         });
 //        also on click of username
-        username_text.setOnClickListener(new View.OnClickListener() {
+        mainXml.usernameText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 ReUsableFunctions.openProfile(PostActivity.this,postData.userId);
 
             }
         });
+
 
     }
     private void init(){
@@ -113,17 +117,6 @@ public class PostActivity extends AppCompatActivity {
         likeManager=new LikeManager();
         commentsManager=new CommentsManager();
         loginInfo= Core.getPreference();
-        posts_image_view=findViewById(R.id.post_image_view);
-        profile_img=findViewById(R.id.profile_img);
-        username_text=findViewById(R.id.username_text);
-        caption_text=findViewById(R.id.caption_text);
-        like_count_text=findViewById(R.id.likes_count_text);
-        comment_count_text=findViewById(R.id.comments_count_text);
-        share_count_text=findViewById(R.id.shares_count_text);
-        like_btn=findViewById(R.id.like_btn_image);
-        comment_btn=findViewById(R.id.comment_btn_image);
-        playerView=findViewById(R.id.videoPlayer_view);
-        play_btn=findViewById(R.id.play_btn);
     }
     private void loadPost(){
         postsManager.getPostWithId(postId, new NetworkCallbackInterfaceWithJsonObjectDelivery() {
@@ -177,34 +170,34 @@ public class PostActivity extends AppCompatActivity {
 
     @UnstableApi
     private void setData(Posts_Model data) {
-        Glide.with(PostActivity.this).load(data.userDpUrl).placeholder(R.drawable.blank_profile).circleCrop().into(profile_img);
+        Glide.with(PostActivity.this).load(data.userDpUrl).placeholder(R.drawable.blank_profile).circleCrop().into(mainXml.profileImg);
         if(data.caption.equals("null")||data.caption.isEmpty()){
-          caption_text.setVisibility(View.GONE);
+          mainXml.captionText.setVisibility(View.GONE);
         }else{
-            caption_text.setText(data.caption);
+            mainXml.captionText.setText(data.caption);
         }
 
-        username_text.setText(data.username);
+        mainXml.usernameText.setText(data.username);
 
-        like_count_text.setText(String.valueOf(data.likeCount));
-        comment_count_text.setText(String.valueOf(data.commentCount));
-        share_count_text.setText(String.valueOf(data.shareCount));
+        mainXml.likesCountText.setText(String.valueOf(data.likeCount));
+        mainXml.commentsCountText.setText(String.valueOf(data.commentCount));
+        mainXml.sharesCountText.setText(String.valueOf(data.shareCount));
         if (data.isliked) {
-            like_btn.setImageResource(R.drawable.red_heart_active_icon);
+            mainXml.likeBtnImage.setImageResource(R.drawable.red_heart_active_icon);
 
         }else{
-            like_btn.setImageResource(R.drawable.heart_inactive_icon_white);
+            mainXml.likeBtnImage.setImageResource(R.drawable.heart_inactive_icon_white);
         }
 
-        like_btn.setOnClickListener(new View.OnClickListener() {
+        mainXml.likeBtnImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(data.isliked){
 //                    unlike
-                    like_btn.setImageResource(R.drawable.heart_inactive_icon_white);
+                    mainXml.likeBtnImage.setImageResource(R.drawable.heart_inactive_icon_white);
                     data.isliked=false;
                     data.likeCount=data.likeCount-1;
-                    like_count_text.setText(String.valueOf(data.likeCount));
+                    mainXml.likesCountText.setText(String.valueOf(data.likeCount));
                     likeManager.UnlikePost(data.postId, new NetworkCallbackInterface() {
                         @Override
                         public void onSuccess() {
@@ -214,20 +207,20 @@ public class PostActivity extends AppCompatActivity {
                         @Override
                         public void onError(String err) {
                             Log.d("unlikeError", "onError: ".concat(err.toString()));
-                            like_btn.setImageResource(R.drawable.red_heart_active_icon);
+                            mainXml.likeBtnImage.setImageResource(R.drawable.red_heart_active_icon);
                             data.isliked=true;
                             data.likeCount=data.likeCount+1;
-                            like_count_text.setText(String.valueOf(data.likeCount));
+                            mainXml.likesCountText.setText(String.valueOf(data.likeCount));
 
                         }
                     });
 
                 }else{
 //                    like
-                    like_btn.setImageResource(R.drawable.red_heart_active_icon);
+                    mainXml.likeBtnImage.setImageResource(R.drawable.red_heart_active_icon);
                     data.isliked=true;
                     data.likeCount=data.likeCount+1;
-                    like_count_text.setText(String.valueOf(data.likeCount));
+                    mainXml.likesCountText.setText(String.valueOf(data.likeCount));
                     likeManager.likePost(data.postId, new NetworkCallbackInterface() {
                         @Override
                         public void onSuccess() {
@@ -237,17 +230,17 @@ public class PostActivity extends AppCompatActivity {
                         @Override
                         public void onError(String err) {
                             Log.d("likeError", "onError: ".concat(err.toString()));
-                            like_btn.setImageResource(R.drawable.heart_inactive_icon_white);
+                            mainXml.likeBtnImage.setImageResource(R.drawable.heart_inactive_icon_white);
                             data.isliked=false;
                             data.likeCount=data.likeCount-1;
-                            like_count_text.setText(String.valueOf(data.likeCount));
+                            mainXml.likesCountText.setText(String.valueOf(data.likeCount));
 
                         }
                     });
                 }
             }
         });
-        comment_btn.setOnClickListener(new View.OnClickListener() {
+        mainXml.commentBtnImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 showComments();
@@ -256,34 +249,39 @@ public class PostActivity extends AppCompatActivity {
         });
 
         if(data.isVideo){
-            playerView.setVisibility(View.VISIBLE);
-            posts_image_view.setVisibility(View.GONE);
-            ExoplayerUtil.play(Uri.parse(data.postUrl),playerView);
-            play_btn.setVisibility(View.GONE);
-            playerView.setOnClickListener(new View.OnClickListener() {
+            mainXml.videoPlayerView.setVisibility(View.VISIBLE);
+            mainXml.postImageView.setVisibility(View.GONE);
+            ExoplayerUtil.play(Uri.parse(data.postUrl),mainXml.videoPlayerView);
+            mainXml.playBtn.setVisibility(View.GONE);
+            mainXml.videoPlayerView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if(isPlaying[0]){
                         ExoplayerUtil.pause();
-                        play_btn.setVisibility(View.VISIBLE);
+                        mainXml.playBtn.setVisibility(View.VISIBLE);
                         isPlaying[0]=false;
                     }else{
                         ExoplayerUtil.resume();
-                        play_btn.setVisibility(View.GONE);
+                        mainXml.playBtn.setVisibility(View.GONE);
                         isPlaying[0]=true;
                     }
                 }
             });
 
         }else{
-            posts_image_view.setVisibility(View.VISIBLE);
-            playerView.setVisibility(View.GONE);
-            Glide.with(PostActivity.this).load(data.postUrl).placeholder(R.drawable.post_placeholder).into(posts_image_view);
+            mainXml.postImageView.setVisibility(View.VISIBLE);
+            mainXml.videoPlayerView.setVisibility(View.GONE);
+            Glide.with(PostActivity.this).load(data.postUrl).placeholder(R.drawable.post_placeholder).into(mainXml.postImageView);
 
         }
 
 
-
+        mainXml.optionsBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showOptionsMenu(data);
+            }
+        });
     }
 
     public void showComments() {
@@ -428,6 +426,25 @@ public class PostActivity extends AppCompatActivity {
                 });
             }
         });
+    }
+    public void showOptionsMenu(Posts_Model data){
+        BottomSheetDialog optionsDialog=new BottomSheetDialog(this,R.style.TransparentBottomSheet);
+        optionsDialog.setContentView(R.layout.posts_action_options_layout);
+        optionsDialog.setCancelable(true);
+        FrameLayout frameLayout=optionsDialog.findViewById(com.google.android.material.R.id.design_bottom_sheet);
+        if(frameLayout!=null){
+            BottomSheetBehavior<FrameLayout> behavior=BottomSheetBehavior.from(frameLayout);
+            behavior.setFitToContents(true);
+            behavior.setState(STATE_EXPANDED);
+        }
+        LinearLayout downloadBtn=optionsDialog.findViewById(R.id.download_btn);
+        assert downloadBtn != null;
+        downloadBtn.setOnClickListener(v->{
+            DownloadManagerUtil.downloadFromUri(this,Uri.parse(data.postUrl));
+            optionsDialog.dismiss();
+        });
+
+        optionsDialog.show();
     }
 
     @Override

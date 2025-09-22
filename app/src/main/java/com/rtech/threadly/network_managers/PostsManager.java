@@ -14,6 +14,9 @@ import com.rtech.threadly.core.Core;
 import com.rtech.threadly.interfaces.NetworkCallbackInterface;
 import com.rtech.threadly.interfaces.NetworkCallbackInterfaceWithJsonObjectDelivery;
 import com.rtech.threadly.constants.ApiEndPoints;
+import com.rtech.threadly.interfaces.NetworkCallbackInterfaceWithProgressTracking;
+import com.rtech.threadly.utils.ReUsableFunctions;
+
 import org.json.JSONObject;
 import java.io.File;
 
@@ -25,7 +28,7 @@ public class PostsManager {
     private String getToken(){
         return loginInfo.getString(SharedPreferencesKeys.JWT_TOKEN,"null");
     }
-    public void uploadImagePost(File imagefile,String caption, NetworkCallbackInterfaceWithJsonObjectDelivery callback){
+    public void uploadImagePost(File imagefile,String caption, NetworkCallbackInterfaceWithProgressTracking callback){
         String url=ApiEndPoints.ADD_IMAGE_POST;
         AndroidNetworking.upload(url).setPriority(Priority.HIGH)
                 .addHeaders("Authorization","Bearer "+getToken())
@@ -34,6 +37,7 @@ public class PostsManager {
                 .build().setUploadProgressListener(new UploadProgressListener() {
                     @Override
                     public void onProgress(long bytesUploaded, long totalBytes) {
+                        callback.progress(bytesUploaded,totalBytes);
 
                     }
                 }).getAsJSONObject(new JSONObjectRequestListener() {
@@ -49,7 +53,7 @@ public class PostsManager {
                 });
 
     }
-    public void uploadVideoPost(File videofile,String caption, NetworkCallbackInterfaceWithJsonObjectDelivery callback){
+    public void uploadVideoPost(File videofile,String caption, NetworkCallbackInterfaceWithProgressTracking callback){
         String url=ApiEndPoints.ADD_VIDEO_POST;
         AndroidNetworking.upload(url).setPriority(Priority.HIGH).setOkHttpClient(Core.getOkHttp())
                 .addHeaders("Authorization","Bearer "+getToken())
@@ -58,6 +62,7 @@ public class PostsManager {
                 .build().setUploadProgressListener(new UploadProgressListener() {
                     @Override
                     public void onProgress(long bytesUploaded, long totalBytes) {
+                        callback.progress(bytesUploaded,totalBytes);
 
                     }
                 }).getAsJSONObject(new JSONObjectRequestListener() {
@@ -68,7 +73,8 @@ public class PostsManager {
 
                     @Override
                     public void onError(ANError anError) {
-                        callback.onError(anError.toString());
+                        ReUsableFunctions.ShowToast(anError.getMessage());
+                        callback.onError(anError.getMessage());
                     }
                 });
 

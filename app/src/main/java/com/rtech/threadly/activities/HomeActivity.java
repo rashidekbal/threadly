@@ -26,6 +26,7 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.media3.exoplayer.ExoPlayer;
 
 import com.bumptech.glide.Glide;
@@ -58,8 +59,10 @@ import com.rtech.threadly.interfaces.StoryOpenCallback;
 import com.rtech.threadly.models.StoriesModel;
 import com.rtech.threadly.utils.ExoplayerUtil;
 import com.rtech.threadly.utils.ReUsableFunctions;
+import com.rtech.threadly.viewmodels.ProfileViewModel;
 
 import java.util.ArrayList;
+import java.util.concurrent.Executors;
 
 public class HomeActivity extends AppCompatActivity {
     ActivityHomeBinding binding;
@@ -69,6 +72,7 @@ int permissionCode=786;
 StoryOpenCallback storyOpenCallback;
 OnDestroyFragmentCallback onDestroyStoriesFragmentCallback;
 StoriesBackAndForthInterface storiesBackAndForthInterface;
+ProfileViewModel profileViewModel;
 
 
 int currentFragment;
@@ -93,6 +97,15 @@ int currentFragment;
         }
 
         init();
+        Executors.newSingleThreadExecutor().execute(new Runnable() {
+            @Override
+            public void run() {
+                profileViewModel.getProfileLiveData();
+                profileViewModel.getUserPostsLiveData();
+            }
+        });
+
+
 
         onDestroyStoriesFragmentCallback=new OnDestroyFragmentCallback() {
             @Override
@@ -320,6 +333,7 @@ int currentFragment;
 
     protected void init(){
         loginInfo= Core.getPreference();
+        profileViewModel=new ViewModelProvider(this).get(ProfileViewModel.class);
 
 
 
