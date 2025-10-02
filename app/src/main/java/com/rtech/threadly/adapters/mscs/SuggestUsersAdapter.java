@@ -90,25 +90,21 @@ public class SuggestUsersAdapter extends RecyclerView.Adapter<SuggestUsersAdapte
 
     @Override
     public int getItemCount() {
-        return list.size();
+        return Math.min(list.size(), 8);
     }
 
     public class viewHolder extends RecyclerView.ViewHolder{
-        ImageView removeCard_imageBtn;
         ImageView userProfile_img;
         TextView username_text;
-        ImageView common_follower_imageView;
-        TextView common_follower_textView;
+
         androidx.appcompat.widget.AppCompatButton follow_btn;
         androidx.appcompat.widget.AppCompatButton unfollow_btn;
 
         public viewHolder(@NonNull View itemView) {
             super(itemView);
-            removeCard_imageBtn=itemView.findViewById(R.id.removeCard_imageBtn);
             userProfile_img=itemView.findViewById(R.id.userProfile_img);
             username_text=itemView.findViewById(R.id.username_text);
-            common_follower_imageView=itemView.findViewById(R.id.common_follower_imageView);
-            common_follower_textView=itemView.findViewById(R.id.common_follower_textView);
+
             follow_btn=itemView.findViewById(R.id.follow_btn);
             unfollow_btn=itemView.findViewById(R.id.unfollow_btn);
 

@@ -1,6 +1,7 @@
 package com.rtech.threadly.models;
 
 public class Posts_Model {
+    public int CONTENT_TYPE;
    public int postId,likeCount,commentCount,shareCount;
    public String userId;
    public  String username,likedBy;
@@ -11,7 +12,8 @@ public class Posts_Model {
    public Boolean isliked;
    public boolean isVideo,isFollowed;
     public Posts_Model
-            (int postId,
+            (int CTYPE,
+                    int postId,
              String userId,
              String username,
              String userDpUrl,
@@ -25,6 +27,7 @@ public class Posts_Model {
              int isLiked,
             boolean isVideo,
             boolean isFollowed){
+        this.CONTENT_TYPE=CTYPE;
         this.postId=postId;
         this.userId=userId;
         this.username=username;
@@ -39,6 +42,10 @@ public class Posts_Model {
         this.likedBy=likedBy;
         this.isVideo=isVideo;
         this.isFollowed=isFollowed;
+
+    }
+    public Posts_Model(int CTYPE){
+        this.CONTENT_TYPE=CTYPE;
 
     }
 }

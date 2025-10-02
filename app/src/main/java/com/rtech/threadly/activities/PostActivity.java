@@ -1,7 +1,6 @@
 package com.rtech.threadly.activities;
 
 import static com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_EXPANDED;
-import static com.google.android.material.bottomsheet.BottomSheetBehavior.from;
 
 import android.content.Context;
 import android.content.Intent;
@@ -28,7 +27,6 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.media3.common.util.UnstableApi;
-import androidx.media3.ui.PlayerView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -44,12 +42,14 @@ import com.rtech.threadly.databinding.ActivityPostBinding;
 import com.rtech.threadly.interfaces.NetworkCallbackInterface;
 import com.rtech.threadly.interfaces.NetworkCallbackInterfaceWithJsonObjectDelivery;
 import com.rtech.threadly.network_managers.CommentsManager;
+import com.rtech.threadly.network_managers.FollowManager;
 import com.rtech.threadly.network_managers.LikeManager;
 import com.rtech.threadly.network_managers.PostsManager;
 import com.rtech.threadly.models.Posts_Comments_Model;
 import com.rtech.threadly.models.Posts_Model;
 import com.rtech.threadly.utils.DownloadManagerUtil;
 import com.rtech.threadly.utils.ExoplayerUtil;
+import com.rtech.threadly.utils.LoggerUtil;
 import com.rtech.threadly.utils.ReUsableFunctions;
 
 import org.json.JSONArray;
@@ -69,6 +69,7 @@ public class PostActivity extends AppCompatActivity {
     CommentsManager commentsManager;
     SharedPreferences loginInfo;
     Posts_Model postData;
+    FollowManager followManager;
 
     boolean[] isPlaying={true};
 
@@ -85,28 +86,16 @@ public class PostActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+
             Window window = getWindow();
             window.getDecorView().setSystemUiVisibility(0); // clear light status flag
             window.setStatusBarColor(Color.BLACK); // or any dark color you're using
-        }
+
         init();
         loadPost();
-        mainXml.profileImg.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ReUsableFunctions.openProfile(PostActivity.this,postData.userId);
-
-            }
-        });
+        mainXml.profileImg.setOnClickListener(v-> ReUsableFunctions.openProfile(PostActivity.this,postData.userId));
 //        also on click of username
-        mainXml.usernameText.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ReUsableFunctions.openProfile(PostActivity.this,postData.userId);
-
-            }
-        });
+        mainXml.usernameText.setOnClickListener(v->ReUsableFunctions.openProfile(PostActivity.this,postData.userId));
 
 
     }
@@ -117,6 +106,7 @@ public class PostActivity extends AppCompatActivity {
         likeManager=new LikeManager();
         commentsManager=new CommentsManager();
         loginInfo= Core.getPreference();
+        followManager=new FollowManager();
     }
     private void loadPost(){
         postsManager.getPostWithId(postId, new NetworkCallbackInterfaceWithJsonObjectDelivery() {
@@ -142,7 +132,8 @@ public class PostActivity extends AppCompatActivity {
                 boolean isFollowed=object.optInt("isFollowed")>0;
 
 
-                postData= new Posts_Model(postid,
+                postData= new Posts_Model(0,
+                        postid,
                         userid,
                         username,
                         profilepic,
@@ -189,82 +180,71 @@ public class PostActivity extends AppCompatActivity {
             mainXml.likeBtnImage.setImageResource(R.drawable.heart_inactive_icon_white);
         }
 
-        mainXml.likeBtnImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(data.isliked){
+        mainXml.likeBtnImage.setOnClickListener(v->{
+            if(data.isliked){
 //                    unlike
-                    mainXml.likeBtnImage.setImageResource(R.drawable.heart_inactive_icon_white);
-                    data.isliked=false;
-                    data.likeCount=data.likeCount-1;
-                    mainXml.likesCountText.setText(String.valueOf(data.likeCount));
-                    likeManager.UnlikePost(data.postId, new NetworkCallbackInterface() {
-                        @Override
-                        public void onSuccess() {
+                mainXml.likeBtnImage.setImageResource(R.drawable.heart_inactive_icon_white);
+                data.isliked=false;
+                data.likeCount=data.likeCount-1;
+                mainXml.likesCountText.setText(String.valueOf(data.likeCount));
+                likeManager.UnlikePost(data.postId, new NetworkCallbackInterface() {
+                    @Override
+                    public void onSuccess() {
 
-                        }
+                    }
 
-                        @Override
-                        public void onError(String err) {
-                            Log.d("unlikeError", "onError: ".concat(err.toString()));
-                            mainXml.likeBtnImage.setImageResource(R.drawable.red_heart_active_icon);
-                            data.isliked=true;
-                            data.likeCount=data.likeCount+1;
-                            mainXml.likesCountText.setText(String.valueOf(data.likeCount));
+                    @Override
+                    public void onError(String err) {
+                        Log.d("unlikeError", "onError: ".concat(err));
+                        mainXml.likeBtnImage.setImageResource(R.drawable.red_heart_active_icon);
+                        data.isliked=true;
+                        data.likeCount=data.likeCount+1;
+                        mainXml.likesCountText.setText(String.valueOf(data.likeCount));
 
-                        }
-                    });
+                    }
+                });
 
-                }else{
+            }
+            else{
 //                    like
-                    mainXml.likeBtnImage.setImageResource(R.drawable.red_heart_active_icon);
-                    data.isliked=true;
-                    data.likeCount=data.likeCount+1;
-                    mainXml.likesCountText.setText(String.valueOf(data.likeCount));
-                    likeManager.likePost(data.postId, new NetworkCallbackInterface() {
-                        @Override
-                        public void onSuccess() {
+                mainXml.likeBtnImage.setImageResource(R.drawable.red_heart_active_icon);
+                data.isliked=true;
+                data.likeCount=data.likeCount+1;
+                mainXml.likesCountText.setText(String.valueOf(data.likeCount));
+                likeManager.likePost(data.postId, new NetworkCallbackInterface() {
+                    @Override
+                    public void onSuccess() {
 
-                        }
+                    }
 
-                        @Override
-                        public void onError(String err) {
-                            Log.d("likeError", "onError: ".concat(err.toString()));
-                            mainXml.likeBtnImage.setImageResource(R.drawable.heart_inactive_icon_white);
-                            data.isliked=false;
-                            data.likeCount=data.likeCount-1;
-                            mainXml.likesCountText.setText(String.valueOf(data.likeCount));
+                    @Override
+                    public void onError(String err) {
+                        Log.d("likeError", "onError: ".concat(err));
+                        mainXml.likeBtnImage.setImageResource(R.drawable.heart_inactive_icon_white);
+                        data.isliked=false;
+                        data.likeCount=data.likeCount-1;
+                        mainXml.likesCountText.setText(String.valueOf(data.likeCount));
 
-                        }
-                    });
-                }
+                    }
+                });
             }
         });
-        mainXml.commentBtnImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showComments();
-
-            }
-        });
+        mainXml.commentBtnImage.setOnClickListener(v->showComments());
 
         if(data.isVideo){
             mainXml.videoPlayerView.setVisibility(View.VISIBLE);
             mainXml.postImageView.setVisibility(View.GONE);
             ExoplayerUtil.play(Uri.parse(data.postUrl),mainXml.videoPlayerView);
             mainXml.playBtn.setVisibility(View.GONE);
-            mainXml.videoPlayerView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if(isPlaying[0]){
-                        ExoplayerUtil.pause();
-                        mainXml.playBtn.setVisibility(View.VISIBLE);
-                        isPlaying[0]=false;
-                    }else{
-                        ExoplayerUtil.resume();
-                        mainXml.playBtn.setVisibility(View.GONE);
-                        isPlaying[0]=true;
-                    }
+            mainXml.videoPlayerView.setOnClickListener(v->{
+                if(isPlaying[0]){
+                    ExoplayerUtil.pause();
+                    mainXml.playBtn.setVisibility(View.VISIBLE);
+                    isPlaying[0]=false;
+                }else{
+                    ExoplayerUtil.resume();
+                    mainXml.playBtn.setVisibility(View.GONE);
+                    isPlaying[0]=true;
                 }
             });
 
@@ -276,12 +256,7 @@ public class PostActivity extends AppCompatActivity {
         }
 
 
-        mainXml.optionsBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showOptionsMenu(data);
-            }
-        });
+        mainXml.optionsBtn.setOnClickListener(v->showOptionsMenu(data));
     }
 
     public void showComments() {
@@ -339,15 +314,13 @@ public class PostActivity extends AppCompatActivity {
                             dataList.add(new Posts_Comments_Model(individualComment.getInt("commentid"),individualComment.getInt("postid"),individualComment.getInt("comment_likes_count"),individualComment.getInt("isLiked"),individualComment.getString("userid"),individualComment.getString("username"),individualComment.getString("profilepic"),individualComment.getString("comment_text"),individualComment.getString("createdAt")));
                         }
                         postCommentsAdapter.notifyDataSetChanged();
-                        shimmerFrameLayout.stopShimmer();
-                        shimmerFrameLayout.setVisibility(View.GONE);
                     }else {
                         // Show no comments layout if empty
                         noCommentsLayout.setVisibility(View.VISIBLE);
                         comments_recyclerView.setVisibility(View.GONE);
-                        shimmerFrameLayout.stopShimmer();
-                        shimmerFrameLayout.setVisibility(View.GONE);
                     }
+                    shimmerFrameLayout.stopShimmer();
+                    shimmerFrameLayout.setVisibility(View.GONE);
                 } catch (JSONException e) {
                     throw new RuntimeException(e);
                 }
@@ -368,63 +341,60 @@ public class PostActivity extends AppCompatActivity {
 
         // Add comment to the post
         assert sendCommentBtn != null;
-        sendCommentBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.hideSoftInputFromWindow( v.getWindowToken(),0);
+        sendCommentBtn.setOnClickListener(v->{
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow( v.getWindowToken(),0);
 
-                sendCommentBtn.setClickable(false);
-                sendCommentBtn.setVisibility(View.GONE);
-                assert posting_progressbar != null;
-                posting_progressbar.setVisibility(View.VISIBLE);
-                assert inputComment != null;
-                String commentText=inputComment.getText().toString();
-                if(commentText.isEmpty()){
-                    Toast.makeText(v.getContext(), "Please enter a comment", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                commentsManager.addComment(postId, commentText, new NetworkCallbackInterfaceWithJsonObjectDelivery() {
-                    @Override
-                    public void onSuccess(JSONObject response) {
-                        posting_progressbar.setVisibility(View.GONE);
-                        sendCommentBtn.setVisibility(View.VISIBLE);
-                        sendCommentBtn.setClickable(true);
-                        try{
-                            Log.d("jsonExceptionComment", "comment added sucees  ");
-                            JSONObject data=response.getJSONObject("data");
-                            int commentid=data.getInt("commentid");
-                            // Add new comment to the top of the list
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
-                                dataList.addFirst(new Posts_Comments_Model(
-                                        commentid,postId,
-                                        0,
-                                        0,
-                                        loginInfo.getString("userid","unknown"),
-                                        loginInfo.getString("username","unknown"),
-                                        loginInfo.getString("profileUrl","https://res.cloudinary.com/dphwlcyhg/image/upload/v1747240475/ulpdxajfwpwhlt4ntzn5.webp"),
-                                        commentText,new Date().toString()));
-                                postCommentsAdapter.notifyDataSetChanged();
-                                comments_recyclerView.scrollToPosition(0);
-                            }
-                            inputComment.setText("");
-                        }catch(JSONException jsonError){
-                            Log.d("jsonExceptionComment", "comment error "+jsonError.toString());
-                            // Handle JSON error
-                        }
-
-                    }
-
-                    @Override
-                    public void onError(String err) {
-                        posting_progressbar.setVisibility(View.GONE);
-                        sendCommentBtn.setVisibility(View.VISIBLE);
-                        sendCommentBtn.setClickable(true);
-                        Log.d("commentError", "onError: ".concat(err));
-
-                    }
-                });
+            sendCommentBtn.setClickable(false);
+            sendCommentBtn.setVisibility(View.GONE);
+            assert posting_progressbar != null;
+            posting_progressbar.setVisibility(View.VISIBLE);
+            assert inputComment != null;
+            String commentText=inputComment.getText().toString();
+            if(commentText.isEmpty()){
+                Toast.makeText(v.getContext(), "Please enter a comment", Toast.LENGTH_SHORT).show();
+                return;
             }
+            commentsManager.addComment(postId, commentText, new NetworkCallbackInterfaceWithJsonObjectDelivery() {
+                @Override
+                public void onSuccess(JSONObject response) {
+                    posting_progressbar.setVisibility(View.GONE);
+                    sendCommentBtn.setVisibility(View.VISIBLE);
+                    sendCommentBtn.setClickable(true);
+                    try{
+                        Log.d("jsonExceptionComment", "comment added sucees  ");
+                        JSONObject data=response.getJSONObject("data");
+                        int commentid=data.getInt("commentid");
+                        // Add new comment to the top of the list
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
+                            dataList.addFirst(new Posts_Comments_Model(
+                                    commentid,postId,
+                                    0,
+                                    0,
+                                    loginInfo.getString("userid","unknown"),
+                                    loginInfo.getString("username","unknown"),
+                                    loginInfo.getString("profileUrl","https://res.cloudinary.com/dphwlcyhg/image/upload/v1747240475/ulpdxajfwpwhlt4ntzn5.webp"),
+                                    commentText,new Date().toString()));
+                            postCommentsAdapter.notifyDataSetChanged();
+                            comments_recyclerView.scrollToPosition(0);
+                        }
+                        inputComment.setText("");
+                    }catch(JSONException jsonError){
+                        Log.d("jsonExceptionComment", "comment error "+jsonError);
+                        // Handle JSON error
+                    }
+
+                }
+
+                @Override
+                public void onError(String err) {
+                    posting_progressbar.setVisibility(View.GONE);
+                    sendCommentBtn.setVisibility(View.VISIBLE);
+                    sendCommentBtn.setClickable(true);
+                    Log.d("commentError", "onError: ".concat(err));
+
+                }
+            });
         });
     }
     public void showOptionsMenu(Posts_Model data){
@@ -437,14 +407,80 @@ public class PostActivity extends AppCompatActivity {
             behavior.setFitToContents(true);
             behavior.setState(STATE_EXPANDED);
         }
-        LinearLayout downloadBtn=optionsDialog.findViewById(R.id.download_btn);
+        setOptionBtnsBehaviours(optionsDialog,data);
+        optionsDialog.show();
+    }
+
+    private void setOptionBtnsBehaviours(BottomSheetDialog OptionsDialog, Posts_Model data) {
+        LinearLayout downloadBtn=OptionsDialog.findViewById(R.id.download_btn);
+        LinearLayout addFavouriteBtnLayout=OptionsDialog.findViewById(R.id.add_favourite_btn);
+        LinearLayout unfollowBtnLayout=OptionsDialog.findViewById(R.id.unfollow_btn);
+        LinearLayout followBtnLayout=OptionsDialog.findViewById(R.id.follow_btn);
+        LinearLayout reportBtnLayout=OptionsDialog.findViewById(R.id.Report_btn);
         assert downloadBtn != null;
         downloadBtn.setOnClickListener(v->{
             DownloadManagerUtil.downloadFromUri(this,Uri.parse(data.postUrl));
-            optionsDialog.dismiss();
+            OptionsDialog.dismiss();
         });
+        addFavouriteBtnLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(PostActivity.this, "Coming soon", Toast.LENGTH_SHORT).show();
+                OptionsDialog.dismiss();}});
+        reportBtnLayout.setOnClickListener(v->{
+            Toast.makeText(PostActivity.this,"Coming soon",Toast.LENGTH_SHORT).show();
+            OptionsDialog.dismiss();
+        });
+        if (data.isFollowed){
+            unfollowBtnLayout.setVisibility(View.VISIBLE);
+            followBtnLayout.setVisibility(View.GONE);
 
-        optionsDialog.show();
+        }else{
+            unfollowBtnLayout.setVisibility(View.GONE);
+            followBtnLayout.setVisibility(View.VISIBLE);
+        }
+        if(data.userId.equals(Core.getPreference().getString(SharedPreferencesKeys.USER_ID,"null"))){
+            followBtnLayout.setVisibility(View.GONE);
+            unfollowBtnLayout.setVisibility(View.GONE);
+        }
+        followBtnLayout.setOnClickListener(v->{
+            OptionsDialog.dismiss();
+            followManager.follow(data.userId, new NetworkCallbackInterface() {
+                @Override
+                public void onSuccess() {
+                    data.isFollowed=true;
+                    unfollowBtnLayout.setVisibility(View.VISIBLE);
+                    followBtnLayout.setVisibility(View.GONE);
+
+
+                }
+
+                @Override
+                public void onError(String err) {
+                    LoggerUtil.LogNetworkError(err.toString());
+
+                }
+            });
+
+        });
+        unfollowBtnLayout.setOnClickListener(v->{
+            OptionsDialog.dismiss();
+            followManager.unfollow(data.userId, new NetworkCallbackInterface() {
+                @Override
+                public void onSuccess() {
+                    data.isFollowed=false;
+                    unfollowBtnLayout.setVisibility(View.GONE);
+                    followBtnLayout.setVisibility(View.VISIBLE);
+
+                }
+
+                @Override
+                public void onError(String err) {
+                    LoggerUtil.LogNetworkError(err.toString());
+
+                }
+            });
+        });
     }
 
     @Override

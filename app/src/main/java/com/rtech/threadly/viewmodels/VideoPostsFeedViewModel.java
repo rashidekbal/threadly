@@ -39,7 +39,7 @@ public class VideoPostsFeedViewModel extends AndroidViewModel {
                     JSONArray data=response.getJSONArray("data");
                     for(int i=0;i<data.length();i++){
                         JSONObject postObject=data.getJSONObject(i);
-                        tempArrayList.add(new Posts_Model(
+                        tempArrayList.add(new Posts_Model(0,
                                 postObject.getInt("postid"),
                                 postObject.getString("userid"),
                                 postObject.getString("username"),

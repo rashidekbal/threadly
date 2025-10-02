@@ -38,6 +38,7 @@ import com.rtech.threadly.utils.ExoplayerUtil;
 import com.rtech.threadly.viewmodels.ImagePostsFeedViewModel;
 import com.rtech.threadly.viewmodels.MessagesViewModel;
 import com.rtech.threadly.viewmodels.StoriesViewModel;
+import com.rtech.threadly.viewmodels.SuggestUsersViewModel;
 import com.rtech.threadly.viewmodels.VideoPostsFeedViewModel;
 
 import org.json.JSONArray;
@@ -58,6 +59,7 @@ public class homeFragment extends Fragment {
     ArrayList<StoriesModel> storiesData;
     StoryOpenCallback callback;
     MessagesViewModel messagesViewModel;
+    SuggestUsersViewModel suggestUsersViewModel;
 
 
 public homeFragment(){
@@ -77,6 +79,7 @@ public homeFragment(){
         loginInfo = Core.getPreference();
         messagesViewModel=new ViewModelProvider(this).get(MessagesViewModel.class);
         storiesViewModel=new ViewModelProvider(requireActivity()).get(StoriesViewModel.class);
+        suggestUsersViewModel=new ViewModelProvider(requireActivity()).get(SuggestUsersViewModel.class);
         storiesData= new ArrayList<>();
 
         // -------------------------
@@ -167,35 +170,13 @@ public homeFragment(){
         // -----------------------------------
         // Load suggested users from the server
         // -----------------------------------
-        AndroidNetworking.get(BuildConfig.BASE_URL.concat("/users/getUsers"))
-                .setPriority(Priority.HIGH)
-                .addHeaders("Authorization", "Bearer ".concat(loginInfo.getString("token", "null")))
-                .build()
-                .getAsJSONObject(new JSONObjectRequestListener() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        try {
-                            JSONArray data = response.getJSONArray("data");
-                            for (int i = 0; i < data.length(); i++) {
-                                JSONObject individualUser = data.getJSONObject(i);
-                                suggestUsersList.add(new Profile_Model_minimal(
-                                        individualUser.getString("userid"),
-                                        individualUser.getString("username"),
-                                        individualUser.getString("profilepic"),
-                                        individualUser.getInt("isfollowedBy")
-                                ));
-                            }
-                        } catch (JSONException e) {
-                            Log.d("jsonException", "onResponse: ".concat(e.toString()));
-                        }
-                    }
-
-                    @Override
-                    public void onError(ANError anError) {
-                        Log.d("networkcallException", "onResponse: ".concat(anError.toString()));
-                    }
-                });
-
+        suggestUsersViewModel.getSuggestedUsers().observe(requireActivity(), new Observer<ArrayList<Profile_Model_minimal>>() {
+            @Override
+            public void onChanged(ArrayList<Profile_Model_minimal> profileModelMinimals) {
+                suggestUsersList.clear();
+                suggestUsersList.addAll(profileModelMinimals);
+            }
+        });
         // ----------------------
         // Setup posts RecyclerView
         // ----------------------

@@ -1,23 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="@dimen/dp_180"
-    android:layout_height="@dimen/dp_260"
+    android:layout_width="@dimen/dp_140"
+    android:layout_height="@dimen/dp_185"
     android:background="@drawable/grey_border_5dp_radius"
     android:layout_marginHorizontal="@dimen/dp_5"
     android:layout_marginVertical="@dimen/dp_5"
     >
     <ImageView
-        android:id="@+id/removeCard_imageBtn"
-        android:layout_width="@dimen/dp_20"
-        android:layout_height="@dimen/dp_20"
-        android:src="@drawable/cross_light"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:layout_margin="@dimen/dp_4"
-        />
-    <ImageView
         android:id="@+id/userProfile_img"
-        android:layout_width="@dimen/dp_120"
+        android:layout_width="@dimen/dp_80"
         android:layout_height="wrap_content"
         android:src="@drawable/sample_post"
         android:background="@drawable/circle"
@@ -30,7 +21,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_alignParentBottom="true">
+        android:layout_alignParentBottom="true"
+        android:layout_below="@id/userProfile_img">
         <TextView
             android:id="@+id/username_text"
             android:layout_width="match_parent"
@@ -45,49 +37,26 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center_vertical"
-            >
-            <ImageView
-                android:id="@+id/common_follower_imageView"
-                android:layout_width="@dimen/dp_25"
-                android:layout_height="@dimen/dp_25"
-                android:src="@drawable/sample_post"
-                android:clipToOutline="true"
-                android:background="@drawable/circle"
-                android:layout_marginLeft="@dimen/dp_10"
-                android:layout_marginVertical="@dimen/dp_4"
-
-                />
-            <TextView
-                android:id="@+id/common_follower_textView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:maxWidth="@dimen/dp_160"
-                android:textSize="@dimen/sp_13"
-                android:textColor="@color/DarkGreyText"
-                android:text="followed by example user"
-                android:layout_marginEnd="@dimen/dp_10"
-                android:layout_marginStart="@dimen/dp_5"/>
-
-        </LinearLayout>
+            />
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/unfollow_btn"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_37"
+            android:layout_height="@dimen/dp_35"
             android:text="UnFollow"
             android:textColor="@color/white"
             android:visibility="gone"
             android:background="@drawable/slight_round_btn_grey"
             android:layout_marginHorizontal="@dimen/dp_10"
-            android:layout_marginBottom="@dimen/dp_10"/>
+            android:layout_marginTop="@dimen/dp_6"/>
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/follow_btn"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_37"
+            android:layout_height="@dimen/dp_35"
             android:text="Follow"
             android:textColor="@color/AllWhite"
             android:background="@drawable/slight_round_btn_blue"
             android:layout_marginHorizontal="@dimen/dp_10"
-            android:layout_marginBottom="@dimen/dp_10"/>
+            android:layout_marginTop="@dimen/dp_6"/>
 
     </LinearLayout>
 

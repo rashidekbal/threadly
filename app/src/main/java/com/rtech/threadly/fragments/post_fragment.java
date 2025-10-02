@@ -3,18 +3,18 @@ package com.rtech.threadly.fragments;
 import static com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_EXPANDED;
 
 import android.app.AlertDialog;
-import android.app.Dialog;
+
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
-import android.graphics.Path;
+
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.media3.common.util.UnstableApi;
-import androidx.media3.ui.PlayerView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -38,6 +38,7 @@ import com.rtech.threadly.R;
 import com.rtech.threadly.adapters.commentsAdapter.PostCommentsAdapter;
 import com.rtech.threadly.constants.SharedPreferencesKeys;
 import com.rtech.threadly.core.Core;
+import com.rtech.threadly.databinding.FragmentPostsBinding;
 import com.rtech.threadly.interfaces.NetworkCallbackInterfaceWithJsonObjectDelivery;
 import com.rtech.threadly.interfaces.NetworkCallbackInterface;
 import com.rtech.threadly.network_managers.CommentsManager;
@@ -59,9 +60,7 @@ import java.util.Objects;
 
 
 public class post_fragment extends Fragment {
-ImageView posts_image_view,profile_img,like_btn,comment_btn,play_btn,options_btn;
-TextView username_text,caption_text,like_count_text,comment_count_text,share_count_text;
-PlayerView playerView;
+    FragmentPostsBinding mainXml;
 int postId;
 PostsManager postsManager;
 LikeManager likeManager;
@@ -79,57 +78,33 @@ private boolean[] isPlaying={true};
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View v=inflater.inflate(R.layout.fragment_posts,container,false);
+        mainXml=FragmentPostsBinding.inflate(inflater,container,false);
         postsManager=new PostsManager();
         likeManager=new LikeManager();
         commentsManager=new CommentsManager();
         loginInfo= Core.getPreference();
-        init(v);
+        init();
         // Inflate the layout for this fragment
-        Glide.with(v.getContext()).load(R.drawable.post_placeholder).into(posts_image_view);
+        Glide.with(requireActivity()).load(R.drawable.post_placeholder).into(mainXml.postImageView);
 //        open profile on click of profile pic
-        profile_img.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ReUsableFunctions.openProfile(v.getContext(),postData.userId);
-
-            }
-        });
+        mainXml.profileImg.setOnClickListener(v -> ReUsableFunctions.openProfile(v.getContext(),postData.userId));
 //        also on click of username
-        username_text.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ReUsableFunctions.openProfile(v.getContext(),postData.userId);
+        mainXml.usernameText.setOnClickListener(v -> ReUsableFunctions.openProfile(v.getContext(),postData.userId));
 
-            }
-        });
-
-        return v;
+        return mainXml.getRoot();
     }
 
-    private void init(View v) {
-        posts_image_view=v.findViewById(R.id.post_image_view);
-        profile_img=v.findViewById(R.id.profile_img);
-        username_text=v.findViewById(R.id.username_text);
-        caption_text=v.findViewById(R.id.caption_text);
-        like_count_text=v.findViewById(R.id.likes_count_text);
-        comment_count_text=v.findViewById(R.id.comments_count_text);
-        share_count_text=v.findViewById(R.id.shares_count_text);
-        like_btn=v.findViewById(R.id.like_btn_image);
-        comment_btn=v.findViewById(R.id.comment_btn_image);
-        playerView=v.findViewById(R.id.videoPlayer_view);
-        play_btn=v.findViewById(R.id.play_btn);
-        options_btn=v.findViewById(R.id.optionsBtn);
-
+    private void init() {
+        assert getArguments() != null;
         postId=getArguments().getInt("postid");
-        loadData(v);
+        loadData();
 
     }
 
 
-    private void loadData(View v){
+    private void loadData(){
         postsManager.getPostWithId(postId, new NetworkCallbackInterfaceWithJsonObjectDelivery() {
             @UnstableApi
             @Override
@@ -137,6 +112,7 @@ private boolean[] isPlaying={true};
 
 
                 JSONArray array = response.optJSONArray("data");
+                assert array != null;
                 JSONObject object = array.optJSONObject(0);
                 int postid = object.optInt("postid");
                 String userid = object.optString("userid");
@@ -154,7 +130,8 @@ private boolean[] isPlaying={true};
                 boolean isFollowed=object.optInt("isFollowed")>0;
 
 
-                postData= new Posts_Model(postid,
+                postData= new Posts_Model(0,
+                        postid,
                         userid,
                         username,
                         profilepic,
@@ -167,7 +144,7 @@ private boolean[] isPlaying={true};
                         shareCount,
                         isLiked,
                         isVideo,isFollowed);
-             setData(v,postData);
+             setData(postData);
 
 
 
@@ -175,32 +152,32 @@ private boolean[] isPlaying={true};
 
             @Override
             public void onError(String err) {
-                Log.d("postGetError", "onError: ".concat(err.toString()));
+                Log.d("postGetError", "onError: ".concat(err));
 
             }
         });
     }
 
     @UnstableApi
-    private void  setData(View view, Posts_Model data){
+    private void  setData( Posts_Model data){
         if(data.isVideo){
-            playerView.setVisibility(View.VISIBLE);
-            posts_image_view.setVisibility(View.GONE);
-            ExoplayerUtil.play(Uri.parse(data.postUrl),playerView);
+            mainXml.videoPlayerView.setVisibility(View.VISIBLE);
+            mainXml.postImageView.setVisibility(View.GONE);
+            ExoplayerUtil.play(Uri.parse(data.postUrl),mainXml.videoPlayerView);
             if (!isPlaying[0]){
-                play_btn.setVisibility(View.VISIBLE);
+                mainXml.playBtn.setVisibility(View.VISIBLE);
             }else{
-                play_btn.setVisibility(View.GONE);
+                mainXml.playBtn.setVisibility(View.GONE);
             }
-            playerView.setOnClickListener(v->{
+            mainXml.videoPlayerView.setOnClickListener(v->{
                 if(isPlaying[0]){
                     ExoplayerUtil.pause();
                     isPlaying[0]=false;
-                    play_btn.setVisibility(View.VISIBLE);
+                    mainXml.playBtn.setVisibility(View.VISIBLE);
                 }else{
                     ExoplayerUtil.resume();
                     isPlaying[0]=true;
-                    play_btn.setVisibility(View.GONE);
+                    mainXml.playBtn.setVisibility(View.GONE);
                 }
             });
 
@@ -208,104 +185,93 @@ private boolean[] isPlaying={true};
 
 
         }else {
-            posts_image_view.setVisibility(View.VISIBLE);
-            playerView.setVisibility(View.GONE);
-            play_btn.setVisibility(View.GONE);
-            Glide.with(view.getContext()).load(data.postUrl).placeholder(R.drawable.post_placeholder).into(posts_image_view);
+            mainXml.postImageView.setVisibility(View.VISIBLE);
+            mainXml.videoPlayerView.setVisibility(View.GONE);
+            mainXml.playBtn.setVisibility(View.GONE);
+            Glide.with(requireActivity()).load(data.postUrl).placeholder(R.drawable.post_placeholder).into(mainXml.postImageView);
 
 
         }
 
-        Glide.with(view.getContext()).load(data.userDpUrl).placeholder(R.drawable.blank_profile).circleCrop().into(profile_img);
-        username_text.setText(data.username);
+        Glide.with(requireActivity()).load(data.userDpUrl).placeholder(R.drawable.blank_profile).circleCrop().into(mainXml.profileImg);
+        mainXml.usernameText.setText(data.username);
         if(data.caption.equals("null")||data.caption.isEmpty()){
-            caption_text.setVisibility(View.GONE);
+            mainXml.captionText.setVisibility(View.GONE);
         }else{
-            caption_text.setText(data.caption);
+            mainXml.captionText.setText(data.caption);
         }
 
-        like_count_text.setText(String.valueOf(data.likeCount));
-        comment_count_text.setText(String.valueOf(data.commentCount));
-        share_count_text.setText(String.valueOf(data.shareCount));
+        mainXml.likesCountText.setText(String.valueOf(data.likeCount));
+        mainXml.commentsCountText.setText(String.valueOf(data.commentCount));
+        mainXml.sharesCountText.setText(String.valueOf(data.shareCount));
         if (data.isliked) {
-            like_btn.setImageResource(R.drawable.red_heart_active_icon);
+            mainXml.likeBtnImage.setImageResource(R.drawable.red_heart_active_icon);
 
         }else{
-            like_btn.setImageResource(R.drawable.heart_inactive_icon_white);
+            mainXml.likeBtnImage.setImageResource(R.drawable.heart_inactive_icon_white);
         }
 
-        like_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(data.isliked){
+        mainXml.likeBtnImage.setOnClickListener(v -> {
+            if(data.isliked){
 //                    unlike
-                    like_btn.setImageResource(R.drawable.heart_inactive_icon_white);
-                    data.isliked=false;
-                    data.likeCount=data.likeCount-1;
-                    like_count_text.setText(String.valueOf(data.likeCount));
-                    likeManager.UnlikePost(data.postId, new NetworkCallbackInterface() {
-                        @Override
-                        public void onSuccess() {
+                mainXml.likeBtnImage.setImageResource(R.drawable.heart_inactive_icon_white);
+                data.isliked=false;
+                data.likeCount=data.likeCount-1;
+                mainXml.likesCountText.setText(String.valueOf(data.likeCount));
+                likeManager.UnlikePost(data.postId, new NetworkCallbackInterface() {
+                    @Override
+                    public void onSuccess() {
 
-                        }
+                    }
 
-                        @Override
-                        public void onError(String err) {
-                            Log.d("unlikeError", "onError: ".concat(err.toString()));
-                            like_btn.setImageResource(R.drawable.red_heart_active_icon);
-                            data.isliked=true;
-                            data.likeCount=data.likeCount+1;
-                            like_count_text.setText(String.valueOf(data.likeCount));
+                    @Override
+                    public void onError(String err) {
+                        Log.d("unlikeError", "onError: ".concat(err));
+                        mainXml.likeBtnImage.setImageResource(R.drawable.red_heart_active_icon);
+                        data.isliked=true;
+                        data.likeCount=data.likeCount+1;
+                        mainXml.likesCountText.setText(String.valueOf(data.likeCount));
 
-                        }
-                    });
+                    }
+                });
 
-                }else{
+            }else{
 //                    like
-                    like_btn.setImageResource(R.drawable.red_heart_active_icon);
-                    data.isliked=true;
-                    data.likeCount=data.likeCount+1;
-                    like_count_text.setText(String.valueOf(data.likeCount));
-                    likeManager.likePost(data.postId, new NetworkCallbackInterface() {
-                        @Override
-                        public void onSuccess() {
+                mainXml.likeBtnImage.setImageResource(R.drawable.red_heart_active_icon);
+                data.isliked=true;
+                data.likeCount=data.likeCount+1;
+                mainXml.likesCountText.setText(String.valueOf(data.likeCount));
+                likeManager.likePost(data.postId, new NetworkCallbackInterface() {
+                    @Override
+                    public void onSuccess() {
 
-                        }
+                    }
 
-                        @Override
-                        public void onError(String err) {
-                            Log.d("likeError", "onError: ".concat(err.toString()));
-                            like_btn.setImageResource(R.drawable.heart_inactive_icon_white);
-                            data.isliked=false;
-                            data.likeCount=data.likeCount-1;
-                            like_count_text.setText(String.valueOf(data.likeCount));
+                    @Override
+                    public void onError(String err) {
+                        Log.d("likeError", "onError: ".concat(err));
+                        mainXml.likeBtnImage.setImageResource(R.drawable.heart_inactive_icon_white);
+                        data.isliked=false;
+                        data.likeCount=data.likeCount-1;
+                        mainXml.likesCountText.setText(String.valueOf(data.likeCount));
 
-                        }
-                    });
-                }
+                    }
+                });
             }
         });
-        comment_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showComments(view);
-
-            }
-        });
+        mainXml.commentBtnImage.setOnClickListener(v -> showComments());
 
 
-       options_btn.setOnClickListener(v->{
-           showOptions(
-                   data
-           );
-       });
+       mainXml.optionsBtn.setOnClickListener(v-> showOptions(
+               data
+       ));
     }
 
 
-    public void showComments(View v) {
+    public void showComments() {
         // This method will be used to show comments for the post
         // You can implement a dialog or a new fragment to display comments
-       BottomSheetDialog commentDialog=new BottomSheetDialog(v.getContext(),R.style.TransparentBottomSheet);
+       BottomSheetDialog commentDialog=new BottomSheetDialog(requireActivity(),R.style.TransparentBottomSheet);
         commentDialog.setContentView(R.layout.posts_comment_layout);
         commentDialog.setCancelable(true);
         FrameLayout dialogFrame=commentDialog.findViewById(com.google.android.material.R.id.design_bottom_sheet);
@@ -322,8 +288,8 @@ private boolean[] isPlaying={true};
 
         commentDialog.show();
         ArrayList<Posts_Comments_Model> dataList=new ArrayList<>();
-        PostCommentsAdapter postCommentsAdapter=new PostCommentsAdapter(v.getContext(),dataList);
-        LinearLayoutManager layoutManager=new LinearLayoutManager(v.getContext(),LinearLayoutManager.VERTICAL,false);
+        PostCommentsAdapter postCommentsAdapter=new PostCommentsAdapter(requireActivity(),dataList);
+        LinearLayoutManager layoutManager=new LinearLayoutManager(requireActivity(),LinearLayoutManager.VERTICAL,false);
         RecyclerView comments_recyclerView=commentDialog.findViewById(R.id.comments_recyclerView);
         assert comments_recyclerView != null;
         comments_recyclerView.setLayoutManager(layoutManager);
@@ -340,6 +306,7 @@ private boolean[] isPlaying={true};
         comments_recyclerView.setVisibility(View.GONE);
         assert noCommentsLayout != null;
         noCommentsLayout.setVisibility(View.GONE);
+        assert userProfileImg != null;
         Glide.with(requireActivity()).load(loginInfo.getString(SharedPreferencesKeys.USER_PROFILE_PIC,"null")).placeholder(R.drawable.blank_profile).error(R.drawable.blank_profile).circleCrop().into(userProfileImg);
 
         // Fetch comments from server
@@ -356,13 +323,7 @@ private boolean[] isPlaying={true};
                             JSONObject individualComment=data.getJSONObject(i);
                             dataList.add(new Posts_Comments_Model(individualComment.getInt("commentid"),individualComment.getInt("postid"),individualComment.getInt("comment_likes_count"),individualComment.getInt("isLiked"),individualComment.getString("userid"),individualComment.getString("username"),individualComment.getString("profilepic"),individualComment.getString("comment_text"),individualComment.getString("createdAt")));
                         }
-                        comments_recyclerView.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                postCommentsAdapter.notifyDataSetChanged();
-
-                            }
-                        });
+                        comments_recyclerView.post(postCommentsAdapter::notifyDataSetChanged);
                         shimmerFrameLayout.stopShimmer();
                         shimmerFrameLayout.setVisibility(View.GONE);
                     }else {
@@ -380,7 +341,7 @@ private boolean[] isPlaying={true};
 
             @Override
             public void onError(String err) {
-                Toast.makeText(v.getContext(), "Error fetching comments: ".concat(Objects.requireNonNull(err)), Toast.LENGTH_SHORT).show();
+                Toast.makeText(requireActivity(), "Error fetching comments: ".concat(Objects.requireNonNull(err)), Toast.LENGTH_SHORT).show();
                 shimmerFrameLayout.stopShimmer();
                 noCommentsLayout.setVisibility(View.VISIBLE);
                 comments_recyclerView.setVisibility(View.GONE);

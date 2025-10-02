@@ -108,27 +108,33 @@ public class MessageManager {
                 .build().getAsJSONObject(new JSONObjectRequestListener() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        JSONArray data=response.optJSONArray("data");
-                        if(data.length()>0 ){
-                            for(int i=0;i<data.length();i++){
-                                JSONObject object=data.optJSONObject(0);
-                                String senderUUid=object.optString("senderUUid");
-                                String senderUserId=object.optString("userid");
-                                String senderUserName=object.optString("username");
-                                String profile=object.optString("profilepic");
-                                int PendingMessages=object.optInt("messagesPending");
-                                Executors.newSingleThreadExecutor().execute(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        Core.AddNewConversationHistory(senderUUid);
-                                        getaAndUpdatePendingMessagesFromServer(senderUUid);
-                                    }
-                                });
+                        JSONArray data= null;
+                        try {
+                            data = response.getJSONArray("data");
+                            if(data.length()>0 ){
+                                for(int i=0;i<data.length();i++){
+                                    JSONObject object=data.optJSONObject(0);
+                                    String senderUUid=object.optString("senderUUid");
+                                    String senderUserId=object.optString("userid");
+                                    String senderUserName=object.optString("username");
+                                    String profile=object.optString("profilepic");
+                                    int PendingMessages=object.optInt("messagesPending");
+                                    Executors.newSingleThreadExecutor().execute(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            Core.AddNewConversationHistory(senderUUid);
+                                            getaAndUpdatePendingMessagesFromServer(senderUUid);
+                                        }
+                                    });
 
+
+                                }
 
                             }
-
+                        } catch (JSONException e) {
+                           e.printStackTrace();
                         }
+
 
                     }
 

@@ -186,12 +186,13 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/options_btn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:gravity="center">
                 <ImageView
-                    android:id="@+id/optionsBtn"
+
                     android:layout_width="@dimen/dp_32"
                     android:layout_height="@dimen/dp_26"
                     android:src="@drawable/optiondots_white"/>

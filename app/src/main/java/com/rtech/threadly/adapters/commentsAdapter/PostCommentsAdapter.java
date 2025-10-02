@@ -54,7 +54,7 @@ public class PostCommentsAdapter extends RecyclerView.Adapter<PostCommentsAdapte
         }
         holder.likes_count_text.setText(Integer.toString(dataList.get(position).likesCount));
 
-        /// like a commetn
+        /// like a comment
         holder.likeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

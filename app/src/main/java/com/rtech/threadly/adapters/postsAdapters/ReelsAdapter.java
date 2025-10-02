@@ -43,6 +43,7 @@ import com.rtech.threadly.models.Posts_Comments_Model;
 import com.rtech.threadly.models.Posts_Model;
 import com.rtech.threadly.utils.DownloadManagerUtil;
 import com.rtech.threadly.utils.ExoplayerUtil;
+import com.rtech.threadly.utils.LoggerUtil;
 import com.rtech.threadly.utils.ReUsableFunctions;
 
 import org.json.JSONArray;
@@ -192,12 +193,7 @@ public class ReelsAdapter extends RecyclerView.Adapter<ReelsAdapter.viewHolder> 
         holder.caption_text.setText(dataList.get(position).caption);
 
         // Show comments dialog on comment button click
-        holder.comment_btn_image.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showComments(dataList.get(position).postId);
-            }
-        });
+        holder.comment_btn_image.setOnClickListener(v->showComments(dataList.get(position).postId));
 
 
         // Set like button image if already liked
@@ -208,112 +204,159 @@ public class ReelsAdapter extends RecyclerView.Adapter<ReelsAdapter.viewHolder> 
         }
 
         // Show options dialog on options button click
-        holder.optionDots_white.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v) {
-                BottomSheetDialog OptionsDialog =new BottomSheetDialog(context,R.style.TransparentBottomSheet);
-                OptionsDialog.setContentView(R.layout.posts_action_options_layout);
-                LinearLayout downloadBtnLayout=OptionsDialog.findViewById(R.id.download_btn);
-                downloadBtnLayout.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        DownloadManagerUtil.downloadFromUri(context,Uri.parse(dataList.get(position).postUrl));
-                        OptionsDialog.dismiss();
-                    }
-                });
-                OptionsDialog.setCancelable(true);
-                OptionsDialog.show();
-            }
+        holder.optionDots_white.setOnClickListener(v->{
+            BottomSheetDialog OptionsDialog =new BottomSheetDialog(context,R.style.TransparentBottomSheet);
+            OptionsDialog.setContentView(R.layout.posts_action_options_layout);
+            setOptionBtnBehaviour(OptionsDialog,position);
+            OptionsDialog.setCancelable(true);
+            OptionsDialog.show();
         });
 
 
         // Like/unlike post on like button click
-        holder.like_btn_image.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                holder.is_liked=dataList.get(position).isliked;
-                // Like the post if not already liked
-                if(!dataList.get(position).isliked){
-                    holder.like_btn_image.setImageResource(R.drawable.red_heart_active_icon);
-                    holder.likes+=1.0;
-                    setLikeCount(holder.likes ,holder);
-                    holder.is_liked=true;
-                    dataList.get(position).isliked=true;
-                    holder.like_btn_image.setEnabled(false);
-                    likeManager.likePost(dataList.get(position).postId, new NetworkCallbackInterface() {
-                        @Override
-                        public void onSuccess() {
-                            holder.like_btn_image.setEnabled(true);
+        holder.like_btn_image.setOnClickListener(v->{
+            holder.is_liked=dataList.get(position).isliked;
+            // Like the post if not already liked
+            if(!dataList.get(position).isliked){
+                holder.like_btn_image.setImageResource(R.drawable.red_heart_active_icon);
+                holder.likes+=1.0;
+                setLikeCount(holder.likes ,holder);
+                holder.is_liked=true;
+                dataList.get(position).isliked=true;
+                holder.like_btn_image.setEnabled(false);
+                likeManager.likePost(dataList.get(position).postId, new NetworkCallbackInterface() {
+                    @Override
+                    public void onSuccess() {
+                        holder.like_btn_image.setEnabled(true);
 
-                        }
+                    }
 
-                        @Override
-                        public void onError(String err) {
-                            holder.like_btn_image.setImageResource(R.drawable.heart_inactive_icon);
-                            holder.likes-=1.0;
-                            setLikeCount(holder.likes,holder);
-                            holder.is_liked=false;
-                            dataList.get(position).isliked=false;
-                            holder.like_btn_image.setEnabled(true);
+                    @Override
+                    public void onError(String err) {
+                        holder.like_btn_image.setImageResource(R.drawable.heart_inactive_icon);
+                        holder.likes-=1.0;
+                        setLikeCount(holder.likes,holder);
+                        holder.is_liked=false;
+                        dataList.get(position).isliked=false;
+                        holder.like_btn_image.setEnabled(true);
 
-                        }
-                    });
+                    }
+                });
 
-                    // Unlike the post if already liked
-                }
-                else {
-                    holder.like_btn_image.setImageResource(R.drawable.heart_inactive_icon);
-                    holder.likes-=1.0;
-                    setLikeCount(holder.likes,holder);
-                    holder.is_liked=false;
-                    dataList.get(position).isliked=false;
-                    holder.like_btn_image.setEnabled(false);
-                    // Send unlike request to server
-                    likeManager.UnlikePost(dataList.get(position).postId, new NetworkCallbackInterface() {
-                        @Override
-                        public void onSuccess() {
-                            holder.like_btn_image.setEnabled(true);
+                // Unlike the post if already liked
+            }
+            else {
+                holder.like_btn_image.setImageResource(R.drawable.heart_inactive_icon);
+                holder.likes-=1.0;
+                setLikeCount(holder.likes,holder);
+                holder.is_liked=false;
+                dataList.get(position).isliked=false;
+                holder.like_btn_image.setEnabled(false);
+                // Send unlike request to server
+                likeManager.UnlikePost(dataList.get(position).postId, new NetworkCallbackInterface() {
+                    @Override
+                    public void onSuccess() {
+                        holder.like_btn_image.setEnabled(true);
 
-                        }
+                    }
 
-                        @Override
-                        public void onError(String err) {
-                            Log.d("errorUnlike", "onError: ".concat(err));
-                            holder.like_btn_image.setImageResource(R.drawable.red_heart_active_icon);
-                            holder.likes+=1.0;
-                            setLikeCount(holder.likes ,holder);
-                            holder.is_liked=true;
-                            dataList.get(position).isliked=true;
-                            holder.like_btn_image.setEnabled(true);
+                    @Override
+                    public void onError(String err) {
+                        Log.d("errorUnlike", "onError: ".concat(err));
+                        holder.like_btn_image.setImageResource(R.drawable.red_heart_active_icon);
+                        holder.likes+=1.0;
+                        setLikeCount(holder.likes ,holder);
+                        holder.is_liked=true;
+                        dataList.get(position).isliked=true;
+                        holder.like_btn_image.setEnabled(true);
 
-                        }
-                    });
-                }
+                    }
+                });
             }
         });
 
-        // open userProfile by clicking userProfilepic
-        holder.profile_img.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ReUsableFunctions.openProfile(context,dataList.get(position).userId);
-
-            }
-        });
+        // open userProfile by clicking userProfilePic
+        holder.profile_img.setOnClickListener(v -> ReUsableFunctions.openProfile(context,dataList.get(position).userId));
 //        or by clicking userid
-        holder.username_text.setOnClickListener(new View.OnClickListener() {
+        holder.username_text.setOnClickListener(v -> ReUsableFunctions.openProfile(context,dataList.get(position).userId));
+
+
+
+
+
+
+
+
+    }
+
+    private void setOptionBtnBehaviour(BottomSheetDialog OptionsDialog, int position) {
+        LinearLayout downloadBtnLayout=OptionsDialog.findViewById(R.id.download_btn);
+        LinearLayout addFavouriteBtnLayout=OptionsDialog.findViewById(R.id.add_favourite_btn);
+        LinearLayout unfollowBtnLayout=OptionsDialog.findViewById(R.id.unfollow_btn);
+        LinearLayout followBtnLayout=OptionsDialog.findViewById(R.id.follow_btn);
+        LinearLayout reportBtnLayout=OptionsDialog.findViewById(R.id.Report_btn);
+        assert downloadBtnLayout != null;
+        downloadBtnLayout.setOnClickListener(c->{
+            DownloadManagerUtil.downloadFromUri(context,Uri.parse(dataList.get(position).postUrl));
+            OptionsDialog.dismiss();
+        });
+        addFavouriteBtnLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ReUsableFunctions.openProfile(context,dataList.get(position).userId);
-
-            }
+                Toast.makeText(context, "Coming soon", Toast.LENGTH_SHORT).show();
+                OptionsDialog.dismiss();}});
+        reportBtnLayout.setOnClickListener(v->{
+            Toast.makeText(context,"Coming soon",Toast.LENGTH_SHORT).show();
+            OptionsDialog.dismiss();
         });
+        if (dataList.get(position).isFollowed){
+            unfollowBtnLayout.setVisibility(View.VISIBLE);
+            followBtnLayout.setVisibility(View.GONE);
+
+        }else{
+            unfollowBtnLayout.setVisibility(View.GONE);
+            followBtnLayout.setVisibility(View.VISIBLE);
+        }
+        if(dataList.get(position).userId.equals(Core.getPreference().getString(SharedPreferencesKeys.USER_ID,"null"))){
+            followBtnLayout.setVisibility(View.GONE);
+            unfollowBtnLayout.setVisibility(View.GONE);
+        }
+        followBtnLayout.setOnClickListener(v->{
+            OptionsDialog.dismiss();
+            followManager.follow(dataList.get(position).userId, new NetworkCallbackInterface() {
+                @Override
+                public void onSuccess() {
+                    dataList.get(position).isFollowed=true;
+                    notifyItemChanged(position);
 
 
+                }
 
+                @Override
+                public void onError(String err) {
+                    LoggerUtil.LogNetworkError(err.toString());
 
+                }
+            });
 
+        });
+        unfollowBtnLayout.setOnClickListener(v->{
+            OptionsDialog.dismiss();
+            followManager.unfollow(dataList.get(position).userId, new NetworkCallbackInterface() {
+                @Override
+                public void onSuccess() {
+                    dataList.get(position).isFollowed=false;
+                    notifyItemChanged(position);
 
+                }
+
+                @Override
+                public void onError(String err) {
+                    LoggerUtil.LogNetworkError(err.toString());
+
+                }
+            });
+        });
 
 
     }
@@ -389,6 +432,7 @@ public class ReelsAdapter extends RecyclerView.Adapter<ReelsAdapter.viewHolder> 
         comments_recyclerView.setVisibility(View.GONE);
         assert noCommentsLayout != null;
         noCommentsLayout.setVisibility(View.GONE);
+        assert currentUserProfileImg != null;
         Glide.with(context).load(loginInfo.getString(SharedPreferencesKeys.USER_PROFILE_PIC,"null")).placeholder(R.drawable.blank_profile)
                 .error(R.drawable.blank_profile).circleCrop().into(currentUserProfileImg);
 
@@ -407,15 +451,13 @@ public class ReelsAdapter extends RecyclerView.Adapter<ReelsAdapter.viewHolder> 
                             commentsList.add(new Posts_Comments_Model(individualComment.getInt("commentid"),individualComment.getInt("postid"),individualComment.getInt("comment_likes_count"),individualComment.getInt("isLiked"),individualComment.getString("userid"),individualComment.getString("username"),individualComment.getString("profilepic"),individualComment.getString("comment_text"),individualComment.getString("createdAt")));
                         }
                         postCommentsAdapter.notifyDataSetChanged();
-                        shimmerFrameLayout.stopShimmer();
-                        shimmerFrameLayout.setVisibility(View.GONE);
                     }else {
                         // Show no comments layout if empty
                         noCommentsLayout.setVisibility(View.VISIBLE);
                         comments_recyclerView.setVisibility(View.GONE);
-                        shimmerFrameLayout.stopShimmer();
-                        shimmerFrameLayout.setVisibility(View.GONE);
                     }
+                    shimmerFrameLayout.stopShimmer();
+                    shimmerFrameLayout.setVisibility(View.GONE);
                 } catch (JSONException e) {
                     throw new RuntimeException(e);
                 }
@@ -434,78 +476,75 @@ public class ReelsAdapter extends RecyclerView.Adapter<ReelsAdapter.viewHolder> 
         });
         // Add comment to the post
         assert sendCommentBtn != null;
-        sendCommentBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.hideSoftInputFromWindow( v.getWindowToken(),0);
+        sendCommentBtn.setOnClickListener(v -> {
+            InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow( v.getWindowToken(),0);
 
-                sendCommentBtn.setClickable(false);
-                sendCommentBtn.setVisibility(View.GONE);
-                assert posting_progressbar != null;
-                posting_progressbar.setVisibility(View.VISIBLE);
-                assert inputComment != null;
-                String commentText=inputComment.getText().toString();
-                if(commentText.isEmpty()){
-                    Toast.makeText(context, "Please enter a comment", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                commentsManager.addComment(postId, commentText, new NetworkCallbackInterfaceWithJsonObjectDelivery() {
-                    @Override
-                    public void onSuccess(JSONObject response) {
-
-                        posting_progressbar.setVisibility(View.GONE);
-                        sendCommentBtn.setVisibility(View.VISIBLE);
-                        sendCommentBtn.setClickable(true);
-                        try{
-                            JSONObject data=response.getJSONObject("data");
-                            int commentid=data.getInt("commentid");
-                            Log.d("cmnt", "onSuccess: ");
-
-                            // Add new comment to the top of the list
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
-                                commentsList.addFirst(new Posts_Comments_Model(
-                                        commentid,
-                                        postId,
-                                        0,
-                                        0,
-                                        loginInfo.getString("userid","unknown"),
-                                        loginInfo.getString("username","unknown"),
-                                        loginInfo.getString("profileUrl","https://res.cloudinary.com/dphwlcyhg/image/upload/v1747240475/ulpdxajfwpwhlt4ntzn5.webp"),
-                                        commentText,
-                                        new Date().toString()));
-                                postCommentsAdapter.notifyItemInserted(0);
-                                comments_recyclerView.scrollToPosition(0);
-                            }else{
-                                commentsList.add(new Posts_Comments_Model(
-                                        commentid,
-                                        postId,
-                                        0,
-                                        0,
-                                        loginInfo.getString("userid","unknown"),
-                                        loginInfo.getString("username","unknown"),
-                                        loginInfo.getString("profileUrl","https://res.cloudinary.com/dphwlcyhg/image/upload/v1747240475/ulpdxajfwpwhlt4ntzn5.webp"),
-                                        commentText,
-                                        new Date().toString()));
-                                postCommentsAdapter.notifyItemInserted(dataList.size()-1);
-                                comments_recyclerView.scrollToPosition(dataList.size()-1);
-                            }
-                            inputComment.setText("");
-                        }catch(JSONException jsonError){
-                            // Handle JSON error
-                        }
-
-                    }
-
-                    @Override
-                    public void onError(String err) {
-                        posting_progressbar.setVisibility(View.GONE);
-                        sendCommentBtn.setVisibility(View.VISIBLE);
-                        sendCommentBtn.setClickable(true);
-
-                    }
-                });
+            sendCommentBtn.setClickable(false);
+            sendCommentBtn.setVisibility(View.GONE);
+            assert posting_progressbar != null;
+            posting_progressbar.setVisibility(View.VISIBLE);
+            assert inputComment != null;
+            String commentText=inputComment.getText().toString();
+            if(commentText.isEmpty()){
+                Toast.makeText(context, "Please enter a comment", Toast.LENGTH_SHORT).show();
+                return;
             }
+            commentsManager.addComment(postId, commentText, new NetworkCallbackInterfaceWithJsonObjectDelivery() {
+                @Override
+                public void onSuccess(JSONObject response) {
+
+                    posting_progressbar.setVisibility(View.GONE);
+                    sendCommentBtn.setVisibility(View.VISIBLE);
+                    sendCommentBtn.setClickable(true);
+                    try{
+                        JSONObject data=response.getJSONObject("data");
+                        int commentid=data.getInt("commentid");
+                        Log.d("cmnt", "onSuccess: ");
+
+                        // Add new comment to the top of the list
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
+                            commentsList.addFirst(new Posts_Comments_Model(
+                                    commentid,
+                                    postId,
+                                    0,
+                                    0,
+                                    loginInfo.getString("userid","unknown"),
+                                    loginInfo.getString("username","unknown"),
+                                    loginInfo.getString("profileUrl","https://res.cloudinary.com/dphwlcyhg/image/upload/v1747240475/ulpdxajfwpwhlt4ntzn5.webp"),
+                                    commentText,
+                                    new Date().toString()));
+                            postCommentsAdapter.notifyItemInserted(0);
+                            comments_recyclerView.scrollToPosition(0);
+                        }else{
+                            commentsList.add(new Posts_Comments_Model(
+                                    commentid,
+                                    postId,
+                                    0,
+                                    0,
+                                    loginInfo.getString("userid","unknown"),
+                                    loginInfo.getString("username","unknown"),
+                                    loginInfo.getString("profileUrl","https://res.cloudinary.com/dphwlcyhg/image/upload/v1747240475/ulpdxajfwpwhlt4ntzn5.webp"),
+                                    commentText,
+                                    new Date().toString()));
+                            postCommentsAdapter.notifyItemInserted(dataList.size()-1);
+                            comments_recyclerView.scrollToPosition(dataList.size()-1);
+                        }
+                        inputComment.setText("");
+                    }catch(JSONException jsonError){
+                        // Handle JSON error
+                    }
+
+                }
+
+                @Override
+                public void onError(String err) {
+                    posting_progressbar.setVisibility(View.GONE);
+                    sendCommentBtn.setVisibility(View.VISIBLE);
+                    sendCommentBtn.setClickable(true);
+
+                }
+            });
         });
     }
     // Sets the like count text for a post

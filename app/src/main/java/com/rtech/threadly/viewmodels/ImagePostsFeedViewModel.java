@@ -53,7 +53,7 @@ public class ImagePostsFeedViewModel extends AndroidViewModel {
                         JSONArray data=response.getJSONArray("data");
                         for(int i=0;i<data.length();i++){
                             JSONObject postObject=data.getJSONObject(i);
-                            tempArrayList.add(new Posts_Model(
+                            tempArrayList.add(new Posts_Model(0,
                                     postObject.getInt("postid"),
                                     postObject.getString("userid"),
                                     postObject.getString("username"),
@@ -72,10 +72,12 @@ public class ImagePostsFeedViewModel extends AndroidViewModel {
 
 
                         }
-                        postsLiveData.postValue(tempArrayList);
+                        int size=tempArrayList.size();
+                        insertSuggestionAtRandom(size,tempArrayList);
                     } catch (JSONException e) {
 //                        Log.d("dataloadException", "onSuccess: "+e.
 //                                toString());
+                        postsLiveData.postValue(new ArrayList<>());
                         throw new RuntimeException(e);
                     }
 
@@ -90,6 +92,17 @@ public class ImagePostsFeedViewModel extends AndroidViewModel {
                 }
             });
 
+    }
+    private void insertSuggestionAtRandom(int size,ArrayList<Posts_Model> postsModels){
+        int timesOfInsertion=(int)Math.ceil((float)size/100f);
+        for(int i=0;i<timesOfInsertion;i++) {
+
+            int randomPosition = (int) Math.floor(Math.random() * size);
+            Log.d("suggestionInsertedAt", "insertSuggestionAtRandom: "+Integer.toString(randomPosition));
+            postsModels.add(randomPosition,new Posts_Model(1,0,"","","","","","","",0,0,0,0,false,false));
+
+        }
+        postsLiveData.postValue(postsModels);
     }
 
 
