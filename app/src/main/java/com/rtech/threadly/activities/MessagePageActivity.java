@@ -1,5 +1,6 @@
 package com.rtech.threadly.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.text.Editable;
@@ -37,6 +38,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
@@ -79,8 +81,11 @@ public class MessagePageActivity extends AppCompatActivity {
             }
         });
         mainXml.backBtn.setOnClickListener(v->{
-            finish();
-        });
+if(Objects.equals(userdata.getString("src"), "notification")){
+    startActivity(new Intent(this,HomeActivity.class));
+            }else{
+    finish();
+}});
 
     }
 

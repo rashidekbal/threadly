@@ -12,12 +12,13 @@ import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.AppCompatButton;
+
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-import androidx.recyclerview.widget.RecyclerView;
+
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.bumptech.glide.Glide;
 import com.facebook.shimmer.ShimmerFrameLayout;
@@ -25,6 +26,7 @@ import com.rtech.threadly.R;
 import com.rtech.threadly.adapters.postsAdapters.GridPostAdapter;
 import com.rtech.threadly.constants.SharedPreferencesKeys;
 import com.rtech.threadly.core.Core;
+import com.rtech.threadly.databinding.ActivityUserProfileBinding;
 import com.rtech.threadly.interfaces.NetworkCallbackInterface;
 import com.rtech.threadly.interfaces.NetworkCallbackInterfaceWithJsonObjectDelivery;
 import com.rtech.threadly.interfaces.Post_fragmentSetCallback;
@@ -41,20 +43,15 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 public class UserProfileActivity extends AppCompatActivity {
+    ActivityUserProfileBinding mainXml;
     ProfileManager profileManager;
     Intent intentData;
     Profile_Model profileData;
-    TextView userid_text,posts_count_text,followers_count_text,following_count_text,username_text,bio_text,follows_msg_Text,Not_follows_msg_Text;
-    ImageView profile_img;
-    AppCompatButton unfollow_btn,follow_btn,shareProfile_btn;
-    ShimmerFrameLayout posts_shimmer,profile_shimmer;
-    RecyclerView posts_recyclerView;
     GridPostAdapter postAdapter;
     ArrayList<Preview_Post_model> postsArray=new ArrayList<>();
     StaggeredGridLayoutManager layoutManager;
     PostsManager postsManager;
     FollowManager followManager;
-    LinearLayout mainProfileLayout;
     SharedPreferences loginInfo;
 
 
@@ -64,7 +61,8 @@ public class UserProfileActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_user_profile);
+        mainXml=ActivityUserProfileBinding.inflate(getLayoutInflater());
+        setContentView(mainXml.getRoot());
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
@@ -76,9 +74,15 @@ public class UserProfileActivity extends AppCompatActivity {
         getProfileData();
         // get user posts
         getPosts(intentData.getStringExtra("userid"));
+       mainXml.swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+           @Override
+           public void onRefresh() {
+               getProfileData();
 
+           }
+       });
         //on click listeners for followers and following text views
-        followers_count_text.setOnClickListener(new View.OnClickListener() {
+        mainXml.followersCountText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent=new Intent(UserProfileActivity.this, FollowerFollowingList.class);
@@ -87,7 +91,7 @@ public class UserProfileActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-        following_count_text.setOnClickListener(new View.OnClickListener() {
+        mainXml.followingCountText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent=new Intent(UserProfileActivity.this, FollowerFollowingList.class);
@@ -108,22 +112,7 @@ public class UserProfileActivity extends AppCompatActivity {
         postsManager=new PostsManager();
         followManager=new FollowManager();
         intentData=getIntent();
-        userid_text=findViewById(R.id.userid_text);
-        posts_count_text=findViewById(R.id.posts_count_text);
-        followers_count_text=findViewById(R.id.followers_count_text);
-        following_count_text=findViewById(R.id.following_count_text);
-        follows_msg_Text=findViewById(R.id.follows_msg_Text);
-        Not_follows_msg_Text=findViewById(R.id.Not_follows_msg_Text);
-        username_text=findViewById(R.id.username_text);
-        bio_text=findViewById(R.id.bio_text);
-        profile_img=findViewById(R.id.profile_img);
-        unfollow_btn=findViewById(R.id.unfollow_btn);
-        follow_btn=findViewById(R.id.follow_btn);
-        shareProfile_btn=findViewById(R.id.shareProfile_btn);
-        posts_shimmer=findViewById(R.id.posts_shimmer);
-        profile_shimmer=findViewById(R.id.profile_shimmer);
-        posts_recyclerView=findViewById(R.id.posts_recyclerView);
-        mainProfileLayout=findViewById(R.id.profile_layout);
+
         loginInfo= Core.getPreference();
 
         layoutManager=new StaggeredGridLayoutManager(3,StaggeredGridLayoutManager.VERTICAL);
@@ -142,8 +131,8 @@ public class UserProfileActivity extends AppCompatActivity {
 
             }
         });
-        posts_recyclerView.setLayoutManager(layoutManager);
-        posts_recyclerView.setAdapter(postAdapter);
+        mainXml.postsRecyclerView.setLayoutManager(layoutManager);
+        mainXml.postsRecyclerView.setAdapter(postAdapter);
 
 
 
@@ -155,8 +144,8 @@ public class UserProfileActivity extends AppCompatActivity {
             @Override
             public void onSuccess(JSONObject response) {
 
-                profile_shimmer.setVisibility(ShimmerFrameLayout.GONE);
-                mainProfileLayout.setVisibility(LinearLayout.VISIBLE);
+                mainXml.profileShimmer.setVisibility(ShimmerFrameLayout.GONE);
+                mainXml.profileLayout.setVisibility(LinearLayout.VISIBLE);
                 try {
                     JSONArray array=response.getJSONArray("data");
                     JSONObject object=array.getJSONObject(0);
@@ -192,87 +181,89 @@ public class UserProfileActivity extends AppCompatActivity {
     }
 
     private void setData(Profile_Model data){
-        userid_text.setText(data.userid);
-        username_text.setText(data.username);
-        posts_count_text.setText(String.valueOf(data.posts));
-        followers_count_text.setText(String.valueOf(data.followers));
-        following_count_text.setText(String.valueOf(data.following));
-        bio_text.setText(data.bio);
-        Glide.with(getApplicationContext()).load(data.profilepic).placeholder(R.drawable.blank_profile).circleCrop().into(profile_img);
+        mainXml.swipeRefresh.setRefreshing(false
+        );
+        mainXml.useridText.setText(data.userid);
+        mainXml.usernameText.setText(data.username);
+        mainXml.postsCountText.setText(String.valueOf(data.posts));
+        mainXml.followersCountText.setText(String.valueOf(data.followers));
+        mainXml.followingCountText.setText(String.valueOf(data.following));
+        mainXml.bioText.setText(data.bio);
+        Glide.with(getApplicationContext()).load(data.profilepic).placeholder(R.drawable.blank_profile).circleCrop().into(mainXml.profileImg);
 if(data.userid.equals(loginInfo.getString(SharedPreferencesKeys.USER_ID,"null"))){
-    ViewGroup.LayoutParams layoutParams=shareProfile_btn.getLayoutParams();
+    ViewGroup.LayoutParams layoutParams=mainXml.shareProfileBtn.getLayoutParams();
     layoutParams.width=ViewGroup.LayoutParams.MATCH_PARENT;
-    shareProfile_btn.setLayoutParams(layoutParams);
-    follow_btn.setVisibility(ImageView.GONE);
-    unfollow_btn.setVisibility(ImageView.GONE);
-    shareProfile_btn.setVisibility(ImageView.VISIBLE);
-    follows_msg_Text.setVisibility(TextView.GONE);
-    Not_follows_msg_Text.setVisibility(TextView.GONE);
+    mainXml.shareProfileBtn.setLayoutParams(layoutParams);
+    mainXml.followBtn.setVisibility(ImageView.GONE);
+    mainXml.unfollowBtn.setVisibility(ImageView.GONE);
+    mainXml.shareProfileBtn.setVisibility(ImageView.VISIBLE);
+    mainXml.followsMsgText.setVisibility(TextView.GONE);
+    mainXml.NotFollowsMsgText.setVisibility(TextView.GONE);
 
 
 }else{
     if(data.isFollowedByMe){
-        unfollow_btn.setVisibility(View.VISIBLE);
-        follow_btn.setVisibility(View.GONE);
+        mainXml.unfollowBtn.setVisibility(View.VISIBLE);
+        mainXml.followBtn.setVisibility(View.GONE);
     }else{
-        unfollow_btn.setVisibility(View.GONE);
-        follow_btn.setVisibility(View.VISIBLE);
+        mainXml.unfollowBtn.setVisibility(View.GONE);
+        mainXml.followBtn.setVisibility(View.VISIBLE);
     }
     if(data.isFollowingMe){
-        follows_msg_Text.setVisibility(View.VISIBLE);
-        Not_follows_msg_Text.setVisibility(View.GONE);
+        mainXml.followsMsgText.setVisibility(View.VISIBLE);
+        mainXml.NotFollowsMsgText.setVisibility(View.GONE);
 
     }else{
-        follows_msg_Text.setVisibility(View.GONE);
-        Not_follows_msg_Text.setVisibility(View.VISIBLE);
+        mainXml.followsMsgText.setVisibility(View.GONE);
+        mainXml.NotFollowsMsgText.setVisibility(View.VISIBLE);
     }
 
 
-    follow_btn.setOnClickListener(new View.OnClickListener() {
+    mainXml.followBtn.setOnClickListener(new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            unfollow_btn.setVisibility(View.VISIBLE);
-            follow_btn.setVisibility(View.GONE);
-            follow_btn.setEnabled(false);
-            unfollow_btn.setEnabled(false);
+            mainXml.unfollowBtn.setVisibility(View.VISIBLE);
+            mainXml.followBtn.setVisibility(View.GONE);
+            mainXml.followBtn.setEnabled(false);
+            mainXml.unfollowBtn.setEnabled(false);
 
             followManager.follow(data.userid, new NetworkCallbackInterface() {
                 @Override
                 public void onSuccess() {
-                    unfollow_btn.setEnabled(true);
+                    mainXml.unfollowBtn.setEnabled(true);
 
                 }
 
                 @Override
                 public void onError(String err) {
-                    follow_btn.setVisibility(View.VISIBLE);
-                    unfollow_btn.setVisibility(View.GONE);
-                    follow_btn.setEnabled(true);
-                    unfollow_btn.setEnabled(false);
+                    mainXml.followBtn.setVisibility(View.VISIBLE);
+                    mainXml.unfollowBtn.setVisibility(View.GONE);
+                    mainXml.followBtn.setEnabled(true);
+                    mainXml.unfollowBtn.setEnabled(false);
 
                 }
             });
         }
     });
-    unfollow_btn.setOnClickListener(new View.OnClickListener() {
+    mainXml.unfollowBtn.setOnClickListener(new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            unfollow_btn.setVisibility(View.GONE);
-            follow_btn.setVisibility(View.VISIBLE);
-            follow_btn.setEnabled(false);
-            unfollow_btn.setEnabled(false);
+            mainXml.unfollowBtn.setVisibility(View.GONE);
+            mainXml.followBtn.setVisibility(View.VISIBLE);
+            mainXml.followBtn.setEnabled(false);
+            mainXml.unfollowBtn.setEnabled(false);
             followManager.unfollow(data.userid, new NetworkCallbackInterface() {
                 @Override
                 public void onSuccess() {
-                    follow_btn.setEnabled(true);
+                    mainXml.followBtn.setEnabled(true);
                 }
 
                 @Override
                 public void onError(String err) {
-                    unfollow_btn.setVisibility(View.VISIBLE);
-                    follow_btn.setVisibility(View.GONE);
-                    follow_btn.setEnabled(false);
-                    unfollow_btn.setEnabled(true);
+                    mainXml.unfollowBtn.setVisibility(View.VISIBLE);
+                    mainXml.followBtn.setVisibility(View.GONE);
+                    mainXml.followBtn.setEnabled(false);
+                    mainXml.unfollowBtn.setEnabled(true);
 
                 }
             });
@@ -293,8 +284,8 @@ if(data.userid.equals(loginInfo.getString(SharedPreferencesKeys.USER_ID,"null"))
         postsManager.getUserPosts(userId, new NetworkCallbackInterfaceWithJsonObjectDelivery() {
             @Override
             public void onSuccess(JSONObject response) {
-                posts_shimmer.setVisibility(View.GONE);
-                posts_recyclerView.setVisibility(View.VISIBLE);
+                mainXml.postsShimmer.setVisibility(View.GONE);
+                mainXml.postsRecyclerView.setVisibility(View.VISIBLE);
                 try {
                     JSONArray array=response.getJSONArray("data");
                     for(int i=0;i<array.length();i++){

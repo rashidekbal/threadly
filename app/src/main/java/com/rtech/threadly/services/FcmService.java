@@ -1,11 +1,15 @@
 package com.rtech.threadly.services;
 import android.app.Notification;
+import android.app.PendingIntent;
+import android.content.Intent;
+import android.os.Bundle;
 import android.util.Log;
 import androidx.annotation.NonNull;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.rtech.threadly.R;
 import com.rtech.threadly.Threadly;
+import com.rtech.threadly.activities.MessagePageActivity;
 import com.rtech.threadly.constants.Constants;
 import com.rtech.threadly.constants.SharedPreferencesKeys;
 import com.rtech.threadly.core.Core;
@@ -70,7 +74,7 @@ public class FcmService extends FirebaseMessagingService {
 
 
 
-        generateNotification(message.getData().get("username"),message.getData().get("profile"),message.getData().get("msg"));
+        generateNotification(message.getData().get("username"),message.getData().get("userid"),message.getData().get("profile"),message.getData().get("senderUuid"),message.getData().get("msg"));
 
 
     }
@@ -84,11 +88,22 @@ public class FcmService extends FirebaseMessagingService {
 
 
 
-    private void generateNotification(String username,String profile,String msg) {
+    private void generateNotification(String username,String userid,String profile,String uuid,String msg) {
 
         Notification notification=new Notification.Builder(Threadly.getGlobalContext()).setChannelId(Constants.MESSAGE_RECEIVED_CHANNEL.toString())
-                .setContentTitle(username).setContentText(msg).setSmallIcon(R.drawable.splash).build();
+                .setContentTitle(username).setContentText(msg).setSmallIcon(R.drawable.splash).setContentIntent(getIntentMessagePage(uuid,userid,username,profile)).setAutoCancel(true).build();
         Core.getNotificationManager().notify(101,notification);
 
+    }
+    private PendingIntent getIntentMessagePage(String uuid,String userid,String username,String profile){
+        Bundle data=new Bundle();
+        data.putString("userid",userid);
+        data.putString("username",username);
+        data.putString("profilePic",profile);
+        data.putString("uuid",uuid);
+        data.putString("src","notification");
+        Intent openMessageIntent=new Intent(Threadly.getGlobalContext(), MessagePageActivity.class);
+        openMessageIntent.putExtras(data);
+        return PendingIntent.getActivity(Threadly.getGlobalContext(),1001,openMessageIntent, PendingIntent.FLAG_MUTABLE);
     }
 }

@@ -54,6 +54,7 @@ public class MessangerActivity extends AppCompatActivity {
             data.putString("username",model.getUsername());
             data.putString("profilePic",model.getProfilePic());
             data.putString("uuid",model.getUuid());
+            data.putString("src","inApp");
             Intent msgPage=new Intent(MessangerActivity.this,MessagePageActivity.class);
             msgPage.putExtras(data);
             startActivity(msgPage);
