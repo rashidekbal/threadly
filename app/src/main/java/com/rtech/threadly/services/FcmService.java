@@ -4,10 +4,13 @@ import android.app.PendingIntent;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.rtech.threadly.R;
+import com.rtech.threadly.RoomDb.schemas.NotificationSchema;
 import com.rtech.threadly.Threadly;
 import com.rtech.threadly.activities.MessagePageActivity;
 import com.rtech.threadly.constants.Constants;
@@ -42,6 +45,7 @@ public class FcmService extends FirebaseMessagingService {
     public void onMessageReceived(@NonNull RemoteMessage message) {
         super.onMessageReceived(message);
         String broadcastType=message.getData().get("responseType");
+        Log.d("recievedBrodcast", "onMessageReceived: "+broadcastType);
         switch (broadcastType){
             case "statusUpdate":
                 StatusUpdateHandler(message);
@@ -50,6 +54,10 @@ public class FcmService extends FirebaseMessagingService {
             case  "chat":
                 ChatReceivedHandler(message);
                 break;
+            case "postLike":
+                PostLikedNotificationHandler(message);
+                break;
+
         }
        }
     private void ChatReceivedHandler(RemoteMessage message){
@@ -74,7 +82,7 @@ public class FcmService extends FirebaseMessagingService {
 
 
 
-        generateNotification(message.getData().get("username"),message.getData().get("userid"),message.getData().get("profile"),message.getData().get("senderUuid"),message.getData().get("msg"));
+        generateMessageNotification(message.getData().get("username"),message.getData().get("userid"),message.getData().get("profile"),message.getData().get("senderUuid"),message.getData().get("msg"));
 
 
     }
@@ -85,13 +93,31 @@ public class FcmService extends FirebaseMessagingService {
         ReUsableFunctions.updateMessageStatus(MsgUid,deliveryStatus);
 
     }
+    private void PostLikedNotificationHandler(RemoteMessage message){
+        String userId=message.getData().get("userId");
+        String username=message.getData().get("username");
+        String userProfile=message.getData().get("userprofile");
+        int postId=Integer.parseInt(message.getData().get("postId"));
+        String postLink=message.getData().get("postLink");
+        int insertId=Integer.parseInt(message.getData().get("insertId"));
+        ReUsableFunctions.addNotification(new NotificationSchema(Constants.POST_LIKE_NOTIFICATION.toString(),insertId,userId,userProfile,username,postId,postLink,false,false));
+     Notification.Builder notification=new Notification.Builder(Threadly.getGlobalContext())
+             .setSmallIcon(R.drawable.splash)
+             .setChannelId(Constants.MESSAGE_RECEIVED_CHANNEL.toString())
+             .setContentTitle(message.getData().get("userId")+ " liked your post");
+     Core.getNotificationManager().notify(100,notification.build());
+    }
 
 
 
-    private void generateNotification(String username,String userid,String profile,String uuid,String msg) {
+    private void generateMessageNotification(String username, String userid, String profile, String uuid, String msg) {
 
-        Notification notification=new Notification.Builder(Threadly.getGlobalContext()).setChannelId(Constants.MESSAGE_RECEIVED_CHANNEL.toString())
-                .setContentTitle(username).setContentText(msg).setSmallIcon(R.drawable.splash).setContentIntent(getIntentMessagePage(uuid,userid,username,profile)).setAutoCancel(true).build();
+        Notification notification=new Notification.Builder(Threadly.getGlobalContext())
+                .setChannelId(Constants.MESSAGE_RECEIVED_CHANNEL.toString())
+                .setContentTitle(username)
+                .setContentText(msg).setSmallIcon(R.drawable.splash)
+                .setContentIntent(getIntentMessagePage(uuid,userid,username,profile)).
+                setAutoCancel(true).build();
         Core.getNotificationManager().notify(101,notification);
 
     }

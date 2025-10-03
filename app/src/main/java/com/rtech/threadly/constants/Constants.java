@@ -3,5 +3,8 @@ package com.rtech.threadly.constants;
 public enum Constants {
     MEDIA_UPLOAD_CHANNEL,
     MESSAGE_RECEIVED_CHANNEL,
-    NETWORK_ERROR_TAG
+    NETWORK_ERROR_TAG,
+    POST_LIKE_NOTIFICATION,
+    COMMENT_LIKE_NOTIFICATION,
+    FOLLOW_NOTIFICATION,
 }

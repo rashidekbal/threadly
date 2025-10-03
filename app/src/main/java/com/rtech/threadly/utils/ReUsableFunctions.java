@@ -19,6 +19,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.rtech.threadly.RoomDb.DataBase;
 import com.rtech.threadly.RoomDb.schemas.MessageSchema;
+import com.rtech.threadly.RoomDb.schemas.NotificationSchema;
 import com.rtech.threadly.Threadly;
 import com.rtech.threadly.activities.LoginActivity;
 import com.rtech.threadly.activities.UserProfileActivity;
@@ -213,7 +214,15 @@ public class ReUsableFunctions {
         }
     }
 
+public static void addNotification(NotificationSchema schema){
+        Executors.newSingleThreadExecutor().execute(new Runnable() {
+            @Override
+            public void run() {
+                DataBase.getInstance().notificationDao().addNotification(schema);
 
+            }
+        });
+}
 
 
 }

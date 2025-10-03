@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activities.NotificationActivity"
+    android:background="@color/white">
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appBar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/white">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+            <ImageView
+                android:id="@+id/backBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/dp_30"
+                android:src="@drawable/back_arrow"
+                android:layout_marginStart="@dimen/dp_10"
+                />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/notifications"
+                android:textColor="@color/black"
+                android:textStyle="bold"
+                android:textSize="@dimen/sp_20"
+                android:layout_marginStart="@dimen/dp_16"/>
+
+        </LinearLayout>
+    </com.google.android.material.appbar.AppBarLayout>
+    <com.facebook.shimmer.ShimmerFrameLayout
+        android:id="@+id/NotificationShimmer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/appBar"
+        android:visibility="visible"
+        >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+           >
+
+            <include layout="@layout/shimmer_post_comment_layout" />
+
+            <include layout="@layout/shimmer_post_comment_layout" />
+        </LinearLayout>
+    </com.facebook.shimmer.ShimmerFrameLayout>
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/NotificationRecyclerView"
+        android:visibility="gone"
+        android:layout_below="@id/appBar"
+
+        />
+
+
+</RelativeLayout>

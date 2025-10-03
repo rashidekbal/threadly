@@ -24,6 +24,7 @@ import com.rtech.threadly.BuildConfig;
 import com.rtech.threadly.R;
 import com.rtech.threadly.activities.AddStoryActivity;
 import com.rtech.threadly.activities.MessangerActivity;
+import com.rtech.threadly.activities.NotificationActivity;
 import com.rtech.threadly.adapters.postsAdapters.ImagePostsFeedAdapter;
 import com.rtech.threadly.adapters.storiesAdapters.StatusViewAdapter;
 import com.rtech.threadly.constants.SharedPreferencesKeys;
@@ -36,6 +37,7 @@ import com.rtech.threadly.models.StoriesModel;
 import com.rtech.threadly.models.StoryMediaModel;
 import com.rtech.threadly.utils.ExoplayerUtil;
 import com.rtech.threadly.viewmodels.ImagePostsFeedViewModel;
+import com.rtech.threadly.viewmodels.InteractionNotificationViewModel;
 import com.rtech.threadly.viewmodels.MessagesViewModel;
 import com.rtech.threadly.viewmodels.StoriesViewModel;
 import com.rtech.threadly.viewmodels.SuggestUsersViewModel;
@@ -60,6 +62,7 @@ public class homeFragment extends Fragment {
     StoryOpenCallback callback;
     MessagesViewModel messagesViewModel;
     SuggestUsersViewModel suggestUsersViewModel;
+    InteractionNotificationViewModel notificationViewModel;
 
 
 public homeFragment(){
@@ -75,6 +78,7 @@ public homeFragment(){
         // Inflate layout using ViewBinding
         mainXml = FragmentHomeBinding.inflate(inflater, container, false);
         postsViewModel = new ViewModelProvider(requireActivity()).get(ImagePostsFeedViewModel.class);
+        notificationViewModel=new ViewModelProvider(requireActivity()).get(InteractionNotificationViewModel.class);
         videoPostsFeedViewModel=new ViewModelProvider(requireActivity()).get(VideoPostsFeedViewModel.class);
         loginInfo = Core.getPreference();
         messagesViewModel=new ViewModelProvider(this).get(MessagesViewModel.class);
@@ -159,7 +163,24 @@ public homeFragment(){
 
             }
         });
+        mainXml.notificationBtn.setOnClickListener(v->requireActivity().startActivity(new Intent(requireActivity(), NotificationActivity.class)));
         // -------------------------
+        // -------------------------
+        //observe unseen Notifications
+        notificationViewModel.getPendingNotificationCount().observe(getViewLifecycleOwner(), new Observer<Integer>() {
+            @Override
+            public void onChanged(Integer integer) {
+                if(integer!=null){
+                    if(integer>0){
+                        mainXml.notificationDot.setVisibility(View.VISIBLE);
+                    }else{
+                        mainXml.notificationDot.setVisibility(View.GONE);
+                    }
+                }
+                }
+
+        });
+        // --------------------------
 
         mainXml.MessageBtn.setOnClickListener(v->{
             requireActivity().startActivity(new Intent(requireActivity(), MessangerActivity.class));

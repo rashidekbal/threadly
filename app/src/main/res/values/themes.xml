@@ -6,6 +6,7 @@
         <item name="android:windowTranslucentStatus">false</item>
         <item name="android:windowFullscreen">false</item>
     </style>
+
     <style name="Base.Theme.GPGram.actionbar" parent="Theme.Material3.DayNight">
         <item name="android:navigationBarColor">#FFFF</item>
         <item name="android:statusBarColor">#FFFF</item>
