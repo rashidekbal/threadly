@@ -98,6 +98,10 @@ public class ImagePostsFeedViewModel extends AndroidViewModel {
         for(int i=0;i<timesOfInsertion;i++) {
 
             int randomPosition = (int) Math.floor(Math.random() * size);
+            while(randomPosition==0){
+                randomPosition = (int) Math.floor(Math.random() * size);
+            }
+
             Log.d("suggestionInsertedAt", "insertSuggestionAtRandom: "+Integer.toString(randomPosition));
             postsModels.add(randomPosition,new Posts_Model(1,0,"","","","","","","",0,0,0,0,false,false));
 

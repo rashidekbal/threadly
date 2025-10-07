@@ -11,7 +11,8 @@
         android:id="@+id/appBar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="@color/white">
+        android:background="@color/white"
+        android:elevation="4dp">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -35,32 +36,30 @@
 
         </LinearLayout>
     </com.google.android.material.appbar.AppBarLayout>
-    <com.facebook.shimmer.ShimmerFrameLayout
-        android:id="@+id/NotificationShimmer"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@+id/appBar"
-        android:visibility="visible"
-        >
+<!--    <com.facebook.shimmer.ShimmerFrameLayout-->
+<!--        android:id="@+id/NotificationShimmer"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="match_parent"-->
+<!--        android:layout_below="@+id/appBar"-->
+<!--        >-->
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-           >
+<!--        <LinearLayout-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="match_parent"-->
+<!--            android:orientation="vertical"-->
+<!--           >-->
 
-            <include layout="@layout/shimmer_post_comment_layout" />
+<!--            <include layout="@layout/shimmer_post_comment_layout" />-->
 
-            <include layout="@layout/shimmer_post_comment_layout" />
-        </LinearLayout>
-    </com.facebook.shimmer.ShimmerFrameLayout>
+<!--            <include layout="@layout/shimmer_post_comment_layout" />-->
+<!--        </LinearLayout>-->
+<!--    </com.facebook.shimmer.ShimmerFrameLayout>-->
     <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:id="@+id/NotificationRecyclerView"
         android:visibility="gone"
         android:layout_below="@id/appBar"
-
         />
 
 

@@ -176,6 +176,8 @@ public homeFragment(){
                     }else{
                         mainXml.notificationDot.setVisibility(View.GONE);
                     }
+                }else {
+                    mainXml.notificationDot.setVisibility(View.GONE);
                 }
                 }
 

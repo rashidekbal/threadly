@@ -49,6 +49,7 @@ public class Core {
        notificationManager=(NotificationManager) context.getSystemService(context.NOTIFICATION_SERVICE);
        notificationManager.createNotificationChannel(new NotificationChannel(Constants.MEDIA_UPLOAD_CHANNEL.toString(),"media Upload Notification", NotificationManager.IMPORTANCE_DEFAULT));
        notificationManager.createNotificationChannel(new NotificationChannel(Constants.MESSAGE_RECEIVED_CHANNEL.toString(),"for receiving messages",NotificationManager.IMPORTANCE_HIGH));
+       notificationManager.createNotificationChannel(new NotificationChannel(Constants.MISC_CHANNEL.toString(),"misc",NotificationManager.IMPORTANCE_DEFAULT));
        String uuid=getPreference().getString(SharedPreferencesKeys.UUID,null) ;
        if(uuid!=null){
            startSocketEvents();

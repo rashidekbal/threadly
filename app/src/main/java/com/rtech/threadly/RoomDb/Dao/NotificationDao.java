@@ -20,5 +20,15 @@ public interface NotificationDao {
     void removeNotificationHistory(int insertId);
     @Query("select count(distinct ns.insertId)as notificationCount from notification_schema as ns where isViewed=0 group by notificationId")
     LiveData<Integer> getUnseenNotificationCount();
+    @Query("update notification_schema set isViewed=1 ")
+    void markAllNotificationsAsViewed();
+    @Query("delete from notification_schema where userId=:userId and postId=:postId")
+    void deletePostLikeNotification(String userId,int postId);
+    @Query("delete from notification_schema where userId=:userId and notificationType=:notificationType")
+    void deleteFollowNotification(String userId,String notificationType);
+    @Query("update notification_schema set isFollowed=:state where notificationId=:notificationId")
+    void markedFollowState(int state,int notificationId);
+    @Query("delete from notification_schema where userId=:userId and commentId=:commentId")
+    void deleteCommentLikeNotification(String userId,int commentId);
 
 }

@@ -151,4 +151,7 @@
         vestibulum. Fusce dictum libero quis erat maximus, vitae volutpat diam dignissim.
     </string>
     <string name="notifications">Notifications</string>
+    <string name="started_following_you">Started Following you</string>
+    <string name="follow_back">follow back</string>
+    <string name="profilepic">profilePic</string>
 </resources>

@@ -17,6 +17,7 @@ import com.rtech.threadly.R;
 import com.rtech.threadly.RoomDb.schemas.NotificationSchema;
 import com.rtech.threadly.adapters.NotificationAdapters.NotificationAdapter;
 import com.rtech.threadly.databinding.ActivityNotificationBinding;
+import com.rtech.threadly.utils.ReUsableFunctions;
 import com.rtech.threadly.viewmodels.InteractionNotificationViewModel;
 
 import java.util.ArrayList;
@@ -44,6 +45,8 @@ public class NotificationActivity extends AppCompatActivity {
         notificationAdapter=new NotificationAdapter(dataList,this);
         mainXml.NotificationRecyclerView.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false));
         mainXml.NotificationRecyclerView.setAdapter(notificationAdapter);
+        ReUsableFunctions.MarkAllNotificationRead();
+
 
         //---------------------------
         //observer notification change
@@ -51,19 +54,24 @@ public class NotificationActivity extends AppCompatActivity {
         notificationViewModel.getInteractionNotification().observe(this, new Observer<List<NotificationSchema>>() {
             @Override
             public void onChanged(List<NotificationSchema> notificationSchemas) {
+//                mainXml.NotificationShimmer.setVisibility(View.GONE);
                 if(notificationSchemas.isEmpty()){
-                    mainXml.NotificationShimmer.setVisibility(View.GONE);
 
                 }else{
+
                     dataList.clear();
                     dataList.addAll(notificationSchemas);
-                    mainXml.NotificationShimmer.setVisibility(View.GONE);
                     mainXml.NotificationRecyclerView.setVisibility(View.VISIBLE);
                     notificationAdapter.notifyDataSetChanged();
+
                 }
 
             }
         });
         //---------------------------
+        //backBtn function setting
+        mainXml.backBtn.setOnClickListener(v->{
+            super.onBackPressed();
+        });
     }
 }

@@ -23,6 +23,10 @@ public class NotificationSchema {
     String profilePic;
     @ColumnInfo(name="postId")
     int postId;
+    @ColumnInfo(name="commentId")
+    public int commentId;
+    @ColumnInfo(name = "timeStamp")
+   public  String timeStamp;
     @ColumnInfo(name = "postLink")
     String postLink;
     @ColumnInfo(name = "isFollowed")
@@ -30,21 +34,23 @@ public class NotificationSchema {
     @ColumnInfo(name = "isViewed")
     boolean isViewed;
 
-    public NotificationSchema(int notificationId, String notificationType, int insertId, String username, String userId, String profilePic, int postId, String postLink, boolean isFollowed, boolean isViewed) {
+    public NotificationSchema(int notificationId, String notificationType, int insertId, String userId, String username, String profilePic, int postId,int commentId, String timeStamp, String postLink, boolean isFollowed, boolean isViewed) {
         this.notificationId = notificationId;
         this.notificationType = notificationType;
         this.insertId = insertId;
-        this.username = username;
         this.userId = userId;
+        this.username = username;
         this.profilePic = profilePic;
         this.postId = postId;
+        this.timeStamp = timeStamp;
         this.postLink = postLink;
         this.isFollowed = isFollowed;
         this.isViewed = isViewed;
+        this.commentId=commentId;
     }
 
     @Ignore
-    public NotificationSchema(String notificationType, int insertId, String userId, String profilePic, String username, int postId, String postLink, boolean isFollowed,boolean isViewed) {
+    public NotificationSchema(String notificationType, int insertId, String userId, String profilePic, String username, int postId,int commentId, String postLink, boolean isFollowed,boolean isViewed,String timestamp) {
         this.notificationType = notificationType;
         this.insertId = insertId;
         this.userId = userId;
@@ -54,6 +60,8 @@ public class NotificationSchema {
         this.postLink = postLink;
         this.isFollowed = isFollowed;
         this.isViewed=isViewed;
+        this.timeStamp=timestamp;
+        this.commentId=commentId;
     }
 
     public int getNotificationId() {
@@ -102,5 +110,21 @@ public class NotificationSchema {
 
     public void setViewed(boolean viewed) {
         isViewed = viewed;
+    }
+
+    public String getTimeStamp() {
+        return timeStamp;
+    }
+
+    public void setTimeStamp(String timeStamp) {
+        this.timeStamp = timeStamp;
+    }
+
+    public int getCommentId() {
+        return commentId;
+    }
+
+    public void setCommentId(int commentId) {
+        this.commentId = commentId;
     }
 }

@@ -41,6 +41,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
 import java.util.UUID;
+import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
 public class ReUsableFunctions {
@@ -66,10 +67,33 @@ public class ReUsableFunctions {
         SharedPreferences.Editor editor=loginInfo.edit();
         editor.clear();
         editor.apply();
+        Executors.newSingleThreadExecutor().execute(new Runnable() {
+            @Override
+            public void run() {
+                DataBase.getInstance().clearAllTables();
+            }
+        });
+
         Intent intent=new Intent(activity,LoginActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
         activity.startActivity(intent);
         activity.finish();
+    }
+    public static void logoutWithoutActivity(){
+        SharedPreferences loginInfo= Core.getPreference();
+        SharedPreferences.Editor editor=loginInfo.edit();
+        editor.clear();
+        editor.apply();
+        Executors.newSingleThreadExecutor().execute(new Runnable() {
+            @Override
+            public void run() {
+                DataBase.getInstance().clearAllTables();
+            }
+        });
+
+        Intent intent=new Intent(Threadly.getGlobalContext(),LoginActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        Threadly.getGlobalContext().startActivity(intent);
     }
 
     public static File getFileFromUri(Context context, Uri uri) throws IOException {
@@ -222,6 +246,14 @@ public static void addNotification(NotificationSchema schema){
 
             }
         });
+}
+public static void MarkAllNotificationRead(){
+    Executors.newSingleThreadExecutor().execute(new Runnable() {
+        @Override
+        public void run() {
+            DataBase.getInstance().notificationDao().markAllNotificationsAsViewed();
+        }
+    });
 }
 
 

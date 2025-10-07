@@ -3,10 +3,12 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:tools="http://schemas.android.com/tools"
-    android:paddingVertical="@dimen/dp_7"
+    android:paddingVertical="@dimen/dp_10"
     android:paddingHorizontal="@dimen/dp_10"
-  >
-
+    android:clickable="true"
+    android:focusable="true"
+    android:background="?attr/selectableItemBackground"
+    android:descendantFocusability="blocksDescendants">
     <ImageView
         android:id="@+id/User_profile"
         android:layout_width="@dimen/dp_45"
@@ -15,19 +17,21 @@
         android:background="@drawable/circle"
         android:clipToOutline="true"
         android:layout_centerVertical="true"
-
+        android:clickable="true"
+        android:focusable="false"
         />
     <TextView
         android:id="@+id/userId_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toEndOf="@+id/User_profile"
-        android:layout_toStartOf="@id/postPreviewImg"
+        android:maxWidth="@dimen/dp_200"
+        android:layout_toRightOf="@+id/User_profile"
         android:layout_centerVertical="true"
         android:layout_marginStart="@dimen/dp_15"
         android:textColor="@color/black"
         android:textSize="@dimen/sp_17"
         tools:text="username"/>
+
     <ImageView
         android:id="@+id/postPreviewImg"
         android:layout_width="@dimen/dp_42"
@@ -38,6 +42,7 @@
         android:layout_alignParentEnd="true"
         android:layout_marginEnd="@dimen/dp_10"
         android:scaleType="centerCrop"
-        />
+        android:clickable="true"
+        android:focusable="false"/>
 
 </RelativeLayout>

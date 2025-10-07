@@ -1,4 +1,5 @@
 package com.rtech.threadly.services;
+import android.app.Activity;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.content.Intent;
@@ -7,9 +8,12 @@ import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.rtech.threadly.R;
+import com.rtech.threadly.RoomDb.DataBase;
 import com.rtech.threadly.RoomDb.schemas.NotificationSchema;
 import com.rtech.threadly.Threadly;
 import com.rtech.threadly.activities.MessagePageActivity;
@@ -21,6 +25,10 @@ import com.rtech.threadly.network_managers.FcmManager;
 import com.rtech.threadly.utils.ReUsableFunctions;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
+
 public class FcmService extends FirebaseMessagingService {
     @Override
     public void onNewToken(@NonNull String token) {
@@ -49,7 +57,6 @@ public class FcmService extends FirebaseMessagingService {
         switch (broadcastType){
             case "statusUpdate":
                 StatusUpdateHandler(message);
-
                 break;
             case  "chat":
                 ChatReceivedHandler(message);
@@ -57,9 +64,49 @@ public class FcmService extends FirebaseMessagingService {
             case "postLike":
                 PostLikedNotificationHandler(message);
                 break;
+            case "postUnLike":
+                postUnlikedNotificationHandler(message);
+                break;
+            case "newFollower":
+                newFollowerController(message);
+                break;
+            case "UnFollow":
+                unFollowNotifyController(message);
+                break;
+            case "commentLike":
+                commentLikeNotifyController(message);
+                break;
+            case "commentUnlike":
+                commentUnlikeHanlder(message);
+                break;
+            case "logout":
+                LogOutSignalHandler(message);
+                break;
 
         }
        }
+
+    private void commentUnlikeHanlder(RemoteMessage message) {
+        String userId=message.getData().get("userId");
+        int commentId=Integer.parseInt(message.getData().get("commetnId"));
+        Executors.newSingleThreadExecutor().execute(new Runnable() {
+            @Override
+            public void run() {
+                DataBase.getInstance().notificationDao().deleteCommentLikeNotification(userId,commentId);
+            }
+        });
+    }
+
+    private void commentLikeNotifyController(RemoteMessage message) {
+        String userId=message.getData().get("userId");
+        String username=message.getData().get("username");
+        String profile=message.getData().get("profile");
+        String postLink=message.getData().get("postLink");
+        int postId=Integer.parseInt(message.getData().get("postId"));
+        int commentId=Integer.parseInt(message.getData().get("commetnId"));
+        ReUsableFunctions.addNotification(new NotificationSchema(Constants.COMMENT_LIKE_NOTIFICATION.toString(),0,userId,profile,username,postId,commentId,postLink,false,false,ReUsableFunctions.getTimestamp()));
+    }
+
     private void ChatReceivedHandler(RemoteMessage message){
         JSONObject object=new JSONObject();
         try {
@@ -100,12 +147,19 @@ public class FcmService extends FirebaseMessagingService {
         int postId=Integer.parseInt(message.getData().get("postId"));
         String postLink=message.getData().get("postLink");
         int insertId=Integer.parseInt(message.getData().get("insertId"));
-        ReUsableFunctions.addNotification(new NotificationSchema(Constants.POST_LIKE_NOTIFICATION.toString(),insertId,userId,userProfile,username,postId,postLink,false,false));
-     Notification.Builder notification=new Notification.Builder(Threadly.getGlobalContext())
-             .setSmallIcon(R.drawable.splash)
-             .setChannelId(Constants.MESSAGE_RECEIVED_CHANNEL.toString())
-             .setContentTitle(message.getData().get("userId")+ " liked your post");
-     Core.getNotificationManager().notify(100,notification.build());
+        ReUsableFunctions.addNotification(new NotificationSchema(Constants.POST_LIKE_NOTIFICATION.toString(),insertId,userId,userProfile,username,postId,0,postLink,false,false,ReUsableFunctions.getTimestamp()));
+    }
+    private void postUnlikedNotificationHandler(RemoteMessage message){
+        String userId=message.getData().get("userId");
+        int postId=Integer.parseInt(message.getData().get("postId"));
+        Executors.newSingleThreadExecutor().execute(new Runnable() {
+            @Override
+            public void run() {
+                DataBase.getInstance().notificationDao().deletePostLikeNotification(userId,postId);
+            }
+        });
+
+
     }
 
 
@@ -131,5 +185,34 @@ public class FcmService extends FirebaseMessagingService {
         Intent openMessageIntent=new Intent(Threadly.getGlobalContext(), MessagePageActivity.class);
         openMessageIntent.putExtras(data);
         return PendingIntent.getActivity(Threadly.getGlobalContext(),1001,openMessageIntent, PendingIntent.FLAG_MUTABLE);
+    }
+    private void LogOutSignalHandler(RemoteMessage message){
+        if(Core.getPreference().getBoolean(SharedPreferencesKeys.IS_LOGGED_IN,false)&&Core.getPreference().getString(SharedPreferencesKeys.USER_ID,"null").equals(message.getData().get("userId"))){
+            ReUsableFunctions.logoutWithoutActivity();
+            Notification.Builder notification=new Notification.Builder(Threadly.getGlobalContext())
+                    .setContentTitle("new Device login detected")
+                    .setContentText("you have been logged out... ").setChannelId(Constants.MISC_CHANNEL.toString())
+                    .setSmallIcon(R.drawable.splash);
+            Core.getNotificationManager().notify(1,notification.build());
+        }
+
+    }
+    private void newFollowerController(RemoteMessage message){
+        String userId=message.getData().get("userid");
+        String username=message.getData().get("username");
+        String profile=message.getData().get("profile");
+        boolean isFollowed=Boolean.parseBoolean(message.getData().get("isFollowed"));
+        ReUsableFunctions.addNotification(new NotificationSchema(Constants.FOLLOW_NOTIFICATION.toString(),0,userId,profile,username,0,0,"",isFollowed,false,ReUsableFunctions.getTimestamp()));
+
+    }
+    private void unFollowNotifyController(RemoteMessage message){
+        String userId=message.getData().get("userId");
+        Executors.newSingleThreadExecutor().execute(new Runnable() {
+            @Override
+            public void run() {
+                DataBase.getInstance().notificationDao().deleteFollowNotification(userId,Constants.FOLLOW_NOTIFICATION.toString());
+            }
+        });
+
     }
 }
