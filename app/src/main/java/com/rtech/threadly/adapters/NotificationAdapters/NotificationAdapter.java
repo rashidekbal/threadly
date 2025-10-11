@@ -1,5 +1,4 @@
 package com.rtech.threadly.adapters.NotificationAdapters;
-
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
@@ -7,11 +6,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.UiThread;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -24,8 +21,6 @@ import com.rtech.threadly.constants.Constants;
 import com.rtech.threadly.interfaces.NetworkCallbackInterface;
 import com.rtech.threadly.network_managers.FollowManager;
 import com.rtech.threadly.utils.ReUsableFunctions;
-
-import org.w3c.dom.Text;
 
 import java.util.List;
 import java.util.concurrent.Executors;
@@ -57,6 +52,8 @@ public class NotificationAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         }
     }
 
+
+
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -69,17 +66,20 @@ public class NotificationAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         }else{
             return new CommentLikeViewHolder(inflater.inflate(R.layout.comment_liked_notification_card,parent,false));
 
+
         }
+
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
-    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewholder, int position) {
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewholder, @SuppressLint("RecyclerView") int position) {
         if(viewholder instanceof FollowViewHolder){
             //follow view holder
             FollowViewHolder holder=(FollowViewHolder) viewholder;
             Glide.with(context).load(dataSource.get(position).getProfilePic()).placeholder(R.drawable.blank_profile).circleCrop().into(holder.User_profile);
             holder.userId_text.setText(dataSource.get(position).getUsername()+" started following you");
-            holder.User_profile.setOnClickListener(v->{ReUsableFunctions.openProfile(context,dataSource.get(position).getUserId());});
+            holder.User_profile.setOnClickListener(v-> ReUsableFunctions.openProfile(context,dataSource.get(position).getUserId()));
             holder.userId_text.setOnClickListener(v->ReUsableFunctions.openProfile(context,dataSource.get(position).getUserId()));
             if(!dataSource.get(position).isFollowed()){
                 holder.followBtn.setVisibility(View.VISIBLE);
@@ -92,26 +92,15 @@ public class NotificationAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                         @Override
                         public void onSuccess() {
                             holder.followBtn.setEnabled(true);
-                            Executors.newSingleThreadExecutor().execute(new Runnable() {
-                                @Override
-                                public void run() {
-
-                                    DataBase.getInstance().notificationDao().markedFollowState(1,dataSource.get(position).getNotificationId());
-
-                                }
-                            });
+                            Executors.newSingleThreadExecutor().execute(() -> DataBase.getInstance().notificationDao().markedFollowState(1,dataSource.get(position).getNotificationId()));
                             notifyItemChanged(position);
+                            
 
                         }
 
                         @Override
                         public void onError(String err) {
-                            Executors.newSingleThreadExecutor().execute(new Runnable() {
-                                @Override
-                                public void run() {
-                                    DataBase.getInstance().notificationDao().markedFollowState(0,dataSource.get(position).getNotificationId());
-                                }
-                            });
+                            Executors.newSingleThreadExecutor().execute(() -> DataBase.getInstance().notificationDao().markedFollowState(0,dataSource.get(position).getNotificationId()));
                             holder.followBtn.setEnabled(true);
                             holder.followBtn.setVisibility(View.VISIBLE);
                             notifyItemChanged(position);
@@ -132,13 +121,9 @@ public class NotificationAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             Glide.with(context).load(dataSource.get(position).getProfilePic()).placeholder(R.drawable.blank_profile).circleCrop().into(holder.User_profile);
             holder.userId_text.setText(dataSource.get(position).getUsername()+" like your post ");
             Glide.with(context).load(dataSource.get(position).getPostLink()).placeholder(R.drawable.post_placeholder).into(holder.postPreviewImg);
-            holder.User_profile.setOnClickListener(v->{ReUsableFunctions.openProfile(context,dataSource.get(position).getUserId());});
-            holder.userId_text.setOnClickListener(v->{
-                ReUsableFunctions.openProfile(context,dataSource.get(position).getUserId());
-            });
-            holder.postPreviewImg.setOnClickListener(v->{
-                context.startActivity(new Intent(context, PostActivity.class).putExtra("postid",dataSource.get(position).getPostId()));
-            });
+            holder.User_profile.setOnClickListener(v-> ReUsableFunctions.openProfile(context,dataSource.get(position).getUserId()));
+            holder.userId_text.setOnClickListener(v-> ReUsableFunctions.openProfile(context,dataSource.get(position).getUserId()));
+            holder.postPreviewImg.setOnClickListener(v-> context.startActivity(new Intent(context, PostActivity.class).putExtra("postid",dataSource.get(position).getPostId())));
 
 
 
@@ -148,13 +133,9 @@ public class NotificationAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             Glide.with(context).load(dataSource.get(position).getProfilePic()).placeholder(R.drawable.blank_profile).circleCrop().into(holder.User_profile);
             holder.userId_text.setText(dataSource.get(position).getUsername()+" like your Comment ");
             Glide.with(context).load(dataSource.get(position).getPostLink()).placeholder(R.drawable.post_placeholder).into(holder.postPreviewImg);
-            holder.User_profile.setOnClickListener(v->{ReUsableFunctions.openProfile(context,dataSource.get(position).getUserId());});
-            holder.userId_text.setOnClickListener(v->{
-                ReUsableFunctions.openProfile(context,dataSource.get(position).getUserId());
-            });
-            holder.postPreviewImg.setOnClickListener(v->{
-                context.startActivity(new Intent(context, PostActivity.class).putExtra("postid",dataSource.get(position).getPostId()));
-            });
+            holder.User_profile.setOnClickListener(v-> ReUsableFunctions.openProfile(context,dataSource.get(position).getUserId()));
+            holder.userId_text.setOnClickListener(v-> ReUsableFunctions.openProfile(context,dataSource.get(position).getUserId()));
+            holder.postPreviewImg.setOnClickListener(v-> context.startActivity(new Intent(context, PostActivity.class).putExtra("postid",dataSource.get(position).getPostId())));
 
         }
 

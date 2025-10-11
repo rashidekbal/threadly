@@ -20,7 +20,7 @@ import java.util.ArrayList;
 public class uploadProfileAdapter extends RecyclerView.Adapter<uploadProfileAdapter.viewHolder> {
     private final ArrayList<Uri> list;
     private final Context context;
-    private uploadProfileSelectCallbackInterface callbackInterface;
+    private final uploadProfileSelectCallbackInterface callbackInterface;
     public uploadProfileAdapter(ArrayList<Uri> list, Context context, uploadProfileSelectCallbackInterface callback){
         this.list=list;
         this.context=context;
@@ -36,12 +36,7 @@ public class uploadProfileAdapter extends RecyclerView.Adapter<uploadProfileAdap
     @Override
     public void onBindViewHolder(@NonNull viewHolder holder, @SuppressLint("RecyclerView") int position) {
         Glide.with(context).load(list.get(position)).into(holder.imageView);
-        holder.imageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                callbackInterface.itemPicked(list.get(position));
-            }
-        });
+        holder.imageView.setOnClickListener(v -> callbackInterface.itemPicked(list.get(position)));
 
     }
 
@@ -50,7 +45,7 @@ public class uploadProfileAdapter extends RecyclerView.Adapter<uploadProfileAdap
         return list.size();
     }
 
-    public class viewHolder extends RecyclerView.ViewHolder{
+    public static class viewHolder extends RecyclerView.ViewHolder{
         ImageView imageView;
         public viewHolder(View itemView){
             super(itemView);

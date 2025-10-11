@@ -58,19 +58,21 @@ ArrayList<Preview_Post_model> dataList=new ArrayList<>();
         profileViewModel.getUserPostsLiveData().observe(getViewLifecycleOwner(), new Observer<ArrayList<Preview_Post_model>>() {
             @Override
             public void onChanged(ArrayList<Preview_Post_model> postsData) {
-                if(postsData.size()>0){
-                    dataList.clear();
-                    dataList.addAll(postsData);
-                    adapter.notifyDataSetChanged();
-                    shimmer_posts.setVisibility(View.GONE);
-                    posts_all_recycler_view.setVisibility(View.VISIBLE);
-                    NoPost_text.setVisibility(View.GONE);
-                }else{
+                if(postsData.isEmpty()){
                     shimmer_posts.setVisibility(View.GONE);
                     NoPost_text.setVisibility(View.VISIBLE);
                     posts_all_recycler_view.setVisibility(View.GONE);
                 }
+                else {
+                    dataList.clear();
+                    dataList.addAll(postsData);
+                    shimmer_posts.setVisibility(View.GONE);
+                    posts_all_recycler_view.setVisibility(View.VISIBLE);
+                    NoPost_text.setVisibility(View.GONE);
+                    adapter.notifyDataSetChanged();
 
+
+                }
             }
         });
         layoutManager =new GridLayoutManager(requireActivity(),3 ,GridLayoutManager.VERTICAL,false);

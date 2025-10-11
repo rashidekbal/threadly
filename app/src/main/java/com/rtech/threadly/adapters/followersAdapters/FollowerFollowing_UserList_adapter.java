@@ -26,7 +26,7 @@ import com.rtech.threadly.models.Profile_Model_minimal;
 import java.util.ArrayList;
 
 public class FollowerFollowing_UserList_adapter extends RecyclerView.Adapter<FollowerFollowing_UserList_adapter.viewHolder> {
-    private Context context;
+    private final Context context;
     ArrayList<Profile_Model_minimal> dataList;
     SharedPreferences loginInfo;
     FollowManager followManager;
@@ -65,80 +65,66 @@ public class FollowerFollowing_UserList_adapter extends RecyclerView.Adapter<Fol
         }
 
 //        on follow request listener
-        holder.follow_btn.setOnClickListener(new View.OnClickListener() {
-
-
-            @Override
-            public void onClick(View v) {
-                holder.follow_btn.setEnabled(false);
-                holder.unfollow_btn.setEnabled(false);
-                holder.follow_btn.setVisibility(View.GONE);
-                holder.unfollow_btn.setVisibility(View.VISIBLE);
-                followManager.follow(dataList.get(position).userid, new NetworkCallbackInterface() {
-                    @Override
-                    public void onSuccess() {
-                        holder.unfollow_btn.setEnabled(true);
-                        dataList.get(position).isfollowedBy=true;
+        holder.follow_btn.setOnClickListener(v -> {
+            holder.follow_btn.setEnabled(false);
+            holder.unfollow_btn.setEnabled(false);
+            holder.follow_btn.setVisibility(View.GONE);
+            holder.unfollow_btn.setVisibility(View.VISIBLE);
+            followManager.follow(dataList.get(position).userid, new NetworkCallbackInterface() {
+                @Override
+                public void onSuccess() {
+                    holder.unfollow_btn.setEnabled(true);
+                    dataList.get(position).isfollowedBy=true;
 
 
 
-                    }
+                }
 
-                    @Override
-                    public void onError(String err) {
-                        holder.follow_btn.setEnabled(true);
-                        holder.unfollow_btn.setEnabled(false);
-                        holder.follow_btn.setVisibility(View.VISIBLE);
-                        holder.unfollow_btn.setVisibility(View.GONE);
+                @Override
+                public void onError(String err) {
+                    holder.follow_btn.setEnabled(true);
+                    holder.unfollow_btn.setEnabled(false);
+                    holder.follow_btn.setVisibility(View.VISIBLE);
+                    holder.unfollow_btn.setVisibility(View.GONE);
 
-                    }
-                });
-            }
+                }
+            });
         });
 //        unfollow logic
-        holder.unfollow_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        holder.unfollow_btn.setOnClickListener(v -> {
 
-                holder.follow_btn.setEnabled(false);
-                holder.unfollow_btn.setEnabled(false);
-                holder.follow_btn.setVisibility(View.VISIBLE);
-                holder.unfollow_btn.setVisibility(View.GONE);
-                followManager.unfollow(dataList.get(position).userid, new NetworkCallbackInterface() {
-                    @Override
-                    public void onSuccess() {
-                        holder.follow_btn.setEnabled(true);
-                        dataList.get(position).isfollowedBy=false;
+            holder.follow_btn.setEnabled(false);
+            holder.unfollow_btn.setEnabled(false);
+            holder.follow_btn.setVisibility(View.VISIBLE);
+            holder.unfollow_btn.setVisibility(View.GONE);
+            followManager.unfollow(dataList.get(position).userid, new NetworkCallbackInterface() {
+                @Override
+                public void onSuccess() {
+                    holder.follow_btn.setEnabled(true);
+                    dataList.get(position).isfollowedBy=false;
 
-                    }
+                }
 
-                    @Override
-                    public void onError(String err) {
-                        holder.follow_btn.setEnabled(false);
-                        holder.unfollow_btn.setEnabled(true);
-                        holder.follow_btn.setVisibility(View.GONE);
-                        holder.unfollow_btn.setVisibility(View.VISIBLE);
+                @Override
+                public void onError(String err) {
+                    holder.follow_btn.setEnabled(false);
+                    holder.unfollow_btn.setEnabled(true);
+                    holder.follow_btn.setVisibility(View.GONE);
+                    holder.unfollow_btn.setVisibility(View.VISIBLE);
 
 
-                    }
-                });
-            }
+                }
+            });
         });
-        holder.userProfile_img.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent=new Intent(context, UserProfileActivity.class);
-                intent.putExtra("userid",dataList.get(position).userid);
-                context.startActivity(intent);
-            }
+        holder.userProfile_img.setOnClickListener(v -> {
+            Intent intent=new Intent(context, UserProfileActivity.class);
+            intent.putExtra("userid",dataList.get(position).userid);
+            context.startActivity(intent);
         });
-        holder.user_id_text.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent=new Intent(context, UserProfileActivity.class);
-                intent.putExtra("userid",dataList.get(position).userid);
-                context.startActivity(intent);
-            }
+        holder.user_id_text.setOnClickListener(v -> {
+            Intent intent=new Intent(context, UserProfileActivity.class);
+            intent.putExtra("userid",dataList.get(position).userid);
+            context.startActivity(intent);
         });
 
     }
@@ -148,8 +134,8 @@ public class FollowerFollowing_UserList_adapter extends RecyclerView.Adapter<Fol
         return dataList.size();
     }
 
-    public class viewHolder extends RecyclerView.ViewHolder {
-        ImageView userProfile_img,options_btn;
+    public static class viewHolder extends RecyclerView.ViewHolder {
+        ImageView userProfile_img;
         TextView user_id_text,username_text;
         AppCompatButton  follow_btn,unfollow_btn;
 

@@ -83,8 +83,6 @@ ProfileViewModel profileViewModel;
                 if(profileModel!=null){
                     userdata=profileModel;
                     setUserdata(v);
-                }else {
-
                 }
 
          }

@@ -10,20 +10,14 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.androidnetworking.AndroidNetworking;
-import com.androidnetworking.common.Priority;
-import com.androidnetworking.error.ANError;
-import com.androidnetworking.interfaces.JSONObjectRequestListener;
 import com.bumptech.glide.Glide;
-import com.rtech.threadly.BuildConfig;
 import com.rtech.threadly.R;
 import com.rtech.threadly.activities.AddStoryActivity;
-import com.rtech.threadly.activities.MessangerActivity;
+import com.rtech.threadly.activities.Messanger.MessengerActivity;
 import com.rtech.threadly.activities.NotificationActivity;
 import com.rtech.threadly.adapters.postsAdapters.ImagePostsFeedAdapter;
 import com.rtech.threadly.adapters.storiesAdapters.StatusViewAdapter;
@@ -42,10 +36,6 @@ import com.rtech.threadly.viewmodels.MessagesViewModel;
 import com.rtech.threadly.viewmodels.StoriesViewModel;
 import com.rtech.threadly.viewmodels.SuggestUsersViewModel;
 import com.rtech.threadly.viewmodels.VideoPostsFeedViewModel;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 
@@ -185,7 +175,7 @@ public homeFragment(){
         // --------------------------
 
         mainXml.MessageBtn.setOnClickListener(v->{
-            requireActivity().startActivity(new Intent(requireActivity(), MessangerActivity.class));
+            requireActivity().startActivity(new Intent(requireActivity(), MessengerActivity.class));
 
         });
 

@@ -1,5 +1,6 @@
 package com.rtech.threadly.activities;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -30,6 +31,7 @@ public class VerifyEmailOtpActivity extends AppCompatActivity {
     TextView msg_textView;
     ProgressBar progressBar;
     OtpManager otpManager;
+    @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,60 +43,55 @@ public class VerifyEmailOtpActivity extends AppCompatActivity {
             return insets;
         });
         init();
-        next_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                progressBar.setVisibility(View.VISIBLE);
-                next_btn.setText("");
+        next_btn.setOnClickListener(v -> {
+            progressBar.setVisibility(View.VISIBLE);
+            next_btn.setText("");
 
-                String otp=otp_field.getText().toString();
-                if(otp.length()!=6){
-                    msg_textView.setVisibility(View.VISIBLE);
-                    msg_textView.setTextColor(Color.parseColor("#D00707"));
-                    msg_textView.setText("Otp must be 6-digit");
-                    progressBar.setVisibility(View.GONE);
-                    next_btn.setText("Next");
+            String otp=otp_field.getText().toString();
+            if(otp.length()!=6){
+                msg_textView.setVisibility(View.VISIBLE);
+                msg_textView.setTextColor(Color.parseColor("#D00707"));
+                msg_textView.setText("Otp must be 6-digit");
+                progressBar.setVisibility(View.GONE);
+                next_btn.setText("Next");
 
-                }else{
-                    otpManager.VerifyOtpEmail(intentData.getStringExtra("email"), otp, new NetworkCallbackInterfaceWithJsonObjectDelivery() {
-                        @Override
-                        public void onSuccess(JSONObject response) {
-                            progressBar.setVisibility(View.GONE);
-                            next_btn.setText("Next");
-                            next_btn.setEnabled(true);
-                            try {
-                                String token=response.getString("token");
-                                Intent intent =new Intent(getApplicationContext(), CreatePasswordActivity.class);
-                                intent.putExtra("token",token);
-                                intent.putExtra("api", ApiEndPoints.REGISTER_EMAIL);
-                                startActivity(intent);
-                            } catch (JSONException e) {
-                                throw new RuntimeException(e);
-                            }
+            }else{
+                otpManager.VerifyOtpEmail(intentData.getStringExtra("email"), otp, new NetworkCallbackInterfaceWithJsonObjectDelivery() {
+                    @Override
+                    public void onSuccess(JSONObject response) {
+                        progressBar.setVisibility(View.GONE);
+                        next_btn.setText("Next");
+                        next_btn.setEnabled(true);
+                        try {
+                            String token=response.getString("token");
+                            Intent intent =new Intent(getApplicationContext(), CreatePasswordActivity.class);
+                            intent.putExtra("token",token);
+                            intent.putExtra("api", ApiEndPoints.REGISTER_EMAIL);
+                            startActivity(intent);
+                        } catch (JSONException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+
+                    @Override
+                    public void onError(String err) {
+                        int statusCode=Integer.parseInt(err);
+                        msg_textView.setVisibility(View.VISIBLE);
+                        msg_textView.setTextColor(Color.parseColor("#D00707"));
+                        if(statusCode==401){
+                            msg_textView.setText("Invalid otp");
+                        }else{
+                            msg_textView.setText("Something went wrong");
+
                         }
 
-                        @Override
-                        public void onError(String err) {
-                            int statusCode=Integer.parseInt(err);
-                            if(statusCode==401){
-                                msg_textView.setVisibility(View.VISIBLE);
-                                msg_textView.setTextColor(Color.parseColor("#D00707"));
-                                msg_textView.setText("Invalid otp");
-                            }else{
-                                msg_textView.setVisibility(View.VISIBLE);
-                                msg_textView.setTextColor(Color.parseColor("#D00707"));
-                                msg_textView.setText("Something went wrong");
-
-                            }
-
-                        }
-                    });
+                    }
+                });
 
 
-
-                }
 
             }
+
         });
     }
     protected  void init(){

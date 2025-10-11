@@ -1,5 +1,6 @@
 package com.rtech.threadly.activities;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -27,6 +28,8 @@ import com.rtech.threadly.utils.ReUsableFunctions;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Objects;
+
 public class NameEnterActivity extends AppCompatActivity {
 ProgressBar progressBar;
 EditText name_field;
@@ -46,77 +49,81 @@ SharedPreferences.Editor preferenceEditor;
             return insets;
         });
         init();
-        next_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                next_btn.setEnabled(false);
-                String name=name_field.getText().toString();
-                if(name.isEmpty()){
-                    Toast.makeText(NameEnterActivity.this, "please enter your full name", Toast.LENGTH_SHORT).show();
-                    next_btn.setEnabled(true);
-                }else{
-                    JSONObject data=new JSONObject();
-                    try {
-                        data.put("password",getDataIntent.getStringExtra("password"));
-                        data.put("dob",getDataIntent.getStringExtra("dob"));
-                        data.put("username",name);
+        next_btn.setOnClickListener(v -> {
+            next_btn.setEnabled(false);
+            String name=name_field.getText().toString();
+            if(name.isEmpty()){
+                Toast.makeText(NameEnterActivity.this, "please enter your full name", Toast.LENGTH_SHORT).show();
+                next_btn.setEnabled(true);
+            }else{
+                JSONObject data=new JSONObject();
+                try {
+                    data.put("password",getDataIntent.getStringExtra("password"));
+                    data.put("dob",getDataIntent.getStringExtra("dob"));
+                    data.put("username",name);
 
 
-                        progressBar.setVisibility(View.VISIBLE);
-                        next_btn.setText("");
-                        AndroidNetworking.post(api).addHeaders("Authorization", "Bearer ".concat(getDataIntent.getStringExtra("token"))).addApplicationJsonBody(data).setPriority(Priority.HIGH).build().getAsJSONObject(new JSONObjectRequestListener() {
-                            @Override
-                            public void onResponse(JSONObject response) {
-                                progressBar.setVisibility(View.GONE);
-                                next_btn.setText("Next");
-                                try {
+                    progressBar.setVisibility(View.VISIBLE);
+                    next_btn.setText("");
+                    AndroidNetworking.post(api).addHeaders("Authorization", "Bearer ".
+                            concat(Objects.requireNonNull(getDataIntent.getStringExtra("token"))))
+                            .addApplicationJsonBody(data)
+                            .setPriority(Priority.HIGH)
+                            .build()
+                            .getAsJSONObject(new JSONObjectRequestListener() {
+                        @SuppressLint("SetTextI18n")
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            progressBar.setVisibility(View.GONE);
+                            next_btn.setText("Next");
+                            try {
 
-                                    String username=response.getString("username");
-                                    String userid=response.getString("userid");
-                                    String profileUrl=response.getString("profile");
-                                    preferenceEditor.putString("token",response.getString("token"));
-                                    preferenceEditor.putBoolean("isLoggedIn",true);
-                                    preferenceEditor.putString("username",username);
-                                    preferenceEditor.putString("userid",userid);
-                                    preferenceEditor.putString("profileUrl",profileUrl);
-                                    preferenceEditor.putString(SharedPreferencesKeys.UUID,response.getString("uuid"));
-                                    preferenceEditor.apply();
-                                    Toast.makeText(NameEnterActivity.this, "Account created", Toast.LENGTH_SHORT).show();
-                                    Intent homePage=new Intent(NameEnterActivity.this,HomeActivity.class);
-                                    homePage.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                    startActivity(homePage);
-                                    Core.startSocketEvents();
-                                    ReUsableFunctions.updateFcmTokenToServer();
-                                    finish();
+                                String username=response.getString("username");
+                                String userid=response.getString("userid");
+                                String profileUrl=response.getString("profile");
+                                preferenceEditor.putString("token",response.getString("token"));
+                                preferenceEditor.putBoolean("isLoggedIn",true);
+                                preferenceEditor.putString("username",username);
+                                preferenceEditor.putString("userid",userid);
+                                preferenceEditor.putString("profileUrl",profileUrl);
+                                preferenceEditor.putString(SharedPreferencesKeys.UUID,response.getString("uuid"));
+                                preferenceEditor.apply();
+                                Toast.makeText(NameEnterActivity.this, "Account created", Toast.LENGTH_SHORT).show();
+                                Intent homePage=new Intent(NameEnterActivity.this,HomeActivity.class);
+                                homePage.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                startActivity(homePage);
+                                Core.startSocketEvents();
+                                ReUsableFunctions.updateFcmTokenToServer();
+                                finish();
 
-                                } catch (JSONException e) {
-                                    throw new RuntimeException(e);
-                                }
-
-
-
-
-
+                            } catch (JSONException e) {
+                                throw new RuntimeException(e);
                             }
 
-                            @Override
-                            public void onError(ANError anError) {
-                                int errorCode=anError.getErrorCode();
-                                progressBar.setVisibility(View.GONE);
-                                next_btn.setText("Next");
-                                Toast.makeText(NameEnterActivity.this, Integer.toString(errorCode), Toast.LENGTH_SHORT).show();
-                                next_btn.setEnabled(true);
-
-                            }
-                        });
-                    } catch (JSONException e) {
-                        throw new RuntimeException(e);
-                    }
 
 
 
 
+                        }
+
+                        @SuppressLint("SetTextI18n")
+                        @Override
+                        public void onError(ANError anError) {
+                            int errorCode=anError.getErrorCode();
+                            progressBar.setVisibility(View.GONE);
+                            next_btn.setText("Next");
+                            Toast.makeText(NameEnterActivity.this, Integer.toString(errorCode), Toast.LENGTH_SHORT).show();
+                            next_btn.setEnabled(true);
+
+                        }
+                    });
+                } catch (JSONException e) {
+                    throw new RuntimeException(e);
                 }
+
+
+
+
             }
         });
     }

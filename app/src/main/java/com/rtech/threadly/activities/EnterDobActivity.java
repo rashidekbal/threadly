@@ -3,7 +3,6 @@ package com.rtech.threadly.activities;
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -55,28 +54,25 @@ Intent getDataIntent;
             datePickerDialog.getDatePicker().setMaxDate(System.currentTimeMillis());
             datePickerDialog.show();
         });
-next_btn.setOnClickListener(new View.OnClickListener() {
-    @Override
-    public void onClick(View v) {
-        next_btn.setEnabled(false);
-        String dob=dob_field.getText().toString();
-        if(dob.isEmpty()){
-            Toast.makeText(EnterDobActivity.this, "Please enter a valid dob", Toast.LENGTH_SHORT).show();
-            next_btn.setEnabled(true);
-        }else{
-            String token=getDataIntent.getStringExtra("token");
-            String password=getDataIntent.getStringExtra("password");
-            next_btn.setEnabled(true);
-            Intent intent=new Intent(EnterDobActivity.this,NameEnterActivity.class);
-            intent.putExtra("token",token);
-            intent.putExtra("password",password);
-            intent.putExtra("dob",dob);
-            intent.putExtra("api",getDataIntent.getStringExtra("api"));
-            startActivity(intent);
-
-        }
+next_btn.setOnClickListener(v -> {
+    next_btn.setEnabled(false);
+    String dob=dob_field.getText().toString();
+    if(dob.isEmpty()){
+        Toast.makeText(EnterDobActivity.this, "Please enter a valid dob", Toast.LENGTH_SHORT).show();
+        next_btn.setEnabled(true);
+    }else{
+        String token=getDataIntent.getStringExtra("token");
+        String password=getDataIntent.getStringExtra("password");
+        next_btn.setEnabled(true);
+        Intent intent=new Intent(EnterDobActivity.this,NameEnterActivity.class);
+        intent.putExtra("token",token);
+        intent.putExtra("password",password);
+        intent.putExtra("dob",dob);
+        intent.putExtra("api",getDataIntent.getStringExtra("api"));
+        startActivity(intent);
 
     }
+
 });
 
 

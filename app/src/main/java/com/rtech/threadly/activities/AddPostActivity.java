@@ -45,28 +45,23 @@ public class AddPostActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            Window window = getWindow();
-            window.getDecorView().setSystemUiVisibility(0); // clear light status flag
-            window.setStatusBarColor(Color.BLACK); // or any dark color you're using
-        }
+        Window window = getWindow();
+        window.getDecorView().setSystemUiVisibility(0); // clear light status flag
+        window.setStatusBarColor(Color.BLACK); // or any dark color you're using
 
 
         // call back for cameraFragment
-        cameraFragmentInterface=new CameraFragmentInterface() {
-            @Override
-            public void onCapture(String filePath, String mediaType) {
-                Bundle bundle=new Bundle();
-                bundle.putString("filePath",filePath);
-                bundle.putString("mediaType",mediaType);
-                bundle.putString("from","camera");
-                Fragment fragment=new UploadPostFinalFragment();
-                fragment.setArguments(bundle);
-                fragmentManager(fragment);
+        cameraFragmentInterface= (filePath, mediaType) -> {
+            Bundle bundle=new Bundle();
+            bundle.putString("filePath",filePath);
+            bundle.putString("mediaType",mediaType);
+            bundle.putString("from","camera");
+            Fragment fragment=new UploadPostFinalFragment();
+            fragment.setArguments(bundle);
+            fragmentManager(fragment);
 
 
 
-            }
         };
 
       // call back for mainFragment
@@ -98,12 +93,9 @@ public class AddPostActivity extends AppCompatActivity {
 
 
 
-        getSupportFragmentManager().addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
-            @Override
-            public void onBackStackChanged() {
-                if(getSupportFragmentManager().getBackStackEntryCount()==0){
-                    finish();
-                }
+        getSupportFragmentManager().addOnBackStackChangedListener(() -> {
+            if(getSupportFragmentManager().getBackStackEntryCount()==0){
+                finish();
             }
         });
 

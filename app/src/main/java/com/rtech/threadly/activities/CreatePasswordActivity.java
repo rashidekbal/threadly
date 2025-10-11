@@ -1,5 +1,6 @@
 package com.rtech.threadly.activities;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -21,6 +22,7 @@ EditText password_field;
 Intent getDataIntent;
 String token;
 TextView msgText;
+    @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,27 +35,24 @@ TextView msgText;
         });
         init();
 
-        next_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                next_btn.setEnabled(false);
-                String password=password_field.getText().toString().trim();
-                if(password.isEmpty()||password.length()<6){
-                    msgText.setVisibility(View.VISIBLE);
-                    msgText.setText("Password must be more than 6 characters long");
-                    next_btn.setEnabled(true);
-                }else{
-                    msgText.setVisibility(View.GONE);
-                    next_btn.setEnabled(true);
-                    Intent intent=new Intent(getApplicationContext(), EnterDobActivity.class);
-                    intent.putExtra("token",token);
-                    intent.putExtra("password",password);
-                    intent.putExtra("api",getDataIntent.getStringExtra("api"));
-                    startActivity(intent);
-
-                }
+        next_btn.setOnClickListener(v -> {
+            next_btn.setEnabled(false);
+            String password=password_field.getText().toString().trim();
+            if(password.isEmpty()||password.length()<6){
+                msgText.setVisibility(View.VISIBLE);
+                msgText.setText("Password must be more than 6 characters long");
+                next_btn.setEnabled(true);
+            }else{
+                msgText.setVisibility(View.GONE);
+                next_btn.setEnabled(true);
+                Intent intent=new Intent(getApplicationContext(), EnterDobActivity.class);
+                intent.putExtra("token",token);
+                intent.putExtra("password",password);
+                intent.putExtra("api",getDataIntent.getStringExtra("api"));
+                startActivity(intent);
 
             }
+
         });
     }
     protected void init(){

@@ -32,18 +32,18 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.GPGram"
-        tools:targetApi="29">
+        tools:targetApi="29"
+        >
+        <activity
+            android:name=".activities.Messanger.MessengerMainMessagePageActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".activities.NotificationActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.MessagePageActivity"
-            android:exported="false"
-            android:resizeableActivity="true"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize" />
-        <activity
-            android:name=".activities.MessangerActivity"
+            android:name=".activities.Messanger.MessengerActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity

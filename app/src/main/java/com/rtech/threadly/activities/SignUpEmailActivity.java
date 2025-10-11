@@ -1,5 +1,6 @@
 package com.rtech.threadly.activities;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -37,13 +38,9 @@ OtpManager otpManager;
             return insets;
         });
         init();
-        signUp_with_mobile_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-               finish();
-            }
-        });
+        signUp_with_mobile_btn.setOnClickListener(v -> finish());
         next_btn.setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("SetTextI18n")
             @Override
             public void onClick(View v) {
                 next_btn.setEnabled(false);
@@ -111,8 +108,6 @@ OtpManager otpManager;
 
 
                 }
-//                Intent intent=new Intent(SignUpEmailActivity.this,VerifyEmailOtpActivity.class);
-//                startActivity(intent);
             }
         });
     }

@@ -1,11 +1,10 @@
 package com.rtech.threadly.activities;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ProgressBar;
@@ -13,26 +12,19 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import com.google.android.datatransport.runtime.dagger.Reusable;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.messaging.FirebaseMessaging;
 import com.rtech.threadly.R;
 import com.rtech.threadly.Threadly;
 import com.rtech.threadly.activities.forgetPassword.ForgetPasswordActivity;
 import com.rtech.threadly.constants.SharedPreferencesKeys;
 import com.rtech.threadly.core.Core;
-import com.rtech.threadly.interfaces.NetworkCallbackInterface;
 import com.rtech.threadly.interfaces.NetworkCallbackInterfaceWithJsonObjectDelivery;
 import com.rtech.threadly.network_managers.AuthManager;
-import com.rtech.threadly.network_managers.FcmManager;
 import com.rtech.threadly.network_managers.MessageManager;
 import com.rtech.threadly.utils.ExoplayerUtil;
 import com.rtech.threadly.utils.ReUsableFunctions;
@@ -59,174 +51,162 @@ AuthManager authManager;
             return insets;
         });
         init();
-        login_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                login_btn.setEnabled(false);
-                String userid=userid_field.getText().toString().trim();
-                String password=password_filed.getText().toString().trim();
-                if(userid.isEmpty()||password.isEmpty()){
-                    Toast.makeText(LoginActivity.this, "please fill the required field", Toast.LENGTH_SHORT).show();
-                    login_btn.setEnabled(true);
-                }else{
-                    progressBar.setVisibility(View.VISIBLE);
-                    login_btn.setText("");
+        login_btn.setOnClickListener(v -> {
+            login_btn.setEnabled(false);
+            String userid=userid_field.getText().toString().trim();
+            String password=password_filed.getText().toString().trim();
+            if(userid.isEmpty()||password.isEmpty()){
+                Toast.makeText(LoginActivity.this, "please fill the required field", Toast.LENGTH_SHORT).show();
+                login_btn.setEnabled(true);
+            }else{
+                progressBar.setVisibility(View.VISIBLE);
+                login_btn.setText("");
 
 
 
-                    if(ReUsableFunctions.isEmail(userid)){
-                        authManager.LoginEmail(userid, password, new NetworkCallbackInterfaceWithJsonObjectDelivery() {
-                            @Override
-                            public void onSuccess(JSONObject response) {
-                                String username= null;
-                                try {
-                                    username = response.getString("username");
-                                    String userid=response.getString("userid");
-                                    String profileUrl=response.getString("profile");
-                                    String uuid=response.getString("uuid");
-                                    preferenceEditor.putString(SharedPreferencesKeys.UUID,uuid);
-                                    preferenceEditor.putString(SharedPreferencesKeys.JWT_TOKEN,response.getString("token"));
-                                    preferenceEditor.putBoolean(SharedPreferencesKeys.IS_LOGGED_IN,true);
-                                    preferenceEditor.putString(SharedPreferencesKeys.USER_NAME,username);
-                                    preferenceEditor.putString(SharedPreferencesKeys.USER_ID,userid);
-                                    preferenceEditor.putString(SharedPreferencesKeys.USER_PROFILE_PIC,profileUrl);
-                                    preferenceEditor.apply();
+                if(ReUsableFunctions.isEmail(userid)){
+                    authManager.LoginEmail(userid, password, new NetworkCallbackInterfaceWithJsonObjectDelivery() {
+                        @Override
+                        public void onSuccess(JSONObject response) {
+                            String username;
+                            try {
+                                username = response.getString("username");
+                                String userid=response.getString("userid");
+                                String profileUrl=response.getString("profile");
+                                String uuid=response.getString("uuid");
+                                preferenceEditor.putString(SharedPreferencesKeys.UUID,uuid);
+                                preferenceEditor.putString(SharedPreferencesKeys.JWT_TOKEN,response.getString("token"));
+                                preferenceEditor.putBoolean(SharedPreferencesKeys.IS_LOGGED_IN,true);
+                                preferenceEditor.putString(SharedPreferencesKeys.USER_NAME,username);
+                                preferenceEditor.putString(SharedPreferencesKeys.USER_ID,userid);
+                                preferenceEditor.putString(SharedPreferencesKeys.USER_PROFILE_PIC,profileUrl);
+                                preferenceEditor.apply();
 
-                                    Intent homePage=new Intent(LoginActivity.this,HomeActivity.class);
-                                    homePage.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                    startActivity(homePage);
-                                    Core.startSocketEvents();
-                                    MessageManager.checkAndGetPendingMessages();
-                                    ReUsableFunctions.updateFcmTokenToServer();
-                                    finish();
-                                } catch (JSONException e) {
-                                    throw new RuntimeException(e);
-                                }
-
-
+                                Intent homePage=new Intent(LoginActivity.this,HomeActivity.class);
+                                homePage.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                startActivity(homePage);
+                                Core.startSocketEvents();
+                                MessageManager.checkAndGetPendingMessages();
+                                ReUsableFunctions.updateFcmTokenToServer();
+                                finish();
+                            } catch (JSONException e) {
+                                throw new RuntimeException(e);
                             }
 
-                            @Override
-                            public void onError(String err) {
-                                int errorCode=Integer.parseInt(err);
-                                login_btn.setEnabled(true);
-                                login_btn.setText("Log in");
-                                progressBar.setVisibility(View.GONE);
-                                showDialog();
 
-                            }
-                        });
+                        }
 
+                        @SuppressLint("SetTextI18n")
+                        @Override
+                        public void onError(String err) {
+                            login_btn.setEnabled(true);
+                            login_btn.setText("Log in");
+                            progressBar.setVisibility(View.GONE);
+                            showDialog();
 
-                    }
-                    else if (ReUsableFunctions.isPhone(userid)) {
-                        authManager.LoginMobile(userid, password, new NetworkCallbackInterfaceWithJsonObjectDelivery() {
-                            @Override
-                            public void onSuccess(JSONObject response) {
-                                String username= null;
-                                try {
-                                    username = response.getString("username");
-                                    String userid=response.getString("userid");
-                                    String profileUrl=response.getString("profile");
-                                    String uuid=response.getString("uuid");
-                                    preferenceEditor.putString(SharedPreferencesKeys.UUID,uuid);
-                                    preferenceEditor.putString(SharedPreferencesKeys.JWT_TOKEN,response.getString("token"));
-                                    preferenceEditor.putBoolean(SharedPreferencesKeys.IS_LOGGED_IN,true);
-                                    preferenceEditor.putString(SharedPreferencesKeys.USER_NAME,username);
-                                    preferenceEditor.putString(SharedPreferencesKeys.USER_ID,userid);
-                                    preferenceEditor.putString(SharedPreferencesKeys.USER_PROFILE_PIC,profileUrl);
-                                    preferenceEditor.apply();
-                                    Intent homePage=new Intent(LoginActivity.this,HomeActivity.class);
-                                    homePage.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                    startActivity(homePage);
-                                    Core.startSocketEvents();
-                                    ReUsableFunctions.updateFcmTokenToServer();
-                                    finish();
-                                } catch (JSONException e) {
-                                    throw new RuntimeException(e);
-                                }
+                        }
+                    });
 
 
-                            }
-
-                            @Override
-                            public void onError(String err) {
-                                int errorCode=Integer.parseInt(err);
-                                login_btn.setEnabled(true);
-                                login_btn.setText("Log in");
-                                progressBar.setVisibility(View.GONE);
-                                showDialog();
-
-                            }
-                        });
-
-                    }
-                    else{
-
-                        authManager.LoginUserId(userid, password, new NetworkCallbackInterfaceWithJsonObjectDelivery() {
-                            @Override
-                            public void onSuccess(JSONObject response) {
-                                String username= null;
-                                try {
-                                    username = response.getString("username");
-                                    String userid=response.getString("userid");
-                                    String profileUrl=response.getString("profile");
-                                    String uuid=response.getString("uuid");
-                                    preferenceEditor.putString(SharedPreferencesKeys.UUID,uuid);
-                                    preferenceEditor.putString(SharedPreferencesKeys.JWT_TOKEN,response.getString("token"));
-                                    preferenceEditor.putBoolean(SharedPreferencesKeys.IS_LOGGED_IN,true);
-                                    preferenceEditor.putString(SharedPreferencesKeys.USER_NAME,username);
-                                    preferenceEditor.putString(SharedPreferencesKeys.USER_ID,userid);
-                                    preferenceEditor.putString(SharedPreferencesKeys.USER_PROFILE_PIC,profileUrl);
-                                    preferenceEditor.apply();
-                                    Intent homePage=new Intent(LoginActivity.this,HomeActivity.class);
-                                    homePage.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                    startActivity(homePage);
-                                    Core.startSocketEvents();
-                                    ReUsableFunctions.updateFcmTokenToServer();
-                                    finish();
-                                } catch (JSONException e) {
-                                    throw new RuntimeException(e);
-                                }
-
-
+                }
+                else if (ReUsableFunctions.isPhone(userid)) {
+                    authManager.LoginMobile(userid, password, new NetworkCallbackInterfaceWithJsonObjectDelivery() {
+                        @Override
+                        public void onSuccess(JSONObject response) {
+                            String username;
+                            try {
+                                username = response.getString("username");
+                                String userid=response.getString("userid");
+                                String profileUrl=response.getString("profile");
+                                String uuid=response.getString("uuid");
+                                preferenceEditor.putString(SharedPreferencesKeys.UUID,uuid);
+                                preferenceEditor.putString(SharedPreferencesKeys.JWT_TOKEN,response.getString("token"));
+                                preferenceEditor.putBoolean(SharedPreferencesKeys.IS_LOGGED_IN,true);
+                                preferenceEditor.putString(SharedPreferencesKeys.USER_NAME,username);
+                                preferenceEditor.putString(SharedPreferencesKeys.USER_ID,userid);
+                                preferenceEditor.putString(SharedPreferencesKeys.USER_PROFILE_PIC,profileUrl);
+                                preferenceEditor.apply();
+                                Intent homePage=new Intent(LoginActivity.this,HomeActivity.class);
+                                homePage.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                startActivity(homePage);
+                                Core.startSocketEvents();
+                                ReUsableFunctions.updateFcmTokenToServer();
+                                finish();
+                            } catch (JSONException e) {
+                                throw new RuntimeException(e);
                             }
 
-                            @Override
-                            public void onError(String err) {
-                                int errorCode=Integer.parseInt(err);
-                                login_btn.setEnabled(true);
-                                login_btn.setText("Log in");
-                                progressBar.setVisibility(View.GONE);
-                                showDialog();
 
+                        }
+
+                        @SuppressLint("SetTextI18n")
+                        @Override
+                        public void onError(String err) {
+                            login_btn.setEnabled(true);
+                            login_btn.setText("Log in");
+                            progressBar.setVisibility(View.GONE);
+                            showDialog();
+
+                        }
+                    });
+
+                }
+                else{
+
+                    authManager.LoginUserId(userid, password, new NetworkCallbackInterfaceWithJsonObjectDelivery() {
+                        @Override
+                        public void onSuccess(JSONObject response) {
+                            String username;
+                            try {
+                                username = response.getString("username");
+                                String userid=response.getString("userid");
+                                String profileUrl=response.getString("profile");
+                                String uuid=response.getString("uuid");
+                                preferenceEditor.putString(SharedPreferencesKeys.UUID,uuid);
+                                preferenceEditor.putString(SharedPreferencesKeys.JWT_TOKEN,response.getString("token"));
+                                preferenceEditor.putBoolean(SharedPreferencesKeys.IS_LOGGED_IN,true);
+                                preferenceEditor.putString(SharedPreferencesKeys.USER_NAME,username);
+                                preferenceEditor.putString(SharedPreferencesKeys.USER_ID,userid);
+                                preferenceEditor.putString(SharedPreferencesKeys.USER_PROFILE_PIC,profileUrl);
+                                preferenceEditor.apply();
+                                Intent homePage=new Intent(LoginActivity.this,HomeActivity.class);
+                                homePage.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                startActivity(homePage);
+                                Core.startSocketEvents();
+                                ReUsableFunctions.updateFcmTokenToServer();
+                                finish();
+                            } catch (JSONException e) {
+                                throw new RuntimeException(e);
                             }
-                        });
 
 
-                    }
+                        }
+
+                        @SuppressLint("SetTextI18n")
+                        @Override
+                        public void onError(String err) {
+
+                            login_btn.setEnabled(true);
+                            login_btn.setText("Log in");
+                            progressBar.setVisibility(View.GONE);
+                            showDialog();
+
+                        }
+                    });
+
 
                 }
 
-
-
-
-
-
             }
+
+
+
+
+
+
         });
-        signup_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(LoginActivity.this,SignUpMobileActivity.class));
-            }
-        });
-        forgetPassword_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(LoginActivity.this, ForgetPasswordActivity.class));
-            }
-        });
+        signup_btn.setOnClickListener(v -> startActivity(new Intent(LoginActivity.this,SignUpMobileActivity.class)));
+        forgetPassword_btn.setOnClickListener(v -> startActivity(new Intent(LoginActivity.this, ForgetPasswordActivity.class)));
     }
     protected  void init(){
         login_btn=findViewById(R.id.login_btn);
@@ -247,13 +227,7 @@ AuthManager authManager;
         AlertDialog dialog=new AlertDialog.Builder(LoginActivity.this).create();
         dialog.setTitle("That login info didn't work");
         dialog.setMessage("Check your username, mobile number, email or password");
-        dialog.setButton(AlertDialog.BUTTON_POSITIVE,"ok", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-
-            }
-        });
+        dialog.setButton(AlertDialog.BUTTON_POSITIVE,"ok", (dialog1, which) -> dialog1.dismiss());
         dialog.show();
 
     }

@@ -115,6 +115,7 @@ public class PostActivity extends AppCompatActivity {
             public void onSuccess(JSONObject response) {
 
                 JSONArray array = response.optJSONArray("data");
+                assert array != null;
                 JSONObject object = array.optJSONObject(0);
                 int postid = object.optInt("postid");
                 String userid = object.optString("userid");
@@ -297,6 +298,7 @@ public class PostActivity extends AppCompatActivity {
         comments_recyclerView.setVisibility(View.GONE);
         assert noCommentsLayout != null;
         noCommentsLayout.setVisibility(View.GONE);
+        assert userProfileImg != null;
         Glide.with(getApplicationContext()).load(loginInfo.getString(SharedPreferencesKeys.USER_PROFILE_PIC,"null")).placeholder(R.drawable.blank_profile).circleCrop().into(userProfileImg);
 
         // Fetch comments from server
@@ -422,21 +424,24 @@ public class PostActivity extends AppCompatActivity {
             DownloadManagerUtil.downloadFromUri(this,Uri.parse(data.postUrl));
             OptionsDialog.dismiss();
         });
-        addFavouriteBtnLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(PostActivity.this, "Coming soon", Toast.LENGTH_SHORT).show();
-                OptionsDialog.dismiss();}});
+        assert addFavouriteBtnLayout != null;
+        addFavouriteBtnLayout.setOnClickListener(v -> {
+            Toast.makeText(PostActivity.this, "Coming soon", Toast.LENGTH_SHORT).show();
+            OptionsDialog.dismiss();});
+        assert reportBtnLayout != null;
         reportBtnLayout.setOnClickListener(v->{
             Toast.makeText(PostActivity.this,"Coming soon",Toast.LENGTH_SHORT).show();
             OptionsDialog.dismiss();
         });
+        assert unfollowBtnLayout != null;
         if (data.isFollowed){
             unfollowBtnLayout.setVisibility(View.VISIBLE);
+            assert followBtnLayout != null;
             followBtnLayout.setVisibility(View.GONE);
 
         }else{
             unfollowBtnLayout.setVisibility(View.GONE);
+            assert followBtnLayout != null;
             followBtnLayout.setVisibility(View.VISIBLE);
         }
         if(data.userId.equals(Core.getPreference().getString(SharedPreferencesKeys.USER_ID,"null"))){
@@ -457,7 +462,7 @@ public class PostActivity extends AppCompatActivity {
 
                 @Override
                 public void onError(String err) {
-                    LoggerUtil.LogNetworkError(err.toString());
+                    LoggerUtil.LogNetworkError(err);
 
                 }
             });
@@ -476,7 +481,7 @@ public class PostActivity extends AppCompatActivity {
 
                 @Override
                 public void onError(String err) {
-                    LoggerUtil.LogNetworkError(err.toString());
+                    LoggerUtil.LogNetworkError(err);
 
                 }
             });

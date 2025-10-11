@@ -18,7 +18,6 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.bumptech.glide.Glide;
 import com.facebook.shimmer.ShimmerFrameLayout;
@@ -74,31 +73,19 @@ public class UserProfileActivity extends AppCompatActivity {
         getProfileData();
         // get user posts
         getPosts(intentData.getStringExtra("userid"));
-       mainXml.swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-           @Override
-           public void onRefresh() {
-               getProfileData();
-
-           }
-       });
+       mainXml.swipeRefresh.setOnRefreshListener(this::getProfileData);
         //on click listeners for followers and following text views
-        mainXml.followersCountText.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent=new Intent(UserProfileActivity.this, FollowerFollowingList.class);
-                intent.putExtra("type","followers");
-                intent.putExtra("userid",intentData.getStringExtra("userid"));
-                startActivity(intent);
-            }
+        mainXml.followersCountText.setOnClickListener(v -> {
+            Intent intent=new Intent(UserProfileActivity.this, FollowerFollowingList.class);
+            intent.putExtra("type","followers");
+            intent.putExtra("userid",intentData.getStringExtra("userid"));
+            startActivity(intent);
         });
-        mainXml.followingCountText.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent=new Intent(UserProfileActivity.this, FollowerFollowingList.class);
-                intent.putExtra("type","following");
-                intent.putExtra("userid",intentData.getStringExtra("userid"));
-                startActivity(intent);
-            }
+        mainXml.followingCountText.setOnClickListener(v -> {
+            Intent intent=new Intent(UserProfileActivity.this, FollowerFollowingList.class);
+            intent.putExtra("type","following");
+            intent.putExtra("userid",intentData.getStringExtra("userid"));
+            startActivity(intent);
         });
 
 
@@ -219,56 +206,50 @@ if(data.userid.equals(loginInfo.getString(SharedPreferencesKeys.USER_ID,"null"))
     }
 
 
-    mainXml.followBtn.setOnClickListener(new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            mainXml.unfollowBtn.setVisibility(View.VISIBLE);
-            mainXml.followBtn.setVisibility(View.GONE);
-            mainXml.followBtn.setEnabled(false);
-            mainXml.unfollowBtn.setEnabled(false);
+    mainXml.followBtn.setOnClickListener(v -> {
+        mainXml.unfollowBtn.setVisibility(View.VISIBLE);
+        mainXml.followBtn.setVisibility(View.GONE);
+        mainXml.followBtn.setEnabled(false);
+        mainXml.unfollowBtn.setEnabled(false);
 
-            followManager.follow(data.userid, new NetworkCallbackInterface() {
-                @Override
-                public void onSuccess() {
-                    mainXml.unfollowBtn.setEnabled(true);
+        followManager.follow(data.userid, new NetworkCallbackInterface() {
+            @Override
+            public void onSuccess() {
+                mainXml.unfollowBtn.setEnabled(true);
 
-                }
+            }
 
-                @Override
-                public void onError(String err) {
-                    mainXml.followBtn.setVisibility(View.VISIBLE);
-                    mainXml.unfollowBtn.setVisibility(View.GONE);
-                    mainXml.followBtn.setEnabled(true);
-                    mainXml.unfollowBtn.setEnabled(false);
+            @Override
+            public void onError(String err) {
+                mainXml.followBtn.setVisibility(View.VISIBLE);
+                mainXml.unfollowBtn.setVisibility(View.GONE);
+                mainXml.followBtn.setEnabled(true);
+                mainXml.unfollowBtn.setEnabled(false);
 
-                }
-            });
-        }
+            }
+        });
     });
-    mainXml.unfollowBtn.setOnClickListener(new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            mainXml.unfollowBtn.setVisibility(View.GONE);
-            mainXml.followBtn.setVisibility(View.VISIBLE);
-            mainXml.followBtn.setEnabled(false);
-            mainXml.unfollowBtn.setEnabled(false);
-            followManager.unfollow(data.userid, new NetworkCallbackInterface() {
-                @Override
-                public void onSuccess() {
-                    mainXml.followBtn.setEnabled(true);
-                }
+    mainXml.unfollowBtn.setOnClickListener(v -> {
+        mainXml.unfollowBtn.setVisibility(View.GONE);
+        mainXml.followBtn.setVisibility(View.VISIBLE);
+        mainXml.followBtn.setEnabled(false);
+        mainXml.unfollowBtn.setEnabled(false);
+        followManager.unfollow(data.userid, new NetworkCallbackInterface() {
+            @Override
+            public void onSuccess() {
+                mainXml.followBtn.setEnabled(true);
+            }
 
-                @Override
-                public void onError(String err) {
-                    mainXml.unfollowBtn.setVisibility(View.VISIBLE);
-                    mainXml.followBtn.setVisibility(View.GONE);
-                    mainXml.followBtn.setEnabled(false);
-                    mainXml.unfollowBtn.setEnabled(true);
+            @Override
+            public void onError(String err) {
+                mainXml.unfollowBtn.setVisibility(View.VISIBLE);
+                mainXml.followBtn.setVisibility(View.GONE);
+                mainXml.followBtn.setEnabled(false);
+                mainXml.unfollowBtn.setEnabled(true);
 
-                }
-            });
+            }
+        });
 
-        }
     });
 
 

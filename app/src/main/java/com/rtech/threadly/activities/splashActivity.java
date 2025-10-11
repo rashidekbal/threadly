@@ -33,18 +33,15 @@ SharedPreferences loginInfo;
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION|View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY|View.SYSTEM_UI_FLAG_FULLSCREEN);
         loginInfo= Core.getPreference();
         boolean isLoggedIn=loginInfo.getBoolean(SharedPreferencesKeys.IS_LOGGED_IN,false);
-    new Handler().postDelayed(new Runnable() {
-        @Override
-        public void run() {
-            if(!isLoggedIn){
-                startActivity(new Intent(splashActivity.this,LoginActivity.class));
-                finish();
-            }else{
-                startActivity(new Intent(splashActivity.this,HomeActivity.class));
-                finish();
-            }
-
+    new Handler().postDelayed(() -> {
+        if(!isLoggedIn){
+            startActivity(new Intent(splashActivity.this,LoginActivity.class));
+            finish();
+        }else{
+            startActivity(new Intent(splashActivity.this,HomeActivity.class));
+            finish();
         }
+
     },1500);
     }
 }

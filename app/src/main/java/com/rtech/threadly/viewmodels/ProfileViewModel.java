@@ -44,14 +44,10 @@ public class ProfileViewModel extends AndroidViewModel {
         profileManager.getLoggedInUserProfile(new NetworkCallbackInterfaceWithJsonObjectDelivery() {
             @Override
             public void onSuccess(JSONObject response) {
-//                Log.d("errorLoading", "successLoading: "+response.toString());
                 Profile_Model userdata;
-
                 try {
                     JSONArray array= response.getJSONArray("data");
                     JSONObject object=array.getJSONObject(0);
-
-                    ;
                     userdata=new Profile_Model(
                             object.getString("userid")
                             ,object.getString("username")
@@ -63,15 +59,14 @@ public class ProfileViewModel extends AndroidViewModel {
                             ,object.getInt("PostsCount")
                             ,0,0);
                     profileLiveData.postValue(userdata);
-
                 } catch (JSONException e) {
-//                    Log.d("errorLoading", "onError: "+e);
+                    profileLiveData.postValue(null);
                 }
             }
 
             @Override
             public void onError(String err) {
-//                Log.d("errorLoading", "onError: "+err);
+              profileLiveData.postValue(null);
 
             }
         });
@@ -104,6 +99,7 @@ public class ProfileViewModel extends AndroidViewModel {
                     }
                     UserPostsLiveData.postValue(tempArrayList);
                 } catch (JSONException e) {
+                    UserPostsLiveData.postValue(new ArrayList<>());
                     throw new RuntimeException(e);
                 }
 
@@ -113,7 +109,6 @@ public class ProfileViewModel extends AndroidViewModel {
             @Override
             public void onError(String err) {
                 UserPostsLiveData.postValue(new ArrayList<>());
-                // Handle error, e.g., log it or show a message to the user
 
             }
         });

@@ -1,5 +1,6 @@
 package com.rtech.threadly.adapters.mediaExplorerAdapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,11 +19,11 @@ import com.rtech.threadly.models.MediaModel;
 import java.util.ArrayList;
 
 public class AddPostShowMediaAdapter extends RecyclerView.Adapter<AddPostShowMediaAdapter.viewHolder> {
-    ArrayList<MediaModel> medialist;
+    ArrayList<MediaModel> mediaList;
     Context context;
     AddPostMainFragmentOptionsClickInterface callback;
     public AddPostShowMediaAdapter(Context context, ArrayList<MediaModel> mediaList,AddPostMainFragmentOptionsClickInterface callback) {
-        this.medialist=mediaList;
+        this.mediaList =mediaList;
         this.context=context;
         this.callback=callback;
     }
@@ -34,28 +35,24 @@ public class AddPostShowMediaAdapter extends RecyclerView.Adapter<AddPostShowMed
         return new viewHolder(view);
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull AddPostShowMediaAdapter.viewHolder holder, int position) {
-        if(medialist.get(position).isCameraIntent){
+        if(mediaList.get(position).isCameraIntent){
             holder.overlay.setVisibility(View.GONE);
             holder.image_view_layout.setVisibility(View.GONE);
             holder.openCameraButton.setVisibility(View.VISIBLE);
-            holder.openCameraButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    callback.openCamera();
-                }
-            });
+            holder.openCameraButton.setOnClickListener(v -> callback.openCamera());
 
         }
         else{
             holder.openCameraButton.setVisibility(View.GONE);
-        MediaModel mediaModel=medialist.get(position);
+        MediaModel mediaModel= mediaList.get(position);
         holder.overlay.setVisibility(View.GONE);
         Glide.with(context).load(mediaModel.uri).thumbnail(0.1f).into(holder.imageView);
         if(mediaModel.isVideo){
             holder.duration.setVisibility(View.VISIBLE);
-            holder.duration.setText(Integer.toString(mediaModel.duration)+":00");
+            holder.duration.setText(mediaModel.duration +":00");
 
         }else{
             holder.duration.setVisibility(View.GONE);
@@ -63,21 +60,16 @@ public class AddPostShowMediaAdapter extends RecyclerView.Adapter<AddPostShowMed
         }
 
 
-        holder.imageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                callback.itemPicked(mediaModel.uri.toString(),mediaModel.isVideo ? "video" : "image");
-            }
-        });
+        holder.imageView.setOnClickListener(v -> callback.itemPicked(mediaModel.uri.toString(),mediaModel.isVideo ? "video" : "image"));
 
     }}
 
     @Override
     public int getItemCount() {
-        return medialist.size();
+        return mediaList.size();
     }
 
-    public class viewHolder extends RecyclerView.ViewHolder {
+    public static class viewHolder extends RecyclerView.ViewHolder {
         ImageView imageView,openCameraButton;
         TextView duration;
         LinearLayout overlay;

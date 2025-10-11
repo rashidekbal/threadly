@@ -1,14 +1,14 @@
 package com.rtech.threadly.services;
-import android.app.Activity;
+
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.Toast;
+
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
+
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
@@ -16,7 +16,7 @@ import com.rtech.threadly.R;
 import com.rtech.threadly.RoomDb.DataBase;
 import com.rtech.threadly.RoomDb.schemas.NotificationSchema;
 import com.rtech.threadly.Threadly;
-import com.rtech.threadly.activities.MessagePageActivity;
+import com.rtech.threadly.activities.Messanger.MessengerMainMessagePageActivity;
 import com.rtech.threadly.constants.Constants;
 import com.rtech.threadly.constants.SharedPreferencesKeys;
 import com.rtech.threadly.core.Core;
@@ -26,7 +26,7 @@ import com.rtech.threadly.utils.ReUsableFunctions;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.concurrent.Executor;
+import java.util.Objects;
 import java.util.concurrent.Executors;
 
 public class FcmService extends FirebaseMessagingService {
@@ -53,8 +53,8 @@ public class FcmService extends FirebaseMessagingService {
     public void onMessageReceived(@NonNull RemoteMessage message) {
         super.onMessageReceived(message);
         String broadcastType=message.getData().get("responseType");
-        Log.d("recievedBrodcast", "onMessageReceived: "+broadcastType);
-        switch (broadcastType){
+        Log.d("receivedBroadcast", "onMessageReceived: "+broadcastType);
+        switch (Objects.requireNonNull(broadcastType)){
             case "statusUpdate":
                 StatusUpdateHandler(message);
                 break;
@@ -77,7 +77,7 @@ public class FcmService extends FirebaseMessagingService {
                 commentLikeNotifyController(message);
                 break;
             case "commentUnlike":
-                commentUnlikeHanlder(message);
+                commentUnlikeHandler(message);
                 break;
             case "logout":
                 LogOutSignalHandler(message);
@@ -86,15 +86,10 @@ public class FcmService extends FirebaseMessagingService {
         }
        }
 
-    private void commentUnlikeHanlder(RemoteMessage message) {
+    private void commentUnlikeHandler(RemoteMessage message) {
         String userId=message.getData().get("userId");
-        int commentId=Integer.parseInt(message.getData().get("commetnId"));
-        Executors.newSingleThreadExecutor().execute(new Runnable() {
-            @Override
-            public void run() {
-                DataBase.getInstance().notificationDao().deleteCommentLikeNotification(userId,commentId);
-            }
-        });
+        int commentId=Integer.parseInt(Objects.requireNonNull(message.getData().get("commentId")));
+        Executors.newSingleThreadExecutor().execute(() -> DataBase.getInstance().notificationDao().deleteCommentLikeNotification(userId,commentId));
     }
 
     private void commentLikeNotifyController(RemoteMessage message) {
@@ -102,8 +97,8 @@ public class FcmService extends FirebaseMessagingService {
         String username=message.getData().get("username");
         String profile=message.getData().get("profile");
         String postLink=message.getData().get("postLink");
-        int postId=Integer.parseInt(message.getData().get("postId"));
-        int commentId=Integer.parseInt(message.getData().get("commetnId"));
+        int postId=Integer.parseInt(Objects.requireNonNull(message.getData().get("postId")));
+        int commentId=Integer.parseInt(Objects.requireNonNull(message.getData().get("commentId")));
         ReUsableFunctions.addNotification(new NotificationSchema(Constants.COMMENT_LIKE_NOTIFICATION.toString(),0,userId,profile,username,postId,commentId,postLink,false,false,ReUsableFunctions.getTimestamp()));
     }
 
@@ -119,7 +114,7 @@ public class FcmService extends FirebaseMessagingService {
             object.put("ReplyTOMessageUid",message.getData().get("ReplyTOMsgUid"));
             object.put("type",message.getData().get("type"));
             object.put("timestamp",message.getData().get("timestamp"));
-            object.put("deliveryStatus",Integer.parseInt(message.getData().get("deliveryStatus")));
+            object.put("deliveryStatus",Integer.parseInt(Objects.requireNonNull(message.getData().get("deliveryStatus"))));
             object.put("isDeleted",Boolean.parseBoolean(message.getData().get("isDeleted")));
             ReUsableFunctions.addMessageToDb(object,"r");
 
@@ -135,8 +130,8 @@ public class FcmService extends FirebaseMessagingService {
     }
     private void StatusUpdateHandler(RemoteMessage message){
         String MsgUid=message.getData().get("MsgUid");
-        int deliveryStatus=Integer.parseInt(message.getData().get("deliveryStatus"));
-        boolean isDeleted=Boolean.parseBoolean(message.getData().get("isDeleted"));
+        int deliveryStatus=Integer.parseInt(Objects.requireNonNull(message.getData().get("deliveryStatus")));
+//        boolean isDeleted=Boolean.parseBoolean(message.getData().get("isDeleted"));
         ReUsableFunctions.updateMessageStatus(MsgUid,deliveryStatus);
 
     }
@@ -144,20 +139,15 @@ public class FcmService extends FirebaseMessagingService {
         String userId=message.getData().get("userId");
         String username=message.getData().get("username");
         String userProfile=message.getData().get("userprofile");
-        int postId=Integer.parseInt(message.getData().get("postId"));
+        int postId=Integer.parseInt(Objects.requireNonNull(message.getData().get("postId")));
         String postLink=message.getData().get("postLink");
-        int insertId=Integer.parseInt(message.getData().get("insertId"));
+        int insertId=Integer.parseInt(Objects.requireNonNull(message.getData().get("insertId")));
         ReUsableFunctions.addNotification(new NotificationSchema(Constants.POST_LIKE_NOTIFICATION.toString(),insertId,userId,userProfile,username,postId,0,postLink,false,false,ReUsableFunctions.getTimestamp()));
     }
     private void postUnlikedNotificationHandler(RemoteMessage message){
         String userId=message.getData().get("userId");
-        int postId=Integer.parseInt(message.getData().get("postId"));
-        Executors.newSingleThreadExecutor().execute(new Runnable() {
-            @Override
-            public void run() {
-                DataBase.getInstance().notificationDao().deletePostLikeNotification(userId,postId);
-            }
-        });
+        int postId=Integer.parseInt(Objects.requireNonNull(message.getData().get("postId")));
+        Executors.newSingleThreadExecutor().execute(() -> DataBase.getInstance().notificationDao().deletePostLikeNotification(userId,postId));
 
 
     }
@@ -182,7 +172,7 @@ public class FcmService extends FirebaseMessagingService {
         data.putString("profilePic",profile);
         data.putString("uuid",uuid);
         data.putString("src","notification");
-        Intent openMessageIntent=new Intent(Threadly.getGlobalContext(), MessagePageActivity.class);
+        Intent openMessageIntent=new Intent(Threadly.getGlobalContext(), MessengerMainMessagePageActivity.class);
         openMessageIntent.putExtras(data);
         return PendingIntent.getActivity(Threadly.getGlobalContext(),1001,openMessageIntent, PendingIntent.FLAG_MUTABLE);
     }
@@ -207,12 +197,7 @@ public class FcmService extends FirebaseMessagingService {
     }
     private void unFollowNotifyController(RemoteMessage message){
         String userId=message.getData().get("userId");
-        Executors.newSingleThreadExecutor().execute(new Runnable() {
-            @Override
-            public void run() {
-                DataBase.getInstance().notificationDao().deleteFollowNotification(userId,Constants.FOLLOW_NOTIFICATION.toString());
-            }
-        });
+        Executors.newSingleThreadExecutor().execute(() -> DataBase.getInstance().notificationDao().deleteFollowNotification(userId,Constants.FOLLOW_NOTIFICATION.toString()));
 
     }
 }

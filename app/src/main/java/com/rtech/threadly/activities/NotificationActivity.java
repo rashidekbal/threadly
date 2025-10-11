@@ -8,8 +8,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
@@ -51,27 +49,19 @@ public class NotificationActivity extends AppCompatActivity {
         //---------------------------
         //observer notification change
 
-        notificationViewModel.getInteractionNotification().observe(this, new Observer<List<NotificationSchema>>() {
-            @Override
-            public void onChanged(List<NotificationSchema> notificationSchemas) {
+        notificationViewModel.getInteractionNotification().observe(this, notificationSchemas -> {
 //                mainXml.NotificationShimmer.setVisibility(View.GONE);
-                if(notificationSchemas.isEmpty()){
-
-                }else{
-
-                    dataList.clear();
-                    dataList.addAll(notificationSchemas);
-                    mainXml.NotificationRecyclerView.setVisibility(View.VISIBLE);
-                    notificationAdapter.notifyDataSetChanged();
-
-                }
+            if(!notificationSchemas.isEmpty()){
+                dataList.clear();
+                dataList.addAll(notificationSchemas);
+                mainXml.NotificationRecyclerView.setVisibility(View.VISIBLE);
+                notificationAdapter.notifyDataSetChanged();
 
             }
+
         });
         //---------------------------
         //backBtn function setting
-        mainXml.backBtn.setOnClickListener(v->{
-            super.onBackPressed();
-        });
+        mainXml.backBtn.setOnClickListener(v-> super.onBackPressed());
     }
 }

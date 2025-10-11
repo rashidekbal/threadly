@@ -55,81 +55,66 @@ public class PostCommentsAdapter extends RecyclerView.Adapter<PostCommentsAdapte
         holder.likes_count_text.setText(Integer.toString(dataList.get(position).likesCount));
 
         /// like a comment
-        holder.likeBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                isLikedByMe=dataList.get(position).isLiked;
-                holder.likeBtn.setEnabled(false);
-                /// dislike this comment
-                if(isLikedByMe) {
-                    holder.likeBtn.setImageResource(R.drawable.heart_inactive_icon);
-                    Posts_Comments_Model object = dataList.get(position);
-                    dataList.set(position, new Posts_Comments_Model(object.commentId, object.postId, object.likesCount - 1, 0, object.userId, object.username, object.userDpUrl, object.comment, object.createdAt));
-                    notifyItemChanged(position);
-                    likeManager.UnLikeAComment(dataList.get(position).commentId, new NetworkCallbackInterface() {
-                        @Override
-                        public void onSuccess() {
-                            holder.likeBtn.setEnabled(true);
-                            isLikedByMe = false;
+        holder.likeBtn.setOnClickListener(v -> {
+            isLikedByMe=dataList.get(position).isLiked;
+            holder.likeBtn.setEnabled(false);
+            /// dislike this comment
+            if(isLikedByMe) {
+                holder.likeBtn.setImageResource(R.drawable.heart_inactive_icon);
+                Posts_Comments_Model object = dataList.get(position);
+                dataList.set(position, new Posts_Comments_Model(object.commentId, object.postId, object.likesCount - 1, 0, object.userId, object.username, object.userDpUrl, object.comment, object.createdAt));
+                notifyItemChanged(position);
+                likeManager.UnLikeAComment(dataList.get(position).commentId, new NetworkCallbackInterface() {
+                    @Override
+                    public void onSuccess() {
+                        holder.likeBtn.setEnabled(true);
+                        isLikedByMe = false;
 
-                        }
+                    }
 
-                        @Override
-                        public void onError(String err) {
-                            holder.likeBtn.setImageResource(R.drawable.red_heart_active_icon);
-                            Posts_Comments_Model object = dataList.get(position);
-                            dataList.set(position, new Posts_Comments_Model(object.commentId, object.postId, object.likesCount + 1, 1, object.userId, object.username, object.userDpUrl, object.comment, object.createdAt));
-                            notifyItemChanged(position);
-                            holder.likeBtn.setEnabled(true);
-                            isLikedByMe = true;
+                    @Override
+                    public void onError(String err) {
+                        holder.likeBtn.setImageResource(R.drawable.red_heart_active_icon);
+                        Posts_Comments_Model object = dataList.get(position);
+                        dataList.set(position, new Posts_Comments_Model(object.commentId, object.postId, object.likesCount + 1, 1, object.userId, object.username, object.userDpUrl, object.comment, object.createdAt));
+                        notifyItemChanged(position);
+                        holder.likeBtn.setEnabled(true);
+                        isLikedByMe = true;
 
-                        }
-                    });
-                }
-                //like this comment
-                else{
-                    holder.likeBtn.setImageResource(R.drawable.red_heart_active_icon);
-                    Posts_Comments_Model object=dataList.get(position);
-                    dataList.set(position,new Posts_Comments_Model(object.commentId, object.postId,object.likesCount+1,1,object.userId,object.username,object.userDpUrl,object.comment,object.createdAt));
-                    notifyItemChanged(position);
-                    likeManager.LikeAComment(dataList.get(position).commentId, new NetworkCallbackInterface() {
-                        @Override
-                        public void onSuccess() {
-                            holder.likeBtn.setEnabled(true);
-                            isLikedByMe=true;
+                    }
+                });
+            }
+            //like this comment
+            else{
+                holder.likeBtn.setImageResource(R.drawable.red_heart_active_icon);
+                Posts_Comments_Model object=dataList.get(position);
+                dataList.set(position,new Posts_Comments_Model(object.commentId, object.postId,object.likesCount+1,1,object.userId,object.username,object.userDpUrl,object.comment,object.createdAt));
+                notifyItemChanged(position);
+                likeManager.LikeAComment(dataList.get(position).commentId, new NetworkCallbackInterface() {
+                    @Override
+                    public void onSuccess() {
+                        holder.likeBtn.setEnabled(true);
+                        isLikedByMe=true;
 
-                        }
+                    }
 
-                        @Override
-                        public void onError(String err) {
-                            holder.likeBtn.setImageResource(R.drawable.heart_inactive_icon);
-                            Posts_Comments_Model object=dataList.get(position);
-                            dataList.set(position,new Posts_Comments_Model(object.commentId, object.postId,object.likesCount-1,0,object.userId,object.username,object.userDpUrl,object.comment,object.createdAt));
-                            notifyItemChanged(position);
-                            holder.likeBtn.setEnabled(true);
-                            isLikedByMe=false;
+                    @Override
+                    public void onError(String err) {
+                        holder.likeBtn.setImageResource(R.drawable.heart_inactive_icon);
+                        Posts_Comments_Model object=dataList.get(position);
+                        dataList.set(position,new Posts_Comments_Model(object.commentId, object.postId,object.likesCount-1,0,object.userId,object.username,object.userDpUrl,object.comment,object.createdAt));
+                        notifyItemChanged(position);
+                        holder.likeBtn.setEnabled(true);
+                        isLikedByMe=false;
 
-                        }
-                    });
-                }
+                    }
+                });
             }
         });
 
-//        open userProfile on click of profilepic
-        holder.userProfileImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ReUsableFunctions.openProfile(context,dataList.get(position).userId);
-
-            }
-        });
-        holder.username.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ReUsableFunctions.openProfile(context,dataList.get(position).userId);
-
-            }
-        });
+//        open userProfile on click of profile pic
+        holder.userProfileImage.setOnClickListener(v -> ReUsableFunctions.openProfile(context,dataList.get(position).userId));
+        holder.username.setOnClickListener(v -> ReUsableFunctions.openProfile(context,dataList.get(position).userId));
 
 
 
@@ -141,7 +126,7 @@ public class PostCommentsAdapter extends RecyclerView.Adapter<PostCommentsAdapte
         return dataList.size();
     }
 
-    public class viewHolder extends RecyclerView.ViewHolder {
+    public static class viewHolder extends RecyclerView.ViewHolder {
         ImageView userProfileImage,likeBtn;
         TextView username,comment,likes_count_text;
         public viewHolder(@NonNull View itemView) {

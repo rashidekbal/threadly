@@ -35,11 +35,13 @@ public class AddPostMainFragment extends Fragment {
     String MediaType;
 
 
-
+    public AddPostMainFragment(){
+        // Required empty public constructor
+    }
     public AddPostMainFragment(AddPostMainFragmentOptionsClickInterface callback) {
         this.callback=callback;
 
-        // Required empty public constructor
+
     }
 
     @Override

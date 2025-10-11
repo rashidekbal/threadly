@@ -44,15 +44,8 @@ public class GridPostAdapter extends RecyclerView.Adapter<GridPostAdapter.ViewHo
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, @SuppressLint("RecyclerView") int position) {
-        Glide.with(context).load(dataList.get(position).image_url).placeholder(R.drawable.post_placeholder).into(holder.imageView);
-        holder.imageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                post_fragmentSetCallback.openPostFragment(dataList.get(position).image_url,dataList.get(position).postid);
-
-
-            }
-        });
+        Glide.with(context).load(dataList.get(position).image_url).placeholder(R.drawable.post_placeholder).thumbnail(0.1f).into(holder.imageView);
+        holder.imageView.setOnClickListener(v -> post_fragmentSetCallback.openPostFragment(dataList.get(position).image_url,dataList.get(position).postid));
 
     }
 
@@ -61,7 +54,7 @@ public class GridPostAdapter extends RecyclerView.Adapter<GridPostAdapter.ViewHo
         return dataList.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    public static class ViewHolder extends RecyclerView.ViewHolder {
         ImageView imageView;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
