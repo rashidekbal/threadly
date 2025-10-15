@@ -13,19 +13,19 @@ import com.rtech.threadly.interfaces.general_ui_callbacks.OnCapturedMediaFinaliz
 
 import java.io.File;
 
-public class Image_finalizer_fragment extends Fragment {
+public class Media_Capture_finalizer_fragment extends Fragment {
     File imageFile;
     String mediaType;
     FragmentImageFinalizerFragmentBinding mainXMl;
     OnCapturedMediaFinalizedCallback OncapturedMediaFinalizedCallback;
 
 
-    public Image_finalizer_fragment(
+    public Media_Capture_finalizer_fragment(
 
     ) {
         // Required empty public constructor
     }
-    public Image_finalizer_fragment(OnCapturedMediaFinalizedCallback onCapturedMediaFinalized){
+    public Media_Capture_finalizer_fragment(OnCapturedMediaFinalizedCallback onCapturedMediaFinalized){
         this.OncapturedMediaFinalizedCallback=onCapturedMediaFinalized;
 
     }

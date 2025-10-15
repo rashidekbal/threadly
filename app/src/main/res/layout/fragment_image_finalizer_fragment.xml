@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragments.common_ui_pages.Image_finalizer_fragment">
+    tools:context=".fragments.common_ui_pages.Media_Capture_finalizer_fragment">
 
     <ImageView
         android:id="@+id/media_preview_view"
