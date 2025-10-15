@@ -154,4 +154,6 @@
     <string name="started_following_you">Started Following you</string>
     <string name="follow_back">follow back</string>
     <string name="profilepic">profilePic</string>
+    <string name="image_media">image media</string>
+    <string name="message_status_icon">message status icon</string>
 </resources>

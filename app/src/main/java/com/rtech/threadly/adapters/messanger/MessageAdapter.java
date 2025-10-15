@@ -6,7 +6,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -17,8 +16,6 @@ import com.rtech.threadly.R;
 import com.rtech.threadly.RoomDb.schemas.MessageSchema;
 import com.rtech.threadly.constants.SharedPreferencesKeys;
 import com.rtech.threadly.core.Core;
-
-import org.w3c.dom.Text;
 
 import java.util.List;
 
@@ -36,7 +33,7 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View v= LayoutInflater.from(context).inflate(R.layout.msg_card,parent,false);
+        View v= LayoutInflater.from(context).inflate(R.layout.text_msg_card,parent,false);
         return new TextMessageviewHolder(v);
     }
 

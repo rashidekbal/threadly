@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_marginHorizontal="@dimen/dp_10"
+    android:layout_marginTop="@dimen/dp_15">
+
+    <ImageView
+        android:id="@+id/senderProfile"
+        android:layout_width="@dimen/dp_25"
+        android:layout_height="@dimen/dp_25"
+        android:background="@drawable/circle"
+        android:clipToOutline="true"
+        tools:src="@drawable/blank_profile"
+        android:visibility="visible"
+        tools:targetApi="31"
+        android:contentDescription="@string/image_media"/>
+
+    <RelativeLayout
+        android:layout_toEndOf="@+id/senderProfile"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_10"
+        >
+        <LinearLayout
+            android:id="@+id/rec_msg_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="visible">
+            <ImageView
+                android:id="@+id/received_Media_holder_imageView"
+                android:layout_width="@dimen/dp_200"
+                android:layout_height="@dimen/dp_200"
+                android:src="@drawable/image_test"
+                android:scaleType="centerCrop"
+                android:background="@drawable/curved_big_square_box"
+                android:clipToOutline="true"
+                android:layout_marginBottom="@dimen/dp_6"
+                tools:targetApi="31"
+                android:contentDescription="@string/image_media"/>
+            <TextView
+                android:id="@+id/rec_caption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxWidth="@dimen/dp_270"
+                android:minWidth="@dimen/dp_40"
+                tools:text="b"
+                android:background="@drawable/received_msg_bg"
+                android:paddingHorizontal="@dimen/dp_15"
+                android:textColor="@color/black"
+                android:paddingVertical="@dimen/dp_10"
+                android:visibility="visible"
+                />
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/sent_msg_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_alignParentEnd="true"
+            android:gravity="end"
+            android:visibility="gone"
+            >
+
+
+            <ImageView
+                android:id="@+id/sent_Media_holder_imageView"
+                android:layout_width="@dimen/dp_200"
+                android:layout_height="@dimen/dp_200"
+                tools:src="@drawable/image_test"
+                android:scaleType="centerCrop"
+                android:background="@drawable/curved_big_square_box"
+                android:clipToOutline="true"
+                android:layout_marginBottom="@dimen/dp_6"/>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/sent_msg_bg"
+                android:gravity="end">
+                <TextView
+                    android:id="@+id/sent_caption"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:maxWidth="@dimen/dp_270"
+                    android:minWidth="@dimen/dp_40"
+                    tools:text="b"
+                    android:paddingHorizontal="@dimen/dp_15"
+                    android:textColor="@color/AllWhite"
+                    android:paddingVertical="@dimen/dp_10"
+                    android:visibility="gone"
+                    />
+                <ImageView
+                    android:id="@+id/status_img"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    tools:src="@drawable/msg_pending"
+                    android:layout_marginEnd="@dimen/dp_5"
+                    />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+</RelativeLayout>
+

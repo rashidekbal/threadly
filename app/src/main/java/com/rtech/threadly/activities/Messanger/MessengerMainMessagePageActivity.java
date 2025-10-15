@@ -17,17 +17,30 @@ import com.rtech.threadly.fragments.MessageFragments.MessagePageMainFragment;
 import com.rtech.threadly.fragments.PostAddCameraFragment;
 import com.rtech.threadly.interfaces.CameraFragmentInterface;
 import com.rtech.threadly.interfaces.Messanger.CameraOpenCallBackListener;
+import com.rtech.threadly.interfaces.general_ui_callbacks.OnCapturedMediaFinalizedCallback;
 import com.rtech.threadly.utils.ReUsableFunctions;
 
 public class MessengerMainMessagePageActivity extends AppCompatActivity {
     ActivityMessangerMainMessagePageBinding mainXml;
     Bundle userdata;
+    OnCapturedMediaFinalizedCallback onCapturedMediaFinalizedCallback=new OnCapturedMediaFinalizedCallback() {
+        @Override
+        public void OnFinalized(String filePath, String mediaType) {
+
+        }
+
+        @Override
+        public void discard() {
+
+        }
+    };
     CameraOpenCallBackListener cameraOpenCallBackListener=new CameraOpenCallBackListener() {
         @Override
         public void cameraBtnClicked() {
             changeFragment(new PostAddCameraFragment(new CameraFragmentInterface() {
                 @Override
                 public void onCapture(String filePath, String mediaType) {
+
                     getSupportFragmentManager().popBackStack();
                 }
             }));
