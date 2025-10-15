@@ -16,6 +16,7 @@ import com.rtech.threadly.R;
 import com.rtech.threadly.RoomDb.schemas.MessageSchema;
 import com.rtech.threadly.constants.SharedPreferencesKeys;
 import com.rtech.threadly.core.Core;
+import com.rtech.threadly.utils.ReUsableFunctions;
 
 import java.util.List;
 
@@ -23,52 +24,142 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     Context context;
     List<MessageSchema> list;
     String profile;
-
+    int TYPE_TEXT=1;
+    int TYPE_IMAGE=2;
+    int TYPE_VIDEO=3;
+    int TYPE_POST=4;
+    int TYPE_STORY=5;
     public MessageAdapter(Context context, List<MessageSchema> list,String profile) {
         this.context = context;
         this.list = list;
         this.profile=profile;
     }
 
+    @Override
+    public int getItemViewType(int position) {
+        String type=list.get(position).getType();
+        switch (type){
+            case "image":
+                return TYPE_IMAGE;
+            case "video":
+                return TYPE_VIDEO;
+            case"post":
+                return TYPE_POST;
+            case "story":
+                return TYPE_STORY;
+            default:
+                return TYPE_TEXT;
+        }
+    }
+
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View v= LayoutInflater.from(context).inflate(R.layout.text_msg_card,parent,false);
-        return new TextMessageviewHolder(v);
-    }
+        LayoutInflater layoutInflater=LayoutInflater.from(context);
+        switch (viewType){
+            case 2:
+                return new ImageMessageViewHolder(layoutInflater.inflate(R.layout.image_message_card,parent,false));
+            default:
+                return new TextMessageviewHolder(layoutInflater.inflate(R.layout.text_msg_card,parent,false));
+        }
+
+    };
+
 
     @Override
-    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holderView, int position) {
+        if(holderView instanceof ImageMessageViewHolder){
+            ImageMessageViewHolder holder=(ImageMessageViewHolder) holderView;
+            //if i had sent the media
+            if(list.get(position).getSenderId().equals(Core.getPreference().getString(SharedPreferencesKeys.UUID,"null"))){
+                int deliveryStatus=list.get(position).getDeliveryStatus();
+                holder.senderProfile.setVisibility(View.GONE);
+              holder.rec_msg_layout.setVisibility(View.GONE);
+              holder.sent_msg_layout.setVisibility(View.VISIBLE);
+              Glide.with(context).load(list.get(position).getPostLink()).placeholder(R.drawable.post_placeholder).into(holder.sent_MediaImageView);
+              holder.status_img.setImageResource(deliveryStatus==0?R.drawable.msg_pending:deliveryStatus==1?R.drawable.single_tick:deliveryStatus==2?R.drawable.double_tick_recieved:R.drawable.double_tick_viewed);
+              if (!list.get(position).getMsg().isEmpty()){
+                  holder.sent_caption.setVisibility(View.VISIBLE);
+                  holder.sent_caption.setText(list.get(position).getMsg());
+              }else{
+                  holder.sent_caption.setVisibility(View.GONE);
+              }
 
-        if(list.get(position).getSenderId().equals(Core.getPreference().getString(SharedPreferencesKeys.UUID,"null"))){
-            //if i had sent
-            int deliveryStatus=list.get(position).getDeliveryStatus();
-            ((TextMessageviewHolder)holder).senderProfile.setVisibility(View.GONE);
-            ((TextMessageviewHolder)holder).recMsg.setVisibility(View.GONE);
-            ((TextMessageviewHolder)holder).sent_msg_layout.setVisibility(View.VISIBLE);
-            ((TextMessageviewHolder)holder).sentMsg.setText(list.get(position).getMsg());
-            ((TextMessageviewHolder)holder).status_img.setImageResource(deliveryStatus==0?R.drawable.msg_pending:deliveryStatus==1?R.drawable.single_tick:deliveryStatus==2?R.drawable.double_tick_recieved:R.drawable.double_tick_viewed);
-        }else {
-            if(position>0){
-                if(list.get(position).getSenderId().equals(list.get(position-1).getSenderId())){
-                    ((TextMessageviewHolder)holder).senderProfile.setVisibility(View.GONE);}
-                else {
-                    ((TextMessageviewHolder)holder).senderProfile.setVisibility(View.VISIBLE);
-                    Glide.with(context).load(profile).placeholder(R.drawable.blank_profile).circleCrop().into( ((TextMessageviewHolder)holder).senderProfile);
+
+            }else{
+                holder.sent_msg_layout.setVisibility(View.GONE);
+                holder.rec_msg_layout.setVisibility(View.VISIBLE);
+                
+                // if i had  received the message
+
+                if(position>0){
+                    // if not first message
+                    if(list.get(position).getSenderId().equals(list.get(position-1).getSenderId())){
+                        //if sender is same as previous message
+                        holder.senderProfile.setVisibility(View.GONE);}
+                    else {
+                        //if sender is changed from previous
+                        holder.senderProfile.setVisibility(View.VISIBLE);
+                        Glide.with(context).load(profile).placeholder(R.drawable.blank_profile).circleCrop().into(holder.senderProfile);
+
+                    }
+
+                }else{
+                    //if first message
+                    holder.senderProfile.setVisibility(View.VISIBLE);
+                    holder.received_MediaImageView.setOnLongClickListener(v->{ ReUsableFunctions.ShowToast("long press detecked");return true;});
+                    Glide.with(context).load(profile).placeholder(R.drawable.blank_profile).circleCrop().into( holder.senderProfile);
 
                 }
-            } else {
-                ((TextMessageviewHolder)holder).senderProfile.setVisibility(View.VISIBLE);
-                Glide.with(context).load(profile).placeholder(R.drawable.blank_profile).circleCrop().into( ((TextMessageviewHolder)holder).senderProfile);
+                Glide.with(context).load(list.get(position).getPostLink()).placeholder(R.drawable.post_placeholder).into(holder.received_MediaImageView);
+                if(!list.get(position).getMsg().isEmpty()){
+                    holder.rec_caption.setVisibility(View.VISIBLE);
+                    holder.rec_caption.setText(list.get(position).getMsg());
+
+                }else {
+                    holder.rec_caption.setVisibility(View.GONE);
+                }
+
+
 
             }
 
-            ((TextMessageviewHolder)holder).recMsg.setVisibility(View.VISIBLE);
-            ((TextMessageviewHolder)holder).sent_msg_layout.setVisibility(View.GONE);
-            ((TextMessageviewHolder)holder).recMsg.setText(list.get(position).getMsg());
-
 
         }
+
+        else{
+            if(list.get(position).getSenderId().equals(Core.getPreference().getString(SharedPreferencesKeys.UUID,"null"))){
+                //if i had sent
+                int deliveryStatus=list.get(position).getDeliveryStatus();
+                ((TextMessageviewHolder)holderView).senderProfile.setVisibility(View.GONE);
+                ((TextMessageviewHolder)holderView).recMsg.setVisibility(View.GONE);
+                ((TextMessageviewHolder)holderView).sent_msg_layout.setVisibility(View.VISIBLE);
+                ((TextMessageviewHolder)holderView).sentMsg.setText(list.get(position).getMsg());
+                ((TextMessageviewHolder)holderView).status_img.setImageResource(deliveryStatus==0?R.drawable.msg_pending:deliveryStatus==1?R.drawable.single_tick:deliveryStatus==2?R.drawable.double_tick_recieved:R.drawable.double_tick_viewed);
+            }else {
+                if(position>0){
+                    if(list.get(position).getSenderId().equals(list.get(position-1).getSenderId())){
+                        ((TextMessageviewHolder)holderView).senderProfile.setVisibility(View.GONE);}
+                    else {
+                        ((TextMessageviewHolder)holderView).senderProfile.setVisibility(View.VISIBLE);
+                        Glide.with(context).load(profile).placeholder(R.drawable.blank_profile).circleCrop().into( ((TextMessageviewHolder)holderView).senderProfile);
+
+                    }
+                } else {
+                    ((TextMessageviewHolder)holderView).senderProfile.setVisibility(View.VISIBLE);
+                    Glide.with(context).load(profile).placeholder(R.drawable.blank_profile).circleCrop().into( ((TextMessageviewHolder)holderView).senderProfile);
+
+                }
+
+                ((TextMessageviewHolder)holderView).recMsg.setVisibility(View.VISIBLE);
+                ((TextMessageviewHolder)holderView).sent_msg_layout.setVisibility(View.GONE);
+                ((TextMessageviewHolder)holderView).recMsg.setText(list.get(position).getMsg());
+
+
+            }
+        }
+
+
 
     }
 
@@ -88,6 +179,24 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             senderProfile=itemView.findViewById(R.id.senderProfile);
             status_img=itemView.findViewById(R.id.status_img);
             sent_msg_layout=itemView.findViewById(R.id.sent_msg_layout);
+
+        }
+    }
+    public static class ImageMessageViewHolder extends RecyclerView.ViewHolder{
+        ImageView senderProfile,status_img;
+        LinearLayout rec_msg_layout,sent_msg_layout;
+        ImageView received_MediaImageView,sent_MediaImageView;
+        TextView rec_caption,sent_caption;
+        public ImageMessageViewHolder(@NonNull View itemView) {
+            super(itemView);
+            senderProfile=itemView.findViewById(R.id.senderProfile);
+            status_img=itemView.findViewById(R.id.status_img);
+            rec_msg_layout=itemView.findViewById(R.id.rec_msg_layout);
+            received_MediaImageView=itemView.findViewById(R.id.received_MediaImageView);
+            rec_caption=itemView.findViewById(R.id.rec_caption);
+            sent_msg_layout=itemView.findViewById(R.id.sent_msg_layout);
+            sent_MediaImageView=itemView.findViewById(R.id.sent_MediaImageView);
+            sent_caption=itemView.findViewById(R.id.sent_caption);
 
         }
     }

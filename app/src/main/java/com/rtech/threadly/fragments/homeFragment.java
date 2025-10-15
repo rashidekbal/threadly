@@ -140,7 +140,7 @@ public homeFragment(){
 
         // -------------------------
         //observe and display count of unread messages
-        messagesViewModel.getUnreadMsg_count(Core.getPreference().getString(SharedPreferencesKeys.UUID,"null")).observe(getViewLifecycleOwner(), new Observer<Integer>() {
+        messagesViewModel.getUnreadConversationCunt(Core.getPreference().getString(SharedPreferencesKeys.UUID,"null")).observe(getViewLifecycleOwner(), new Observer<Integer>() {
             @Override
             public void onChanged(Integer integer) {
                 if(integer>0){

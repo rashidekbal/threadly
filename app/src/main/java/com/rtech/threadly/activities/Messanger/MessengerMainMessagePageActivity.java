@@ -36,12 +36,16 @@ import com.rtech.threadly.databinding.ActivityMessangerMainMessagePageBinding;
 import com.rtech.threadly.fragments.PostAddCameraFragment;
 import com.rtech.threadly.fragments.common_ui_pages.Media_Capture_finalizer_fragment;
 import com.rtech.threadly.interfaces.CameraFragmentInterface;
+import com.rtech.threadly.interfaces.NetworkCallbackInterfaceWithProgressTracking;
 import com.rtech.threadly.interfaces.general_ui_callbacks.OnCapturedMediaFinalizedCallback;
 import com.rtech.threadly.network_managers.MessageManager;
 import com.rtech.threadly.utils.PermissionManagementUtil;
 import com.rtech.threadly.utils.ReUsableFunctions;
 import com.rtech.threadly.viewmodels.MessagesViewModel;
 import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -55,11 +59,47 @@ public class MessengerMainMessagePageActivity extends AppCompatActivity {
     MessagesViewModel messagesViewModel;
     List<MessageSchema> msgList;
     MessageAdapter messageAdapter;
+    String sendType="text";
+    String mediaLink;
+    String selectedMediaType;
 
     OnCapturedMediaFinalizedCallback onCapturedMediaFinalizedCallback=new OnCapturedMediaFinalizedCallback() {
         @Override
         public void OnFinalized(String filePath, String mediaType) {
+            sendType="media";
             getSupportFragmentManager().popBackStack("Id_camera_page",FragmentManager.POP_BACK_STACK_INCLUSIVE);
+            selectedMediaType=mediaType;
+            mainXml.mediaSendLayout.setVisibility(View.VISIBLE);
+            Glide.with(MessengerMainMessagePageActivity.this).load(new File(filePath)).placeholder(R.drawable.post_placeholder).into(mainXml.MediaPreviewImage);
+            mainXml.uploadProgress.setVisibility(View.VISIBLE);
+            mainXml.cameraBtn.setVisibility(View.GONE);
+            mainXml.addonsSection.setVisibility(View.GONE);
+            mainXml.sendBtn.setVisibility(View.VISIBLE);
+            mainXml.discardBtn.setVisibility(View.VISIBLE);
+            mainXml.sendBtn.setEnabled(false);
+            MessageManager.UploadMsgMedia(new File(filePath), new NetworkCallbackInterfaceWithProgressTracking() {
+                @Override
+                public void onSuccess(JSONObject response) {
+                    mediaLink=response.optJSONObject("data").optString("link");
+                    mainXml.uploadProgress.setVisibility(View.GONE);
+                    mainXml.sendBtn.setEnabled(true);
+
+                }
+
+                @Override
+                public void onError(String err) {
+                    mainXml.uploadProgress.setVisibility(View.GONE);
+                    ReUsableFunctions.ShowToast("something went wrong ..");
+                }
+
+                @Override
+                public void progress(long bytesUploaded, long totalBytes) {
+                    mainXml.uploadProgress.setMax((int) totalBytes);
+                    mainXml.uploadProgress.setProgress((int) bytesUploaded);
+
+
+                }
+            });
             ReUsableFunctions.ShowToast("media finalized"+" type "+mediaType);
 
         }
@@ -115,6 +155,7 @@ public class MessengerMainMessagePageActivity extends AppCompatActivity {
     }
 
     private void init(){
+        mainXml.mediaSendLayout.setVisibility(View.GONE);
         mainXml.fragmentContainer.setVisibility(View.GONE);
         msgList=new ArrayList<>();
         userdata=getIntent().getExtras();
@@ -156,6 +197,7 @@ public class MessengerMainMessagePageActivity extends AppCompatActivity {
                 } catch (JSONException e) {
                     throw new RuntimeException(e);
                 }
+
                 Executors.newSingleThreadExecutor().execute(() -> DataBase.getInstance().dao().updateMessagesSeen(conversationId,Core.getPreference().getString(SharedPreferencesKeys.UUID,"null")));
             }
         });
@@ -197,22 +239,37 @@ public class MessengerMainMessagePageActivity extends AppCompatActivity {
 
             }
         });
-
-
-
-        mainXml.sendBtn.setOnClickListener(
-                v->{
-                    String msg=mainXml.msgEditText.getText().toString().trim();
-                    if(!msg.isEmpty()){
-                        try {
-                            Core.sendCtoS(uuid,msg);
-                        } catch (JSONException e) {
-                            throw new RuntimeException(e);
-                        }
-                        mainXml.msgEditText.setText("");
+        mainXml.sendBtn.setOnClickListener(v->{
+            if(sendType.equals("text")){
+                ReUsableFunctions.ShowToast("text");
+                String msg=mainXml.msgEditText.getText().toString().trim();
+                if(!msg.isEmpty()){
+                    try {
+                        Core.sendCtoS(uuid,msg,"text","null",-1);
+                    } catch (JSONException e) {
+                        throw new RuntimeException(e);
+                    }
+                    mainXml.msgEditText.setText("");
+                }
+            }else if(sendType.equals("media")){
+                ReUsableFunctions.ShowToast("media type send");
+                String msg=mainXml.msgEditText.getText().toString().trim();
+                if(!mediaLink.isEmpty()){
+                    try {
+                        Core.sendCtoS(uuid,msg,selectedMediaType,mediaLink,-1);
+                        sendType="text";
+                        mainXml.mediaSendLayout.setVisibility(View.GONE);
+                    } catch (JSONException e) {
+                        throw new RuntimeException(e);
                     }
                 }
-        );
+
+            }
+        });
+
+
+
+
         mainXml.cameraBtn.setOnClickListener(v -> {
 
             if( ActivityCompat.shouldShowRequestPermissionRationale(MessengerMainMessagePageActivity.this,Manifest.permission.CAMERA)){

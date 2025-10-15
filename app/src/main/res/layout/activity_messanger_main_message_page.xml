@@ -9,7 +9,15 @@
     android:background="@color/white"
 
 >
+    <!--  messages recycler view for displaying messages-->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/RecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/dp_10"
+        android:layout_above="@id/mediaSendLayout"
 
+        />
 
         <!--    header section -->
         <com.google.android.material.appbar.AppBarLayout
@@ -74,14 +82,43 @@
 
             </RelativeLayout>
         </com.google.android.material.appbar.AppBarLayout>
-    <!--  messages recycler view for displaying messages-->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/RecyclerView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingBottom="@dimen/dp_10"
+<!-- media sender handling ui-->
+    <RelativeLayout
+        android:id="@+id/mediaSendLayout"
+        android:layout_width="@dimen/dp_170"
+        android:layout_height="@dimen/dp_150"
         android:layout_above="@id/footer"
-        />
+        android:layout_alignParentEnd="true"
+        android:visibility="gone"
+        android:layout_marginEnd="@dimen/dp_25">
+        <ImageView
+            android:id="@+id/MediaPreviewImage"
+            android:layout_width="@dimen/dp_150"
+            android:layout_height="@dimen/dp_150"
+            tools:src="@drawable/sample_post"
+            android:layout_centerInParent="true"
+            android:scaleType="fitCenter"
+            android:background="@drawable/curved_small_square_box"
+            android:clipToOutline="true"
+            />
+        <ImageView
+            android:id="@+id/discardBtn"
+            android:layout_width="@dimen/dp_30"
+            android:layout_height="@dimen/dp_30"
+            android:src="@drawable/cross"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="@dimen/dp_5"
+            android:elevation="2dp"/>
+        <ProgressBar
+            android:id="@+id/uploadProgress"
+            style="?android:progressBarStyleHorizontal"
+            android:layout_width="@dimen/dp_50"
+            android:layout_height="@dimen/dp_50"
+            android:indeterminateTint="@color/white"
+            android:layout_centerInParent="true"/>
+
+
+    </RelativeLayout>
         <!--message sending section-->
         <RelativeLayout
             android:layout_width="match_parent"

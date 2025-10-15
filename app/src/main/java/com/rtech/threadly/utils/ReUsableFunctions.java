@@ -135,6 +135,8 @@ public class ReUsableFunctions {
         String timestamp=object.optString("timestamp");
         int deliveryStatus=object.optInt("deliveryStatus");
         boolean isDeleted=object.optBoolean("isDeleted");
+        int postId=object.optInt("postid");
+        String postLink=object.optString("postLink");
         Executors.newSingleThreadExecutor().execute(new Runnable() {
             @Override
             public void run() {
@@ -146,6 +148,8 @@ public class ReUsableFunctions {
                         Core.getPreference().getString(SharedPreferencesKeys.UUID,null),
                         message,
                         type,
+                        postId,
+                        postLink,
                         timestamp,
                         deliveryStatus,
                         isDeleted

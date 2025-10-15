@@ -14,8 +14,10 @@ import java.util.List;
 public interface HistoryOperator {
     @Insert
     void insertHistory(HistorySchema history);
-    @Query("select * from UsersHistory")
+    @Query("select * from UsersHistory group by conversationId order by timestamp desc")
     LiveData<List<HistorySchema>> getAllHistory();
     @Query("select * from UsersHistory where conversationId=:conversationId group by conversationId")
     HistorySchema getHistory(String conversationId);
+    @Query("update UsersHistory set timeStamp=:timeStamp where conversationId=:conversationId")
+    void updateTimeStamp(String conversationId,String timeStamp);
 }

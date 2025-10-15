@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
+import androidx.work.Data;
 import androidx.work.WorkManager;
 import com.androidnetworking.AndroidNetworking;
 import com.rtech.threadly.RoomDb.DataBase;
@@ -84,11 +85,13 @@ public class Core {
            String MessageUid=object.optString("MsgUid");
            String ReplyTOMessageUid=object.optString("ReplyTOMsgUid");
            String type=object.optString("type");
+           String link=object.optString("link");
+           int postId=object.optInt("postId");
            String timestamp=object.optString("timestamp");
            Executors.newSingleThreadExecutor().execute(() -> {
                HistorySchema History= DataBase.getInstance().historyOperator().getHistory(ConversationId);
                if(History==null){
-                   DataBase.getInstance().historyOperator().insertHistory(new HistorySchema(ConversationId,username,userid,profile,senderUuid,latestMsg));
+                   DataBase.getInstance().historyOperator().insertHistory(new HistorySchema(ConversationId,username,userid,profile,senderUuid,latestMsg,ReUsableFunctions.getTimestamp()));
                    Log.d("Stoc", "call:  added new Conversation");
                }
                Log.d("StoC", "call: "+timestamp);
@@ -100,6 +103,8 @@ public class Core {
                        getPreference().getString(SharedPreferencesKeys.UUID,null),
                        latestMsg,
                        type,
+                       postId,
+                       link,
                        timestamp,
                        -1,
                        false
@@ -141,7 +146,7 @@ public class Core {
        SocketManager.getInstance().getSocket().on("msg_status_changed_event",msg_status_changed_event);
 
    }
-   public static void sendCtoS(String uuid,String msg)throws JSONException {
+   public static void sendCtoS(String uuid,String msg,String type,String link,int postId)throws JSONException {
        String timestamp=ReUsableFunctions.getTimestamp();
        String MsgUid=ReUsableFunctions.GenerateUUid();
        String senderUuid=Core.getPreference().getString(SharedPreferencesKeys.UUID,"null");
@@ -157,6 +162,9 @@ public class Core {
        object.put("senderUserId",senderUserId);
        object.put("senderProfilePic",senderProfilePic);
        object.put("msg",msg);
+       object.put("type",type);
+       object.put("link",link);
+       object.put("postId",postId);
 
        if (!SocketManager.getInstance().getSocket().connected()){
            Log.d(Constants.NETWORK_ERROR_TAG.toString(), "sendCtoS: socket not connected adding fall back");
@@ -176,7 +184,9 @@ public class Core {
                        senderUuid,
                        uuid,
                        msg,
-                       "text",
+                       type,
+                       postId,
+                       link,
                        timestamp,
                        0,
                        false
@@ -201,6 +211,9 @@ public class Core {
         object.put("senderUserId",senderUserId);
         object.put("senderProfilePic",senderProfilePic);
         object.put("msg",messageSchema.getMsg());
+        object.put("type",messageSchema.getType());
+        object.put("link",messageSchema.getPostLink());
+        object.put("postId",messageSchema.getPostId());
 
         if (!SocketManager.getInstance().getSocket().connected()){
             Log.d(Constants.NETWORK_ERROR_TAG.toString(), "sendCtoS: socket not connected adding fall back");
@@ -231,14 +244,16 @@ public class Core {
                            @Override
                            public void run() {
                                DataBase.getInstance().historyOperator().insertHistory(new HistorySchema(uuid + getPreference().getString(SharedPreferencesKeys.UUID, "null")
-                                       , username, userid, profile, uuid, "null"));
+                                       , username, userid, profile, uuid, "null",ReUsableFunctions.getTimestamp()));
                                Log.d("notfound", "data inserted ");
                            }
                        });
 
 
                    } else {
-                       Log.d("notfound", "no such user inserted ");
+                       Executors.newSingleThreadExecutor().execute(()->{
+                           DataBase.getInstance().historyOperator().updateTimeStamp(uuid+getPreference().getString(SharedPreferencesKeys.UUID,"null"),ReUsableFunctions.getTimestamp());
+                       });
 
                    }
 

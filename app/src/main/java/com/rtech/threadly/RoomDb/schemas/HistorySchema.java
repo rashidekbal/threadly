@@ -22,8 +22,10 @@ public class HistorySchema  {
     private String uuid;
     @ColumnInfo(name="latestMsg")
     private String msg;
+    @ColumnInfo(name="timestamp")
+    private String timeStamp;
 
-    public HistorySchema(int id, String conversationId, String username,String userId, String profilePic, String uuid, String msg) {
+    public HistorySchema(int id, String conversationId, String username,String userId, String profilePic, String uuid, String msg,String timeStamp) {
         this.id = id;
         this.conversationId = conversationId;
         this.username = username;
@@ -31,6 +33,8 @@ public class HistorySchema  {
         this.profilePic = profilePic;
         this.uuid = uuid;
         this.msg = msg;
+        this.timeStamp=timeStamp;
+
     }
 
     public String getUserId() {
@@ -38,13 +42,15 @@ public class HistorySchema  {
     }
 
     @Ignore
-    public HistorySchema(String conversationId, String username,String userId, String profilePic, String uuid, String msg) {
+    public HistorySchema(String conversationId, String username,String userId, String profilePic, String uuid, String msg,String timeStamp) {
         this.conversationId = conversationId;
         this.username = username;
         this.profilePic = profilePic;
         this.uuid = uuid;
         this.userId=userId;
         this.msg = msg;
+        this.timeStamp=timeStamp;
+
     }
 
 
@@ -95,5 +101,13 @@ public class HistorySchema  {
 
     public void setMsg(String msg) {
         this.msg = msg;
+    }
+
+    public String getTimeStamp() {
+        return timeStamp;
+    }
+
+    public void setTimeStamp(String timeStamp) {
+        this.timeStamp = timeStamp;
     }
 }

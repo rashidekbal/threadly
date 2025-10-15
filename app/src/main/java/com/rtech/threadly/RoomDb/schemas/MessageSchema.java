@@ -22,6 +22,10 @@ public class MessageSchema {
     private String msg;
     @ColumnInfo(name="type")
     private String type;
+    @ColumnInfo(name="postId")
+    private int  postId;
+    @ColumnInfo(name = "postLink")
+    private String postLink;
     @ColumnInfo(name="timestamp")
     private  String timestamp;
     @ColumnInfo(name="deliveryStatus")
@@ -45,7 +49,7 @@ public class MessageSchema {
     }
     @Ignore
 
-    public MessageSchema(String messageUid, String conversationId, String replyToMsgId, String senderId, String receiverId, String msg, String type, String timestamp, int deliveryStatus, boolean isDeleted) {
+    public MessageSchema(String messageUid, String conversationId, String replyToMsgId, String senderId, String receiverId, String msg, String type,int postId,String postLink ,String timestamp, int deliveryStatus, boolean isDeleted) {
         this.messageUid = messageUid;
         this.conversationId = conversationId;
         this.replyToMsgId = replyToMsgId;
@@ -56,6 +60,8 @@ public class MessageSchema {
         this.timestamp = timestamp;
         this.deliveryStatus = deliveryStatus;
         this.isDeleted = isDeleted;
+        this.postId=postId;
+        this.postLink=postLink;
     }
 
     public long getMsgId() {
@@ -145,4 +151,14 @@ public class MessageSchema {
     public void setDeleted(boolean deleted) {
         isDeleted = deleted;
     }
+    public int  getPostId(){
+        return postId;
+    }
+    public void setPostId(int pid){
+        postId=pid;
+    }
+    public void setPostLink(String pl){
+        postLink=pl;
+    }
+    public String getPostLink(){return postLink;}
 }

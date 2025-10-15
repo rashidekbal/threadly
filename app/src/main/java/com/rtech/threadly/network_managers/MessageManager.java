@@ -6,18 +6,21 @@ import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.JSONObjectRequestListener;
+import com.androidnetworking.interfaces.UploadProgressListener;
 import com.rtech.threadly.RoomDb.DataBase;
 import com.rtech.threadly.RoomDb.schemas.MessageSchema;
 import com.rtech.threadly.constants.ApiEndPoints;
 import com.rtech.threadly.constants.Constants;
 import com.rtech.threadly.constants.SharedPreferencesKeys;
 import com.rtech.threadly.core.Core;
+import com.rtech.threadly.interfaces.NetworkCallbackInterfaceWithProgressTracking;
 import com.rtech.threadly.utils.ReUsableFunctions;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.util.concurrent.Executors;
 
 public class MessageManager {
@@ -76,7 +79,7 @@ public class MessageManager {
                                         public void run() {
                                             DataBase.getInstance().dao().insertMessage(new MessageSchema(
                                                     MsgUid,conversationUid,replyToMsgUid,
-                                                    senderUuid,receiverUuid,message,type,timeStamp,-1,isDeleted
+                                                    senderUuid,receiverUuid,message,type,-1,"null",timeStamp,-1,isDeleted
                                             ));
                                         }
                                     });
@@ -165,6 +168,33 @@ public class MessageManager {
                      Log.d(TAG, "onError: "+anError.getErrorDetail());
                  }
              });
+
+    }
+    public static void UploadMsgMedia(File filepath, NetworkCallbackInterfaceWithProgressTracking callbackInterfaceWithProgressTracking){
+        String url=ApiEndPoints.UPLOAD_MEDIA_MESSAGE;
+        AndroidNetworking.upload(url).setPriority(Priority.HIGH)
+                .addHeaders("Authorization","Bearer "+Core.getPreference().getString(SharedPreferencesKeys.JWT_TOKEN,"null"))
+                .addMultipartFile("media",filepath).build()
+                .setUploadProgressListener(new UploadProgressListener() {
+                    @Override
+                    public void onProgress(long bytesUploaded, long totalBytes) {
+                        callbackInterfaceWithProgressTracking.progress(bytesUploaded,totalBytes);
+
+                    }
+                }).getAsJSONObject(new JSONObjectRequestListener() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        callbackInterfaceWithProgressTracking.onSuccess(response);
+
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+                        callbackInterfaceWithProgressTracking.onError(anError.toString());
+
+                    }
+                });
+
 
     }
 }

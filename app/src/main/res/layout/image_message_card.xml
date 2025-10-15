@@ -32,9 +32,9 @@
                android:orientation="vertical"
                android:visibility="visible">
                <ImageView
-                   android:id="@+id/received_Media_holder_imageView"
-                   android:layout_width="@dimen/dp_200"
-                   android:layout_height="@dimen/dp_200"
+                   android:id="@+id/received_MediaImageView"
+                   android:layout_width="@dimen/dp_150"
+                   android:layout_height="@dimen/dp_150"
                    android:src="@drawable/image_test"
                    android:scaleType="centerCrop"
                    android:background="@drawable/curved_big_square_box"
@@ -68,9 +68,9 @@
 
 
                 <ImageView
-                    android:id="@+id/sent_Media_holder_imageView"
-                    android:layout_width="@dimen/dp_200"
-                    android:layout_height="@dimen/dp_200"
+                    android:id="@+id/sent_MediaImageView"
+                    android:layout_width="@dimen/dp_150"
+                    android:layout_height="@dimen/dp_150"
                     tools:src="@drawable/image_test"
                     android:scaleType="centerCrop"
                     android:background="@drawable/curved_big_square_box"

@@ -282,7 +282,7 @@ public class ImagePostsFeedAdapter extends RecyclerView.Adapter<RecyclerView.Vie
           SuggestUsersAdapter suggestUsersAdapter=new SuggestUsersAdapter(context,suggestUsersList);
           // suggestion view section
               ((SuggestUsersViewHolder)holder).mainLayout.setVisibility(View.VISIBLE);
-              ((SuggestUsersViewHolder) holder).SuggestionRecyclerView.setLayoutManager(new LinearLayoutManager(context));
+              ((SuggestUsersViewHolder) holder).SuggestionRecyclerView.setLayoutManager(new LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL,false));
               ((SuggestUsersViewHolder) holder).SuggestionRecyclerView.setAdapter(suggestUsersAdapter);
               suggestUsersAdapter.notifyDataSetChanged();
           if (suggestUsersList.isEmpty()) {
