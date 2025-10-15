@@ -1,7 +1,6 @@
 package com.rtech.threadly.activities.Messanger;
 
 import static com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_EXPANDED;
-
 import android.Manifest;
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,7 +9,6 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
-
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -21,7 +19,6 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
-
 import com.bumptech.glide.Glide;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
@@ -39,13 +36,11 @@ import com.rtech.threadly.databinding.ActivityMessangerMainMessagePageBinding;
 import com.rtech.threadly.fragments.PostAddCameraFragment;
 import com.rtech.threadly.fragments.common_ui_pages.Media_Capture_finalizer_fragment;
 import com.rtech.threadly.interfaces.CameraFragmentInterface;
-import com.rtech.threadly.interfaces.Messanger.CameraOpenCallBackListener;
 import com.rtech.threadly.interfaces.general_ui_callbacks.OnCapturedMediaFinalizedCallback;
 import com.rtech.threadly.network_managers.MessageManager;
 import com.rtech.threadly.utils.PermissionManagementUtil;
 import com.rtech.threadly.utils.ReUsableFunctions;
 import com.rtech.threadly.viewmodels.MessagesViewModel;
-
 import org.json.JSONException;
 import java.util.ArrayList;
 import java.util.List;
@@ -75,17 +70,14 @@ public class MessengerMainMessagePageActivity extends AppCompatActivity {
             ReUsableFunctions.ShowToast("media discarded");
         }
     };
-    CameraFragmentInterface cameraFragmentInterface=new CameraFragmentInterface() {
-        @Override
-        public void onCapture(String filePath, String mediaType) {
-            Media_Capture_finalizer_fragment fragment=new Media_Capture_finalizer_fragment(onCapturedMediaFinalizedCallback);
-            Bundle bundle=new Bundle();
-            bundle.putString("filePath",filePath);
-            bundle.putString("mediaType",mediaType);
-            fragment.setArguments(bundle);
-            changeFragment(fragment,"Id_mediaFinalizer_page");
+    CameraFragmentInterface cameraFragmentInterface= (filePath, mediaType) -> {
+        Media_Capture_finalizer_fragment fragment=new Media_Capture_finalizer_fragment(onCapturedMediaFinalizedCallback);
+        Bundle bundle=new Bundle();
+        bundle.putString("filePath",filePath);
+        bundle.putString("mediaType",mediaType);
+        fragment.setArguments(bundle);
+        changeFragment(fragment,"Id_mediaFinalizer_page");
 
-        }
     };
 
     @Override
@@ -114,12 +106,9 @@ public class MessengerMainMessagePageActivity extends AppCompatActivity {
         });
 
         init();
-        getSupportFragmentManager().addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
-            @Override
-            public void onBackStackChanged() {
-                if(getSupportFragmentManager().getBackStackEntryCount()==0){
-                    mainXml.fragmentContainer.setVisibility(View.GONE);
-                }
+        getSupportFragmentManager().addOnBackStackChangedListener(() -> {
+            if(getSupportFragmentManager().getBackStackEntryCount()==0){
+                mainXml.fragmentContainer.setVisibility(View.GONE);
             }
         });
 
@@ -224,25 +213,22 @@ public class MessengerMainMessagePageActivity extends AppCompatActivity {
                     }
                 }
         );
-        mainXml.cameraBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        mainXml.cameraBtn.setOnClickListener(v -> {
 
-                if( ActivityCompat.shouldShowRequestPermissionRationale(MessengerMainMessagePageActivity.this,Manifest.permission.CAMERA)){
-                    ReUsableFunctions.ShowToast("please provide camera permission in settings");
-                    return ;
-
-                }
-                if(PermissionManagementUtil.isAllPermissionGranted(MessengerMainMessagePageActivity.this,new String[]{Manifest.permission.CAMERA})){
-                    ReUsableFunctions.ShowToast("camera btn clicked ");
-                    mainXml.fragmentContainer.setVisibility(View.VISIBLE);
-                    changeFragment(new PostAddCameraFragment(cameraFragmentInterface),"Id_camera_page");
-                }else{
-                    PermissionManagementUtil.requestPermission(MessengerMainMessagePageActivity.this,new String[]{Manifest.permission.CAMERA},205);
-
-                }
+            if( ActivityCompat.shouldShowRequestPermissionRationale(MessengerMainMessagePageActivity.this,Manifest.permission.CAMERA)){
+                ReUsableFunctions.ShowToast("please provide camera permission in settings");
+                return ;
 
             }
+            if(PermissionManagementUtil.isAllPermissionGranted(MessengerMainMessagePageActivity.this,new String[]{Manifest.permission.CAMERA})){
+                ReUsableFunctions.ShowToast("camera btn clicked ");
+                mainXml.fragmentContainer.setVisibility(View.VISIBLE);
+                changeFragment(new PostAddCameraFragment(cameraFragmentInterface),"Id_camera_page");
+            }else{
+                PermissionManagementUtil.requestPermission(MessengerMainMessagePageActivity.this,new String[]{Manifest.permission.CAMERA},205);
+
+            }
+
         });
         mainXml.mediaBtn.setOnClickListener(v->showMediaSelector());
     }
@@ -272,7 +258,7 @@ public class MessengerMainMessagePageActivity extends AppCompatActivity {
 
     private void changeFragment(Fragment frag,String fragmentId){
         getSupportFragmentManager().beginTransaction().replace(mainXml.fragmentContainer.getId(),frag)
-                .addToBackStack(null)
+                .addToBackStack(fragmentId)
                 .commit();
     }
 
