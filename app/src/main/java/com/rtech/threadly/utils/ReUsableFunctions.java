@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 
+import android.util.Log;
 import android.webkit.MimeTypeMap;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -114,6 +115,7 @@ public class ReUsableFunctions {
         return file;
     }
     public static void addMessageToDb(JSONObject object,String s_r_type){
+
         String ConversationId=object.optString(s_r_type.equals("s")?"receiverUuid":"senderUuid")+Core.getPreference().getString(SharedPreferencesKeys.UUID, "null");
         String senderUuid=object.optString("senderUuid");
         String message =object.optString("message");
@@ -123,7 +125,7 @@ public class ReUsableFunctions {
         String timestamp=object.optString("timestamp");
         int deliveryStatus=object.optInt("deliveryStatus");
         boolean isDeleted=object.optBoolean("isDeleted");
-        int postId=object.optInt("postid");
+        int postId=object.optInt("postId");
         String postLink=object.optString("postLink");
         Executors.newSingleThreadExecutor().execute(() -> getInstance().dao().insertMessage(new MessageSchema(
                 MessageUid,

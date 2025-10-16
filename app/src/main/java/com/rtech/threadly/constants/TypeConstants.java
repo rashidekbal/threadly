@@ -6,6 +6,6 @@ public class TypeConstants {
     public static String IMAGE="image";
     public static String VIDEO="video";
     public static String STORY="story";
-    public static String REEL="reel";
+    public static String POST="post";
 
 }

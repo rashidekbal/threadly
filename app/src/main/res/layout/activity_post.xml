@@ -173,6 +173,7 @@
                 android:gravity="center"
                 android:layout_marginBottom="@dimen/dp_30">
                 <ImageView
+                    android:id="@+id/share_btn"
                     android:layout_width="@dimen/dp_32"
                     android:layout_height="@dimen/dp_26"
                     android:src="@drawable/share_icon_white"/>

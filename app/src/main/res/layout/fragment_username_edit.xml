@@ -60,7 +60,7 @@
             android:padding="@dimen/dp_15"
             android:layout_marginHorizontal="@dimen/dp_14"
             android:background="@drawable/curved_rectangularbox_black_outline"
-            android:hint="@string/username"
+            android:hint="@string/userid"
             android:textColor="@color/black"
             android:textColorHint="@color/DarkGreyText"
             android:layout_marginTop="@dimen/dp_20"

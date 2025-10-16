@@ -228,7 +228,7 @@ public class MessengerMainMessagePageActivity extends AppCompatActivity {
                 String msg=mainXml.msgEditText.getText().toString().trim();
                 if(!msg.isEmpty()){
                     try {
-                        Core.sendCtoS(uuid,msg,"text","null",-1);
+                        Core.sendCtoS(uuid,msg,"text","null",-1,msg);
                     } catch (JSONException e) {
                         throw new RuntimeException(e);
                     }
@@ -238,7 +238,7 @@ public class MessengerMainMessagePageActivity extends AppCompatActivity {
                 String msg=mainXml.msgEditText.getText().toString().trim();
                 if(!mediaLink.isEmpty()){
                     try {
-                        Core.sendCtoS(uuid,msg,selectedMediaType,mediaLink,-1);
+                        Core.sendCtoS(uuid,msg,selectedMediaType,mediaLink,-1,"sent a "+selectedMediaType);
                         sendType="text";
                         mainXml.mediaSendLayout.setVisibility(View.GONE);
                     } catch (JSONException e) {

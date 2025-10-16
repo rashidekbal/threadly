@@ -12,8 +12,7 @@
         android:layout_width="@dimen/dp_50"
         android:layout_height="4dp"
         android:background="@drawable/bar_appearence"
-        android:layout_marginTop="@dimen/dp_4"
-        android:layout_marginBottom="@dimen/dp_10"
+        android:layout_marginTop="@dimen/dp_5"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -54,7 +53,7 @@
                 android:textSize="@dimen/sp_15"
                 android:hint="Search"
                 android:padding="2dp"
-                android:textColor="@color/light_grey_text"/>
+                android:textColor="@color/black"/>
         </LinearLayout>
         <ImageView
             android:id="@+id/suggestUsersBtn"
@@ -88,40 +87,60 @@
         app:layout_constraintStart_toStartOf="@id/Users_List_recyclerView"
         app:layout_constraintEnd_toEndOf="@id/Users_List_recyclerView"
         />
-    <RelativeLayout
+    <LinearLayout
         android:id="@+id/extras_layout"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_100"
+        android:layout_height="@dimen/dp_140"
         app:layout_constraintTop_toBottomOf="@id/Users_List_recyclerView"
         android:elevation="@dimen/dp_10"
+        android:paddingVertical="@dimen/dp_25"
+        android:orientation="vertical"
+        android:gravity="center_vertical"
         >
-        <LinearLayout
-            android:id="@+id/Story_add_ll_btn"
-            android:layout_width="wrap_content"
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/sendBtn"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:gravity="center_horizontal">
-            <ImageView
-                android:layout_width="@dimen/dp_50"
-                android:layout_height="@dimen/dp_50"
-                android:background="@drawable/circle"
-                android:clipToOutline="true"
-                android:src="@drawable/plus_circle_filled"
-               />
-            <TextView
+            android:background="@drawable/curved_btn_blue"
+            android:text="@string/send"
+            android:textColor="@color/AllWhite"
+            android:visibility="gone"/>
+        <RelativeLayout
+            android:id="@+id/actionButtons_rl"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="visible">
+            <LinearLayout
+                android:id="@+id/Story_add_ll_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Add to "
-                android:textAlignment="center"
-                />
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Story"
-                android:textAlignment="center"
-                />
+                android:orientation="vertical"
+                android:gravity="center_horizontal">
+                <ImageView
+                    android:layout_width="@dimen/dp_50"
+                    android:layout_height="@dimen/dp_50"
+                    android:background="@drawable/circle"
+                    android:clipToOutline="true"
+                    android:src="@drawable/plus_circle_filled"
+                    />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Add to "
+                    android:textAlignment="center"
+                    android:textColor="@color/black"
+                    />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Story"
+                    android:textAlignment="center"
+                    android:textColor="@color/black"
+                    />
 
 
-        </LinearLayout>
-    </RelativeLayout>
+            </LinearLayout>
+
+        </RelativeLayout>
+    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

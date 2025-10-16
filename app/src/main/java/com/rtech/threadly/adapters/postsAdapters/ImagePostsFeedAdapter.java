@@ -23,6 +23,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.OptIn;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatButton;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.media3.common.util.UnstableApi;
@@ -39,6 +40,7 @@ import com.rtech.threadly.adapters.commentsAdapter.PostCommentsAdapter;
 import com.rtech.threadly.adapters.messanger.UsersShareSheetGridAdapter;
 import com.rtech.threadly.adapters.mscs.SuggestUsersAdapter;
 import com.rtech.threadly.constants.SharedPreferencesKeys;
+import com.rtech.threadly.constants.TypeConstants;
 import com.rtech.threadly.core.Core;
 import com.rtech.threadly.interfaces.Messanger.OnUserSelectedListener;
 import com.rtech.threadly.interfaces.NetworkCallbackInterfaceWithJsonObjectDelivery;
@@ -289,7 +291,7 @@ public class ImagePostsFeedAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
           // share btn click action
           holder.share_btn.setOnClickListener(v->{
-              OpenPostShareDialog();
+              OpenPostShareDialog(list.get(position));
           });
 
 
@@ -615,9 +617,12 @@ public class ImagePostsFeedAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         }
     }
 
-    private void OpenPostShareDialog(){
+    private void OpenPostShareDialog(Posts_Model post){
+        ArrayList<UsersModel> selectedUsers=new ArrayList<>();
         BottomSheetDialog shareBottomSheet=new BottomSheetDialog(context,R.style.TransparentBottomSheet);
         shareBottomSheet.setContentView(R.layout.post_share_layout);
+        AppCompatButton sendBtn=shareBottomSheet.findViewById(R.id.sendBtn);
+        RelativeLayout actionButtons_rl=shareBottomSheet.findViewById(R.id.actionButtons_rl);
         ImageView search_btn=shareBottomSheet.findViewById(R.id.search_btn);
         EditText search_edit_text=shareBottomSheet.findViewById(R.id.search_edit_text);
         ImageView suggestUsersBtn=shareBottomSheet.findViewById(R.id.suggestUsersBtn);
@@ -630,6 +635,23 @@ public class ImagePostsFeedAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         UsersShareSheetGridAdapter adapter=new UsersShareSheetGridAdapter(context, usersModelList, new OnUserSelectedListener() {
             @Override
             public void onSelect(UsersModel model) {
+                if(selectedUsers.contains(model)){
+                    selectedUsers.remove(model);
+                }else{
+                    selectedUsers.add(model);
+                }
+                if(selectedUsers.isEmpty()){
+                    assert actionButtons_rl != null;
+                    actionButtons_rl.setVisibility(View.VISIBLE);
+                    assert sendBtn != null;
+                    sendBtn.setVisibility(View.GONE);
+
+                }else{
+                    assert actionButtons_rl != null;
+                    actionButtons_rl.setVisibility(View.GONE);
+                    assert sendBtn != null;
+                    sendBtn.setVisibility(View.VISIBLE);
+                }
 
             }
         });
@@ -653,6 +675,27 @@ public class ImagePostsFeedAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                 progressBar.setVisibility(View.GONE);
 
             }
+        });
+
+        //send btn action
+        sendBtn.setOnClickListener(v->{
+            int postid=post.postId;
+            if(!selectedUsers.isEmpty()){
+                for(UsersModel model:selectedUsers){
+                    try {
+                        ReUsableFunctions.ShowToast(" "+postid);
+                       Core.sendCtoS(model.getUuid(),"", TypeConstants.POST,post.postUrl,postid,"sent a reel by "+post.username);
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+                selectedUsers.clear();
+                sendBtn.setVisibility(View.GONE);
+                actionButtons_rl.setVisibility(View.VISIBLE);
+
+            }
+            shareBottomSheet.dismiss();
         });
 
         shareBottomSheet.show();

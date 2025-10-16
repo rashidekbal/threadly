@@ -20,6 +20,7 @@ import com.rtech.threadly.utils.ReUsableFunctions;
 import java.util.ArrayList;
 
 public class UsersShareSheetGridAdapter extends RecyclerView.Adapter<UsersShareSheetGridAdapter.viewHolder> {
+    ArrayList<UsersModel> selectedUsers=new ArrayList<>();
     Context context;
     ArrayList<UsersModel> usersList;
     OnUserSelectedListener userSelectedListener;
@@ -32,17 +33,32 @@ public class UsersShareSheetGridAdapter extends RecyclerView.Adapter<UsersShareS
     @Override
     public viewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         // reusing the status card as the share user suggestion
-        View v= LayoutInflater.from(context).inflate(R.layout.status_card,parent,false);
+        View v= LayoutInflater.from(context).inflate(R.layout.content_share_user_card,parent,false);
 
         return new viewHolder(v);
     }
 
     @Override
     public void onBindViewHolder(@NonNull viewHolder holder, int position) {
+        if(selectedUsers.contains(usersList.get(position))){
+            holder.tick_view.setVisibility(View.VISIBLE);
+        }else{
+            holder.tick_view.setVisibility(View.GONE);
+
+        }
         Glide.with(context).load(usersList.get(position).getProfilePic()).placeholder(R.drawable.blank_profile).circleCrop().into(holder.profile);
         holder.userName.setText(usersList.get(position).getUsername());
         holder.userBtn.setOnClickListener(v->{
-            ReUsableFunctions.ShowToast(usersList.get(position).getUuid());
+            if(selectedUsers.contains(usersList.get(position))){
+                userSelectedListener.onSelect(usersList.get(position));
+                holder.tick_view.setVisibility(View.GONE);
+                    selectedUsers.remove(usersList.get(position));
+            }
+            else{
+                userSelectedListener.onSelect(usersList.get(position));
+                selectedUsers.add(usersList.get(position));
+                holder.tick_view.setVisibility(View.VISIBLE);
+            }
         });
 
 
@@ -54,7 +70,7 @@ public class UsersShareSheetGridAdapter extends RecyclerView.Adapter<UsersShareS
     }
 
     public static class viewHolder extends RecyclerView.ViewHolder{
-        ImageView profile;
+        ImageView profile,tick_view;
         TextView userName;
         LinearLayout userBtn;
 
@@ -63,6 +79,7 @@ public class UsersShareSheetGridAdapter extends RecyclerView.Adapter<UsersShareS
         userName=itemView.findViewById(R.id.userid);
         profile=itemView.findViewById(R.id.profile_img);
         userBtn=itemView.findViewById(R.id.storyLayout);
+        tick_view=itemView.findViewById(R.id.tick_view);
     }
 }
 }

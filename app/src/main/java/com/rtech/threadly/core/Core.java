@@ -146,7 +146,7 @@ public class Core {
        SocketManager.getInstance().getSocket().on("msg_status_changed_event",msg_status_changed_event);
 
    }
-   public static void sendCtoS(String uuid,String msg,String type,String link,int postId)throws JSONException {
+   public static void sendCtoS(String uuid,String msg,String type,String link,int postId,String notificationText)throws JSONException {
        String timestamp=ReUsableFunctions.getTimestamp();
        String MsgUid=ReUsableFunctions.GenerateUUid();
        String senderUuid=Core.getPreference().getString(SharedPreferencesKeys.UUID,"null");
@@ -165,6 +165,7 @@ public class Core {
        object.put("type",type);
        object.put("link",link);
        object.put("postId",postId);
+       object.put("notificationText",notificationText);
 
        if (!SocketManager.getInstance().getSocket().connected()){
            Log.d(Constants.NETWORK_ERROR_TAG.toString(), "sendCtoS: socket not connected adding fall back");

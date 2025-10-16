@@ -116,17 +116,14 @@ public class FcmService extends FirebaseMessagingService {
             object.put("timestamp",message.getData().get("timestamp"));
             object.put("deliveryStatus",Integer.parseInt(Objects.requireNonNull(message.getData().get("deliveryStatus"))));
             object.put("isDeleted",Boolean.parseBoolean(message.getData().get("isDeleted")));
-            object.put("postId",Integer.parseInt(message.getData().get("postId")));
+            object.put("postId",Integer.parseInt(Objects.requireNonNull(message.getData().get("postId"))));
             object.put("postLink",message.getData().get("link"));
             ReUsableFunctions.addMessageToDb(object,"r");
 
         } catch (JSONException e) {
             throw new RuntimeException(e);
         }
-
-
-
-        generateMessageNotification(message.getData().get("username"),message.getData().get("userid"),message.getData().get("profile"),message.getData().get("senderUuid"),message.getData().get("msg"));
+        generateMessageNotification(message.getData().get("username"),message.getData().get("userid"),message.getData().get("profile"),message.getData().get("senderUuid"),message.getData().get("notificationText"));
 
 
     }
