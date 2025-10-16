@@ -45,7 +45,6 @@ public class homeFragment extends Fragment {
     ArrayList<Posts_Model> posts;
     ArrayList<Profile_Model_minimal> suggestUsersList = new ArrayList<>();
     private ImagePostsFeedViewModel postsViewModel;
-    private VideoPostsFeedViewModel videoPostsFeedViewModel;
     FragmentHomeBinding mainXml;
     StoriesViewModel storiesViewModel;
     ArrayList<StoriesModel> storiesData;
@@ -69,7 +68,7 @@ public homeFragment(){
         mainXml = FragmentHomeBinding.inflate(inflater, container, false);
         postsViewModel = new ViewModelProvider(requireActivity()).get(ImagePostsFeedViewModel.class);
         notificationViewModel=new ViewModelProvider(requireActivity()).get(InteractionNotificationViewModel.class);
-        videoPostsFeedViewModel=new ViewModelProvider(requireActivity()).get(VideoPostsFeedViewModel.class);
+        VideoPostsFeedViewModel videoPostsFeedViewModel = new ViewModelProvider(requireActivity()).get(VideoPostsFeedViewModel.class);
         loginInfo = Core.getPreference();
         messagesViewModel=new ViewModelProvider(this).get(MessagesViewModel.class);
         storiesViewModel=new ViewModelProvider(requireActivity()).get(StoriesViewModel.class);

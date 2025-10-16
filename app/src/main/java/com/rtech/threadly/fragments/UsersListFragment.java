@@ -18,13 +18,13 @@ import com.rtech.threadly.databinding.FragmentUsersListBinding;
 import com.rtech.threadly.interfaces.Messanger.OnUserSelectedListener;
 import com.rtech.threadly.interfaces.OnDestroyFragmentCallback;
 import com.rtech.threadly.models.UsersModel;
-import com.rtech.threadly.viewmodels.MessaageAbleUsersViewModel;
+import com.rtech.threadly.viewmodels.MessageAbleUsersViewModel;
 
 import java.util.ArrayList;
 
 public class UsersListFragment extends Fragment {
     FragmentUsersListBinding mainXml;
-    MessaageAbleUsersViewModel usersViewModel;
+    MessageAbleUsersViewModel usersViewModel;
     ArrayList <UsersModel> usersList;
     LinearLayoutManager layoutManager;
     NewMsgListAdapter adapter;
@@ -68,7 +68,7 @@ this.callback=callback;
         mainXml.RecyclerView.setLayoutManager(layoutManager);
         mainXml.RecyclerView.setAdapter(adapter);
 
-        usersViewModel=new ViewModelProvider(requireActivity()).get(MessaageAbleUsersViewModel.class);
+        usersViewModel=new ViewModelProvider(requireActivity()).get(MessageAbleUsersViewModel.class);
         usersViewModel.getUsersList().observe(getViewLifecycleOwner(), new Observer<ArrayList<UsersModel>>() {
             @Override
             public void onChanged(ArrayList<UsersModel> usersModels) {

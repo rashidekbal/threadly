@@ -1,15 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@drawable/top_radius_for_bottom_sheet"
-    android:orientation="vertical">
+    >
 <!--    top bar -->
     <RelativeLayout
+        android:id="@+id/barAppearance"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_25"
         android:layout_marginTop="@dimen/dp_15"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         >
         <View
             android:layout_width="@dimen/dp_60"
@@ -20,6 +24,7 @@
             />
     </RelativeLayout>
     <TextView
+        android:id="@+id/comment_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Comments"
@@ -27,61 +32,79 @@
         android:textColor="@color/black"
         android:textSize="@dimen/sp_19"
         android:textAlignment="center"
-        android:layout_marginTop="@dimen/dp_25"
+        app:layout_constraintTop_toBottomOf="@id/barAppearance"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         />
-
-<!--loading comment shimmer holder-->
-<com.facebook.shimmer.ShimmerFrameLayout
-    android:id="@+id/shimmer_comments_holder"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginTop="@dimen/dp_55"
-    android:visibility="visible">
-    <include layout="@layout/shimmer_post_comment_layout"
-        />
-
-</com.facebook.shimmer.ShimmerFrameLayout>
-
-<!--    when no comment found -->
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/MainHolderLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_centerInParent="true"
-        android:id="@+id/no_comment_msg_linear_layout"
-        android:visibility="gone"
-        >
-        <TextView
+        app:layout_constraintTop_toBottomOf="@id/comment_text"
+        app:layout_constraintBottom_toTopOf="@id/addCommentSection">
+
+        <!--loading comment shimmer holder-->
+        <com.facebook.shimmer.ShimmerFrameLayout
+            android:id="@+id/shimmer_comments_holder"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="No Comments yet"
-            android:textStyle="bold"
-            android:textAlignment="center"
-            android:textSize="@dimen/sp_25"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <include layout="@layout/shimmer_post_comment_layout" />
+
+        </com.facebook.shimmer.ShimmerFrameLayout>
+
+        <!--    when no comment found -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_400"
+            android:orientation="vertical"
+            android:layout_centerInParent="true"
+            android:id="@+id/no_comment_msg_linear_layout"
+            android:visibility="gone"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:gravity="center"
+            >
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="No Comments yet"
+                android:textStyle="bold"
+                android:textAlignment="center"
+                android:textSize="@dimen/sp_25"
+                />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAlignment="center"
+                android:textSize="@dimen/sp_16"
+                android:text="Start the conversation."/>
+        </LinearLayout>
+
+        <!--    comments recyclerView-->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/comments_recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_500"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
             />
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textAlignment="center"
-            android:textSize="@dimen/sp_16"
-            android:text="Start the conversation."/>
-    </LinearLayout>
 
-<!--    comments recyclerView-->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/comments_recyclerView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_65"
-        android:layout_marginBottom="@dimen/dp_75"
-        />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 
 <!--    for adding comments-->
 <androidx.cardview.widget.CardView
+    android:id="@+id/addCommentSection"
+    app:layout_constraintTop_toBottomOf="@id/MainHolderLayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_alignParentBottom="true"
     app:cardElevation="3dp"
     >
     <RelativeLayout
@@ -149,4 +172,4 @@
 
 
 
-</RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

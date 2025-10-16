@@ -1,7 +1,6 @@
 package com.rtech.threadly.viewmodels;
 
 import android.app.Application;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -11,7 +10,6 @@ import androidx.lifecycle.MutableLiveData;
 import com.rtech.threadly.constants.SharedPreferencesKeys;
 import com.rtech.threadly.core.Core;
 import com.rtech.threadly.interfaces.NetworkCallbackInterfaceWithJsonObjectDelivery;
-import com.rtech.threadly.models.Profile_Model_minimal;
 import com.rtech.threadly.models.UsersModel;
 import com.rtech.threadly.network_managers.FollowManager;
 
@@ -21,8 +19,8 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-public class MessaageAbleUsersViewModel extends AndroidViewModel {
-    public MessaageAbleUsersViewModel(@NonNull Application application) {
+public class MessageAbleUsersViewModel extends AndroidViewModel {
+    public MessageAbleUsersViewModel(@NonNull Application application) {
         super(application);
     }
     MutableLiveData<ArrayList<UsersModel>> mutableLiveDataUsers=new MutableLiveData<>();

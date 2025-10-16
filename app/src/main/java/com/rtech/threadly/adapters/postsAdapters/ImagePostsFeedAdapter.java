@@ -15,12 +15,16 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.OptIn;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.media3.common.util.UnstableApi;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -32,11 +36,14 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.rtech.threadly.R;
 import com.rtech.threadly.adapters.commentsAdapter.PostCommentsAdapter;
+import com.rtech.threadly.adapters.messanger.UsersShareSheetGridAdapter;
 import com.rtech.threadly.adapters.mscs.SuggestUsersAdapter;
 import com.rtech.threadly.constants.SharedPreferencesKeys;
 import com.rtech.threadly.core.Core;
+import com.rtech.threadly.interfaces.Messanger.OnUserSelectedListener;
 import com.rtech.threadly.interfaces.NetworkCallbackInterfaceWithJsonObjectDelivery;
 import com.rtech.threadly.interfaces.NetworkCallbackInterface;
+import com.rtech.threadly.models.UsersModel;
 import com.rtech.threadly.network_managers.CommentsManager;
 import com.rtech.threadly.network_managers.FollowManager;
 import com.rtech.threadly.network_managers.LikeManager;
@@ -46,6 +53,7 @@ import com.rtech.threadly.models.Profile_Model_minimal;
 import com.rtech.threadly.utils.DownloadManagerUtil;
 import com.rtech.threadly.utils.LoggerUtil;
 import com.rtech.threadly.utils.ReUsableFunctions;
+import com.rtech.threadly.viewmodels.MessageAbleUsersViewModel;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -115,76 +123,77 @@ public class ImagePostsFeedAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     @OptIn(markerClass = UnstableApi.class)
     @SuppressLint("SetTextI18n")
     @Override
-    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, @SuppressLint("RecyclerView") int position) {
-      if(holder instanceof ContentViewHolder){
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holderView, @SuppressLint("RecyclerView") int position) {
+      if(holderView instanceof ContentViewHolder){
+          ContentViewHolder holder=(ContentViewHolder)holderView ;
           // Set like, comment, and share counts
 
-          ((ContentViewHolder)holder).is_liked=list.get(position).isliked;
-          ((ContentViewHolder)holder).likes=Double.parseDouble(Integer.toString(list.get(position).likeCount));
+          holder.is_liked=list.get(position).isliked;
+          holder.likes=Double.parseDouble(Integer.toString(list.get(position).likeCount));
           double comments=Double.parseDouble(Integer.toString(list.get(position).commentCount));
           double shares=Double.parseDouble(Integer.toString(list.get(position).shareCount));
 
-          setLikeCount(((ContentViewHolder)holder).likes,((ContentViewHolder)holder));
+          setLikeCount(holder.likes,holder);
 
           // Format comment count
           if(comments>1000){
               comments=comments/1000;
-              ((ContentViewHolder)holder).comments_count_text.setText(Integer.toString((int) comments).concat("k"));
+              holder.comments_count_text.setText(Integer.toString((int) comments).concat("k"));
           }else{
-              ((ContentViewHolder)holder).comments_count_text.setText(Integer.toString((int) comments));
+              holder.comments_count_text.setText(Integer.toString((int) comments));
           }
           // Format share count
           if(shares>1000){
               shares=shares/1000;
-              ((ContentViewHolder)holder).shares_count_text.setText(Integer.toString((int) shares).concat("k"));
+              holder.shares_count_text.setText(Integer.toString((int) shares).concat("k"));
           }else{
-              ((ContentViewHolder)holder).shares_count_text.setText(Integer.toString((int) shares));
+              holder.shares_count_text.setText(Integer.toString((int) shares));
           }
-          Glide.with(context).load(list.get(position).postUrl).placeholder(R.drawable.post_placeholder).into(((ContentViewHolder)holder).post_image);
+          Glide.with(context).load(list.get(position).postUrl).placeholder(R.drawable.post_placeholder).into(holder.post_image);
 
 
           // Load user profile image and post image using Glide
-          Glide.with(context).load(Uri.parse(list.get(position).userDpUrl)).circleCrop().placeholder(R.drawable.blank_profile).into(((ContentViewHolder)holder).userprofileImg);
-          ((ContentViewHolder)holder).user_id_text.setText(list.get(position).userId);
-          ((ContentViewHolder)holder).user_name_text.setText(list.get(position).username);
+          Glide.with(context).load(Uri.parse(list.get(position).userDpUrl)).circleCrop().placeholder(R.drawable.blank_profile).into(holder.userprofileImg);
+          holder.user_id_text.setText(list.get(position).userId);
+          holder.user_name_text.setText(list.get(position).username);
 
           if(list.get(position).caption.equals("null") || list.get(position).caption.isEmpty()){
-              ((ContentViewHolder)holder).caption_text.setVisibility(View.GONE);}else{
-              ((ContentViewHolder)holder).caption_text.setText(list.get(position).caption);
+              holder.caption_text.setVisibility(View.GONE);}else{
+              holder.caption_text.setText(list.get(position).caption);
           }
-          ((ContentViewHolder)holder).caption_text.setText(list.get(position).caption);
-          ((ContentViewHolder)holder).post_creationDate.setText(list.get(position).createdAt.split("T")[0]);
+          holder.caption_text.setText(list.get(position).caption);
+          holder.post_creationDate.setText(list.get(position).createdAt.split("T")[0]);
 
           // Show comments dialog on comment button click
-          ((ContentViewHolder)holder).comment_btn.setOnClickListener(new View.OnClickListener() {
+          holder.comment_btn.setOnClickListener(new View.OnClickListener() {
               @Override
               public void onClick(View v) {
                   showComments(list.get(position).postId);
               }
           });
           if(list.get(position).likeCount>0){
-              ((ContentViewHolder)holder).likes_count_text.setVisibility(View.VISIBLE);
+              holder.likes_count_text.setVisibility(View.VISIBLE);
           }else{
-              ((ContentViewHolder)holder).likes_count_text.setVisibility(View.GONE);
+              holder.likes_count_text.setVisibility(View.GONE);
           }
 
 
           // Show liked by layout if likes > 1
-          if(((ContentViewHolder)holder).likes>1){
-              ((ContentViewHolder)holder).likedBy_layout.setVisibility(View.VISIBLE);
-              ((ContentViewHolder)holder).likesCount_text.setText(Integer.toString(((ContentViewHolder)holder).likes.intValue()-1));
-              ((ContentViewHolder)holder).likedBy_text.setText(list.get(position).likedBy);
+          if(holder.likes>1){
+              holder.likedBy_layout.setVisibility(View.VISIBLE);
+              holder.likesCount_text.setText(Integer.toString(holder.likes.intValue()-1));
+              holder.likedBy_text.setText(list.get(position).likedBy);
           }
 
           // Set like button image if already liked
           if(list.get(position).isliked){
-              ((ContentViewHolder)holder).like_btn_image.setImageResource(R.drawable.red_heart_active_icon);
+              holder.like_btn_image.setImageResource(R.drawable.red_heart_active_icon);
           }else{
-              ((ContentViewHolder)holder).like_btn_image.setImageResource(R.drawable.heart_inactive_icon);
+              holder.like_btn_image.setImageResource(R.drawable.heart_inactive_icon);
           }
 
           // Show options dialog on options button click
-          ((ContentViewHolder)holder).options_btn.setOnClickListener(new View.OnClickListener(){
+          holder.options_btn.setOnClickListener(new View.OnClickListener(){
               @Override
               public void onClick(View v) {
                   BottomSheetDialog OptionsDialog =new BottomSheetDialog(context,R.style.TransparentBottomSheet);
@@ -196,33 +205,33 @@ public class ImagePostsFeedAdapter extends RecyclerView.Adapter<RecyclerView.Vie
           });
 
           // Like/unlike post on like button click
-          ((ContentViewHolder)holder).like_btn_image.setOnClickListener(new View.OnClickListener() {
+          holder.like_btn_image.setOnClickListener(new View.OnClickListener() {
               @Override
               public void onClick(View v) {
-                  ((ContentViewHolder)holder).is_liked=list.get(position).isliked;
+                  holder.is_liked=list.get(position).isliked;
                   // Like the post if not already liked
                   if(!list.get(position).isliked){
-                      ((ContentViewHolder)holder).like_btn_image.setImageResource(R.drawable.red_heart_active_icon);
-                      ((ContentViewHolder)holder).likes+=1.0;
-                      setLikeCount(((ContentViewHolder)holder).likes ,((ContentViewHolder)holder));
-                      ((ContentViewHolder)holder).is_liked=true;
+                      holder.like_btn_image.setImageResource(R.drawable.red_heart_active_icon);
+                      holder.likes+=1.0;
+                      setLikeCount(holder.likes ,holder);
+                      holder.is_liked=true;
                       list.get(position).isliked=true;
-                      ((ContentViewHolder)holder).like_btn_image.setEnabled(false);
+                      holder.like_btn_image.setEnabled(false);
                       likeManager.likePost(list.get(position).postId, new NetworkCallbackInterface() {
                           @Override
                           public void onSuccess() {
-                              ((ContentViewHolder)holder).like_btn_image.setEnabled(true);
+                              holder.like_btn_image.setEnabled(true);
 
                           }
 
                           @Override
                           public void onError(String err) {
-                              ((ContentViewHolder)holder).like_btn_image.setImageResource(R.drawable.heart_inactive_icon);
-                              ((ContentViewHolder)holder).likes-=1.0;
-                              setLikeCount(((ContentViewHolder)holder).likes,((ContentViewHolder)holder));
-                              ((ContentViewHolder)holder).is_liked=false;
+                              holder.like_btn_image.setImageResource(R.drawable.heart_inactive_icon);
+                              holder.likes-=1.0;
+                              setLikeCount(holder.likes,holder);
+                              holder.is_liked=false;
                               list.get(position).isliked=false;
-                              ((ContentViewHolder)holder).like_btn_image.setEnabled(true);
+                              holder.like_btn_image.setEnabled(true);
 
                           }
                       });
@@ -230,29 +239,29 @@ public class ImagePostsFeedAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                       // Unlike the post if already liked
                   }
                   else {
-                      ((ContentViewHolder)holder).like_btn_image.setImageResource(R.drawable.heart_inactive_icon);
-                      ((ContentViewHolder)holder).likes-=1.0;
-                      setLikeCount(((ContentViewHolder)holder).likes,((ContentViewHolder)holder));
-                      ((ContentViewHolder)holder).is_liked=false;
+                      holder.like_btn_image.setImageResource(R.drawable.heart_inactive_icon);
+                      holder.likes-=1.0;
+                      setLikeCount(holder.likes,holder);
+                      holder.is_liked=false;
                       list.get(position).isliked=false;
-                      ((ContentViewHolder)holder).like_btn_image.setEnabled(false);
+                      holder.like_btn_image.setEnabled(false);
                       // Send unlike request to server
                       likeManager.UnlikePost(list.get(position).postId, new NetworkCallbackInterface() {
                           @Override
                           public void onSuccess() {
-                              ((ContentViewHolder)holder).like_btn_image.setEnabled(true);
+                              holder.like_btn_image.setEnabled(true);
 
                           }
 
                           @Override
                           public void onError(String err) {
                               Log.d("errorUnlike", "onError: ".concat(err));
-                              ((ContentViewHolder)holder).like_btn_image.setImageResource(R.drawable.red_heart_active_icon);
-                              ((ContentViewHolder)holder).likes+=1.0;
-                              setLikeCount(((ContentViewHolder)holder).likes ,((ContentViewHolder)holder));
-                              ((ContentViewHolder)holder).is_liked=true;
+                              holder.like_btn_image.setImageResource(R.drawable.red_heart_active_icon);
+                              holder.likes+=1.0;
+                              setLikeCount(holder.likes ,holder);
+                              holder.is_liked=true;
                               list.get(position).isliked=true;
-                              ((ContentViewHolder)holder).like_btn_image.setEnabled(true);
+                              holder.like_btn_image.setEnabled(true);
 
                           }
                       });
@@ -261,7 +270,7 @@ public class ImagePostsFeedAdapter extends RecyclerView.Adapter<RecyclerView.Vie
           });
 
           // open userProfile by clicking userProfilepic
-          ((ContentViewHolder)holder).userprofileImg.setOnClickListener(new View.OnClickListener() {
+          holder.userprofileImg.setOnClickListener(new View.OnClickListener() {
               @Override
               public void onClick(View v) {
                   ReUsableFunctions.openProfile(context,list.get(position).userId);
@@ -270,7 +279,7 @@ public class ImagePostsFeedAdapter extends RecyclerView.Adapter<RecyclerView.Vie
           });
 
 //        or by clicking userid
-          ((ContentViewHolder)holder).user_id_text.setOnClickListener(new View.OnClickListener() {
+          holder.user_id_text.setOnClickListener(new View.OnClickListener() {
               @Override
               public void onClick(View v) {
                   ReUsableFunctions.openProfile(context,list.get(position).userId);
@@ -278,16 +287,23 @@ public class ImagePostsFeedAdapter extends RecyclerView.Adapter<RecyclerView.Vie
               }
           });
 
+          // share btn click action
+          holder.share_btn.setOnClickListener(v->{
+              OpenPostShareDialog();
+          });
+
+
       }else {
           SuggestUsersAdapter suggestUsersAdapter=new SuggestUsersAdapter(context,suggestUsersList);
+          SuggestUsersViewHolder holder=(SuggestUsersViewHolder)holderView;
           // suggestion view section
-              ((SuggestUsersViewHolder)holder).mainLayout.setVisibility(View.VISIBLE);
-              ((SuggestUsersViewHolder) holder).SuggestionRecyclerView.setLayoutManager(new LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL,false));
-              ((SuggestUsersViewHolder) holder).SuggestionRecyclerView.setAdapter(suggestUsersAdapter);
+              holder.mainLayout.setVisibility(View.VISIBLE);
+              ((SuggestUsersViewHolder) holderView).SuggestionRecyclerView.setLayoutManager(new LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL,false));
+              ((SuggestUsersViewHolder) holderView).SuggestionRecyclerView.setAdapter(suggestUsersAdapter);
               suggestUsersAdapter.notifyDataSetChanged();
           if (suggestUsersList.isEmpty()) {
 
-              ((SuggestUsersViewHolder)holder).mainLayout.setVisibility(View.GONE);
+              holder.mainLayout.setVisibility(View.GONE);
 
           }
 
@@ -383,7 +399,7 @@ public class ImagePostsFeedAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                 post_image,
                 like_btn_image,
                 comment_btn,
-                options_btn;
+                options_btn,share_btn;
 
 
         TextView user_id_text,
@@ -417,6 +433,7 @@ public class ImagePostsFeedAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             shares_count_text=itemView.findViewById(R.id.shares_count_text);
             post_creationDate=itemView.findViewById(R.id.post_creationDate);
             likedBy_text=itemView.findViewById(R.id.likedBy_text);
+            share_btn=itemView.findViewById(R.id.share_btn);
             likesCount_text=itemView.findViewById(R.id.likesCount_text);
             likedBy_layout=itemView.findViewById(R.id.likedBy_layout);
             comment_btn=itemView.findViewById(R.id.comment_btn);
@@ -432,6 +449,16 @@ public class ImagePostsFeedAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                 behaviour.setFitToContents(true);
 
             }
+        }
+    }
+
+    static class SuggestUsersViewHolder extends RecyclerView.ViewHolder{
+        RecyclerView SuggestionRecyclerView;
+        RelativeLayout mainLayout;
+        public SuggestUsersViewHolder(@NonNull View itemView) {
+            super(itemView);
+            SuggestionRecyclerView=itemView.findViewById(R.id.suggestionRecyclerView);
+            mainLayout=itemView.findViewById(R.id.mainLayout);
         }
     }
 
@@ -587,15 +614,51 @@ public class ImagePostsFeedAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             (holder).likes_count_text.setText(Integer.toString(likes.intValue()));
         }
     }
-    static class SuggestUsersViewHolder extends RecyclerView.ViewHolder{
-        RecyclerView SuggestionRecyclerView;
-        RelativeLayout mainLayout;
-        public SuggestUsersViewHolder(@NonNull View itemView) {
-            super(itemView);
-            SuggestionRecyclerView=itemView.findViewById(R.id.suggestionRecyclerView);
-            mainLayout=itemView.findViewById(R.id.mainLayout);
-        }
+
+    private void OpenPostShareDialog(){
+        BottomSheetDialog shareBottomSheet=new BottomSheetDialog(context,R.style.TransparentBottomSheet);
+        shareBottomSheet.setContentView(R.layout.post_share_layout);
+        ImageView search_btn=shareBottomSheet.findViewById(R.id.search_btn);
+        EditText search_edit_text=shareBottomSheet.findViewById(R.id.search_edit_text);
+        ImageView suggestUsersBtn=shareBottomSheet.findViewById(R.id.suggestUsersBtn);
+        RecyclerView Users_List_recyclerView=shareBottomSheet.findViewById(R.id.Users_List_recyclerView);
+        LinearLayout Story_add_ll_btn=shareBottomSheet.findViewById(R.id.Story_add_ll_btn);
+        ProgressBar progressBar=shareBottomSheet.findViewById(R.id.progressBar);
+         GridLayoutManager gridLayoutManager=new GridLayoutManager(context,3);
+         Users_List_recyclerView.setLayoutManager(gridLayoutManager);
+         ArrayList<UsersModel> usersModelList=new ArrayList<>();
+        UsersShareSheetGridAdapter adapter=new UsersShareSheetGridAdapter(context, usersModelList, new OnUserSelectedListener() {
+            @Override
+            public void onSelect(UsersModel model) {
+
+            }
+        });
+        Users_List_recyclerView.setAdapter(adapter);
+
+
+
+        MessageAbleUsersViewModel messageAbleUsersViewModel=new ViewModelProvider((AppCompatActivity)context).get(MessageAbleUsersViewModel.class);
+        messageAbleUsersViewModel.getUsersList().observe((AppCompatActivity) context, new Observer<ArrayList<UsersModel>>() {
+            @Override
+            public void onChanged(ArrayList<UsersModel> usersModels) {
+                if(usersModels.isEmpty()){
+                    Toast.makeText(context, "No users found", Toast.LENGTH_SHORT).show();
+
+                }else{
+                    usersModelList.clear();
+                    usersModelList.addAll(usersModels);
+                    adapter.notifyDataSetChanged();
+
+                }
+                progressBar.setVisibility(View.GONE);
+
+            }
+        });
+
+        shareBottomSheet.show();
+
     }
+
 
 
 }

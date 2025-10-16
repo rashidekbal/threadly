@@ -11,11 +11,8 @@ import android.net.Uri;
 
 import android.webkit.MimeTypeMap;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.rtech.threadly.RoomDb.DataBase;
 import com.rtech.threadly.RoomDb.schemas.MessageSchema;
@@ -41,7 +38,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
 import java.util.UUID;
-import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
 public class ReUsableFunctions {
@@ -67,12 +63,7 @@ public class ReUsableFunctions {
         SharedPreferences.Editor editor=loginInfo.edit();
         editor.clear();
         editor.apply();
-        Executors.newSingleThreadExecutor().execute(new Runnable() {
-            @Override
-            public void run() {
-                DataBase.getInstance().clearAllTables();
-            }
-        });
+        Executors.newSingleThreadExecutor().execute(() -> DataBase.getInstance().clearAllTables());
 
         Intent intent=new Intent(activity,LoginActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -84,12 +75,7 @@ public class ReUsableFunctions {
         SharedPreferences.Editor editor=loginInfo.edit();
         editor.clear();
         editor.apply();
-        Executors.newSingleThreadExecutor().execute(new Runnable() {
-            @Override
-            public void run() {
-                DataBase.getInstance().clearAllTables();
-            }
-        });
+        Executors.newSingleThreadExecutor().execute(() -> DataBase.getInstance().clearAllTables());
 
         Intent intent=new Intent(Threadly.getGlobalContext(),LoginActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -116,7 +102,9 @@ public class ReUsableFunctions {
         FileOutputStream outputStream = new FileOutputStream(file);
         byte[] buffer = new byte[1024];
         int len;
-        while ((len = inputStream.read(buffer)) != -1) {
+        while (true) {
+            assert inputStream != null;
+            if ((len = inputStream.read(buffer)) == -1) break;
             outputStream.write(buffer, 0, len);
         }
 
@@ -137,48 +125,40 @@ public class ReUsableFunctions {
         boolean isDeleted=object.optBoolean("isDeleted");
         int postId=object.optInt("postid");
         String postLink=object.optString("postLink");
-        Executors.newSingleThreadExecutor().execute(new Runnable() {
-            @Override
-            public void run() {
-                getInstance().dao().insertMessage(new MessageSchema(
-                        MessageUid,
-                        ConversationId,
-                        ReplyTOMessageUid,
-                        senderUuid,
-                        Core.getPreference().getString(SharedPreferencesKeys.UUID,null),
-                        message,
-                        type,
-                        postId,
-                        postLink,
-                        timestamp,
-                        deliveryStatus,
-                        isDeleted
-                ));
-            }
-        });
+        Executors.newSingleThreadExecutor().execute(() -> getInstance().dao().insertMessage(new MessageSchema(
+                MessageUid,
+                ConversationId,
+                ReplyTOMessageUid,
+                senderUuid,
+                Core.getPreference().getString(SharedPreferencesKeys.UUID,null),
+                message,
+                type,
+                postId,
+                postLink,
+                timestamp,
+                deliveryStatus,
+                isDeleted
+        )));
 
     }
     public static void updateFcmTokenToServer(){
-        FirebaseMessaging.getInstance().getToken().addOnCompleteListener(new OnCompleteListener<String>() {
-            @Override
-            public void onComplete(@NonNull Task<String> task) {
-                String token=task.getResult();
-                if(token!=null){
-                    FcmManager.UpdateFcmToken(token, new NetworkCallbackInterface() {
-                        @Override
-                        public void onSuccess() {
+        FirebaseMessaging.getInstance().getToken().addOnCompleteListener(task -> {
+            String token=task.getResult();
+            if(token!=null){
+                FcmManager.UpdateFcmToken(token, new NetworkCallbackInterface() {
+                    @Override
+                    public void onSuccess() {
 
-                            Core.getPreference().edit().putBoolean(SharedPreferencesKeys.IS_FCM_TOKEN_UPLOADED,true).apply();
-                        }
+                        Core.getPreference().edit().putBoolean(SharedPreferencesKeys.IS_FCM_TOKEN_UPLOADED,true).apply();
+                    }
 
-                        @Override
-                        public void onError(String err) {
+                    @Override
+                    public void onError(String err) {
 
 
-                        }
-                    });
+                    }
+                });
 
-                }
             }
         });
 
@@ -198,25 +178,17 @@ public class ReUsableFunctions {
 
     }
     public static void updateMessageStatus(String MsgUid,int status){
-        Executors.newSingleThreadExecutor().execute(new Runnable() {
-            @Override
-            public void run() {
-                getInstance().dao().updateDeliveryStatus(MsgUid,status);
-            }
-        });
+        Executors.newSingleThreadExecutor().execute(() -> getInstance().dao().updateDeliveryStatus(MsgUid,status));
     }
     public static void resendPendingMessages(){
-        Executors.newSingleThreadExecutor().execute(new Runnable() {
-            @Override
-            public void run() {
-                List<MessageSchema> pendingToSendMessagesList=DataBase.getInstance().dao().getPendingToSendMessages();
-                if(pendingToSendMessagesList.size()>0){
-                    for(MessageSchema msg:pendingToSendMessagesList){
-                        try {
-                            Core.sendCtoS(msg);
-                        } catch (JSONException e) {
-                            throw new RuntimeException(e);
-                        }
+        Executors.newSingleThreadExecutor().execute(() -> {
+            List<MessageSchema> pendingToSendMessagesList=DataBase.getInstance().dao().getPendingToSendMessages();
+            if(!pendingToSendMessagesList.isEmpty()){
+                for(MessageSchema msg:pendingToSendMessagesList){
+                    try {
+                        Core.sendCtoS(msg);
+                    } catch (JSONException e) {
+                        throw new RuntimeException(e);
                     }
                 }
             }
@@ -235,6 +207,7 @@ public class ReUsableFunctions {
             SimpleDateFormat isoFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault());
             isoFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
 
+            assert date != null;
             return isoFormat.format(date);
         } catch (Exception e) {
             e.printStackTrace();
@@ -243,21 +216,10 @@ public class ReUsableFunctions {
     }
 
 public static void addNotification(NotificationSchema schema){
-        Executors.newSingleThreadExecutor().execute(new Runnable() {
-            @Override
-            public void run() {
-                DataBase.getInstance().notificationDao().addNotification(schema);
-
-            }
-        });
+        Executors.newSingleThreadExecutor().execute(() -> DataBase.getInstance().notificationDao().addNotification(schema));
 }
 public static void MarkAllNotificationRead(){
-    Executors.newSingleThreadExecutor().execute(new Runnable() {
-        @Override
-        public void run() {
-            DataBase.getInstance().notificationDao().markAllNotificationsAsViewed();
-        }
-    });
+    Executors.newSingleThreadExecutor().execute(() -> DataBase.getInstance().notificationDao().markAllNotificationsAsViewed());
 }
 
 

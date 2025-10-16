@@ -127,6 +127,7 @@
                 android:visibility="gone"/>
 
             <ImageView
+                android:id="@+id/share_btn"
                 android:layout_width="@dimen/dp_25"
                 android:layout_height="@dimen/dp_25"
                 android:layout_marginStart="@dimen/dp_10"

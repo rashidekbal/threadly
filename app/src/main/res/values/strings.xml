@@ -156,4 +156,5 @@
     <string name="profilepic">profilePic</string>
     <string name="image_media">image media</string>
     <string name="message_status_icon">message status icon</string>
+    <string name="select_media">Select Media</string>
 </resources>

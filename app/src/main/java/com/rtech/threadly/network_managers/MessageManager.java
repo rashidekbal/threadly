@@ -170,10 +170,11 @@ public class MessageManager {
              });
 
     }
-    public static void UploadMsgMedia(File filepath, NetworkCallbackInterfaceWithProgressTracking callbackInterfaceWithProgressTracking){
+    public static void UploadMsgMedia(File filepath,String Tag, NetworkCallbackInterfaceWithProgressTracking callbackInterfaceWithProgressTracking){
         String url=ApiEndPoints.UPLOAD_MEDIA_MESSAGE;
         AndroidNetworking.upload(url).setPriority(Priority.HIGH)
                 .addHeaders("Authorization","Bearer "+Core.getPreference().getString(SharedPreferencesKeys.JWT_TOKEN,"null"))
+                .setTag(Tag)
                 .addMultipartFile("media",filepath).build()
                 .setUploadProgressListener(new UploadProgressListener() {
                     @Override

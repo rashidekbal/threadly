@@ -89,7 +89,7 @@
         android:layout_height="@dimen/dp_150"
         android:layout_above="@id/footer"
         android:layout_alignParentEnd="true"
-        android:visibility="gone"
+        android:visibility="visible"
         android:layout_marginEnd="@dimen/dp_25">
         <ImageView
             android:id="@+id/MediaPreviewImage"
@@ -97,7 +97,7 @@
             android:layout_height="@dimen/dp_150"
             tools:src="@drawable/sample_post"
             android:layout_centerInParent="true"
-            android:scaleType="fitCenter"
+            android:scaleType="centerCrop"
             android:background="@drawable/curved_small_square_box"
             android:clipToOutline="true"
             />
@@ -107,7 +107,7 @@
             android:layout_height="@dimen/dp_30"
             android:src="@drawable/cross"
             android:layout_alignParentEnd="true"
-            android:layout_marginEnd="@dimen/dp_5"
+            android:layout_marginEnd="@dimen/dp_8"
             android:elevation="2dp"/>
         <ProgressBar
             android:id="@+id/uploadProgress"
