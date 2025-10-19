@@ -16,6 +16,8 @@
         android:layout_height="wrap_content"
         android:paddingBottom="@dimen/dp_10"
         android:layout_above="@id/mediaSendLayout"
+        android:layout_marginTop="?attr/actionBarSize"
+
 
         />
 

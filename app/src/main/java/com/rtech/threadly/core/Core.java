@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
-import androidx.work.Data;
 import androidx.work.WorkManager;
 import com.androidnetworking.AndroidNetworking;
 import com.rtech.threadly.RoomDb.DataBase;
@@ -95,7 +94,7 @@ public class Core {
                    Log.d("Stoc", "call:  added new Conversation");
                }
                Log.d("StoC", "call: "+timestamp);
-               DataBase.getInstance().dao().insertMessage(new MessageSchema(
+               DataBase.getInstance().MessageDao().insertMessage(new MessageSchema(
                        MessageUid,
                        ConversationId,
                        ReplyTOMessageUid,
@@ -178,7 +177,7 @@ public class Core {
            @Override
            public void run() {
                AddNewConversationHistory(uuid);
-               DataBase.getInstance().dao().insertMessage(new MessageSchema(
+               DataBase.getInstance().MessageDao().insertMessage(new MessageSchema(
                        MsgUid,
                        uuid+senderUuid,
                        "null",

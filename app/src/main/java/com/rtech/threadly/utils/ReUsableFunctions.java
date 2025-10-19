@@ -9,7 +9,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 
-import android.util.Log;
 import android.webkit.MimeTypeMap;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -127,7 +126,7 @@ public class ReUsableFunctions {
         boolean isDeleted=object.optBoolean("isDeleted");
         int postId=object.optInt("postId");
         String postLink=object.optString("postLink");
-        Executors.newSingleThreadExecutor().execute(() -> getInstance().dao().insertMessage(new MessageSchema(
+        Executors.newSingleThreadExecutor().execute(() -> getInstance().MessageDao().insertMessage(new MessageSchema(
                 MessageUid,
                 ConversationId,
                 ReplyTOMessageUid,
@@ -180,11 +179,16 @@ public class ReUsableFunctions {
 
     }
     public static void updateMessageStatus(String MsgUid,int status){
-        Executors.newSingleThreadExecutor().execute(() -> getInstance().dao().updateDeliveryStatus(MsgUid,status));
+        Executors.newSingleThreadExecutor().execute(() -> getInstance().MessageDao().updateDeliveryStatus(MsgUid,status));
+    }
+    public static void DeleteMessage(String messageUid){
+        Executors.newSingleThreadExecutor().execute(()->{
+DataBase.getInstance().MessageDao().deleteMessage(messageUid);
+        });
     }
     public static void resendPendingMessages(){
         Executors.newSingleThreadExecutor().execute(() -> {
-            List<MessageSchema> pendingToSendMessagesList=DataBase.getInstance().dao().getPendingToSendMessages();
+            List<MessageSchema> pendingToSendMessagesList=DataBase.getInstance().MessageDao().getPendingToSendMessages();
             if(!pendingToSendMessagesList.isEmpty()){
                 for(MessageSchema msg:pendingToSendMessagesList){
                     try {

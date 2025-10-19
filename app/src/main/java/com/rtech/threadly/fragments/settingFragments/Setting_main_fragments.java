@@ -11,16 +11,22 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.rtech.threadly.R;
 import com.rtech.threadly.databinding.FragmentSettingMainFragmentsBinding;
+import com.rtech.threadly.interfaces.FragmentItemClickInterface;
 import com.rtech.threadly.utils.ReUsableFunctions;
 
 
-public class setting_main_fragments extends Fragment {
+public class Setting_main_fragments extends Fragment {
 FragmentSettingMainFragmentsBinding mainXml;
+FragmentItemClickInterface clickInterface;
 
-    public setting_main_fragments() {
+
+    public Setting_main_fragments() {
         // Required empty public constructor
+    }
+    public Setting_main_fragments(FragmentItemClickInterface clickInterface){
+        this.clickInterface=clickInterface;
+
     }
 
 
@@ -55,6 +61,9 @@ FragmentSettingMainFragmentsBinding mainXml;
                         }
                     }).show();
 
+        });
+        mainXml.openPrivacySettingBtn.setOnClickListener(v->{
+            clickInterface.onItemClick(mainXml.openPrivacySettingBtn);
         });
         mainXml.backBtn.setOnClickListener(v->{
             requireActivity().finish();

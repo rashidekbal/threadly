@@ -16,17 +16,17 @@ public class MessagesViewModel extends AndroidViewModel {
         super(application);
     }
     public LiveData<List<MessageSchema>> getMessages(String conversationId){
-        return DataBase.getInstance().dao().getMessagesCid(conversationId);
+        return DataBase.getInstance().MessageDao().getMessagesCid(conversationId);
     }
     public LiveData<Integer> getUnreadMsg_count(String userUUid){
-        return DataBase.getInstance().dao().getUnreadMessagesCount(userUUid);
+        return DataBase.getInstance().MessageDao().getUnreadMessagesCount(userUUid);
 
     }
     public LiveData<Integer> getUnreadConversationCunt(String userUUid){
-        return DataBase.getInstance().dao().getUnreadConversationCount(userUUid);
+        return DataBase.getInstance().MessageDao().getUnreadConversationCount(userUUid);
 
     }
 
     public LiveData<Integer> getConversationUnreadMsg_count(String conversationId,String userUUid){
-        return DataBase.getInstance().dao().getConversationUnreadMessagesCount(conversationId,userUUid);}
+        return DataBase.getInstance().MessageDao().getConversationUnreadMessagesCount(conversationId,userUUid);}
 }

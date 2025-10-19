@@ -82,7 +82,7 @@
                       android:layout_height="wrap_content"
                       android:layout_marginTop="@dimen/dp_9"
                       android:layout_marginStart="@dimen/dp_9"
-                      android:visibility="visible">
+                      android:visibility="gone">
                       <View
                           android:id="@+id/unread_messages_dot"
                           android:layout_width="@dimen/dp_15"

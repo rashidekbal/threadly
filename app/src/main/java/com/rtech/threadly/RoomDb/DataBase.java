@@ -23,7 +23,7 @@ public abstract class DataBase extends RoomDatabase {
         }
         return instance;
     }
-    public abstract operator dao();
+    public abstract operator MessageDao();
     public abstract HistoryOperator historyOperator();
     public abstract NotificationDao notificationDao();
 

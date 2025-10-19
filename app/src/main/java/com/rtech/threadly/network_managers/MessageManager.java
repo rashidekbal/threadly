@@ -77,7 +77,7 @@ public class MessageManager {
                                     Executors.newSingleThreadExecutor().execute(new Runnable() {
                                         @Override
                                         public void run() {
-                                            DataBase.getInstance().dao().insertMessage(new MessageSchema(
+                                            DataBase.getInstance().MessageDao().insertMessage(new MessageSchema(
                                                     MsgUid,conversationUid,replyToMsgUid,
                                                     senderUuid,receiverUuid,message,type,-1,"null",timeStamp,-1,isDeleted
                                             ));

@@ -14,6 +14,7 @@ import android.provider.Settings;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 import androidx.activity.EdgeToEdge;
@@ -48,9 +49,13 @@ import com.rtech.threadly.constants.SharedPreferencesKeys;
 import com.rtech.threadly.constants.TypeConstants;
 import com.rtech.threadly.core.Core;
 import com.rtech.threadly.databinding.ActivityMessangerMainMessagePageBinding;
+import com.rtech.threadly.fragments.MessageFragments.ImageViewFragment;
+import com.rtech.threadly.fragments.MessageFragments.VideoViewFragment;
 import com.rtech.threadly.fragments.PostAddCameraFragment;
 import com.rtech.threadly.fragments.common_ui_pages.Media_Capture_finalizer_fragment;
 import com.rtech.threadly.interfaces.CameraFragmentInterface;
+import com.rtech.threadly.interfaces.Messanger.MessageClickCallBack;
+import com.rtech.threadly.interfaces.Messanger.mediaDeleteCallback;
 import com.rtech.threadly.interfaces.NetworkCallbackInterfaceWithProgressTracking;
 import com.rtech.threadly.interfaces.general_ui_callbacks.OnCapturedMediaFinalizedCallback;
 import com.rtech.threadly.models.MediaModel;
@@ -182,7 +187,7 @@ public class MessengerMainMessagePageActivity extends AppCompatActivity {
                     throw new RuntimeException(e);
                 }
 
-                Executors.newSingleThreadExecutor().execute(() -> DataBase.getInstance().dao().updateMessagesSeen(conversationId,Core.getPreference().getString(SharedPreferencesKeys.UUID,"null")));
+                Executors.newSingleThreadExecutor().execute(() -> DataBase.getInstance().MessageDao().updateMessagesSeen(conversationId,Core.getPreference().getString(SharedPreferencesKeys.UUID,"null")));
             }
         });
 
@@ -234,12 +239,14 @@ public class MessengerMainMessagePageActivity extends AppCompatActivity {
                     }
                     mainXml.msgEditText.setText("");
                 }
-            }else if(sendType.equals(TypeConstants.MEDIA)){
+            }
+            else if(sendType.equals(TypeConstants.MEDIA)){
                 String msg=mainXml.msgEditText.getText().toString().trim();
                 if(!mediaLink.isEmpty()){
                     try {
                         Core.sendCtoS(uuid,msg,selectedMediaType,mediaLink,-1,"sent a "+selectedMediaType);
                         sendType="text";
+                        mainXml.msgEditText.setText("");
                         mainXml.mediaSendLayout.setVisibility(View.GONE);
                     } catch (JSONException e) {
                         throw new RuntimeException(e);
@@ -282,7 +289,40 @@ public class MessengerMainMessagePageActivity extends AppCompatActivity {
 
     }
     private void setUpRecyclerView(){
-        messageAdapter=new MessageAdapter(this,msgList,userdata.getString("profilePic"));
+        messageAdapter=new MessageAdapter(this, msgList, userdata.getString("profilePic"), new MessageClickCallBack() {
+            @Override
+            public void onItemClicked(MessageSchema messageSchema,String type) {
+                // when message item is clicked mainLy for media opening
+               int position=msgList.indexOf(messageSchema);
+                if(type.equals(TypeConstants.IMAGE)){
+                    //when media is an image
+                    Bundle data=new Bundle();
+                    data.putString("username",userdata.getString("username"));
+                    data.putString("userid",userdata.getString("userid"));
+                    data.putString("profileUrl",userdata.getString("profilePic"));
+                    data.putString("mediaUrl",messageSchema.getPostLink());
+                    data.putString("messageUid",messageSchema.getMessageUid());
+                    ImageViewFragment fragment=new ImageViewFragment();
+                    fragment.setArguments(data);
+                    changeFragment(fragment,"Id_image_view_page");
+
+                } else {
+                    //when media is a video
+                    Bundle data=new Bundle();
+                    data.putString("username",userdata.getString("username"));
+                    data.putString("userid",userdata.getString("userid"));
+                    data.putString("profileUrl",userdata.getString("profilePic"));
+                    data.putString("mediaUrl",messageSchema.getPostLink());
+                    data.putString("messageUid",messageSchema.getMessageUid());
+                    VideoViewFragment fragment=new VideoViewFragment();
+                    fragment.setArguments(data);
+                    changeFragment(fragment,"Id_video_view_page");
+
+                }
+
+
+            }
+        });
         mainXml.RecyclerView.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false));
         mainXml.RecyclerView.setAdapter(messageAdapter);
     }
@@ -364,6 +404,7 @@ public class MessengerMainMessagePageActivity extends AppCompatActivity {
 
 
     private void changeFragment(Fragment frag,String fragmentId){
+        mainXml.fragmentContainer.setVisibility(View.VISIBLE);
         getSupportFragmentManager().beginTransaction().replace(mainXml.fragmentContainer.getId(),frag)
                 .addToBackStack(fragmentId)
                 .commit();

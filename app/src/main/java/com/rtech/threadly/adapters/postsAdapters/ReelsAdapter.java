@@ -577,7 +577,6 @@ public class ReelsAdapter extends RecyclerView.Adapter<ReelsAdapter.viewHolder> 
             holder.likes_count_text.setText(Integer.toString(likes.intValue()));
         }
     }
-
     private void OpenPostShareDialog(Posts_Model post){
         ArrayList<UsersModel> selectedUsers=new ArrayList<>();
         BottomSheetDialog shareBottomSheet=new BottomSheetDialog(context,R.style.TransparentBottomSheet);
@@ -640,10 +639,12 @@ public class ReelsAdapter extends RecyclerView.Adapter<ReelsAdapter.viewHolder> 
 
         //send btn action
         sendBtn.setOnClickListener(v->{
+            int postid=post.postId;
             if(!selectedUsers.isEmpty()){
                 for(UsersModel model:selectedUsers){
                     try {
-                        Core.sendCtoS(model.getUuid(),"", TypeConstants.POST,post.postUrl,post.postId,"sent a reel by "+post.username);
+                        ReUsableFunctions.ShowToast(" "+postid);
+                        Core.sendCtoS(model.getUuid(),"", TypeConstants.POST,post.postUrl,postid,"sent a reel by "+post.username);
 
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -660,5 +661,6 @@ public class ReelsAdapter extends RecyclerView.Adapter<ReelsAdapter.viewHolder> 
         shareBottomSheet.show();
 
     }
+
 
 }

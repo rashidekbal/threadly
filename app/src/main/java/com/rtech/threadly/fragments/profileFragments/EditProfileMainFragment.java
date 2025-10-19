@@ -165,7 +165,7 @@ ProfileViewModel profileViewModel;
     @Override
     public void onDestroy() {
         super.onDestroy();
-        callback.onfragmentDestroy();
+        callback.onFragmentDestroy();
     }
 
 

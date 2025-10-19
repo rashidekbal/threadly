@@ -265,7 +265,7 @@ int currentFragment;
                                 }
 
                                 @Override
-                                public void onfragmentDestroy() {
+                                public void onFragmentDestroy() {
                                     binding.bottomNavigation.setVisibility(View.VISIBLE);
 
                                 }

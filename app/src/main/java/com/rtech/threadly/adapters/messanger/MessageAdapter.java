@@ -5,11 +5,13 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -17,7 +19,9 @@ import com.rtech.threadly.R;
 import com.rtech.threadly.RoomDb.schemas.MessageSchema;
 import com.rtech.threadly.activities.PostActivity;
 import com.rtech.threadly.constants.SharedPreferencesKeys;
+import com.rtech.threadly.constants.TypeConstants;
 import com.rtech.threadly.core.Core;
+import com.rtech.threadly.interfaces.Messanger.MessageClickCallBack;
 import com.rtech.threadly.utils.ReUsableFunctions;
 
 import java.util.List;
@@ -26,20 +30,28 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     Context context;
     List<MessageSchema> list;
     String profile;
+    MessageClickCallBack messageClickCallBack;
     int TYPE_TEXT=1;
     int TYPE_IMAGE=2;
     int TYPE_VIDEO=3;
     int TYPE_POST=4;
     int TYPE_STORY=5;
-    public MessageAdapter(Context context, List<MessageSchema> list,String profile) {
+    int TYPE_DELETED=-1;
+
+    public MessageAdapter(Context context, List<MessageSchema> list,String profile,MessageClickCallBack callback) {
         this.context = context;
         this.list = list;
         this.profile=profile;
+        this.messageClickCallBack=callback;
     }
 
     @Override
     public int getItemViewType(int position) {
         String type=list.get(position).getType();
+        if(list.get(position).isDeleted()){
+            return TYPE_DELETED;
+
+        }
         switch (type){
 
             case "image":
@@ -62,9 +74,8 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         switch (viewType){
             case 2: return new ImageMessageViewHolder(layoutInflater.inflate(R.layout.image_message_card,parent,false));
             case 3: return new VideoMessageViewHolder(layoutInflater.inflate(R.layout.video_message_card,parent,false));
-
             case 4: return new PostMessageViewHolder(layoutInflater.inflate(R.layout.post_message_card,parent,false));
-
+            case -1: return new DeletedMessageViewHolder(layoutInflater.inflate(R.layout.deleted_msg_view,parent,false));
             default:
                 return new TextMessageviewHolder(layoutInflater.inflate(R.layout.text_msg_card,parent,false));
         }
@@ -90,7 +101,9 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
               }else{
                   holder.sent_caption.setVisibility(View.GONE);
               }
-              holder.sent_MediaImageView.setOnClickListener(v-> ReUsableFunctions.ShowToast("clicked on image"));
+              holder.sent_MediaImageView.setOnClickListener(v-> {
+                  openMedia(list.get(position), TypeConstants.IMAGE);
+              });
 
 
             }
@@ -127,7 +140,7 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                     holder.rec_caption.setVisibility(View.GONE);
                 }
 
-                holder.received_MediaImageView.setOnClickListener(v-> ReUsableFunctions.ShowToast("clicked on image"));
+                holder.received_MediaImageView.setOnClickListener(v-> openMedia(list.get(position), TypeConstants.IMAGE));
 
 
 
@@ -153,7 +166,7 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 }
 
                 //on click of video message
-                holder.sent_MediaImageView.setOnClickListener(v-> ReUsableFunctions.ShowToast("clicked on video"));
+                holder.sent_MediaImageView.setOnClickListener(v-> openMedia(list.get(position), TypeConstants.VIDEO));
 
 
             }else{
@@ -177,7 +190,6 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 }else{
                     //if first message
                     holder.senderProfile.setVisibility(View.VISIBLE);
-                    holder.received_MediaImageView.setOnLongClickListener(v->{ ReUsableFunctions.ShowToast("long press detected");return true;});
                     Glide.with(context).load(profile).placeholder(R.drawable.blank_profile).circleCrop().into( holder.senderProfile);
 
                 }
@@ -190,7 +202,7 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                     holder.rec_caption.setVisibility(View.GONE);
                 }
                 //on click of media message
-                holder.received_MediaImageView.setOnClickListener(v-> ReUsableFunctions.ShowToast("clicked on video"));
+                holder.received_MediaImageView.setOnClickListener(v-> openMedia(list.get(position), TypeConstants.VIDEO));
 
 
             }
@@ -214,7 +226,7 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                     holder.sent_caption.setVisibility(View.GONE);
                 }
 
-                //on click of video message
+                //on click of video message i had sent
                 holder.sent_MediaImageView.setOnClickListener(v-> openPost(list.get(position)));
 
 
@@ -252,12 +264,26 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 }else {
                     holder.rec_caption.setVisibility(View.GONE);
                 }
-                //on click of media message
+                //on click of media message i have received
                 holder.received_MediaImageView.setOnClickListener(v->openPost(list.get(position)));
 
 
             }
 
+        }
+        else if (holderView instanceof DeletedMessageViewHolder) {
+            DeletedMessageViewHolder holder=(DeletedMessageViewHolder) holderView;
+            if(list.get(position).getSenderId().equals(Core.getPreference().getString(SharedPreferencesKeys.UUID,"null"))){
+                //if i had sent
+                holder.sentMsg.setVisibility(View.VISIBLE);
+                holder.recMsg.setVisibility(View.GONE);
+            }else{
+                //if i had received
+                holder.sentMsg.setVisibility(View.GONE);
+                holder.recMsg.setVisibility(View.VISIBLE);
+
+
+            }
         }
         else{
             if(list.get(position).getSenderId().equals(Core.getPreference().getString(SharedPreferencesKeys.UUID,"null"))){
@@ -377,4 +403,22 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             sent_caption=itemView.findViewById(R.id.sent_caption);
         }
     }
+    public static class DeletedMessageViewHolder extends RecyclerView.ViewHolder{
+        TextView recMsg,sentMsg;
+        public DeletedMessageViewHolder(@NonNull View itemView){
+            super(itemView);
+            recMsg=itemView.findViewById(R.id.rec_text_msg);
+            sentMsg=itemView.findViewById(R.id.sent_text_msg);
+        }
+
+    }
+
+    private void openMedia(MessageSchema messageSchema,String type){
+        InputMethodManager imm=(InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+        AppCompatActivity activity=(AppCompatActivity) context;
+        imm.hideSoftInputFromWindow(activity.getWindow().getDecorView().getWindowToken(),0);
+        messageClickCallBack.onItemClicked(messageSchema,type);
+
+    }
+
 }

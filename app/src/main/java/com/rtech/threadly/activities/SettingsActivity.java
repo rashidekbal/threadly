@@ -2,17 +2,23 @@ package com.rtech.threadly.activities;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.view.View;
 import android.view.Window;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import com.rtech.threadly.R;
 import com.rtech.threadly.databinding.ActivitySettingsBinding;
-import com.rtech.threadly.fragments.settingFragments.setting_main_fragments;
+import com.rtech.threadly.fragments.settingFragments.PrivacySetting_fragment;
+import com.rtech.threadly.fragments.settingFragments.Setting_main_fragments;
+import com.rtech.threadly.interfaces.FragmentItemClickInterface;
 
 public class SettingsActivity extends AppCompatActivity {
     ActivitySettingsBinding mainXml;
@@ -34,12 +40,39 @@ public class SettingsActivity extends AppCompatActivity {
 
 
         openMain();
+        getSupportFragmentManager().addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
+            @Override
+            public void onBackStackChanged() {
+                if(getSupportFragmentManager().getBackStackEntryCount()==0){
+                    finish();}
+            }
+        });
 
 
 
     }
 
     private void openMain() {
-        getSupportFragmentManager().beginTransaction().replace(mainXml.settingContainer.getId(),new setting_main_fragments()).commit();
+        changeFragment(new Setting_main_fragments(new FragmentItemClickInterface() {
+            @Override
+            public void onItemClick(@Nullable View v) {
+                assert v != null;
+                if(v.getId()==R.id.openPrivacySettingBtn) {
+                    // privacy setting
+                    changeFragment(new PrivacySetting_fragment());
+
+                }
+
+            }
+
+            @Override
+            public void onFragmentDestroy() {
+
+            }
+        }));
+
+    }
+    private void changeFragment(Fragment fragment){
+        getSupportFragmentManager().beginTransaction().replace(mainXml.settingContainer.getId(),fragment).addToBackStack(null).commit();
     }
 }
