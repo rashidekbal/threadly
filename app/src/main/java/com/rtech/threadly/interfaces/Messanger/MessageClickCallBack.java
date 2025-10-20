@@ -4,4 +4,5 @@ import com.rtech.threadly.RoomDb.schemas.MessageSchema;
 
 public interface MessageClickCallBack {
     void onItemClicked(MessageSchema messageSchema,String type);
+    void longPress(int position);
 }

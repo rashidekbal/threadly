@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 
+import android.view.inputmethod.InputMethodManager;
 import android.webkit.MimeTypeMap;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -228,5 +229,12 @@ public static void MarkAllNotificationRead(){
     Executors.newSingleThreadExecutor().execute(() -> DataBase.getInstance().notificationDao().markAllNotificationsAsViewed());
 }
 
+public static String getMyUuid(){
+        return Core.getPreference().getString(SharedPreferencesKeys.UUID,"null");
+}
+public static void hideKeyboard(AppCompatActivity activity){
+    InputMethodManager imm=(InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+    imm.hideSoftInputFromWindow(activity.getWindow().getDecorView().getWindowToken(),0);
+}
 
 }

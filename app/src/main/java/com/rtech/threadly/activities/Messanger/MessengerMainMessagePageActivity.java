@@ -168,6 +168,9 @@ public class MessengerMainMessagePageActivity extends AppCompatActivity {
                 msgList.clear();
                 msgList.addAll(messageSchemas);
                 messageAdapter.notifyItemChanged(msgList.size()-1);
+                if(msgList.size()>1){
+                    messageAdapter.notifyItemChanged(msgList.size()-2);
+                }
                 mainXml.RecyclerView.scrollToPosition(msgList.size()-1);
             }
 
@@ -260,6 +263,7 @@ public class MessengerMainMessagePageActivity extends AppCompatActivity {
 
 
         mainXml.cameraBtn.setOnClickListener(v -> {
+            ReUsableFunctions.hideKeyboard(this);
 
             if( ActivityCompat.shouldShowRequestPermissionRationale(MessengerMainMessagePageActivity.this,Manifest.permission.CAMERA)){
                 ReUsableFunctions.ShowToast("please provide camera permission in settings");
@@ -320,6 +324,11 @@ public class MessengerMainMessagePageActivity extends AppCompatActivity {
 
                 }
 
+
+            }
+            @Override
+            public void longPress(int position){
+                messageAdapter.notifyItemChanged(position);
 
             }
         });

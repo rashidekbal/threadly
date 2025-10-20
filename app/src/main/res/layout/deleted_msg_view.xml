@@ -2,9 +2,10 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    xmlns:tools="http://schemas.android.com/tools"
+
     android:layout_marginHorizontal="@dimen/dp_10"
-    android:layout_marginTop="@dimen/dp_15">
+    android:layout_marginTop="@dimen/dp_5"
+    >
 
 
         <TextView
@@ -15,11 +16,12 @@
             android:minWidth="@dimen/dp_40"
             android:text="@string/deleted_msg_placeholder_text"
             android:layout_alignParentStart="true"
-            android:background="@drawable/received_msg_bg"
+            android:background="@drawable/received_msg_bg_solo"
             android:paddingHorizontal="@dimen/dp_15"
             android:textColor="@color/light_grey_text"
             android:paddingVertical="@dimen/dp_10"
             android:textStyle="italic"
+            android:layout_marginStart="@dimen/dp_25"
 
 
             />
@@ -37,7 +39,7 @@
                 android:textColor="@color/light_grey_text"
                 android:paddingVertical="@dimen/dp_10"
                 android:paddingHorizontal="@dimen/dp_15"
-                android:background="@drawable/received_msg_bg"
+                android:background="@drawable/received_msg_bg_solo"
                 android:layout_alignParentEnd="true"
                 android:textStyle="italic"/>
 

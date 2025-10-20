@@ -1,5 +1,6 @@
 package com.rtech.threadly.adapters.messanger;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
@@ -9,11 +10,11 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.content.res.AppCompatResources;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.bumptech.glide.Glide;
 import com.rtech.threadly.R;
 import com.rtech.threadly.RoomDb.schemas.MessageSchema;
@@ -24,6 +25,7 @@ import com.rtech.threadly.core.Core;
 import com.rtech.threadly.interfaces.Messanger.MessageClickCallBack;
 import com.rtech.threadly.utils.ReUsableFunctions;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
@@ -37,6 +39,7 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     int TYPE_POST=4;
     int TYPE_STORY=5;
     int TYPE_DELETED=-1;
+    ArrayList<String> selectedMsgUUid=new ArrayList<>();
 
     public MessageAdapter(Context context, List<MessageSchema> list,String profile,MessageClickCallBack callback) {
         this.context = context;
@@ -84,7 +87,9 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
 
     @Override
-    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holderView, int position) {
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holderView, @SuppressLint("RecyclerView") int position) {
+
+        //-------------------   ImageMessageViewHolder -------------------//
         if(holderView instanceof ImageMessageViewHolder){
             ImageMessageViewHolder holder=(ImageMessageViewHolder) holderView;
             //if i had sent the media
@@ -148,6 +153,16 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
 
         }
+
+
+
+
+
+
+
+
+
+        //-------------------   VideoMessageViewHolder -------------------//
         else if(holderView instanceof VideoMessageViewHolder){
             VideoMessageViewHolder holder=(VideoMessageViewHolder) holderView;
             //if i had sent the media
@@ -209,6 +224,20 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
 
         }
+
+
+
+
+
+
+
+
+
+
+
+
+
+        //-------------------   PostMessageViewHolder -------------------//
         else if (holderView instanceof PostMessageViewHolder) {
             PostMessageViewHolder holder=(PostMessageViewHolder) holderView;
             //if i had sent the post
@@ -271,6 +300,16 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             }
 
         }
+
+
+
+
+
+
+
+
+
+        //-------------------   DeletedMessageViewHolder -------------------//
         else if (holderView instanceof DeletedMessageViewHolder) {
             DeletedMessageViewHolder holder=(DeletedMessageViewHolder) holderView;
             if(list.get(position).getSenderId().equals(Core.getPreference().getString(SharedPreferencesKeys.UUID,"null"))){
@@ -285,33 +324,257 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
             }
         }
+
+
+
+
+
+
+
+
+        //-------------------   TextMessageViewHolder -------------------//
         else{
+              TextMessageviewHolder holder=(TextMessageviewHolder) holderView;
+
+              //layout background condition checking
+
+                if(position==0){
+                    //exclusive for position 0
+                    if(list.get(position).getSenderId().equals(ReUsableFunctions.getMyUuid())){
+                        if(list.size()-1>=position+1){
+                            //if the list contains another message item
+                            if(list.get(position).getSenderId().equals(list.get(position+1).getSenderId())){
+                                //if the pos+1 is having same sender in this case other user then
+                                holder.sent_msg_layout.setBackground(AppCompatResources.getDrawable(context,R.drawable.sent_msg_start_bg));
+
+
+                            }else{
+                                //if pos+1 is not the other user
+                                holder.sent_msg_layout.setBackground(AppCompatResources.getDrawable(context,R.drawable.sent_msg_solo_bg));
+                            }
+                        }else{
+                            //if no second message exists
+                            holder.sent_msg_layout.setBackground(AppCompatResources.getDrawable(context,R.drawable.sent_msg_solo_bg));
+                        }
+                    }
+
+                    //if received by user
+                    else{
+                        if(list.size()-1>=position+1){
+                            //if the list contains another message item
+                            if(list.get(position).getSenderId().equals(list.get(position+1).getSenderId())){
+                                //if the pos+1 is having same sender in this case other user then
+                                holder.recMsg.setBackground(AppCompatResources.getDrawable(context,R.drawable.received_msg_bg_start));
+
+
+                            }else{
+                                //if pos+1 is not the other user
+                                holder.recMsg.setBackground(AppCompatResources.getDrawable(context,R.drawable.received_msg_bg_solo));
+                            }
+                        }else{
+                            //if no second message exists
+                            holder.recMsg.setBackground(AppCompatResources.getDrawable(context,R.drawable.received_msg_bg_solo));
+                        }
+
+                    }
+
+
+
+
+                }else {
+                    //if position is greater than 0
+                    if(list.get(position).getSenderId().equals(ReUsableFunctions.getMyUuid())){
+                        //if current user id sender
+                        if(list.size()-1>=position+1){
+                            //if position+1 exists
+                            //we do double checking for both front and back
+                            if(list.get(position).getSenderId().equals(list.get(position-1).getSenderId())&&list.get(position).getSenderId().equals(list.get(position+1).getSenderId())){
+                                //if  message sender is same as previous and next message sender is same
+                                holder.sent_msg_layout.setBackground(AppCompatResources.getDrawable(context,R.drawable.sent_msg_mid_bg));
+
+                            }
+
+                            if(list.get(position).getSenderId().equals(list.get(position-1).getSenderId())&&!list.get(position).getSenderId().equals(list.get(position+1).getSenderId())){
+                                //if  message sender is same as previous but next message is not by the same user
+                                holder.sent_msg_layout.setBackground(AppCompatResources.getDrawable(context,R.drawable.sent_msg_end_bg));
+
+                            }
+                            if(!list.get(position).getSenderId().equals(list.get(position-1).getSenderId())&&!list.get(position).getSenderId().equals(list.get(position+1).getSenderId())){
+                                //if both side is different
+                                holder.sent_msg_layout.setBackground(AppCompatResources.getDrawable(context,R.drawable.sent_msg_solo_bg));
+
+                            }
+                            if(!list.get(position).getSenderId().equals(list.get(position-1).getSenderId())&&list.get(position).getSenderId().equals(list.get(position+1).getSenderId())){
+                                //if  message sender is same as previous and next message sender is same
+                                holder.sent_msg_layout.setBackground(AppCompatResources.getDrawable(context,R.drawable.sent_msg_start_bg));
+
+                            }
+
+
+                        }else{
+                            //if no next message available
+                            if(list.get(position).getSenderId().equals(list.get(position-1).getSenderId())){
+                                //since no next message available check if same sender as before
+                                holder.sent_msg_layout.setBackground(AppCompatResources.getDrawable(context,R.drawable.sent_msg_end_bg));
+
+                            }else{
+                                //if solo message
+                                holder.sent_msg_layout.setBackground(AppCompatResources.getDrawable(context,R.drawable.sent_msg_solo_bg));
+                            }
+
+                        }
+
+                    }else{
+                        //if other user is sender or current user is receiver
+                        if(list.size()-1>=position+1){
+                            //if position+1 exists
+                            //we do double checking for both front and back
+                            if(list.get(position).getSenderId().equals(list.get(position-1).getSenderId())&&list.get(position).getSenderId().equals(list.get(position+1).getSenderId())){
+                                //if  message sender is same as previous and next message sender is same
+                                holder.recMsg.setBackground(AppCompatResources.getDrawable(context,R.drawable.received_msg_mid_bg));
+
+                            }
+
+                            if(list.get(position).getSenderId().equals(list.get(position-1).getSenderId())&&!list.get(position).getSenderId().equals(list.get(position+1).getSenderId())){
+                                //if  message sender is same as previous but next message is not by the same user
+                                holder.recMsg.setBackground(AppCompatResources.getDrawable(context,R.drawable.received_msg_bg_end));
+
+                            }
+                            if(!list.get(position).getSenderId().equals(list.get(position-1).getSenderId())&&!list.get(position).getSenderId().equals(list.get(position+1).getSenderId())){
+                                //if both side is different
+                                holder.recMsg.setBackground(AppCompatResources.getDrawable(context,R.drawable.received_msg_bg_solo));
+
+                            }
+                            if(!list.get(position).getSenderId().equals(list.get(position-1).getSenderId())&&list.get(position).getSenderId().equals(list.get(position+1).getSenderId())){
+                                //if  message sender is same as previous and next message sender is same
+                                holder.recMsg.setBackground(AppCompatResources.getDrawable(context,R.drawable.received_msg_bg_start));
+
+                            }
+
+
+                        }else{
+                            //if no next message available
+                            if(list.get(position).getSenderId().equals(list.get(position-1).getSenderId())){
+                                //since no next message available check if same sender as before
+                                holder.recMsg.setBackground(AppCompatResources.getDrawable(context,R.drawable.received_msg_bg_end));
+
+                            }else{
+                                //if solo message
+                                holder.recMsg.setBackground(AppCompatResources.getDrawable(context,R.drawable.received_msg_bg_solo));
+                            }
+
+                        }
+
+
+                    }
+                }
+
+
+
+                // if selected for action ------//
+            if(selectedMsgUUid.contains(list.get(position).getMessageUid())){
+                holder.itemView.setBackground(AppCompatResources.getDrawable(
+                        context,R.drawable.selected_item_overlay
+                ));
+            }else{
+                holder.itemView.setBackground(AppCompatResources.getDrawable(
+                        context,R.drawable.curved_small_square_box
+                ));
+            }
+
+
+
+
+
+
+
+            //------------- actual logic --------------//
             if(list.get(position).getSenderId().equals(Core.getPreference().getString(SharedPreferencesKeys.UUID,"null"))){
+
                 //if i had sent
                 int deliveryStatus=list.get(position).getDeliveryStatus();
-                ((TextMessageviewHolder)holderView).senderProfile.setVisibility(View.GONE);
-                ((TextMessageviewHolder)holderView).recMsg.setVisibility(View.GONE);
-                ((TextMessageviewHolder)holderView).sent_msg_layout.setVisibility(View.VISIBLE);
-                ((TextMessageviewHolder)holderView).sentMsg.setText(list.get(position).getMsg());
-                ((TextMessageviewHolder)holderView).status_img.setImageResource(deliveryStatus==0?R.drawable.msg_pending:deliveryStatus==1?R.drawable.single_tick:deliveryStatus==2?R.drawable.double_tick_recieved:R.drawable.double_tick_viewed);
-            }else {
+                holder.senderProfile.setVisibility(View.GONE);
+                holder.recMsg.setVisibility(View.GONE);
+                holder.sent_msg_layout.setVisibility(View.VISIBLE);
+                holder.sentMsg.setText(list.get(position).getMsg());
+                holder.status_img.setImageResource(deliveryStatus==0?R.drawable.msg_pending:deliveryStatus==1?R.drawable.single_tick:deliveryStatus==2?R.drawable.double_tick_recieved:R.drawable.double_tick_viewed);
+                holder.sent_msg_layout.setLongClickable(true);
+                holder.sent_msg_layout.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if(!selectedMsgUUid.isEmpty()){
+                            if(selectedMsgUUid.contains(list.get(position).getMessageUid())){
+                                selectedMsgUUid.remove(list.get(position).getMessageUid());
+                            }else{
+                                selectedMsgUUid.add(list.get(position).getMessageUid());
+                            }
+
+                            messageClickCallBack.longPress(position);
+
+                        }
+                    }
+                });
+                holder.sent_msg_layout.setOnLongClickListener(new View.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View v) {
+                         if(selectedMsgUUid.contains(list.get(position).getMessageUid())){
+                             selectedMsgUUid.remove(list.get(position).getMessageUid());
+                         }else{
+                             selectedMsgUUid.add(list.get(position).getMessageUid());
+                         }
+
+                         messageClickCallBack.longPress(position);
+                        return true;
+                    }
+                });
+            }
+
+            else {
                 if(position>0){
                     if(list.get(position).getSenderId().equals(list.get(position-1).getSenderId())){
-                        ((TextMessageviewHolder)holderView).senderProfile.setVisibility(View.GONE);}
+                        holder.senderProfile.setVisibility(View.INVISIBLE);}
                     else {
-                        ((TextMessageviewHolder)holderView).senderProfile.setVisibility(View.VISIBLE);
-                        Glide.with(context).load(profile).placeholder(R.drawable.blank_profile).circleCrop().into( ((TextMessageviewHolder)holderView).senderProfile);
+                        holder.senderProfile.setVisibility(View.VISIBLE);
+                        Glide.with(context).load(profile).placeholder(R.drawable.blank_profile).circleCrop().into( holder.senderProfile);
 
                     }
                 } else {
-                    ((TextMessageviewHolder)holderView).senderProfile.setVisibility(View.VISIBLE);
-                    Glide.with(context).load(profile).placeholder(R.drawable.blank_profile).circleCrop().into( ((TextMessageviewHolder)holderView).senderProfile);
+                    holder.senderProfile.setVisibility(View.VISIBLE);
+                    Glide.with(context).load(profile).placeholder(R.drawable.blank_profile).circleCrop().into( holder.senderProfile);
 
                 }
 
-                ((TextMessageviewHolder)holderView).recMsg.setVisibility(View.VISIBLE);
-                ((TextMessageviewHolder)holderView).sent_msg_layout.setVisibility(View.GONE);
-                ((TextMessageviewHolder)holderView).recMsg.setText(list.get(position).getMsg());
+                holder.recMsg.setVisibility(View.VISIBLE);
+                holder.sent_msg_layout.setVisibility(View.GONE);
+                holder.recMsg.setText(list.get(position).getMsg());
+                holder.recMsg.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if(!selectedMsgUUid.isEmpty()){
+                            if(selectedMsgUUid.contains(list.get(position).getMessageUid())){
+                                selectedMsgUUid.remove(list.get(position).getMessageUid());
+                            }else{
+                                selectedMsgUUid.add(list.get(position).getMessageUid());
+                            }
+
+                            messageClickCallBack.longPress(position);
+
+                        }
+                    }
+                });
+                holder.recMsg.setOnLongClickListener(new View.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View v) {
+                        if(selectedMsgUUid.contains(list.get(position).getMessageUid())){
+                            selectedMsgUUid.remove(list.get(position).getMessageUid());
+                        }else{
+                            selectedMsgUUid.add(list.get(position).getMessageUid());
+                        }
+
+                        messageClickCallBack.longPress(position);
+                        return true;
+                    }
+                });
 
 
             }
@@ -339,7 +602,7 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     public static class TextMessageviewHolder extends RecyclerView.ViewHolder {
         TextView recMsg,sentMsg;
         ImageView senderProfile,status_img;
-        LinearLayout sent_msg_layout;
+        ConstraintLayout sent_msg_layout;
         public TextMessageviewHolder(@NonNull View itemView) {
             super(itemView);
             recMsg=itemView.findViewById(R.id.rec_text_msg);
