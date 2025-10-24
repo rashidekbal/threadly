@@ -15,6 +15,7 @@ import com.google.firebase.messaging.RemoteMessage;
 import com.rtech.threadly.R;
 import com.rtech.threadly.RoomDb.DataBase;
 import com.rtech.threadly.RoomDb.schemas.NotificationSchema;
+import com.rtech.threadly.SocketIo.SocketManager;
 import com.rtech.threadly.Threadly;
 import com.rtech.threadly.activities.Messenger.MessengerMainMessagePageActivity;
 import com.rtech.threadly.constants.Constants;
@@ -127,6 +128,7 @@ public class FcmService extends FirebaseMessagingService {
             ReUsableFunctions.addMessageToDb(object,"r");
             //here the sender uuid is always the other party
             ReUsableFunctions.AddNewConversationHistory(message.getData().get("senderUuid"));
+            notifyReceivedToSender(message.getData().get("senderUuid"),message.getData().get("MsgUid"));
 
         } catch (JSONException e) {
             throw new RuntimeException(e);
@@ -135,6 +137,14 @@ public class FcmService extends FirebaseMessagingService {
 
 
     }
+
+    private void notifyReceivedToSender(String SenderUUid,String msgUid) throws JSONException {
+        JSONObject dataObject =new JSONObject();
+        dataObject.put("senderUUid",SenderUUid);
+        dataObject.put("msgUid",msgUid);
+        SocketManager.getInstance().getSocket().emit("notifyReceivedToSender", dataObject);
+    }
+
     private void StatusUpdateHandler(RemoteMessage message){
         String MsgUid=message.getData().get("MsgUid");
         int deliveryStatus=Integer.parseInt(Objects.requireNonNull(message.getData().get("deliveryStatus")));
