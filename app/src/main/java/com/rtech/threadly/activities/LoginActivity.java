@@ -28,9 +28,12 @@ import com.rtech.threadly.network_managers.AuthManager;
 import com.rtech.threadly.network_managers.MessageManager;
 import com.rtech.threadly.utils.ExoplayerUtil;
 import com.rtech.threadly.utils.LoggerUtil;
+import com.rtech.threadly.utils.LoginSequence;
 import com.rtech.threadly.utils.ReUsableFunctions;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.concurrent.Executors;
 
 public class LoginActivity extends AppCompatActivity {
 AppCompatButton login_btn,signup_btn;
@@ -82,12 +85,9 @@ AuthManager authManager;
                                 preferenceEditor.putString(SharedPreferencesKeys.USER_ID,userid);
                                 preferenceEditor.putString(SharedPreferencesKeys.USER_PROFILE_PIC,profileUrl);
                                 preferenceEditor.apply();
-                                LoggerUtil.log("checkPending","before starting");
-                                MessageManager.checkAndGetPendingMessages();
+                                LoginSequence.onLoggedInSuccess();
                                 Intent homePage=new Intent(LoginActivity.this,HomeActivity.class);
                                 homePage.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                Core.startSocketEvents();
-                                ReUsableFunctions.updateFcmTokenToServer();
                                 startActivity(homePage);
                                 finish();
                             } catch (JSONException e) {
@@ -127,11 +127,10 @@ AuthManager authManager;
                                 preferenceEditor.putString(SharedPreferencesKeys.USER_ID,userid);
                                 preferenceEditor.putString(SharedPreferencesKeys.USER_PROFILE_PIC,profileUrl);
                                 preferenceEditor.apply();
+                                LoginSequence.onLoggedInSuccess();
                                 Intent homePage=new Intent(LoginActivity.this,HomeActivity.class);
                                 homePage.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                 startActivity(homePage);
-                                Core.startSocketEvents();
-                                ReUsableFunctions.updateFcmTokenToServer();
                                 finish();
                             } catch (JSONException e) {
                                 throw new RuntimeException(e);
@@ -170,11 +169,10 @@ AuthManager authManager;
                                 preferenceEditor.putString(SharedPreferencesKeys.USER_ID,userid);
                                 preferenceEditor.putString(SharedPreferencesKeys.USER_PROFILE_PIC,profileUrl);
                                 preferenceEditor.apply();
+                                LoginSequence.onLoggedInSuccess();
                                 Intent homePage=new Intent(LoginActivity.this,HomeActivity.class);
                                 homePage.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                 startActivity(homePage);
-                                Core.startSocketEvents();
-                                ReUsableFunctions.updateFcmTokenToServer();
                                 finish();
                             } catch (JSONException e) {
                                 throw new RuntimeException(e);

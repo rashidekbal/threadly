@@ -77,7 +77,6 @@ public class Core {
        @Override
        public void call(Object... args) {
            JSONObject object =(JSONObject) args[0];
-
            String ConversationId=object.optString("senderUuid")+getPreference().getString(SharedPreferencesKeys.UUID, "null");
            String senderUuid=object.optString("senderUuid");
            String username=object.optString("username");
@@ -200,6 +199,7 @@ public class Core {
        });
 
    }
+
     public static void sendCtoS(MessageSchema messageSchema)throws JSONException {
         String timestamp=messageSchema.getTimestamp();
         String MsgUid=messageSchema.getMessageUid();

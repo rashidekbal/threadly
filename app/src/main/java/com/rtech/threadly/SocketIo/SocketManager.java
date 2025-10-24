@@ -33,6 +33,7 @@ public class SocketManager {
     }
     public void disconnect(){
         msocket.disconnect();
+        instance=null;
     }
 
 

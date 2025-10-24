@@ -115,14 +115,13 @@ public class MessageManager {
 
     }
     public static void checkAndGetPendingMessages(){
-        LoggerUtil.log("checkPending","starting");
+
         String url=ApiEndPoints.CHECK_PENDING_MESSAGES;
         AndroidNetworking.get(url).setPriority(Priority.HIGH)
                 .addHeaders("Authorization","Bearer "+Core.getPreference().getString(SharedPreferencesKeys.JWT_TOKEN,"null"))
                 .build().getAsJSONObject(new JSONObjectRequestListener() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        LoggerUtil.log("checkPending","data recieved");
                         JSONArray data= null;
                         try {
                             data = response.getJSONArray("data");
@@ -138,7 +137,6 @@ public class MessageManager {
                                     Executors.newSingleThreadExecutor().execute(new Runnable() {
                                         @Override
                                         public void run() {
-                                            LoggerUtil.log("checkPending","adding to db");
                                             getaAndUpdatePendingMessagesFromServer(senderUUid);
                                         }
                                     });
@@ -148,7 +146,7 @@ public class MessageManager {
 
                             }
                         } catch (JSONException e) {
-                            LoggerUtil.log("checkPending","error: "+e.toString());
+
                            e.printStackTrace();
                         }
 

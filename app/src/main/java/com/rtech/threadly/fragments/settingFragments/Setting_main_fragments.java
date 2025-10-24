@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.rtech.threadly.SocketIo.SocketManager;
 import com.rtech.threadly.databinding.FragmentSettingMainFragmentsBinding;
 import com.rtech.threadly.interfaces.FragmentItemClickInterface;
 import com.rtech.threadly.utils.ReUsableFunctions;
@@ -49,6 +50,8 @@ FragmentItemClickInterface clickInterface;
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
                                     dialog.dismiss();
+                                    //disconnect to avoid multi instance when logged in again
+                                    SocketManager.getInstance().disconnect();
                                     ReUsableFunctions.logout((AppCompatActivity) requireActivity());
                                     ReUsableFunctions.ShowToast("logged out");
 
