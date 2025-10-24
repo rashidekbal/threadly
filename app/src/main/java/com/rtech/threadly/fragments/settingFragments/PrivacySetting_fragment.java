@@ -2,6 +2,7 @@ package com.rtech.threadly.fragments.settingFragments;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
@@ -22,7 +23,7 @@ public class PrivacySetting_fragment extends Fragment {
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         mainXml=FragmentPrivacySettingBinding.inflate(inflater,container,false);
         setUpFragment();

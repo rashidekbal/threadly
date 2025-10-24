@@ -43,7 +43,7 @@ public class StoriesManager {
 
                     @Override
                     public void onError(ANError anError) {
-                    callbackInterface.onError(anError.getMessage().toString());
+                    callbackInterface.onError(anError.getMessage());
                     }
                 });
     }

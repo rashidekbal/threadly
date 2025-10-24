@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.Messanger.MessengerMainMessagePageActivity"
+    tools:context=".activities.Messenger.MessengerMainMessagePageActivity"
     android:background="@color/white"
 
 >
@@ -41,7 +41,8 @@
                     android:layout_height="@dimen/dp_35"
                     android:layout_centerVertical="true"
                     android:layout_marginStart="@dimen/dp_10"
-                    android:src="@drawable/back_arrow" />
+                    android:src="@drawable/back_arrow"
+                    android:contentDescription="@string/back_btn"/>
 
                 <ImageView
                     android:id="@+id/profile"
@@ -52,7 +53,8 @@
                     android:layout_toEndOf="@+id/backBtn"
                     android:background="@drawable/circle"
                     android:clipToOutline="true"
-                    tools:src="@drawable/blank_profile" />
+                    tools:src="@drawable/blank_profile"
+                    android:contentDescription="@string/profilepic"/>
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -102,6 +104,7 @@
             android:scaleType="centerCrop"
             android:background="@drawable/curved_small_square_box"
             android:clipToOutline="true"
+            android:contentDescription="@string/preview"
             />
         <ImageView
             android:id="@+id/discardBtn"

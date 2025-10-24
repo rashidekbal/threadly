@@ -16,7 +16,7 @@ import com.rtech.threadly.R;
 import com.rtech.threadly.RoomDb.DataBase;
 import com.rtech.threadly.RoomDb.schemas.NotificationSchema;
 import com.rtech.threadly.Threadly;
-import com.rtech.threadly.activities.Messanger.MessengerMainMessagePageActivity;
+import com.rtech.threadly.activities.Messenger.MessengerMainMessagePageActivity;
 import com.rtech.threadly.constants.Constants;
 import com.rtech.threadly.constants.SharedPreferencesKeys;
 import com.rtech.threadly.core.Core;
@@ -56,28 +56,34 @@ public class FcmService extends FirebaseMessagingService {
         Log.d("receivedBroadcast", "onMessageReceived: "+broadcastType);
         switch (Objects.requireNonNull(broadcastType)){
             case "statusUpdate":
-                StatusUpdateHandler(message);
+               if (ReUsableFunctions.isLoggedIn()) {StatusUpdateHandler(message);}
                 break;
             case  "chat":
-                ChatReceivedHandler(message);
+                if(ReUsableFunctions.isLoggedIn()){  ChatReceivedHandler(message);}
                 break;
             case "postLike":
-                PostLikedNotificationHandler(message);
+                if(ReUsableFunctions.isLoggedIn()){PostLikedNotificationHandler(message);}
+
                 break;
             case "postUnLike":
-                postUnlikedNotificationHandler(message);
+                if(ReUsableFunctions.isLoggedIn()){postUnlikedNotificationHandler(message);}
+
                 break;
             case "newFollower":
-                newFollowerController(message);
+                if(ReUsableFunctions.isLoggedIn()){  newFollowerController(message);}
+
                 break;
             case "UnFollow":
-                unFollowNotifyController(message);
+                if(ReUsableFunctions.isLoggedIn()){ unFollowNotifyController(message);}
+
                 break;
             case "commentLike":
-                commentLikeNotifyController(message);
+                if(ReUsableFunctions.isLoggedIn()){  commentLikeNotifyController(message);}
+
                 break;
             case "commentUnlike":
-                commentUnlikeHandler(message);
+                if(ReUsableFunctions.isLoggedIn()){    commentUnlikeHandler(message);}
+
                 break;
             case "logout":
                 LogOutSignalHandler(message);
@@ -119,6 +125,8 @@ public class FcmService extends FirebaseMessagingService {
             object.put("postId",Integer.parseInt(Objects.requireNonNull(message.getData().get("postId"))));
             object.put("postLink",message.getData().get("link"));
             ReUsableFunctions.addMessageToDb(object,"r");
+            //here the sender uuid is always the other party
+            ReUsableFunctions.AddNewConversationHistory(message.getData().get("senderUuid"));
 
         } catch (JSONException e) {
             throw new RuntimeException(e);

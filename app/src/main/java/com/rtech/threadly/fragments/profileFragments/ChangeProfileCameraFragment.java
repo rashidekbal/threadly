@@ -32,8 +32,7 @@ import java.util.concurrent.Executor;
 
 public class ChangeProfileCameraFragment extends Fragment {
     FragmentChangeProfileCameraBinding mainXml;
-    private int permissionCode=101;
-    private String[] permission={Manifest.permission.CAMERA};
+    private final String[] permission={Manifest.permission.CAMERA};
     Boolean is_front=true;
     boolean is_flash=false;
     ImageCapture imageCapture;
@@ -47,7 +46,7 @@ public class ChangeProfileCameraFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 mainXml= FragmentChangeProfileCameraBinding.inflate(inflater,container,false);
       activity=(AppCompatActivity) requireActivity();
@@ -121,7 +120,7 @@ mainXml= FragmentChangeProfileCameraBinding.inflate(inflater,container,false);
 
     private void checkPermissionAndStart(){
         if(!PermissionManagementUtil.isAllPermissionGranted(Threadly.getGlobalContext(),permission)){
-            PermissionManagementUtil.requestPermission(requireActivity(),permission,permissionCode);
+            PermissionManagementUtil.requestPermission(requireActivity(),permission,101);
 
         }else{
             StartMain();

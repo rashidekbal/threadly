@@ -1,9 +1,7 @@
 package com.rtech.threadly.workers;
 
-import android.app.Notification;
 import android.content.Context;
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
@@ -15,7 +13,6 @@ import com.rtech.threadly.R;
 import com.rtech.threadly.Threadly;
 import com.rtech.threadly.constants.Constants;
 import com.rtech.threadly.core.Core;
-import com.rtech.threadly.interfaces.NetworkCallbackInterfaceWithJsonObjectDelivery;
 import com.rtech.threadly.interfaces.NetworkCallbackInterfaceWithProgressTracking;
 import com.rtech.threadly.network_managers.PostsManager;
 
@@ -52,7 +49,7 @@ public class UploadMediaWorker extends Worker {
         NetworkCallbackInterfaceWithProgressTracking callbackInterfaceWithProgressTracking=new NetworkCallbackInterfaceWithProgressTracking() {
             @Override
             public void onSuccess(JSONObject response) {
-                showUploadProgressNotification(0,0,false,true,201);
+                showUploadProgressNotification(0,0,false,true);
                 media.delete();
                 isSucess[0]=true;
                 latch.countDown();
@@ -60,7 +57,7 @@ public class UploadMediaWorker extends Worker {
 
             @Override
             public void onError(String err) {
-                showUploadProgressNotification(0,0,false,false,201);
+                showUploadProgressNotification(0,0,false,false);
                 Log.d(TAG, "onError: "+err);
 
                 media.delete();
@@ -72,7 +69,7 @@ public class UploadMediaWorker extends Worker {
             @Override
             public void progress(long bytesUploaded, long totalBytes) {
 
-                showUploadProgressNotification((int)totalBytes,(int)bytesUploaded,true,isSucess[0],201);
+                showUploadProgressNotification((int)totalBytes,(int)bytesUploaded,true,isSucess[0]);
 
             }
         };
@@ -93,7 +90,7 @@ public class UploadMediaWorker extends Worker {
         return isSucess[0]?Result.success():Result.failure();
     }
 
-    private void showUploadProgressNotification(int max,int current,boolean uploading,boolean isSuccess,int notificationCode){
+    private void showUploadProgressNotification(int max,int current,boolean uploading,boolean isSuccess){
         NotificationCompat.Builder builder=new NotificationCompat.Builder(Threadly.getGlobalContext()).setChannelId(Constants.MEDIA_UPLOAD_CHANNEL.toString()).setContentTitle("Uploading media").setSmallIcon(R.drawable.splash);
         if(uploading){
 
@@ -109,6 +106,6 @@ public class UploadMediaWorker extends Worker {
 
 
 
-        Core.getNotificationManager().notify(notificationCode,builder.build());
+        Core.getNotificationManager().notify(201,builder.build());
     }
 }

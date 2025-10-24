@@ -51,6 +51,7 @@ import com.rtech.threadly.interfaces.Post_fragmentSetCallback;
 import com.rtech.threadly.interfaces.StoriesBackAndForthInterface;
 import com.rtech.threadly.interfaces.StoryOpenCallback;
 import com.rtech.threadly.utils.ExoplayerUtil;
+import com.rtech.threadly.utils.ReUsableFunctions;
 import com.rtech.threadly.viewmodels.ProfileViewModel;
 
 import java.util.concurrent.Executors;
@@ -258,7 +259,11 @@ int currentFragment;
                                         }));
 
                                     }else if(v.getId()==R.id.pictureSelector_gallery_btn){
-                                        addFragment(new ChangeProfileImageSelector());
+                                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                                            addFragment(new ChangeProfileImageSelector());
+                                        }else{
+                                            ReUsableFunctions.ShowToast("something went wrong");
+                                        }
 
                                     }
 

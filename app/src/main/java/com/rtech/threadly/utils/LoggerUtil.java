@@ -9,4 +9,11 @@ public class LoggerUtil {
         Log.d(networkTAG, "LogNetworkError: ");
 
     }
+    public static void log(String Tag,String log){
+        if(Tag==null){
+            Tag="defautlTag";
+        }
+        Log.d(Tag,log);
+
+    }
 }

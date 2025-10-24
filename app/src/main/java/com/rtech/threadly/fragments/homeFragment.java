@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.content.res.AppCompatResources;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -17,7 +19,7 @@ import android.view.ViewGroup;
 import com.bumptech.glide.Glide;
 import com.rtech.threadly.R;
 import com.rtech.threadly.activities.AddStoryActivity;
-import com.rtech.threadly.activities.Messanger.MessengerActivity;
+import com.rtech.threadly.activities.Messenger.MessengerActivity;
 import com.rtech.threadly.activities.NotificationActivity;
 import com.rtech.threadly.adapters.postsAdapters.ImagePostsFeedAdapter;
 import com.rtech.threadly.adapters.storiesAdapters.StatusViewAdapter;
@@ -63,7 +65,7 @@ public homeFragment(){
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate layout using ViewBinding
         mainXml = FragmentHomeBinding.inflate(inflater, container, false);
         postsViewModel = new ViewModelProvider(requireActivity()).get(ImagePostsFeedViewModel.class);
@@ -95,7 +97,7 @@ public homeFragment(){
             @Override
             public void onChanged(ArrayList<StoryMediaModel> storyMediaModels) {
                 if(!storyMediaModels.isEmpty()){
-                    mainXml.StoryOuterBorderColor.setBackground(getResources().getDrawable(R.drawable.red_circle));
+                    mainXml.StoryOuterBorderColor.setBackground(AppCompatResources.getDrawable(requireActivity(),R.drawable.red_circle));
                     mainXml.addStorySymbol.setVisibility(View.GONE);
                     mainXml.MyStoryUsername.setText(R.string.your_story);
                     mainXml.myStoryLayoutMain.setVisibility(View.VISIBLE);
@@ -108,7 +110,7 @@ public homeFragment(){
             }
         });
 
-        setMyStoryClickCallback(loginInfo.getString(SharedPreferencesKeys.USER_ID,"null"),loginInfo.getString(SharedPreferencesKeys.USER_PROFILE_PIC,"null"),new ArrayList<>(),0);
+        setMyStoryClickCallback(loginInfo.getString(SharedPreferencesKeys.USER_ID,"null"),loginInfo.getString(SharedPreferencesKeys.USER_PROFILE_PIC,"null"),new ArrayList<>());
 
 
 
@@ -254,14 +256,14 @@ public homeFragment(){
         return mainXml.getRoot();
     }
 
-    private void setMyStoryClickCallback(String userid, String profile, ArrayList<StoryMediaModel> storyMediaModels, int i) {
+    private void setMyStoryClickCallback(String userid, String profile, ArrayList<StoryMediaModel> storyMediaModels) {
     mainXml.myStoryLayoutMain.setOnClickListener(v->{
         if(mainXml.addStorySymbol.getVisibility()==View.VISIBLE){
             Intent intent=new Intent(requireActivity(),AddStoryActivity.class);
             intent.putExtra("title","New Story");
             startActivity(intent);
         }else{
-            callback.openStoryOf(userid,profile,new ArrayList<>(),i);
+            callback.openStoryOf(userid,profile,new ArrayList<>(),0);
         }
     });
     }

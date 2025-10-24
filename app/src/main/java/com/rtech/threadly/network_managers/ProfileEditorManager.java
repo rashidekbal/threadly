@@ -152,12 +152,6 @@ public class ProfileEditorManager {
                     }
                 });
     }
-    private final void UpdateProfilePic(File picture, NetworkCallbackInterfaceWithProgressTracking callback){
-
-
-
-
-    }
 
 
 

@@ -1,5 +1,6 @@
 package com.rtech.threadly.fragments.profileFragments;
 
+import android.content.Context;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -65,7 +66,7 @@ public class UsernameEditFragment extends Fragment {
         mainXml.saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                InputMethodManager imm=(InputMethodManager) activity.getSystemService(requireActivity().INPUT_METHOD_SERVICE);
+                InputMethodManager imm=(InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(mainXml.useridField.getWindowToken(),0);
                 mainXml.cancelButton.setEnabled(false);
                 mainXml.saveButton.setEnabled(false);
@@ -76,26 +77,22 @@ public class UsernameEditFragment extends Fragment {
                     mainXml.errorMessageText.setText(R.string.emptyUserNameError);
                     mainXml.cancelButton.setEnabled(true);
                     mainXml.saveButton.setEnabled(true);
-                    return;
                 } else if (userid.length()<6) {
                     mainXml.errorMessageText.setVisibility(View.VISIBLE);
                     mainXml.errorMessageText.setText(R.string.usernameLengthError);
                     mainXml.cancelButton.setEnabled(true);
                     mainXml.saveButton.setEnabled(true);
-                    return;
                 } else if (userid.length()>20) {
                     mainXml.errorMessageText.setVisibility(View.VISIBLE);
                     mainXml.errorMessageText.setText(R.string.usernameTooLongError);
                     mainXml.cancelButton.setEnabled(true);
                     mainXml.saveButton.setEnabled(true);
-                    return;
                 } else if (!userid.matches("[a-zA-Z0-9_]+")) {
                     mainXml.errorMessageText.setVisibility(View.VISIBLE);
                     mainXml.errorMessageText.setText(R.string.usernameContaminationError);
                     mainXml.cancelButton.setEnabled(true);
                     mainXml.saveButton.setEnabled(true);
-                    return;
-                    
+
                 }else{
                     mainXml.progressBar.setVisibility(View.VISIBLE);
                     profileEditorManager.UpdateUserid(userid, new NetworkCallbackInterfaceWithJsonObjectDelivery() {

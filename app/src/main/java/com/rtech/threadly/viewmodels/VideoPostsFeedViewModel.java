@@ -60,8 +60,6 @@ public class VideoPostsFeedViewModel extends AndroidViewModel {
                     }
                     MutableLiveVideoPostData.postValue(tempArrayList);
                 } catch (JSONException e) {
-//                        Log.d("dataloadException", "onSuccess: "+e.
-//                                toString());
                     throw new RuntimeException(e);
                 }
 

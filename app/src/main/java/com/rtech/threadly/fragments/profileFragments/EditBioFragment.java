@@ -1,5 +1,6 @@
 package com.rtech.threadly.fragments.profileFragments;
 
+import android.content.Context;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -81,7 +82,7 @@ public class EditBioFragment extends Fragment {
         mainXml.saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                InputMethodManager imm=(InputMethodManager) activity.getSystemService(requireActivity().INPUT_METHOD_SERVICE);
+                InputMethodManager imm=(InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(mainXml.bioEdittext.getWindowToken(),0);
                 mainXml.cancelButton.setEnabled(false);
                 mainXml.saveButton.setEnabled(false);
@@ -92,7 +93,6 @@ public class EditBioFragment extends Fragment {
                     mainXml.warningText.setText(R.string.bioEmptyWarning);
                     mainXml.cancelButton.setEnabled(true);
                     mainXml.saveButton.setEnabled(true);
-                    return;
                 }else if(bio.length()>150){
                     mainXml.warningText.setText(R.string.BioLengthWarning);
                     mainXml.warningText.setVisibility(View.VISIBLE);

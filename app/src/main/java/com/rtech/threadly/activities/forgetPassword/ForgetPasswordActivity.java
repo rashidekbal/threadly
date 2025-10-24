@@ -3,12 +3,9 @@ package com.rtech.threadly.activities.forgetPassword;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.EditText;
-import android.widget.ProgressBar;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.AppCompatButton;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -73,17 +70,13 @@ public class ForgetPasswordActivity extends AppCompatActivity {
                             int errorCode=Integer.parseInt(err);
                             if(errorCode==404){
                                 mainXml.useridField.setError("User not found");
-                                mainXml.progressBar.setVisibility(View.GONE);
-                                mainXml.forgetPasswordBtn.setText(R.string.forget_password);
-                                mainXml.forgetPasswordBtn.setEnabled(true);
                             }else{
                                 mainXml.useridField.setError("something went wrong");
-                                mainXml.progressBar.setVisibility(View.GONE);
-                                mainXml.forgetPasswordBtn.setText(R.string.forget_password);
-                                mainXml.forgetPasswordBtn.setEnabled(true);
 
                             }
-
+                            mainXml.progressBar.setVisibility(View.GONE);
+                            mainXml.forgetPasswordBtn.setText(R.string.forget_password);
+                            mainXml.forgetPasswordBtn.setEnabled(true);
 
 
                         }

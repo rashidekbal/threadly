@@ -3,6 +3,7 @@ package com.rtech.threadly.fragments;
 import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -12,7 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.rtech.threadly.activities.Messanger.MessengerMainMessagePageActivity;
+import com.rtech.threadly.activities.Messenger.MessengerMainMessagePageActivity;
 import com.rtech.threadly.adapters.messanger.NewMsgListAdapter;
 import com.rtech.threadly.databinding.FragmentUsersListBinding;
 import com.rtech.threadly.interfaces.Messanger.OnUserSelectedListener;
@@ -40,7 +41,7 @@ this.callback=callback;
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         mainXml=FragmentUsersListBinding.inflate(inflater,container,false);
         init();

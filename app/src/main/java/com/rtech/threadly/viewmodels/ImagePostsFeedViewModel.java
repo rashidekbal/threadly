@@ -85,7 +85,6 @@ public class ImagePostsFeedViewModel extends AndroidViewModel {
 
                 @Override
                 public void onError(String err) {
-//                    Log.d("PostsViewModelDataLoadError", err);
                     postsLiveData.postValue(new ArrayList<>());
 
 
@@ -102,7 +101,7 @@ public class ImagePostsFeedViewModel extends AndroidViewModel {
                 randomPosition = (int) Math.floor(Math.random() * size);
             }
 
-            Log.d("suggestionInsertedAt", "insertSuggestionAtRandom: "+Integer.toString(randomPosition));
+            Log.d("suggestionInsertedAt", "insertSuggestionAtRandom: "+ randomPosition);
             postsModels.add(randomPosition,new Posts_Model(1,0,"","","","","","","",0,0,0,0,false,false));
 
         }

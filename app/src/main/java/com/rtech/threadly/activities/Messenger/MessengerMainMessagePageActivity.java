@@ -1,4 +1,4 @@
-package com.rtech.threadly.activities.Messanger;
+package com.rtech.threadly.activities.Messenger;
 
 import static com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_EXPANDED;
 import android.Manifest;
@@ -14,7 +14,6 @@ import android.provider.Settings;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 import androidx.activity.EdgeToEdge;
@@ -55,7 +54,6 @@ import com.rtech.threadly.fragments.PostAddCameraFragment;
 import com.rtech.threadly.fragments.common_ui_pages.Media_Capture_finalizer_fragment;
 import com.rtech.threadly.interfaces.CameraFragmentInterface;
 import com.rtech.threadly.interfaces.Messanger.MessageClickCallBack;
-import com.rtech.threadly.interfaces.Messanger.mediaDeleteCallback;
 import com.rtech.threadly.interfaces.NetworkCallbackInterfaceWithProgressTracking;
 import com.rtech.threadly.interfaces.general_ui_callbacks.OnCapturedMediaFinalizedCallback;
 import com.rtech.threadly.models.MediaModel;

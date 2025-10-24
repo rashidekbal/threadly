@@ -14,6 +14,7 @@ import com.rtech.threadly.constants.Constants;
 import com.rtech.threadly.constants.SharedPreferencesKeys;
 import com.rtech.threadly.core.Core;
 import com.rtech.threadly.interfaces.NetworkCallbackInterfaceWithProgressTracking;
+import com.rtech.threadly.utils.LoggerUtil;
 import com.rtech.threadly.utils.ReUsableFunctions;
 
 import org.json.JSONArray;
@@ -59,9 +60,18 @@ public class MessageManager {
                     .build().getAsJSONObject(new JSONObjectRequestListener() {
                         @Override
                         public void onResponse(JSONObject response) {
+
+
+
                             JSONArray data=response.optJSONArray("data");
                             if(data.length()>0){
-                                for(int i=0;i<data.length();i++){
+                                Executors.newSingleThreadExecutor().execute(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        ReUsableFunctions.AddNewConversationHistory(senderUUid);
+                                    }
+                                });
+                                 for(int i=0;i<data.length();i++){
                                     JSONObject object1=data.optJSONObject(i);
 
                                     String MsgUid=object1.optString("messageUid");
@@ -105,15 +115,18 @@ public class MessageManager {
 
     }
     public static void checkAndGetPendingMessages(){
+        LoggerUtil.log("checkPending","starting");
         String url=ApiEndPoints.CHECK_PENDING_MESSAGES;
         AndroidNetworking.get(url).setPriority(Priority.HIGH)
                 .addHeaders("Authorization","Bearer "+Core.getPreference().getString(SharedPreferencesKeys.JWT_TOKEN,"null"))
                 .build().getAsJSONObject(new JSONObjectRequestListener() {
                     @Override
                     public void onResponse(JSONObject response) {
+                        LoggerUtil.log("checkPending","data recieved");
                         JSONArray data= null;
                         try {
                             data = response.getJSONArray("data");
+
                             if(data.length()>0 ){
                                 for(int i=0;i<data.length();i++){
                                     JSONObject object=data.optJSONObject(0);
@@ -125,7 +138,7 @@ public class MessageManager {
                                     Executors.newSingleThreadExecutor().execute(new Runnable() {
                                         @Override
                                         public void run() {
-                                            Core.AddNewConversationHistory(senderUUid);
+                                            LoggerUtil.log("checkPending","adding to db");
                                             getaAndUpdatePendingMessagesFromServer(senderUUid);
                                         }
                                     });
@@ -135,6 +148,7 @@ public class MessageManager {
 
                             }
                         } catch (JSONException e) {
+                            LoggerUtil.log("checkPending","error: "+e.toString());
                            e.printStackTrace();
                         }
 
@@ -143,7 +157,7 @@ public class MessageManager {
 
                     @Override
                     public void onError(ANError anError) {
-                        Log.d(Constants.NETWORK_ERROR_TAG.toString(), "onError from check penidng route  "+anError.getErrorDetail());
+                        LoggerUtil.log("checkPending","error: "+anError.toString());
 
                     }
                 });

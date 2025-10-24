@@ -22,7 +22,6 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.rtech.threadly.R;
 import com.rtech.threadly.databinding.FragmentVideoViewBinding;
-import com.rtech.threadly.interfaces.Messanger.mediaDeleteCallback;
 import com.rtech.threadly.utils.DownloadManagerUtil;
 import com.rtech.threadly.utils.ExoplayerUtil;
 import com.rtech.threadly.utils.ReUsableFunctions;

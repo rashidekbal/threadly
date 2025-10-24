@@ -15,7 +15,6 @@ import com.bumptech.glide.Glide;
 import com.rtech.threadly.R;
 import com.rtech.threadly.interfaces.Messanger.OnUserSelectedListener;
 import com.rtech.threadly.models.UsersModel;
-import com.rtech.threadly.utils.ReUsableFunctions;
 
 import java.util.ArrayList;
 

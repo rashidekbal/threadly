@@ -10,6 +10,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.content.res.AppCompatResources;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -49,9 +50,9 @@ public class StatusViewAdapter extends RecyclerView.Adapter<StatusViewAdapter.vi
             callback.openStoryOf(list.get(position).userid,list.get(position).userProfile,list,position);
         });
         if(list.get(position).isSeen){
-            holder.dpBorder.setBackground(context.getDrawable(R.drawable.circle_grey));
+            holder.dpBorder.setBackground(AppCompatResources.getDrawable(context,R.drawable.circle_grey));
         }else{
-            holder.dpBorder.setBackground(context.getDrawable(R.drawable.red_circle));
+            holder.dpBorder.setBackground(AppCompatResources.getDrawable(context,R.drawable.red_circle));
         }
         Glide.with(context).load(list.get(position).userProfile).placeholder(R.drawable.blank_profile).circleCrop().into(holder.profileImg);
 

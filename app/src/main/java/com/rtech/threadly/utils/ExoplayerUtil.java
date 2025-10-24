@@ -1,7 +1,6 @@
 package com.rtech.threadly.utils;
 
 import android.content.Context;
-import android.media.browse.MediaBrowser;
 import android.net.Uri;
 
 import androidx.annotation.OptIn;

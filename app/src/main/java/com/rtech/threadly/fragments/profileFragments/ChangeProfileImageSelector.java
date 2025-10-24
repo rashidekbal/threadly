@@ -7,6 +7,8 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -33,6 +35,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
+@RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
 public class ChangeProfileImageSelector extends Fragment {
     FragmentChangeProfileImageSelectorBinding mainXml;
     String AndroidAPi33AndAbovePermission= Manifest.permission.READ_MEDIA_IMAGES;
@@ -52,7 +55,7 @@ public class ChangeProfileImageSelector extends Fragment {
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
        mainXml=FragmentChangeProfileImageSelectorBinding.inflate(inflater,container,false);
@@ -116,6 +119,7 @@ public class ChangeProfileImageSelector extends Fragment {
             if(!uris.isEmpty()){
             mainXml.selectImagePreview.setImageURI(uris.get(0));
             pickedUri=uris.get(0);}
+            cursor.close();
         }
         setOnclickListeners();
 

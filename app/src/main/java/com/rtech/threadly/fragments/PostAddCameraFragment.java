@@ -61,7 +61,7 @@ public class PostAddCameraFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
        mainXml= FragmentPostAddCameraBinding.inflate(inflater, container, false);
 
@@ -90,10 +90,8 @@ public class PostAddCameraFragment extends Fragment {
                     recorder=new Recorder.Builder().setQualitySelector(QualitySelector.from(Quality.HIGHEST)).build();
                     videoCapture=new VideoCapture.Builder(recorder).build();
                     cameraProvider.unbindAll();
-                    cameraProvider.bindToLifecycle((LifecycleOwner) activity,cameraSelector,preview,imageCapture,videoCapture);
-                } catch (ExecutionException e) {
-                    throw new RuntimeException(e);
-                } catch (InterruptedException e) {
+                    cameraProvider.bindToLifecycle(activity,cameraSelector,preview,imageCapture,videoCapture);
+                } catch (ExecutionException | InterruptedException e) {
                     throw new RuntimeException(e);
                 }
             }

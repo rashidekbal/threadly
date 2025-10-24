@@ -35,7 +35,7 @@
         tools:targetApi="29"
         >
         <activity
-            android:name=".activities.Messanger.MessengerMainMessagePageActivity"
+            android:name=".activities.Messenger.MessengerMainMessagePageActivity"
             android:exported="false"
             android:windowSoftInputMode="adjustResize"
             android:screenOrientation="portrait"/>
@@ -43,9 +43,10 @@
             android:name=".activities.NotificationActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.Messanger.MessengerActivity"
+            android:name=".activities.Messenger.MessengerActivity"
             android:exported="false"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".activities.AddStoryActivity"
             android:exported="false"

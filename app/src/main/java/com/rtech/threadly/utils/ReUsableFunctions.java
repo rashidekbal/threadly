@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 
+import android.util.Log;
 import android.view.inputmethod.InputMethodManager;
 import android.webkit.MimeTypeMap;
 
@@ -16,6 +17,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.rtech.threadly.RoomDb.DataBase;
+import com.rtech.threadly.RoomDb.schemas.HistorySchema;
 import com.rtech.threadly.RoomDb.schemas.MessageSchema;
 import com.rtech.threadly.RoomDb.schemas.NotificationSchema;
 import com.rtech.threadly.Threadly;
@@ -24,8 +26,12 @@ import com.rtech.threadly.activities.UserProfileActivity;
 import com.rtech.threadly.constants.SharedPreferencesKeys;
 import com.rtech.threadly.core.Core;
 import com.rtech.threadly.interfaces.NetworkCallbackInterface;
+import com.rtech.threadly.interfaces.NetworkCallbackInterfaceWithJsonObjectDelivery;
+import com.rtech.threadly.network_managers.AuthManager;
 import com.rtech.threadly.network_managers.FcmManager;
+import com.rtech.threadly.network_managers.ProfileManager;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -60,24 +66,24 @@ public class ReUsableFunctions {
         android.widget.Toast.makeText(Threadly.getGlobalContext(), message, android.widget.Toast.LENGTH_SHORT).show();
     }
     public static void logout(AppCompatActivity activity){
+        new AuthManager().logout();
         SharedPreferences loginInfo= Core.getPreference();
         SharedPreferences.Editor editor=loginInfo.edit();
         editor.clear();
         editor.apply();
         Executors.newSingleThreadExecutor().execute(() -> DataBase.getInstance().clearAllTables());
-
         Intent intent=new Intent(activity,LoginActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
         activity.startActivity(intent);
         activity.finish();
     }
     public static void logoutWithoutActivity(){
+        new AuthManager().logout();
         SharedPreferences loginInfo= Core.getPreference();
         SharedPreferences.Editor editor=loginInfo.edit();
         editor.clear();
         editor.apply();
         Executors.newSingleThreadExecutor().execute(() -> DataBase.getInstance().clearAllTables());
-
         Intent intent=new Intent(Threadly.getGlobalContext(),LoginActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
         Threadly.getGlobalContext().startActivity(intent);
@@ -236,5 +242,59 @@ public static void hideKeyboard(AppCompatActivity activity){
     InputMethodManager imm=(InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
     imm.hideSoftInputFromWindow(activity.getWindow().getDecorView().getWindowToken(),0);
 }
+public static boolean isLoggedIn(){
+        return Core.getPreference().getBoolean(SharedPreferencesKeys.IS_LOGGED_IN,false);
+}
+
+
+
+    public static void AddNewConversationHistory(String OtherPartyUuid) {
+
+        String ConversationId = OtherPartyUuid + Core.getPreference().getString(SharedPreferencesKeys.UUID, "null");
+
+        HistorySchema history = DataBase.getInstance().historyOperator().getHistory(ConversationId);
+        if (history == null) {
+            new ProfileManager().GetProfileByUuid(OtherPartyUuid, new NetworkCallbackInterfaceWithJsonObjectDelivery() {
+                @Override
+                public void onSuccess(JSONObject response) {
+                    JSONArray Array = response.optJSONArray("data");
+                    assert Array != null;
+                    if (Array.length() > 0) {
+                        JSONObject object = Array.optJSONObject(0);
+                        String username = object.optString("username");
+                        String userid = object.optString("userid");
+                        String profile = object.optString("profilepic");
+                        Executors.newSingleThreadExecutor().execute(new Runnable() {
+                            @Override
+                            public void run() {
+                                DataBase.getInstance().historyOperator().insertHistory(new HistorySchema(OtherPartyUuid + Core.getPreference().getString(SharedPreferencesKeys.UUID, "null")
+                                        , username, userid, profile, OtherPartyUuid, "null",ReUsableFunctions.getTimestamp()));
+                                Log.d("notfound", "data inserted ");
+                            }
+                        });
+
+
+                    }
+
+                }
+
+                @Override
+                public void onError(String err) {
+                    Log.d("errorFetching", err);
+
+                }
+            });
+        } else {
+                //if history found update time stamp
+                Executors.newSingleThreadExecutor().execute(()->{
+                    String timeStamp=ReUsableFunctions.getTimestamp();
+                    DataBase.getInstance().historyOperator().updateTimeStamp(OtherPartyUuid +Core.getPreference().getString(SharedPreferencesKeys.UUID,"null"),timeStamp);
+                });
+
+            }
+
+
+    }
 
 }
+

@@ -10,6 +10,7 @@ import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.JSONObjectRequestListener;
 import com.rtech.threadly.BuildConfig;
 import com.rtech.threadly.constants.ApiEndPoints;
+import com.rtech.threadly.constants.SharedPreferencesKeys;
 import com.rtech.threadly.core.Core;
 import com.rtech.threadly.interfaces.NetworkCallbackInterfaceWithJsonObjectDelivery;
 import com.rtech.threadly.interfaces.NetworkCallbackInterface;
@@ -22,28 +23,6 @@ public class AuthManager {
     public AuthManager(){
         // Initialize any necessary components or configurations for authentication
         loginInfo = Core.getPreference();
-    }
-    public void Register(String userid, String password, NetworkCallbackInterfaceWithJsonObjectDelivery callback){
-        // Implement the registration logic here
-        // This could involve making a network request to your server with the provided userid and password
-        // Once the response is received, you can call the callback methods to deliver the result
-
-        // Example:
-        // AndroidNetworking.post("YOUR_REGISTER_URL")
-        //         .addBodyParameter("userid", userid)
-        //         .addBodyParameter("password", password)
-        //         .build()
-        //         .getAsJSONObject(new JSONObjectRequestListener() {
-        //             @Override
-        //             public void onResponse(JSONObject response) {
-        //                 callback.onSuccess(response);
-        //             }
-        //
-        //             @Override
-        //             public void onError(ANError error) {
-        //                 callback.onError(error.getMessage());
-        //             }
-        //         });
     }
     public void LoginMobile(String mobile,String password,NetworkCallbackInterfaceWithJsonObjectDelivery callback){
         String url=ApiEndPoints.LOGIN_MOBILE;
@@ -76,18 +55,6 @@ public class AuthManager {
             throw new RuntimeException(e);
         }
 
-    }
-    public void Logout(NetworkCallbackInterface callbackIterface){
-        // Implement the logout logic here
-        // This could involve clearing the user's session, removing tokens, etc.
-        // Once the logout is successful, you can call the callback methods to notify the result
-
-        // Example:
-        SharedPreferences.Editor editor = loginInfo.edit();
-        editor.clear(); // Clear all stored login information
-        editor.apply(); // Apply changes
-
-        callbackIterface.onSuccess(); // Notify success
     }
     public void ResetPasswordWithMobile(String password,String token, NetworkCallbackInterface callback) {
 
@@ -218,6 +185,22 @@ public class AuthManager {
             throw new RuntimeException(e);
         }
 
+    }
+    public  void logout(){
+        String url=ApiEndPoints.LOGOUT;
+        AndroidNetworking.get(url).setPriority(Priority.HIGH)
+                .addHeaders("Authorization","Bearer "+Core.getPreference().getString(SharedPreferencesKeys.JWT_TOKEN,"null"))
+                .build().getAsJSONObject(new JSONObjectRequestListener() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        //nothing to do
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+//nothing to do
+                    }
+                });
     }
 
 }

@@ -360,7 +360,7 @@ public class ImagePostsFeedAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
                 @Override
                 public void onError(String err) {
-                    LoggerUtil.LogNetworkError(err.toString());
+                    LoggerUtil.LogNetworkError(err);
 
                 }
             });
@@ -378,7 +378,7 @@ public class ImagePostsFeedAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
                 @Override
                 public void onError(String err) {
-                    LoggerUtil.LogNetworkError(err.toString());
+                    LoggerUtil.LogNetworkError(err);
 
                 }
             });
@@ -640,14 +640,13 @@ public class ImagePostsFeedAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                 }else{
                     selectedUsers.add(model);
                 }
+                assert actionButtons_rl != null;
                 if(selectedUsers.isEmpty()){
-                    assert actionButtons_rl != null;
                     actionButtons_rl.setVisibility(View.VISIBLE);
                     assert sendBtn != null;
                     sendBtn.setVisibility(View.GONE);
 
                 }else{
-                    assert actionButtons_rl != null;
                     actionButtons_rl.setVisibility(View.GONE);
                     assert sendBtn != null;
                     sendBtn.setVisibility(View.VISIBLE);

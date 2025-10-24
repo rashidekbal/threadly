@@ -1,7 +1,5 @@
 package com.rtech.threadly.network_managers;
 
-import android.util.Log;
-
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;

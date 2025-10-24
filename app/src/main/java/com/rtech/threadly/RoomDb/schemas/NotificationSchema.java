@@ -5,8 +5,6 @@ import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
-import java.util.NavigableMap;
-
 @Entity(tableName = "notification_schema")
 public class NotificationSchema {
     @PrimaryKey (autoGenerate = true)

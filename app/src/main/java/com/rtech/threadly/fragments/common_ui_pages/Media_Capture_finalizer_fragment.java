@@ -2,6 +2,7 @@ package com.rtech.threadly.fragments.common_ui_pages;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
@@ -35,7 +36,7 @@ public class Media_Capture_finalizer_fragment extends Fragment {
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         mainXMl=FragmentImageFinalizerFragmentBinding.inflate(inflater,container,false);
         // Inflate the layout for this fragment

@@ -164,4 +164,7 @@
     <string name="privacy_setting_desc_2">When your account is private, only the followers you approve can see what you share, including your photos or videos on hashtag and location pages, and your followers and following lists. Certain info on your profile, like your profile picture and username, is visible to everyone on and off threadly</string>
     <string name="account_privacy">Account Privacy</string>
     <string name="deleted_msg_placeholder_text">this message is deleted</string>
+    <string name="logo">logo</string>
+    <string name="back_btn">back_btn</string>
+    <string name="preview">preview</string>
 </resources>

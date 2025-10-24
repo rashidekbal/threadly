@@ -22,48 +22,7 @@ public class OtpManager {
         // Initialize any necessary components or configurations for OTP management
 
     }
-    public void SendOtpMobile(String mobile, NetworkCallbackInterface callbackInterface){
-        // Implement the logic to send OTP to the mobile number
-        // This could involve making a network request to your server with the provided mobile number
-        // Once the response is received, you can call the callback methods to deliver the result
 
-        // Example:
-        // AndroidNetworking.post("YOUR_SEND_OTP_URL")
-        //         .addBodyParameter("mobile", mobile)
-        //         .build()
-        //         .getAsJSONObject(new JSONObjectRequestListener() {
-        //             @Override
-        //             public void onResponse(JSONObject response) {
-        //                 callbackInterface.onSuccess();
-        //             }
-        //
-        //             @Override
-        //             public void onError(ANError error) {
-        //                 callbackInterface.onError(error.getMessage());
-        //             }
-        //         });
-    }
-    public void ResendOtpMobile(String mobile, NetworkCallbackInterface callbackInterface){
-        // Implement the logic to resend OTP to the mobile number
-        // This could involve making a network request to your server with the provided mobile number
-        // Once the response is received, you can call the callback methods to deliver the result
-
-        // Example:
-        // AndroidNetworking.post("YOUR_RESEND_OTP_URL")
-        //         .addBodyParameter("mobile", mobile)
-        //         .build()
-        //         .getAsJSONObject(new JSONObjectRequestListener() {
-        //             @Override
-        //             public void onResponse(JSONObject response) {
-        //                 callbackInterface.onSuccess();
-        //             }
-        //
-        //             @Override
-        //             public void onError(ANError error) {
-        //                 callbackInterface.onError(error.getMessage());
-        //             }
-        //         });
-    }
     public void ForgetPasswordOptSendMobile(String mobile, NetworkCallbackInterface callbackInterface){
         Log.d("feddhit", "getLoggedInUserProfile: ");
         String url= ApiEndPoints.FORGET_PASSWORD_MOBILE_OTP;

@@ -21,7 +21,6 @@ import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.rtech.threadly.R;
 import com.rtech.threadly.databinding.FragmentImageViewBinding;
 import com.rtech.threadly.utils.DownloadManagerUtil;
-import com.rtech.threadly.utils.ExoplayerUtil;
 import com.rtech.threadly.utils.ReUsableFunctions;
 
 

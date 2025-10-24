@@ -1,5 +1,6 @@
 package com.rtech.threadly.fragments.profileFragments;
 
+import android.content.Context;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -52,7 +53,7 @@ public class EditNameFragment extends Fragment {
         activity.setSupportActionBar(mainXml.toolbar);
         profileEditorManager=new ProfileEditorManager();
         profileViewModel=new ViewModelProvider(activity).get(ProfileViewModel.class);
-        InputMethodManager imm=(InputMethodManager) activity.getSystemService(requireActivity().INPUT_METHOD_SERVICE);
+        InputMethodManager imm=(InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
 
 
 

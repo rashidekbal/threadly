@@ -3,6 +3,7 @@ package com.rtech.threadly.fragments.storiesFragment;
 import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.media3.common.util.UnstableApi;
@@ -52,31 +53,13 @@ public class ViewStoriesFragment extends Fragment {
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         mainXml=FragmentViewStoriesBinding.inflate(inflater,container,false);
         init();
         load();
         mainXml.progressBar.setVisibility(View.VISIBLE);
         mainXml.viewPager.setVisibility(View.GONE);
-
-//        storiesViewModel.getStoryOf(Userid).observe(getViewLifecycleOwner(), new Observer<ArrayList<StoryMediaModel>>() {
-//            @Override
-//            public void onChanged(ArrayList<StoryMediaModel> storyMediaModels) {
-//                if(storyMediaModels.isEmpty()){
-//                    ReUsableFunctions.ShowToast("something went Wrong!");
-//                    requireActivity().onBackPressed();
-//                }
-//                else{
-//                    mainXml.progressBar.setVisibility(View.GONE);
-//                    mainXml.viewPager.setVisibility(View.VISIBLE);
-//                    storiesData.clear();
-//                    storiesData.addAll(storyMediaModels);
-//                    storiesViewpagerAdapter.notifyDataSetChanged();
-//
-//                }
-//            }});
-
         return mainXml.getRoot();
     }
 

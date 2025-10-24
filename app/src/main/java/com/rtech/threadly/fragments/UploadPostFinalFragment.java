@@ -42,7 +42,7 @@ public class UploadPostFinalFragment extends Fragment {
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         mainXml=FragmentUploadPostFinalBinding.inflate(inflater, container, false);
         // Inflate the layout for this fragment
@@ -106,10 +106,6 @@ public class UploadPostFinalFragment extends Fragment {
                                 .putString("path",file.getAbsolutePath())
                                 .putString("caption",caption)
                                 .build();
-                        uploadRequest=new OneTimeWorkRequest.Builder(UploadMediaWorker.class).setInputData(data).build();
-                        Core.getWorkManager().enqueue(uploadRequest);
-                        ReUsableFunctions.ShowToast("Uploading");
-                        requireActivity().finish();
 
                     }else{
                         data=new Data.Builder()
@@ -117,12 +113,12 @@ public class UploadPostFinalFragment extends Fragment {
                                 .putString("path",file.getAbsolutePath())
                                 .putString("caption",caption)
                                 .build();
-                        uploadRequest=new OneTimeWorkRequest.Builder(UploadMediaWorker.class).setInputData(data).build();
-                        Core.getWorkManager().enqueue(uploadRequest);
-                        ReUsableFunctions.ShowToast("Uploading");
-                        requireActivity().finish();
 
                     }
+                    uploadRequest=new OneTimeWorkRequest.Builder(UploadMediaWorker.class).setInputData(data).build();
+                    Core.getWorkManager().enqueue(uploadRequest);
+                    ReUsableFunctions.ShowToast("Uploading");
+                    requireActivity().finish();
 
 
                 }else {

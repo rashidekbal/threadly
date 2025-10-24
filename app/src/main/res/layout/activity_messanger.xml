@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.Messanger.MessengerActivity"
+    tools:context=".activities.Messenger.MessengerActivity"
     android:background="@color/white">
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/newMsgBtn"
@@ -33,7 +33,8 @@
                 android:layout_width="@dimen/dp_35"
                 android:layout_height="@dimen/dp_35"
                 android:src="@drawable/back_arrow"
-                android:layout_marginStart="@dimen/dp_10"/>
+                android:layout_marginStart="@dimen/dp_10"
+                android:contentDescription="@string/back_btn"/>
             <TextView
                 android:id="@+id/myID"
                 android:layout_width="wrap_content"

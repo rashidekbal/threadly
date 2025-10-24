@@ -477,9 +477,7 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                         context,R.drawable.selected_item_overlay
                 ));
             }else{
-                holder.itemView.setBackground(AppCompatResources.getDrawable(
-                        context,R.drawable.curved_small_square_box
-                ));
+                holder.itemView.setBackground(AppCompatResources.getDrawable(context,R.color.transparentColor));
             }
 
 

@@ -61,22 +61,18 @@ public class UploadStoryFinalFragment extends Fragment {
                             .putString("type","image")
                             .putString("path",file.getAbsolutePath())
                             .build();
-                    uploadRequest=new OneTimeWorkRequest.Builder(UploadStoriesWorker.class).setInputData(data).build();
-                    Core.getWorkManager().enqueue(uploadRequest);
-                    ReUsableFunctions.ShowToast("Uploading");
-                    requireActivity().finish();
 
                 }else{
                     data=new Data.Builder()
                             .putString("type","video")
                             .putString("path",file.getAbsolutePath())
                             .build();
-                    uploadRequest=new OneTimeWorkRequest.Builder(UploadStoriesWorker.class).setInputData(data).build();
-                    Core.getWorkManager().enqueue(uploadRequest);
-                    ReUsableFunctions.ShowToast("Uploading");
-                    requireActivity().finish();
 
                 }
+                uploadRequest=new OneTimeWorkRequest.Builder(UploadStoriesWorker.class).setInputData(data).build();
+                Core.getWorkManager().enqueue(uploadRequest);
+                ReUsableFunctions.ShowToast("Uploading");
+                requireActivity().finish();
 
 
             }else {

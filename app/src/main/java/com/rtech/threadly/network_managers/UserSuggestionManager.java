@@ -1,7 +1,5 @@
 package com.rtech.threadly.network_managers;
 
-import android.util.Log;
-
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
@@ -10,10 +8,7 @@ import com.rtech.threadly.BuildConfig;
 import com.rtech.threadly.constants.SharedPreferencesKeys;
 import com.rtech.threadly.core.Core;
 import com.rtech.threadly.interfaces.NetworkCallbackInterfaceWithJsonObjectDelivery;
-import com.rtech.threadly.models.Profile_Model_minimal;
 
-import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 public class UserSuggestionManager {

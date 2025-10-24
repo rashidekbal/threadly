@@ -67,7 +67,7 @@ LikeManager likeManager;
 CommentsManager commentsManager;
 Posts_Model postData;
 SharedPreferences loginInfo;
-private boolean[] isPlaying={true};
+private final boolean[] isPlaying={true};
 
 
 

@@ -4,7 +4,6 @@ import android.content.Context;
 
 import com.rtech.threadly.constants.SharedPreferencesKeys;
 import com.rtech.threadly.core.Core;
-import com.rtech.threadly.network_managers.MessageManager;
 import com.rtech.threadly.utils.ReUsableFunctions;
 
 

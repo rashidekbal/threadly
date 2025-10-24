@@ -7,7 +7,6 @@ import androidx.room.Query;
 
 import com.rtech.threadly.RoomDb.schemas.HistorySchema;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Dao

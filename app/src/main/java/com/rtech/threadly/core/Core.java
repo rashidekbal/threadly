@@ -1,6 +1,8 @@
 package com.rtech.threadly.core;
 
 import static android.content.Context.MODE_PRIVATE;
+import static android.content.Context.NOTIFICATION_SERVICE;
+
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
@@ -20,6 +22,7 @@ import com.rtech.threadly.interfaces.NetworkCallbackInterfaceWithJsonObjectDeliv
 import com.rtech.threadly.network_managers.MessageManager;
 import com.rtech.threadly.network_managers.ProfileManager;
 import com.rtech.threadly.utils.ExoplayerUtil;
+import com.rtech.threadly.utils.LoggerUtil;
 import com.rtech.threadly.utils.ReUsableFunctions;
 
 import org.json.JSONArray;
@@ -46,7 +49,7 @@ public class Core {
        AndroidNetworking.initialize(context);
        preferences=context.getSharedPreferences(SharedPreferencesKeys.SHARED_PREF_NAME,MODE_PRIVATE);
        workManager=WorkManager.getInstance(context);
-       notificationManager=(NotificationManager) context.getSystemService(context.NOTIFICATION_SERVICE);
+       notificationManager=(NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
        notificationManager.createNotificationChannel(new NotificationChannel(Constants.MEDIA_UPLOAD_CHANNEL.toString(),"media Upload Notification", NotificationManager.IMPORTANCE_DEFAULT));
        notificationManager.createNotificationChannel(new NotificationChannel(Constants.MESSAGE_RECEIVED_CHANNEL.toString(),"for receiving messages",NotificationManager.IMPORTANCE_HIGH));
        notificationManager.createNotificationChannel(new NotificationChannel(Constants.MISC_CHANNEL.toString(),"misc",NotificationManager.IMPORTANCE_DEFAULT));
@@ -92,6 +95,8 @@ public class Core {
                if(History==null){
                    DataBase.getInstance().historyOperator().insertHistory(new HistorySchema(ConversationId,username,userid,profile,senderUuid,latestMsg,ReUsableFunctions.getTimestamp()));
                    Log.d("Stoc", "call:  added new Conversation");
+               }else{
+                   DataBase.getInstance().historyOperator().updateTimeStamp(ConversationId,ReUsableFunctions.getTimestamp());
                }
                Log.d("StoC", "call: "+timestamp);
                DataBase.getInstance().MessageDao().insertMessage(new MessageSchema(
@@ -176,7 +181,7 @@ public class Core {
        Executors.newSingleThreadExecutor().execute(new Runnable() {
            @Override
            public void run() {
-               AddNewConversationHistory(uuid);
+               ReUsableFunctions.AddNewConversationHistory(uuid);
                DataBase.getInstance().MessageDao().insertMessage(new MessageSchema(
                        MsgUid,
                        uuid+senderUuid,
@@ -223,56 +228,8 @@ public class Core {
             SocketManager.getInstance().getSocket().emit("CToS",object);
         }
     }
-   public static void AddNewConversationHistory(String uuid) {
+}
 
-       String ConversationId = uuid + getPreference().getString(SharedPreferencesKeys.UUID, "null");
-
-       HistorySchema history = DataBase.getInstance().historyOperator().getHistory(ConversationId);
-       if (history == null) {
-           Log.d("notfound", "history not found ");
-           new ProfileManager().GetProfileByUuid(uuid, new NetworkCallbackInterfaceWithJsonObjectDelivery() {
-               @Override
-               public void onSuccess(JSONObject response) {
-                   JSONArray Array = response.optJSONArray("data");
-                   assert Array != null;
-                   if (Array.length() > 0) {
-                       JSONObject object = Array.optJSONObject(0);
-                       String username = object.optString("username");
-                       String userid = object.optString("userid");
-                       String profile = object.optString("profilepic");
-                       Executors.newSingleThreadExecutor().execute(new Runnable() {
-                           @Override
-                           public void run() {
-                               DataBase.getInstance().historyOperator().insertHistory(new HistorySchema(uuid + getPreference().getString(SharedPreferencesKeys.UUID, "null")
-                                       , username, userid, profile, uuid, "null",ReUsableFunctions.getTimestamp()));
-                               Log.d("notfound", "data inserted ");
-                           }
-                       });
-
-
-                   } else {
-                       Executors.newSingleThreadExecutor().execute(()->{
-                           DataBase.getInstance().historyOperator().updateTimeStamp(uuid+getPreference().getString(SharedPreferencesKeys.UUID,"null"),ReUsableFunctions.getTimestamp());
-                       });
-
-                   }
-
-               }
-
-               @Override
-               public void onError(String err) {
-                   Log.d("errorFetching", err);
-
-               }
-           });
-       } else {
-           Log.d("notfound", "history  found ");
-       }
-
-
-   };
-
-   }
 
 
 

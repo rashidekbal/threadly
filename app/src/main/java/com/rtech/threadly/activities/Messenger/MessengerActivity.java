@@ -1,4 +1,4 @@
-package com.rtech.threadly.activities.Messanger;
+package com.rtech.threadly.activities.Messenger;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -20,7 +20,6 @@ import com.rtech.threadly.constants.SharedPreferencesKeys;
 import com.rtech.threadly.core.Core;
 import com.rtech.threadly.databinding.ActivityMessangerBinding;
 import com.rtech.threadly.fragments.UsersListFragment;
-import com.rtech.threadly.utils.ReUsableFunctions;
 import com.rtech.threadly.viewmodels.UsersMessageHistoryProfileViewModel;
 
 import java.util.ArrayList;
