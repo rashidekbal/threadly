@@ -1,5 +1,7 @@
 package com.rtech.threadly.services;
 
+import static com.rtech.threadly.utils.MessengerUtils.AddNewConversationHistory;
+
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.content.Intent;
@@ -23,6 +25,7 @@ import com.rtech.threadly.constants.SharedPreferencesKeys;
 import com.rtech.threadly.core.Core;
 import com.rtech.threadly.interfaces.NetworkCallbackInterface;
 import com.rtech.threadly.network_managers.FcmManager;
+import com.rtech.threadly.utils.MessengerUtils;
 import com.rtech.threadly.utils.ReUsableFunctions;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -62,6 +65,9 @@ public class FcmService extends FirebaseMessagingService {
             case  "chat":
                 if(ReUsableFunctions.isLoggedIn()){  ChatReceivedHandler(message);}
                 break;
+            case "msgUnsendEvent":
+                if(ReUsableFunctions.isLoggedIn()){MsgUnSendHandler(message);}
+                break;
             case "postLike":
                 if(ReUsableFunctions.isLoggedIn()){PostLikedNotificationHandler(message);}
 
@@ -92,6 +98,11 @@ public class FcmService extends FirebaseMessagingService {
 
         }
        }
+
+    private void MsgUnSendHandler(RemoteMessage message) {
+        String MessageUid=message.getData().get("MsgUid");
+        ReUsableFunctions.DeleteMessage(MessageUid);
+    }
 
     private void commentUnlikeHandler(RemoteMessage message) {
         String userId=message.getData().get("userId");
@@ -125,9 +136,9 @@ public class FcmService extends FirebaseMessagingService {
             object.put("isDeleted",Boolean.parseBoolean(message.getData().get("isDeleted")));
             object.put("postId",Integer.parseInt(Objects.requireNonNull(message.getData().get("postId"))));
             object.put("postLink",message.getData().get("link"));
-            ReUsableFunctions.addMessageToDb(object,"r");
+            MessengerUtils.addMessageToDb(object,"r");
             //here the sender uuid is always the other party
-            ReUsableFunctions.AddNewConversationHistory(message.getData().get("senderUuid"));
+            AddNewConversationHistory(message.getData().get("senderUuid"));
             notifyReceivedToSender(message.getData().get("senderUuid"),message.getData().get("MsgUid"));
 
         } catch (JSONException e) {
@@ -148,7 +159,7 @@ public class FcmService extends FirebaseMessagingService {
     private void StatusUpdateHandler(RemoteMessage message){
         String MsgUid=message.getData().get("MsgUid");
         int deliveryStatus=Integer.parseInt(Objects.requireNonNull(message.getData().get("deliveryStatus")));
-//        boolean isDeleted=Boolean.parseBoolean(message.getData().get("isDeleted"));
+        boolean isDeleted=message.getData().get("isDeleted").equals("true");
         ReUsableFunctions.updateMessageStatus(MsgUid,deliveryStatus);
 
     }

@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
+import androidx.annotation.Nullable;
 import androidx.work.WorkManager;
 import com.androidnetworking.AndroidNetworking;
 import com.rtech.threadly.RoomDb.DataBase;
@@ -18,14 +19,11 @@ import com.rtech.threadly.SocketIo.SocketManager;
 
 import com.rtech.threadly.constants.Constants;
 import com.rtech.threadly.constants.SharedPreferencesKeys;
-import com.rtech.threadly.interfaces.NetworkCallbackInterfaceWithJsonObjectDelivery;
 import com.rtech.threadly.network_managers.MessageManager;
-import com.rtech.threadly.network_managers.ProfileManager;
 import com.rtech.threadly.utils.ExoplayerUtil;
-import com.rtech.threadly.utils.LoggerUtil;
+import com.rtech.threadly.utils.MessengerUtils;
 import com.rtech.threadly.utils.ReUsableFunctions;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -56,6 +54,7 @@ public class Core {
        String uuid=getPreference().getString(SharedPreferencesKeys.UUID,null) ;
        if(uuid!=null){
            startSocketEvents();
+           MessageManager.checkAndGetPendingMessages();
        }
 
    }
@@ -137,7 +136,14 @@ public class Core {
 
        }
    };
-
+public static Emitter.Listener msg_UnSend_eventHandler=new Emitter.Listener() {
+    @Override
+    public void call(Object... args) {
+        JSONObject object=(JSONObject) args[0];
+        String MsgUid=object.optString("MsgUid");
+        ReUsableFunctions.DeleteMessage(MsgUid);
+    }
+};
 
    public static  void startSocketEvents(){
        //for socket connection;
@@ -147,9 +153,10 @@ public class Core {
        SocketManager.getInstance().getSocket().on("StoC",StoC_Listener);
        SocketManager.getInstance().getSocket().on("MsgStatusUpdate",MsgStatusUpdate);
        SocketManager.getInstance().getSocket().on("msg_status_changed_event",msg_status_changed_event);
+       SocketManager.getInstance().getSocket().on("msg_unSend_event",msg_UnSend_eventHandler);
 
    }
-   public static void sendCtoS(String uuid,String msg,String type,String link,int postId,String notificationText)throws JSONException {
+   public static void sendCtoS(String uuid,String msg,String type,String link,int postId,@Nullable String notificationText)throws JSONException {
        String timestamp=ReUsableFunctions.getTimestamp();
        String MsgUid=ReUsableFunctions.GenerateUUid();
        String senderUuid=Core.getPreference().getString(SharedPreferencesKeys.UUID,"null");
@@ -177,10 +184,11 @@ public class Core {
        }else{
            SocketManager.getInstance().getSocket().emit("CToS",object);
        }
+       MessengerUtils.AddNewConversationHistory(uuid);
        Executors.newSingleThreadExecutor().execute(new Runnable() {
            @Override
            public void run() {
-               ReUsableFunctions.AddNewConversationHistory(uuid);
+
                DataBase.getInstance().MessageDao().insertMessage(new MessageSchema(
                        MsgUid,
                        uuid+senderUuid,

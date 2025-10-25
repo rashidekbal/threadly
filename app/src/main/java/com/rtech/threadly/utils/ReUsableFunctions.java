@@ -9,7 +9,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 
-import android.util.Log;
 import android.view.inputmethod.InputMethodManager;
 import android.webkit.MimeTypeMap;
 
@@ -17,23 +16,19 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.rtech.threadly.RoomDb.DataBase;
-import com.rtech.threadly.RoomDb.schemas.HistorySchema;
 import com.rtech.threadly.RoomDb.schemas.MessageSchema;
 import com.rtech.threadly.RoomDb.schemas.NotificationSchema;
+import com.rtech.threadly.SocketIo.SocketManager;
 import com.rtech.threadly.Threadly;
 import com.rtech.threadly.activities.LoginActivity;
 import com.rtech.threadly.activities.UserProfileActivity;
 import com.rtech.threadly.constants.SharedPreferencesKeys;
 import com.rtech.threadly.core.Core;
 import com.rtech.threadly.interfaces.NetworkCallbackInterface;
-import com.rtech.threadly.interfaces.NetworkCallbackInterfaceWithJsonObjectDelivery;
 import com.rtech.threadly.network_managers.AuthManager;
 import com.rtech.threadly.network_managers.FcmManager;
-import com.rtech.threadly.network_managers.ProfileManager;
 
-import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -83,6 +78,7 @@ public class ReUsableFunctions {
         SharedPreferences.Editor editor=loginInfo.edit();
         editor.clear();
         editor.apply();
+        SocketManager.getInstance().disconnect();
         Executors.newSingleThreadExecutor().execute(() -> DataBase.getInstance().clearAllTables());
         Intent intent=new Intent(Threadly.getGlobalContext(),LoginActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -120,35 +116,7 @@ public class ReUsableFunctions {
 
         return file;
     }
-    public static void addMessageToDb(JSONObject object,String s_r_type){
 
-        String ConversationId=object.optString(s_r_type.equals("s")?"receiverUuid":"senderUuid")+Core.getPreference().getString(SharedPreferencesKeys.UUID, "null");
-        String senderUuid=object.optString("senderUuid");
-        String message =object.optString("message");
-        String MessageUid=object.optString("MsgUid");
-        String ReplyTOMessageUid=object.optString("ReplyTOMsgUid");
-        String type=object.optString("type");
-        String timestamp=object.optString("timestamp");
-        int deliveryStatus=object.optInt("deliveryStatus");
-        boolean isDeleted=object.optBoolean("isDeleted");
-        int postId=object.optInt("postId");
-        String postLink=object.optString("postLink");
-        Executors.newSingleThreadExecutor().execute(() -> getInstance().MessageDao().insertMessage(new MessageSchema(
-                MessageUid,
-                ConversationId,
-                ReplyTOMessageUid,
-                senderUuid,
-                Core.getPreference().getString(SharedPreferencesKeys.UUID,null),
-                message,
-                type,
-                postId,
-                postLink,
-                timestamp,
-                deliveryStatus,
-                isDeleted
-        )));
-
-    }
     public static void updateFcmTokenToServer(){
         FirebaseMessaging.getInstance().getToken().addOnCompleteListener(task -> {
             String token=task.getResult();
@@ -189,9 +157,7 @@ public class ReUsableFunctions {
         Executors.newSingleThreadExecutor().execute(() -> getInstance().MessageDao().updateDeliveryStatus(MsgUid,status));
     }
     public static void DeleteMessage(String messageUid){
-        Executors.newSingleThreadExecutor().execute(()->{
-DataBase.getInstance().MessageDao().deleteMessage(messageUid);
-        });
+        Executors.newSingleThreadExecutor().execute(()-> DataBase.getInstance().MessageDao().deleteMessage(messageUid));
     }
     public static void resendPendingMessages(){
         Executors.newSingleThreadExecutor().execute(() -> {
@@ -248,53 +214,6 @@ public static boolean isLoggedIn(){
 
 
 
-    public static void AddNewConversationHistory(String OtherPartyUuid) {
-
-        String ConversationId = OtherPartyUuid + Core.getPreference().getString(SharedPreferencesKeys.UUID, "null");
-
-        HistorySchema history = DataBase.getInstance().historyOperator().getHistory(ConversationId);
-        if (history == null) {
-            new ProfileManager().GetProfileByUuid(OtherPartyUuid, new NetworkCallbackInterfaceWithJsonObjectDelivery() {
-                @Override
-                public void onSuccess(JSONObject response) {
-                    JSONArray Array = response.optJSONArray("data");
-                    assert Array != null;
-                    if (Array.length() > 0) {
-                        JSONObject object = Array.optJSONObject(0);
-                        String username = object.optString("username");
-                        String userid = object.optString("userid");
-                        String profile = object.optString("profilepic");
-                        Executors.newSingleThreadExecutor().execute(new Runnable() {
-                            @Override
-                            public void run() {
-                                DataBase.getInstance().historyOperator().insertHistory(new HistorySchema(OtherPartyUuid + Core.getPreference().getString(SharedPreferencesKeys.UUID, "null")
-                                        , username, userid, profile, OtherPartyUuid, "null",ReUsableFunctions.getTimestamp()));
-                                Log.d("notfound", "data inserted ");
-                            }
-                        });
-
-
-                    }
-
-                }
-
-                @Override
-                public void onError(String err) {
-                    Log.d("errorFetching", err);
-
-                }
-            });
-        } else {
-                //if history found update time stamp
-                Executors.newSingleThreadExecutor().execute(()->{
-                    String timeStamp=ReUsableFunctions.getTimestamp();
-                    DataBase.getInstance().historyOperator().updateTimeStamp(OtherPartyUuid +Core.getPreference().getString(SharedPreferencesKeys.UUID,"null"),timeStamp);
-                });
-
-            }
-
-
-    }
 
 }
 

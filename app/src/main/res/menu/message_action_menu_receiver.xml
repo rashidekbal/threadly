@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+    android:id="@+id/ReplyBtn"
+    android:icon="@drawable/reply_icon"
+    android:title="@string/reply" />
+    <item
+        android:id="@+id/ForwardBtn"
+        android:title="@string/forward"
+        android:icon="@drawable/messanger"/>
+    <item
+        android:id="@+id/DeleteForYouBtn"
+        android:title="@string/delete_for_you"
+        android:icon="@drawable/delete_icon"
+        />
+
+</menu>

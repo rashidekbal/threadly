@@ -7,15 +7,26 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.PopupMenu;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.content.res.AppCompatResources;
+import androidx.appcompat.widget.AppCompatButton;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.rtech.threadly.R;
 import com.rtech.threadly.RoomDb.schemas.MessageSchema;
 import com.rtech.threadly.activities.PostActivity;
@@ -23,7 +34,18 @@ import com.rtech.threadly.constants.SharedPreferencesKeys;
 import com.rtech.threadly.constants.TypeConstants;
 import com.rtech.threadly.core.Core;
 import com.rtech.threadly.interfaces.Messanger.MessageClickCallBack;
+import com.rtech.threadly.interfaces.Messanger.OnUserSelectedListener;
+import com.rtech.threadly.interfaces.NetworkCallbackInterface;
+import com.rtech.threadly.models.Posts_Model;
+import com.rtech.threadly.models.UsersModel;
+import com.rtech.threadly.network_managers.MessageManager;
+import com.rtech.threadly.utils.MessengerUtils;
+import com.rtech.threadly.utils.PreferenceUtil;
 import com.rtech.threadly.utils.ReUsableFunctions;
+import com.rtech.threadly.viewmodels.MessageAbleUsersViewModel;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,7 +61,7 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     int TYPE_POST=4;
     int TYPE_STORY=5;
     int TYPE_DELETED=-1;
-    ArrayList<String> selectedMsgUUid=new ArrayList<>();
+
 
     public MessageAdapter(Context context, List<MessageSchema> list,String profile,MessageClickCallBack callback) {
         this.context = context;
@@ -106,8 +128,11 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
               }else{
                   holder.sent_caption.setVisibility(View.GONE);
               }
-              holder.sent_MediaImageView.setOnClickListener(v-> {
-                  openMedia(list.get(position), TypeConstants.IMAGE);
+              holder.sent_MediaImageView.setOnClickListener(v-> openMedia(list.get(position), TypeConstants.IMAGE));
+              holder.sent_MediaImageView.setOnLongClickListener(v -> {
+
+                  showActionMenu(holder.sent_MediaImageView,position);
+                  return true;
               });
 
 
@@ -146,7 +171,11 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 }
 
                 holder.received_MediaImageView.setOnClickListener(v-> openMedia(list.get(position), TypeConstants.IMAGE));
+                holder.received_MediaImageView.setOnLongClickListener(v -> {
 
+                showActionMenu(holder.received_MediaImageView,position);
+                return true;
+                });
 
 
             }
@@ -182,7 +211,11 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
                 //on click of video message
                 holder.sent_MediaImageView.setOnClickListener(v-> openMedia(list.get(position), TypeConstants.VIDEO));
+                holder.sent_MediaImageView.setOnLongClickListener(v -> {
+                    showActionMenu(holder.sent_MediaImageView,position);
+                    return true;
 
+                });
 
             }else{
                 holder.sent_msg_layout.setVisibility(View.GONE);
@@ -218,7 +251,10 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 }
                 //on click of media message
                 holder.received_MediaImageView.setOnClickListener(v-> openMedia(list.get(position), TypeConstants.VIDEO));
-
+                holder.received_MediaImageView.setOnLongClickListener(v -> {
+                    showActionMenu(holder.received_MediaImageView,position);
+                    return true;
+                });
 
             }
 
@@ -257,7 +293,10 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
                 //on click of video message i had sent
                 holder.sent_MediaImageView.setOnClickListener(v-> openPost(list.get(position)));
-
+                holder.sent_MediaImageView.setOnLongClickListener(v -> {
+                    showActionMenu(holder.sent_MediaImageView,position);
+                    return true;
+                });
 
             }
             else{
@@ -295,7 +334,10 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 }
                 //on click of media message i have received
                 holder.received_MediaImageView.setOnClickListener(v->openPost(list.get(position)));
-
+                holder.received_MediaImageView.setOnLongClickListener(v -> {
+                    showActionMenu(holder.received_MediaImageView,position);
+                    return true;
+                });
 
             }
 
@@ -324,10 +366,6 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
             }
         }
-
-
-
-
 
 
 
@@ -470,22 +508,6 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 }
 
 
-
-                // if selected for action ------//
-            if(selectedMsgUUid.contains(list.get(position).getMessageUid())){
-                holder.itemView.setBackground(AppCompatResources.getDrawable(
-                        context,R.drawable.selected_item_overlay
-                ));
-            }else{
-                holder.itemView.setBackground(AppCompatResources.getDrawable(context,R.color.transparentColor));
-            }
-
-
-
-
-
-
-
             //------------- actual logic --------------//
             if(list.get(position).getSenderId().equals(Core.getPreference().getString(SharedPreferencesKeys.UUID,"null"))){
 
@@ -497,33 +519,13 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 holder.sentMsg.setText(list.get(position).getMsg());
                 holder.status_img.setImageResource(deliveryStatus==0?R.drawable.msg_pending:deliveryStatus==1?R.drawable.single_tick:deliveryStatus==2?R.drawable.double_tick_recieved:R.drawable.double_tick_viewed);
                 holder.sent_msg_layout.setLongClickable(true);
-                holder.sent_msg_layout.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if(!selectedMsgUUid.isEmpty()){
-                            if(selectedMsgUUid.contains(list.get(position).getMessageUid())){
-                                selectedMsgUUid.remove(list.get(position).getMessageUid());
-                            }else{
-                                selectedMsgUUid.add(list.get(position).getMessageUid());
-                            }
 
-                            messageClickCallBack.longPress(position);
+                holder.sent_msg_layout.setOnLongClickListener(v -> {
 
-                        }
-                    }
-                });
-                holder.sent_msg_layout.setOnLongClickListener(new View.OnLongClickListener() {
-                    @Override
-                    public boolean onLongClick(View v) {
-                         if(selectedMsgUUid.contains(list.get(position).getMessageUid())){
-                             selectedMsgUUid.remove(list.get(position).getMessageUid());
-                         }else{
-                             selectedMsgUUid.add(list.get(position).getMessageUid());
-                         }
 
-                         messageClickCallBack.longPress(position);
-                        return true;
-                    }
+                    showActionMenu(holder.sent_msg_layout,position);
+
+                    return true;
                 });
             }
 
@@ -545,33 +547,10 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 holder.recMsg.setVisibility(View.VISIBLE);
                 holder.sent_msg_layout.setVisibility(View.GONE);
                 holder.recMsg.setText(list.get(position).getMsg());
-                holder.recMsg.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if(!selectedMsgUUid.isEmpty()){
-                            if(selectedMsgUUid.contains(list.get(position).getMessageUid())){
-                                selectedMsgUUid.remove(list.get(position).getMessageUid());
-                            }else{
-                                selectedMsgUUid.add(list.get(position).getMessageUid());
-                            }
 
-                            messageClickCallBack.longPress(position);
-
-                        }
-                    }
-                });
-                holder.recMsg.setOnLongClickListener(new View.OnLongClickListener() {
-                    @Override
-                    public boolean onLongClick(View v) {
-                        if(selectedMsgUUid.contains(list.get(position).getMessageUid())){
-                            selectedMsgUUid.remove(list.get(position).getMessageUid());
-                        }else{
-                            selectedMsgUUid.add(list.get(position).getMessageUid());
-                        }
-
-                        messageClickCallBack.longPress(position);
-                        return true;
-                    }
+                holder.recMsg.setOnLongClickListener(v -> {
+                    showActionMenu(holder.recMsg,position);
+                    return true;
                 });
 
 
@@ -679,6 +658,187 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         AppCompatActivity activity=(AppCompatActivity) context;
         imm.hideSoftInputFromWindow(activity.getWindow().getDecorView().getWindowToken(),0);
         messageClickCallBack.onItemClicked(messageSchema,type);
+
+    }
+    private void showActionMenu(View v,int position){
+        MessageSchema messageSchema =list.get(position);
+        if(messageSchema.getSenderId().equals(PreferenceUtil.getUUID())){
+            //role is as of sender
+            ActionMenuForSenderRole(v,position);
+        }else{
+            //role is as of receiver
+            ActionMenuForReceiverRole(v,position);
+
+        }
+
+    }
+    private void ActionMenuForSenderRole(View v,int position){
+        PopupMenu actionMenu=new PopupMenu(context,v);
+        actionMenu.getMenuInflater().inflate(R.menu.message_action_menu_sender,actionMenu.getMenu());
+        actionMenu.setOnMenuItemClickListener(item -> {
+            int itemId=item.getItemId();
+            if(itemId==R.id.ReplyBtn){
+                //reply action
+                return true;
+            }else if(itemId==R.id.ForwardBtn){
+                //forward action
+                showForwardMenu(list.get(position));
+
+                return true;
+            }else if(itemId==R.id.DeleteForYouBtn){
+                //delete for me action
+                deleteForMe(list.get(position),position);
+                return true;
+            }else{
+                // unSend action
+                unSendMessage(list.get(position),position);
+                return true;
+            }
+
+        });
+
+        actionMenu.show();
+    }
+    private void ActionMenuForReceiverRole(View v,int position){
+        PopupMenu actionMenu=new PopupMenu(context,v);
+        actionMenu.getMenuInflater().inflate(R.menu.message_action_menu_receiver,actionMenu.getMenu());
+        actionMenu.setOnMenuItemClickListener(item -> {
+            int itemId=item.getItemId();
+            if(itemId==R.id.ReplyBtn){
+                //reply action
+                return true;
+            }else if(itemId==R.id.ForwardBtn){
+                //forward action
+                showForwardMenu(list.get(position));
+
+                return true;
+            }else if(itemId==R.id.DeleteForYouBtn){
+                //delete for me action
+                deleteForMe(list.get(position),position);
+                return true;
+            }
+
+                return true;
+
+
+        });
+
+        actionMenu.show();
+    }
+    private void deleteForMe(MessageSchema messageSchema,int position) {
+        MessengerUtils.deleteMsg(messageSchema.getMessageUid());
+        String Role=messageSchema.getSenderId().equals(PreferenceUtil.getUUID())?"sender":"receiver";
+        MessageManager.DeleteMessageForLoggedInUser(messageSchema.getMessageUid(), Role, new NetworkCallbackInterface() {
+            @Override
+            public void onSuccess() {
+
+            }
+
+            @Override
+            public void onError(String err) {
+
+
+            }
+        });
+
+    }
+    private void unSendMessage(MessageSchema messageSchema,int position){
+        MessengerUtils.deleteMsg(messageSchema.getMessageUid());
+        MessageManager.unSendMessage(messageSchema.getMessageUid(), messageSchema.getReceiverId(), new NetworkCallbackInterface() {
+            @Override
+            public void onSuccess() {
+
+            }
+
+            @Override
+            public void onError(String err) {
+
+            }
+        });
+
+
+    }
+
+
+
+    private void showForwardMenu(MessageSchema Message){
+        ArrayList<UsersModel> selectedUsers=new ArrayList<>();
+        BottomSheetDialog shareBottomSheet=new BottomSheetDialog(context,R.style.TransparentBottomSheet);
+        shareBottomSheet.setContentView(R.layout.post_share_layout);
+        AppCompatButton sendBtn=shareBottomSheet.findViewById(R.id.sendBtn);
+        RelativeLayout actionButtons_rl=shareBottomSheet.findViewById(R.id.actionButtons_rl);
+        ImageView search_btn=shareBottomSheet.findViewById(R.id.search_btn);
+        EditText search_edit_text=shareBottomSheet.findViewById(R.id.search_edit_text);
+        ImageView suggestUsersBtn=shareBottomSheet.findViewById(R.id.suggestUsersBtn);
+        RecyclerView Users_List_recyclerView=shareBottomSheet.findViewById(R.id.Users_List_recyclerView);
+        LinearLayout Story_add_ll_btn=shareBottomSheet.findViewById(R.id.Story_add_ll_btn);
+        ProgressBar progressBar=shareBottomSheet.findViewById(R.id.progressBar);
+        GridLayoutManager gridLayoutManager=new GridLayoutManager(context,3);
+        Users_List_recyclerView.setLayoutManager(gridLayoutManager);
+        ArrayList<UsersModel> usersModelList=new ArrayList<>();
+        UsersShareSheetGridAdapter adapter=new UsersShareSheetGridAdapter(context, usersModelList, new OnUserSelectedListener() {
+            @Override
+            public void onSelect(UsersModel model) {
+                if(selectedUsers.contains(model)){
+                    selectedUsers.remove(model);
+                }else{
+                    selectedUsers.add(model);
+                }
+                assert actionButtons_rl != null;
+                if(selectedUsers.isEmpty()){
+                    actionButtons_rl.setVisibility(View.VISIBLE);
+                    assert sendBtn != null;
+                    sendBtn.setVisibility(View.GONE);
+
+                }else{
+                    actionButtons_rl.setVisibility(View.GONE);
+                    assert sendBtn != null;
+                    sendBtn.setVisibility(View.VISIBLE);
+                }
+
+            }
+        });
+        Users_List_recyclerView.setAdapter(adapter);
+
+
+
+        MessageAbleUsersViewModel messageAbleUsersViewModel=new ViewModelProvider((AppCompatActivity)context).get(MessageAbleUsersViewModel.class);
+        messageAbleUsersViewModel.getUsersList().observe((AppCompatActivity) context, new Observer<ArrayList<UsersModel>>() {
+            @Override
+            public void onChanged(ArrayList<UsersModel> usersModels) {
+                if(usersModels.isEmpty()){
+                    Toast.makeText(context, "No users found", Toast.LENGTH_SHORT).show();
+
+                }else{
+                    usersModelList.clear();
+                    usersModelList.addAll(usersModels);
+                    adapter.notifyDataSetChanged();
+
+                }
+                progressBar.setVisibility(View.GONE);
+
+            }
+        });
+
+        //send btn action
+        sendBtn.setOnClickListener(v->{
+            if(!selectedUsers.isEmpty()){
+                for(UsersModel model:selectedUsers){
+                    try {
+                        Core.sendCtoS(model.getUuid(),Message.getMsg(),Message.getType(),Message.getPostLink(),Message.getPostId(),Message.getMsg());
+                    } catch (JSONException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+                selectedUsers.clear();
+                sendBtn.setVisibility(View.GONE);
+                actionButtons_rl.setVisibility(View.VISIBLE);
+
+            }
+            shareBottomSheet.dismiss();
+        });
+
+        shareBottomSheet.show();
 
     }
 

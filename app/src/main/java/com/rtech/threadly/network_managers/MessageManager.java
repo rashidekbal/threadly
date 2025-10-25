@@ -1,5 +1,7 @@
 package com.rtech.threadly.network_managers;
 
+import static com.rtech.threadly.utils.MessengerUtils.AddNewConversationHistory;
+
 import android.util.Log;
 
 import com.androidnetworking.AndroidNetworking;
@@ -13,8 +15,11 @@ import com.rtech.threadly.constants.ApiEndPoints;
 import com.rtech.threadly.constants.Constants;
 import com.rtech.threadly.constants.SharedPreferencesKeys;
 import com.rtech.threadly.core.Core;
+import com.rtech.threadly.interfaces.NetworkCallbackInterface;
+import com.rtech.threadly.interfaces.NetworkCallbackInterfaceWithJsonObjectDelivery;
 import com.rtech.threadly.interfaces.NetworkCallbackInterfaceWithProgressTracking;
 import com.rtech.threadly.utils.LoggerUtil;
+import com.rtech.threadly.utils.PreferenceUtil;
 import com.rtech.threadly.utils.ReUsableFunctions;
 
 import org.json.JSONArray;
@@ -64,13 +69,11 @@ public class MessageManager {
 
 
                             JSONArray data=response.optJSONArray("data");
+                            assert data != null;
                             if(data.length()>0){
-                                Executors.newSingleThreadExecutor().execute(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        ReUsableFunctions.AddNewConversationHistory(senderUUid);
-                                    }
-                                });
+
+                                        AddNewConversationHistory(senderUUid);
+
                                  for(int i=0;i<data.length();i++){
                                     JSONObject object1=data.optJSONObject(i);
 
@@ -207,6 +210,85 @@ public class MessageManager {
 
                     }
                 });
+
+
+    }
+    public static void GetAllChatsAssociatedWithUser(NetworkCallbackInterfaceWithJsonObjectDelivery callback){
+        String Url=ApiEndPoints.GET_ALL_CHATS;
+        AndroidNetworking.get(Url)
+                .setPriority(Priority.HIGH)
+                .addHeaders("Authorization" ,"Bearer "+Core.getPreference().getString(SharedPreferencesKeys.JWT_TOKEN,"null"))
+                .build()
+                .getAsJSONObject(new JSONObjectRequestListener() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        callback.onSuccess(response);
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+                        callback.onError(anError.toString());
+                    }
+                });
+
+    }
+    public static void DeleteMessageForLoggedInUser(String MsgUid, String Role, NetworkCallbackInterface callbackInterface){
+        String Url=ApiEndPoints.DELETE_MSG_WITH_ROLE;
+        JSONObject packet=new JSONObject();
+        try {
+            packet.put("MsgUid",MsgUid);
+            packet.put("Role",Role);
+
+            AndroidNetworking.patch(Url).setPriority(Priority.HIGH)
+                    .addHeaders("Authorization","Bearer "+ PreferenceUtil.getJWT())
+                    .addApplicationJsonBody(packet)
+                    .build()
+                    .getAsJSONObject(new JSONObjectRequestListener() {
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            callbackInterface.onSuccess();
+                        }
+
+                        @Override
+                        public void onError(ANError anError) {
+                            callbackInterface.onError(anError.toString());
+
+                        }
+                    });
+
+        } catch (JSONException e) {
+            callbackInterface.onError(e.toString());
+        }
+
+    }
+    public static  void unSendMessage(String messageUid,String receiverUUid,NetworkCallbackInterface callbackInterface){
+        String Url=ApiEndPoints.UN_SEND_MESSAGE;
+        JSONObject packet=new JSONObject();
+        try {
+            packet.put("MsgUid",messageUid);
+            packet.put("receiverUUid",receiverUUid);
+
+            AndroidNetworking.patch(Url)
+                    .setPriority(Priority.HIGH)
+                    .addHeaders("Authorization","Bearer "+PreferenceUtil.getJWT())
+                    .addApplicationJsonBody(packet)
+                    .build()
+                    .getAsJSONObject(new JSONObjectRequestListener() {
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            callbackInterface.onSuccess();
+
+                        }
+
+                        @Override
+                        public void onError(ANError anError) {
+                            callbackInterface.onError(anError.toString());
+
+                        }
+                    });
+        } catch (JSONException e) {
+           callbackInterface.onError(e.toString());
+        }
 
 
     }

@@ -15,6 +15,7 @@ import com.rtech.threadly.R;
 import com.rtech.threadly.databinding.ActivityVerifyOtpForgetPasswordBinding;
 import com.rtech.threadly.interfaces.NetworkCallbackInterfaceWithJsonObjectDelivery;
 import com.rtech.threadly.network_managers.OtpManager;
+import com.rtech.threadly.utils.ReUsableFunctions;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -31,7 +32,7 @@ public class VerifyOtp_forgetPassword_Activity extends AppCompatActivity {
         mainXml=ActivityVerifyOtpForgetPasswordBinding.inflate(getLayoutInflater());
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_verify_otp_forget_password);
+        setContentView(mainXml.getRoot());
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);

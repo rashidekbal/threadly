@@ -89,8 +89,11 @@ public class ApiEndPoints {
     public static final String CHECK_PENDING_MESSAGES=baseUrl+"/messages/checkPendingMessages/";
     public static final String GET_PENDING_MESSAGES=baseUrl+"/messages/getPendingMessages/";
     public static final String SEND_MESSAGE=baseUrl+"/messages/sendMessage/";
-    public static final String UPDATE_MSG_SEEN_STATUS=baseUrl+"/messages/updateMessageDeliveryStatus";
-    public static final String UPLOAD_MEDIA_MESSAGE=baseUrl+"/messages/uploadMedia";
+    public static final String UPDATE_MSG_SEEN_STATUS=baseUrl+"/messages/updateMessageDeliveryStatus/";
+    public static final String UPLOAD_MEDIA_MESSAGE=baseUrl+"/messages/uploadMedia/";
+    public static final String GET_ALL_CHATS=baseUrl+"/messages/getAllChats/";
+    public static final String DELETE_MSG_WITH_ROLE=baseUrl+"/messages/deleteMessageForMe/";
+    public static final String UN_SEND_MESSAGE=baseUrl+"/messages/unSendMessage/";
 
 
 

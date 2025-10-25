@@ -59,6 +59,7 @@ import com.rtech.threadly.interfaces.general_ui_callbacks.OnCapturedMediaFinaliz
 import com.rtech.threadly.models.MediaModel;
 import com.rtech.threadly.network_managers.MessageManager;
 import com.rtech.threadly.utils.PermissionManagementUtil;
+import com.rtech.threadly.utils.PreferenceUtil;
 import com.rtech.threadly.utils.ReUsableFunctions;
 import com.rtech.threadly.viewmodels.MessagesViewModel;
 import org.json.JSONException;
@@ -188,7 +189,7 @@ public class MessengerMainMessagePageActivity extends AppCompatActivity {
                     throw new RuntimeException(e);
                 }
 
-                Executors.newSingleThreadExecutor().execute(() -> DataBase.getInstance().MessageDao().updateMessagesSeen(conversationId,Core.getPreference().getString(SharedPreferencesKeys.UUID,"null")));
+                Executors.newSingleThreadExecutor().execute(() -> DataBase.getInstance().MessageDao().updateMessagesSeen(conversationId, PreferenceUtil.getUUID()));
             }
         });
 
@@ -291,7 +292,8 @@ public class MessengerMainMessagePageActivity extends AppCompatActivity {
 
     }
     private void setUpRecyclerView(){
-        messageAdapter=new MessageAdapter(this, msgList, userdata.getString("profilePic"), new MessageClickCallBack() {
+        messageAdapter=new MessageAdapter(this, msgList, userdata.getString("profilePic"),
+                new MessageClickCallBack() {
             @Override
             public void onItemClicked(MessageSchema messageSchema,String type) {
                 // when message item is clicked mainLy for media opening
@@ -322,11 +324,6 @@ public class MessengerMainMessagePageActivity extends AppCompatActivity {
 
                 }
 
-
-            }
-            @Override
-            public void longPress(int position){
-                messageAdapter.notifyItemChanged(position);
 
             }
         });

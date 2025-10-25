@@ -13,11 +13,13 @@ import java.util.List;
 public interface operator {
     @Insert
     void insertMessage(MessageSchema message);
+    @Insert
+    void insertMessage(List<MessageSchema> messages);
 
     @Query("select * from messages where conversationId=:conversationId  order by timestamp asc")
     LiveData<List<MessageSchema>> getMessagesCid(String conversationId);
 
-    @Query("update messages set deliveryStatus=:deliveryStatus where messageUid=:msgUid")
+    @Query("update messages set deliveryStatus=:deliveryStatus  where messageUid=:msgUid")
     void updateDeliveryStatus(String msgUid,int deliveryStatus);
 
     @Query("select * from messages where deliveryStatus=0")

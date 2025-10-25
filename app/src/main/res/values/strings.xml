@@ -167,4 +167,8 @@
     <string name="logo">logo</string>
     <string name="back_btn">back_btn</string>
     <string name="preview">preview</string>
+    <string name="reply">Reply</string>
+    <string name="forward">Forward</string>
+    <string name="delete_for_you">Delete for you</string>
+    <string name="unsend">Unsend</string>
 </resources>
