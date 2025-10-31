@@ -2,6 +2,8 @@ package com.rtech.threadly.utils;
 
 import android.content.Context;
 import android.net.Uri;
+import android.view.View;
+import android.widget.ImageView;
 
 import androidx.annotation.OptIn;
 import androidx.media3.common.MediaItem;
@@ -10,6 +12,10 @@ import androidx.media3.exoplayer.ExoPlayer;
 import androidx.media3.exoplayer.source.MediaSource;
 import androidx.media3.exoplayer.source.ProgressiveMediaSource;
 import androidx.media3.ui.PlayerView;
+
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.rtech.threadly.Threadly;
 
 import java.io.File;
 
@@ -48,6 +54,33 @@ cont=context;
             playerView.setPlayer(exoplayer);
             exoplayer.prepare();
             exoplayer.play();
+        }
+
+
+    }
+    @UnstableApi
+    public static void play(Uri uri, PlayerView playerView, ImageView previewImageView){
+        if(exoplayer!=null){
+             ImageView previewView;
+            // Detach old surface
+            if (currentPlayerView != null) {
+                currentPlayerView.setPlayer(null);
+            }
+            currentPlayerView = playerView;
+            previewView=previewImageView;
+            previewView.setVisibility(View.VISIBLE);
+            Glide.with(Threadly.getGlobalContext()).load(uri).thumbnail(0.1f).diskCacheStrategy(DiskCacheStrategy.AUTOMATIC).into(previewView);
+            MediaItem mediaItem=MediaItem.fromUri(uri);
+
+            MediaSource mediaSource = new ProgressiveMediaSource.Factory(
+                    CacheDataSourceUtil.getCacheDataSourceFactory(cont)
+            ).createMediaSource(mediaItem);
+
+            exoplayer.setMediaSource(mediaSource);
+            playerView.setPlayer(exoplayer);
+            exoplayer.prepare();
+            exoplayer.play();
+            previewView.setVisibility(View.GONE);
         }
 
 

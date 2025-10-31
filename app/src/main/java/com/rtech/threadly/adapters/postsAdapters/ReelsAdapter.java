@@ -388,7 +388,7 @@ public class ReelsAdapter extends RecyclerView.Adapter<ReelsAdapter.viewHolder> 
 
     public class viewHolder extends RecyclerView.ViewHolder{
        public PlayerView videoPlayer_view;
-        ImageView play_btn,profile_img,like_btn_image,comment_btn_image,share_icon_white,optionDots_white;
+        public ImageView previewImageView, play_btn,profile_img,like_btn_image,comment_btn_image,share_icon_white,optionDots_white;
         TextView username_text,caption_text,likes_count_text,comments_count_text,shares_count_text;
         boolean is_liked;
         Double likes;
@@ -410,6 +410,7 @@ public class ReelsAdapter extends RecyclerView.Adapter<ReelsAdapter.viewHolder> 
             shares_count_text=itemView.findViewById(R.id.shares_count_text);
             optionDots_white=itemView.findViewById(R.id.optionDots_white);
             followBtn=itemView.findViewById(R.id.FollowBtn);
+            previewImageView=itemView.findViewById(R.id.previewImageView);
 
 
             loginInfo= Core.getPreference();
@@ -547,8 +548,8 @@ public class ReelsAdapter extends RecyclerView.Adapter<ReelsAdapter.viewHolder> 
                                     loginInfo.getString("profileUrl","https://res.cloudinary.com/dphwlcyhg/image/upload/v1747240475/ulpdxajfwpwhlt4ntzn5.webp"),
                                     commentText,
                                     new Date().toString()));
-                            postCommentsAdapter.notifyItemInserted(dataList.size()-1);
-                            comments_recyclerView.scrollToPosition(dataList.size()-1);
+                            postCommentsAdapter.notifyItemInserted(commentsList.size()-1);
+                            comments_recyclerView.scrollToPosition(commentsList.size()-1);
                         }
                         inputComment.setText("");
                     }catch(JSONException jsonError){

@@ -11,30 +11,14 @@
         android:layout_height="match_parent"
         tools:ignore="UselessParent">
 
-        <!--        main video player -->
-        <androidx.media3.ui.PlayerView
-            android:id="@+id/videoPlayer_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:resize_mode="fit"
-            android:background="@color/allBlack"
-            app:show_buffering="never"
-            app:use_controller="false"
-            android:visibility="visible"/>
+        <!--        main post image view -->
         <ImageView
-            android:id="@+id/previewImageView"
+            android:id="@+id/post_image_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:scaleType="fitCenter"
+            android:scaleType="center"
+            android:contentDescription="@string/post_image"
             />
-        <ImageView
-            android:contentDescription="@string/playbtn"
-            android:layout_width="@dimen/dp_50"
-            android:layout_height="@dimen/dp_50"
-            android:src="@drawable/play_icon"
-            android:id="@+id/play_btn"
-            android:layout_centerInParent="true"
-            android:visibility="gone"/>
         <!--        user whose post is this -->
 
         <LinearLayout

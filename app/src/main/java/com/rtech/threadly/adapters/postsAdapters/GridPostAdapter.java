@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.rtech.threadly.R;
+import com.rtech.threadly.models.Posts_Model;
 import com.rtech.threadly.models.Preview_Post_model;
 import com.rtech.threadly.interfaces.Post_fragmentSetCallback;
 
@@ -20,9 +21,9 @@ import java.util.ArrayList;
 
 public class GridPostAdapter extends RecyclerView.Adapter<GridPostAdapter.ViewHolder> {
     Context context;
-    ArrayList<Preview_Post_model> dataList;
+    ArrayList<Posts_Model> dataList;
     Post_fragmentSetCallback post_fragmentSetCallback;
-    public GridPostAdapter(Context c, ArrayList<Preview_Post_model> data, Post_fragmentSetCallback callback){
+    public GridPostAdapter(Context c, ArrayList<Posts_Model> data, Post_fragmentSetCallback callback){
         this.dataList=data;
         this.context=c;
         setHasStableIds(true);
@@ -30,10 +31,6 @@ public class GridPostAdapter extends RecyclerView.Adapter<GridPostAdapter.ViewHo
 
     }
 
-    @Override
-    public long getItemId(int position) {
-        return dataList.get(position).postid;
-    }
 
     @NonNull
     @Override
@@ -44,8 +41,8 @@ public class GridPostAdapter extends RecyclerView.Adapter<GridPostAdapter.ViewHo
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, @SuppressLint("RecyclerView") int position) {
-        Glide.with(context).load(dataList.get(position).image_url).placeholder(R.drawable.post_placeholder).thumbnail(0.1f).into(holder.imageView);
-        holder.imageView.setOnClickListener(v -> post_fragmentSetCallback.openPostFragment(dataList.get(position).image_url,dataList.get(position).postid));
+        Glide.with(context).load(dataList.get(position).postUrl).placeholder(R.drawable.post_placeholder).thumbnail(0.1f).into(holder.imageView);
+        holder.imageView.setOnClickListener(v -> post_fragmentSetCallback.openPostFragment(dataList,position));
 
     }
 

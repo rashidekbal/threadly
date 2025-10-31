@@ -20,7 +20,7 @@ import com.facebook.shimmer.ShimmerFrameLayout;
 import com.rtech.threadly.BuildConfig;
 import com.rtech.threadly.R;
 import com.rtech.threadly.adapters.postsAdapters.GridPostAdapter;
-import com.rtech.threadly.models.Preview_Post_model;
+import com.rtech.threadly.models.Posts_Model;
 import com.rtech.threadly.interfaces.Post_fragmentSetCallback;
 import com.rtech.threadly.viewmodels.ProfileViewModel;
 
@@ -32,7 +32,7 @@ ShimmerFrameLayout shimmer_posts;
 SharedPreferences loginInfo;
 String baseUrl= BuildConfig.BASE_URL;
 TextView NoPost_text;
-ArrayList<Preview_Post_model> dataList=new ArrayList<>();
+ArrayList<Posts_Model> postsArray =new ArrayList<>();
     GridLayoutManager layoutManager;
     GridPostAdapter adapter;
     Post_fragmentSetCallback callback;
@@ -55,17 +55,17 @@ ArrayList<Preview_Post_model> dataList=new ArrayList<>();
                              Bundle savedInstanceState) {
       View v=  inflater.inflate(R.layout.fragment_posts_of_profile, container, false);
         init(v);
-        profileViewModel.getUserPostsLiveData().observe(getViewLifecycleOwner(), new Observer<ArrayList<Preview_Post_model>>() {
+        profileViewModel.getUserPostsLiveData().observe(getViewLifecycleOwner(), new Observer<ArrayList<Posts_Model>>() {
             @Override
-            public void onChanged(ArrayList<Preview_Post_model> postsData) {
+            public void onChanged(ArrayList<Posts_Model> postsData) {
                 if(postsData.isEmpty()){
                     shimmer_posts.setVisibility(View.GONE);
                     NoPost_text.setVisibility(View.VISIBLE);
                     posts_all_recycler_view.setVisibility(View.GONE);
                 }
                 else {
-                    dataList.clear();
-                    dataList.addAll(postsData);
+                    postsArray.clear();
+                    postsArray.addAll(postsData);
                     shimmer_posts.setVisibility(View.GONE);
                     posts_all_recycler_view.setVisibility(View.VISIBLE);
                     NoPost_text.setVisibility(View.GONE);
@@ -76,11 +76,12 @@ ArrayList<Preview_Post_model> dataList=new ArrayList<>();
             }
         });
         layoutManager =new GridLayoutManager(requireActivity(),3 ,GridLayoutManager.VERTICAL,false);
-        adapter=new GridPostAdapter(v.getContext(), dataList, new Post_fragmentSetCallback() {
-            @Override
-            public void openPostFragment(String url, int postid) {
-                callback.openPostFragment(url, postid);
+        adapter=new GridPostAdapter(v.getContext(), postsArray, new Post_fragmentSetCallback() {
 
+
+            @Override
+            public void openPostFragment(ArrayList<Posts_Model> postsArray, int position) {
+                callback.openPostFragment(postsArray,position);
 
             }
 

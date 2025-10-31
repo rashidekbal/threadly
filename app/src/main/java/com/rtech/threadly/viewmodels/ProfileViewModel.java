@@ -8,6 +8,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.rtech.threadly.interfaces.NetworkCallbackInterfaceWithJsonObjectDelivery;
+import com.rtech.threadly.models.Posts_Model;
 import com.rtech.threadly.network_managers.PostsManager;
 import com.rtech.threadly.network_managers.ProfileManager;
 import com.rtech.threadly.models.Preview_Post_model;
@@ -75,9 +76,9 @@ public class ProfileViewModel extends AndroidViewModel {
 
 
     //    logged in users posts
-    MutableLiveData<ArrayList<Preview_Post_model>> UserPostsLiveData = new MutableLiveData<>();
+    MutableLiveData<ArrayList<Posts_Model>> UserPostsLiveData = new MutableLiveData<>();
 
-    public LiveData<ArrayList<Preview_Post_model>> getUserPostsLiveData() {
+    public LiveData<ArrayList<Posts_Model>> getUserPostsLiveData() {
         if (UserPostsLiveData.getValue() == null || UserPostsLiveData.getValue().isEmpty()) {
             loadLoggedInUserPosts();
         }
@@ -87,14 +88,26 @@ public class ProfileViewModel extends AndroidViewModel {
         postsManager.getLoggedInUserPost(new NetworkCallbackInterfaceWithJsonObjectDelivery() {
             @Override
             public void onSuccess(JSONObject response) {
-                ArrayList<Preview_Post_model> tempArrayList=new ArrayList<>();
+                ArrayList<Posts_Model> tempArrayList=new ArrayList<>();
                 try {
                     JSONArray data=response.getJSONArray("data");
                     for(int i=0;i<data.length();i++){
                         JSONObject object= data.getJSONObject(i);
-                        tempArrayList.add(new Preview_Post_model(
+                        tempArrayList.add(new Posts_Model(0,
                                 object.getInt("postid"),
-                                object.getString("imageurl")
+                                object.getString("userid"),
+                                object.getString("username"),
+                                object.getString("profilepic"),
+                                object.getString("imageurl"),
+                                object.getString("caption"),
+                                object.getString("created_at"),
+                                object.getString("likedBy"),
+                                object.getInt("likeCount"),
+                                object.getInt("commentCount"),
+                                object.getInt("shareCount"),
+                                object.getInt("isLiked")
+                                ,object.getString("type").equals("video"),
+                                object.getInt("isFollowed")>0
                         ));
                     }
                     UserPostsLiveData.postValue(tempArrayList);

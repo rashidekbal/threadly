@@ -186,29 +186,33 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_10"
                 android:text="Liked by"
+                android:textColor="@color/black"
                 />
             <TextView
                 android:id="@+id/likedBy_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="3dp"
-                android:textStyle="bold"/>
+                android:textStyle="bold"
+                android:textColor="@color/black"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="@dimen/dp_4"
-                android:text="and"/>
+                android:text="and" android:textColor="@color/black"/>
             <TextView
                 android:id="@+id/likesCount_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textStyle="bold"
+                android:textColor="@color/black"
                 />
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textStyle="bold"
-                android:text=" others"/>
+                android:text=" others"
+                android:textColor="@color/black"/>
 
 
         </LinearLayout>

@@ -12,11 +12,13 @@ import android.util.Log;
 import androidx.annotation.Nullable;
 import androidx.work.WorkManager;
 import com.androidnetworking.AndroidNetworking;
+import com.bumptech.glide.Glide;
 import com.rtech.threadly.RoomDb.DataBase;
 import com.rtech.threadly.RoomDb.schemas.HistorySchema;
 import com.rtech.threadly.RoomDb.schemas.MessageSchema;
 import com.rtech.threadly.SocketIo.SocketManager;
 
+import com.rtech.threadly.Threadly;
 import com.rtech.threadly.constants.Constants;
 import com.rtech.threadly.constants.SharedPreferencesKeys;
 import com.rtech.threadly.network_managers.MessageManager;
@@ -52,7 +54,7 @@ public class Core {
        notificationManager.createNotificationChannel(new NotificationChannel(Constants.MESSAGE_RECEIVED_CHANNEL.toString(),"for receiving messages",NotificationManager.IMPORTANCE_HIGH));
        notificationManager.createNotificationChannel(new NotificationChannel(Constants.MISC_CHANNEL.toString(),"misc",NotificationManager.IMPORTANCE_DEFAULT));
        String uuid=getPreference().getString(SharedPreferencesKeys.UUID,null) ;
-       if(uuid!=null){
+       if(uuid!=null) {
            startSocketEvents();
            MessageManager.checkAndGetPendingMessages();
        }

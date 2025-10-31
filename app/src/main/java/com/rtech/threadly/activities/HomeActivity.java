@@ -32,6 +32,7 @@ import com.rtech.threadly.R;
 import com.rtech.threadly.constants.SharedPreferencesKeys;
 import com.rtech.threadly.core.Core;
 import com.rtech.threadly.databinding.ActivityHomeBinding;
+import com.rtech.threadly.fragments.CustomPostFeed.CustomPostFeedFragment;
 import com.rtech.threadly.fragments.ReelsFragment;
 import com.rtech.threadly.fragments.profileFragments.ChangeProfileCameraFragment;
 import com.rtech.threadly.fragments.profileFragments.ChangeProfileImageSelector;
@@ -40,7 +41,6 @@ import com.rtech.threadly.fragments.profileFragments.EditNameFragment;
 import com.rtech.threadly.fragments.profileFragments.EditProfileMainFragment;
 import com.rtech.threadly.fragments.profileFragments.UsernameEditFragment;
 import com.rtech.threadly.fragments.homeFragment;
-import com.rtech.threadly.fragments.post_fragment;
 import com.rtech.threadly.fragments.profileFragments.profileFragment;
 import com.rtech.threadly.fragments.profileFragments.profileUploadFinalPreview;
 import com.rtech.threadly.fragments.searchFragment;
@@ -50,10 +50,13 @@ import com.rtech.threadly.interfaces.OnDestroyFragmentCallback;
 import com.rtech.threadly.interfaces.Post_fragmentSetCallback;
 import com.rtech.threadly.interfaces.StoriesBackAndForthInterface;
 import com.rtech.threadly.interfaces.StoryOpenCallback;
+import com.rtech.threadly.models.ExtendedPostModel;
+import com.rtech.threadly.models.Posts_Model;
 import com.rtech.threadly.utils.ExoplayerUtil;
 import com.rtech.threadly.utils.ReUsableFunctions;
 import com.rtech.threadly.viewmodels.ProfileViewModel;
 
+import java.util.ArrayList;
 import java.util.concurrent.Executors;
 
 public class HomeActivity extends AppCompatActivity {
@@ -225,9 +228,33 @@ int currentFragment;
                 if(currentFragment!=R.id.profile){
                     currentFragment=item.getItemId();
                     addFragment(new profileFragment(new Post_fragmentSetCallback() {
+
                         @Override
-                        public void openPostFragment(String url, int postid) {
-                            addFragment(new post_fragment(), url, postid);
+                        public void openPostFragment(ArrayList<Posts_Model> postsArray, int position) {
+                            ArrayList<ExtendedPostModel> postArrayList=new ArrayList<>();
+                            for(Posts_Model model:postsArray){
+                                postArrayList.add(new ExtendedPostModel(model.getCONTENT_TYPE(),
+                                        model.getPostId(),
+                                        model.getUserId(),
+                                        model.getUsername(),
+                                        model.getUserDpUrl(),
+                                        model.getPostUrl(),
+                                        model.getCaption(),
+                                        model.getCreatedAt(),
+                                        model.getLikedBy(),
+                                        model.getLikeCount(),
+                                        model.getCommentCount(),
+                                        model.getShareCount(),
+                                        model.getIsliked()?1:0,
+                                        model.isVideo(),
+                                        model.isFollowed()));
+                            }
+                           CustomPostFeedFragment customPostFeedFragment=new CustomPostFeedFragment();
+                           Bundle data=new Bundle();
+                           data.putParcelableArrayList("postList",postArrayList);
+                           data.putInt("position",position);
+                           customPostFeedFragment.setArguments(data);
+                            addFragment(customPostFeedFragment);
                         }
 
                         @Override

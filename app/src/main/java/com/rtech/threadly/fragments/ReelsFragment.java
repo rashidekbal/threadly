@@ -62,7 +62,8 @@ public class ReelsFragment extends Fragment {
 
 
         //
-        mainXml.reelsViewpager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+        mainXml.reelsViewpager.registerOnPageChangeCallback(
+                new ViewPager2.OnPageChangeCallback() {
             @UnstableApi
             @Override
             public void onPageSelected(int position) {
@@ -74,7 +75,7 @@ public class ReelsFragment extends Fragment {
                 if (viewHolder != null) {
                     ExoplayerUtil.play(
                             Uri.parse(reelsList.get(position).postUrl),
-                            viewHolder.videoPlayer_view
+                            viewHolder.videoPlayer_view,viewHolder.previewImageView
                     );
                 }
             }

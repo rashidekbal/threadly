@@ -36,8 +36,11 @@ import com.rtech.threadly.activities.SettingsActivity;
 import com.rtech.threadly.constants.SharedPreferencesKeys;
 import com.rtech.threadly.core.Core;
 import com.rtech.threadly.interfaces.Post_fragmentSetCallback;
+import com.rtech.threadly.models.Posts_Model;
 import com.rtech.threadly.models.Profile_Model;
 import com.rtech.threadly.viewmodels.ProfileViewModel;
+
+import java.util.ArrayList;
 
 
 public class profileFragment extends Fragment {
@@ -94,10 +97,11 @@ ProfileViewModel profileViewModel;
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 if(item.getItemId()==R.id.posts){
                     change_fragment(new Posts_of_profile(new Post_fragmentSetCallback() {
-                        @Override
-                        public void openPostFragment(String url, int postid) {
-                            callback.openPostFragment(url,postid);
 
+
+                        @Override
+                        public void openPostFragment(ArrayList<Posts_Model> postsArray, int position) {
+                            callback.openPostFragment(postsArray,position);
                         }
 
                         @Override

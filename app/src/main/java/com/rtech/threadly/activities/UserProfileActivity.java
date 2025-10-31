@@ -17,6 +17,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.bumptech.glide.Glide;
@@ -26,13 +27,15 @@ import com.rtech.threadly.adapters.postsAdapters.GridPostAdapter;
 import com.rtech.threadly.constants.SharedPreferencesKeys;
 import com.rtech.threadly.core.Core;
 import com.rtech.threadly.databinding.ActivityUserProfileBinding;
+import com.rtech.threadly.fragments.CustomPostFeed.CustomPostFeedFragment;
 import com.rtech.threadly.interfaces.NetworkCallbackInterface;
 import com.rtech.threadly.interfaces.NetworkCallbackInterfaceWithJsonObjectDelivery;
 import com.rtech.threadly.interfaces.Post_fragmentSetCallback;
+import com.rtech.threadly.models.ExtendedPostModel;
+import com.rtech.threadly.models.Posts_Model;
 import com.rtech.threadly.network_managers.FollowManager;
 import com.rtech.threadly.network_managers.PostsManager;
 import com.rtech.threadly.network_managers.ProfileManager;
-import com.rtech.threadly.models.Preview_Post_model;
 import com.rtech.threadly.models.Profile_Model;
 
 import org.json.JSONArray;
@@ -47,7 +50,7 @@ public class UserProfileActivity extends AppCompatActivity {
     Intent intentData;
     Profile_Model profileData;
     GridPostAdapter postAdapter;
-    ArrayList<Preview_Post_model> postsArray=new ArrayList<>();
+    ArrayList<Posts_Model> postsArray=new ArrayList<>();
     StaggeredGridLayoutManager layoutManager;
     PostsManager postsManager;
     FollowManager followManager;
@@ -87,7 +90,14 @@ public class UserProfileActivity extends AppCompatActivity {
             intent.putExtra("userid",intentData.getStringExtra("userid"));
             startActivity(intent);
         });
-
+        getSupportFragmentManager().addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
+            @Override
+            public void onBackStackChanged() {
+                if(getSupportFragmentManager().getBackStackEntryCount()==0){
+                    mainXml.postsFrameLayout.setVisibility(View.GONE);
+                }
+            }
+        });
 
 
 
@@ -104,12 +114,38 @@ public class UserProfileActivity extends AppCompatActivity {
 
         layoutManager=new StaggeredGridLayoutManager(3,StaggeredGridLayoutManager.VERTICAL);
         postAdapter=new GridPostAdapter(UserProfileActivity.this, postsArray, new Post_fragmentSetCallback() {
+
+
             @Override
-            public void openPostFragment(String url, int postid) {
-                Intent intent=new Intent(UserProfileActivity.this,PostActivity.class);
-                intent.putExtra("url",url);
-                intent.putExtra("postid",postid);
-                startActivity(intent);
+            public void openPostFragment(ArrayList<Posts_Model> postsArray, int position) {
+                /// add fragment system to open  all posts of a given profile
+                mainXml.postsFrameLayout.setVisibility(View.VISIBLE);
+                ArrayList<ExtendedPostModel> postArrayList=new ArrayList<>();
+                for(Posts_Model model:postsArray){
+                    postArrayList.add(new ExtendedPostModel(model.getCONTENT_TYPE(),
+                            model.getPostId(),
+                            model.getUserId(),
+                            model.getUsername(),
+                            model.getUserDpUrl(),
+                            model.getPostUrl(),
+                            model.getCaption(),
+                            model.getCreatedAt(),
+                            model.getLikedBy(),
+                            model.getLikeCount(),
+                            model.getCommentCount(),
+                            model.getShareCount(),
+                            model.getIsliked()?1:0,
+                            model.isVideo(),
+                            model.isFollowed()));
+                }
+                CustomPostFeedFragment customPostFeedFragment=new CustomPostFeedFragment();
+                Bundle data=new Bundle();
+                data.putParcelableArrayList("postList",postArrayList);
+                data.putInt("position",position);
+                customPostFeedFragment.setArguments(data);
+                getSupportFragmentManager().beginTransaction().replace(mainXml.postsFrameLayout.getId(),customPostFeedFragment).commit();
+
+
 
             }
 
@@ -126,6 +162,7 @@ public class UserProfileActivity extends AppCompatActivity {
 
 
     }
+
     private void getProfileData(){
         profileManager.GetProfile(intentData.getStringExtra("userid"), new NetworkCallbackInterfaceWithJsonObjectDelivery() {
             @Override
@@ -271,9 +308,21 @@ if(data.userid.equals(loginInfo.getString(SharedPreferencesKeys.USER_ID,"null"))
                     JSONArray array=response.getJSONArray("data");
                     for(int i=0;i<array.length();i++){
                         JSONObject object=array.getJSONObject(i);
-                        postsArray.add(new Preview_Post_model(
+                        postsArray.add(new Posts_Model(0,
                                 object.getInt("postid"),
-                                object.getString("imageurl")
+                                object.getString("userid"),
+                                object.getString("username"),
+                                object.getString("profilepic"),
+                                object.getString("imageurl"),
+                                object.getString("caption"),
+                                object.getString("created_at"),
+                                object.getString("likedBy"),
+                                object.getInt("likeCount"),
+                                object.getInt("commentCount"),
+                                object.getInt("shareCount"),
+                                object.getInt("isLiked")
+                                ,object.getString("type").equals("video"),
+                                object.getInt("isFollowed")>0
                         ));
 
                     }
