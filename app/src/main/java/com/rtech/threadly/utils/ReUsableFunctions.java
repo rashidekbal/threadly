@@ -25,7 +25,6 @@ import com.rtech.threadly.activities.UserProfileActivity;
 import com.rtech.threadly.constants.SharedPreferencesKeys;
 import com.rtech.threadly.core.Core;
 import com.rtech.threadly.interfaces.NetworkCallbackInterface;
-import com.rtech.threadly.network_managers.AuthManager;
 import com.rtech.threadly.network_managers.FcmManager;
 
 import org.json.JSONException;
@@ -61,7 +60,6 @@ public class ReUsableFunctions {
         android.widget.Toast.makeText(Threadly.getGlobalContext(), message, android.widget.Toast.LENGTH_SHORT).show();
     }
     public static void logout(AppCompatActivity activity){
-        new AuthManager().logout();
         SharedPreferences loginInfo= Core.getPreference();
         SharedPreferences.Editor editor=loginInfo.edit();
         editor.clear();
@@ -73,7 +71,6 @@ public class ReUsableFunctions {
         activity.finish();
     }
     public static void logoutWithoutActivity(){
-        new AuthManager().logout();
         SharedPreferences loginInfo= Core.getPreference();
         SharedPreferences.Editor editor=loginInfo.edit();
         editor.clear();

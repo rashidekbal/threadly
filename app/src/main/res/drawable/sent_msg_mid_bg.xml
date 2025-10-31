@@ -3,5 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android" >
     <solid android:color="@color/sent_msg_bg_color"/>
     <corners android:topLeftRadius="@dimen/dp_20"
-        android:bottomLeftRadius="@dimen/dp_20"/>
+        android:bottomLeftRadius="@dimen/dp_20"
+        android:topRightRadius="5dp"
+        android:bottomRightRadius="5dp"/>
 </shape>

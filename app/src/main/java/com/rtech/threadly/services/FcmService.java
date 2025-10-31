@@ -93,6 +93,7 @@ public class FcmService extends FirebaseMessagingService {
 
                 break;
             case "logout":
+
                 LogOutSignalHandler(message);
                 break;
 
