@@ -5,7 +5,6 @@ import static com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.media.Image;
 import android.net.Uri;
 import android.os.Build;
 import android.util.Log;
@@ -112,7 +111,7 @@ public class AllTypePostFeedAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 
         if(viewHolder.getItemViewType()==TYPE_IMAGE){
             ImagePostViewHolder holder=(ImagePostViewHolder) viewHolder;
-            Glide.with(context).load(Uri.parse(postModels.get(position).getPostUrl())).placeholder(R.drawable.post_placeholder).into(holder.post_image_view);
+            Glide.with(context).load(Uri.parse(postModels.get(position).getPostUrl())).thumbnail(0.1f).into(holder.post_image_view);
             //setUpFollowBtn
             setUpFollowBtn(holder,position);
 
@@ -762,6 +761,7 @@ public class AllTypePostFeedAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         LinearLayout Story_add_ll_btn=shareBottomSheet.findViewById(R.id.Story_add_ll_btn);
         ProgressBar progressBar=shareBottomSheet.findViewById(R.id.progressBar);
         GridLayoutManager gridLayoutManager=new GridLayoutManager(context,3);
+        assert Users_List_recyclerView != null;
         Users_List_recyclerView.setLayoutManager(gridLayoutManager);
         ArrayList<UsersModel> usersModelList=new ArrayList<>();
         UsersShareSheetGridAdapter adapter=new UsersShareSheetGridAdapter(context, usersModelList, new OnUserSelectedListener() {

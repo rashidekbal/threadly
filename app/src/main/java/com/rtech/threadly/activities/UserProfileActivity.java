@@ -1,5 +1,6 @@
 package com.rtech.threadly.activities;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -17,7 +18,6 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.bumptech.glide.Glide;
@@ -90,12 +90,9 @@ public class UserProfileActivity extends AppCompatActivity {
             intent.putExtra("userid",intentData.getStringExtra("userid"));
             startActivity(intent);
         });
-        getSupportFragmentManager().addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
-            @Override
-            public void onBackStackChanged() {
-                if(getSupportFragmentManager().getBackStackEntryCount()==0){
-                    mainXml.postsFrameLayout.setVisibility(View.GONE);
-                }
+        getSupportFragmentManager().addOnBackStackChangedListener(() -> {
+            if(getSupportFragmentManager().getBackStackEntryCount()==0){
+                mainXml.postsFrameLayout.setVisibility(View.GONE);
             }
         });
 
@@ -300,6 +297,7 @@ if(data.userid.equals(loginInfo.getString(SharedPreferencesKeys.USER_ID,"null"))
     }
     private void getPosts(String userId){
         postsManager.getUserPosts(userId, new NetworkCallbackInterfaceWithJsonObjectDelivery() {
+            @SuppressLint("NotifyDataSetChanged")
             @Override
             public void onSuccess(JSONObject response) {
                 mainXml.postsShimmer.setVisibility(View.GONE);

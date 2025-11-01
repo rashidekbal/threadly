@@ -15,10 +15,8 @@ import androidx.camera.lifecycle.ProcessCameraProvider;
 import androidx.camera.video.Quality;
 import androidx.camera.video.QualitySelector;
 import androidx.camera.video.Recorder;
-import androidx.camera.video.VideoCapture;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.view.LayoutInflater;
@@ -29,6 +27,7 @@ import com.google.common.util.concurrent.ListenableFuture;
 import com.rtech.threadly.R;
 import com.rtech.threadly.databinding.FragmentPostAddCameraBinding;
 import com.rtech.threadly.interfaces.CameraFragmentInterface;
+import com.rtech.threadly.utils.ReUsableFunctions;
 import com.rtech.threadly.viewmodels.ProfileViewModel;
 
 import java.io.File;
@@ -41,7 +40,6 @@ public class PostAddCameraFragment extends Fragment {
     boolean isFlashOn=false;
     ImageCapture imageCapture;
     Recorder recorder;
-    VideoCapture<Recorder> videoCapture;
     ProfileViewModel profileViewModel;
     CameraFragmentInterface callback;
 
@@ -78,22 +76,24 @@ public class PostAddCameraFragment extends Fragment {
 
     private void startCamera() {
         ListenableFuture<ProcessCameraProvider> cameraProviderListenableFuture = ProcessCameraProvider.getInstance(activity);
-        cameraProviderListenableFuture.addListener(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    ProcessCameraProvider cameraProvider=cameraProviderListenableFuture.get();
-                    CameraSelector cameraSelector=isBackCamera?CameraSelector.DEFAULT_BACK_CAMERA:CameraSelector.DEFAULT_FRONT_CAMERA;
-                    Preview preview=new Preview.Builder().build();
-                    preview.setSurfaceProvider(mainXml.cameraLivePreview.getSurfaceProvider());
-                    imageCapture=new ImageCapture.Builder().setCaptureMode(CAPTURE_MODE_MAXIMIZE_QUALITY).setFlashMode(FLASH_MODE_OFF).build();
-                    recorder=new Recorder.Builder().setQualitySelector(QualitySelector.from(Quality.HIGHEST)).build();
-                    videoCapture=new VideoCapture.Builder(recorder).build();
+        cameraProviderListenableFuture.addListener(() -> {
+            try {
+                ProcessCameraProvider cameraProvider=cameraProviderListenableFuture.get();
+                CameraSelector cameraSelector=isBackCamera?CameraSelector.DEFAULT_BACK_CAMERA:CameraSelector.DEFAULT_FRONT_CAMERA;
+                Preview preview=new Preview.Builder().build();
+                preview.setSurfaceProvider(mainXml.cameraLivePreview.getSurfaceProvider());
+                imageCapture=new ImageCapture.Builder().setCaptureMode(CAPTURE_MODE_MAXIMIZE_QUALITY).setFlashMode(FLASH_MODE_OFF).build();
+                recorder=new Recorder.Builder().setQualitySelector(QualitySelector.from(Quality.HIGHEST)).build();
+                if (cameraProvider != null) {
                     cameraProvider.unbindAll();
-                    cameraProvider.bindToLifecycle(activity,cameraSelector,preview,imageCapture,videoCapture);
-                } catch (ExecutionException | InterruptedException e) {
-                    throw new RuntimeException(e);
+                    cameraProvider.bindToLifecycle(activity,cameraSelector,preview,imageCapture);
+                }else{
+                    ReUsableFunctions.ShowToast("something went wrong ...");
+                    activity.onBackPressed();
                 }
+
+            } catch (ExecutionException | InterruptedException e) {
+                throw new RuntimeException(e);
             }
         },ContextCompat.getMainExecutor(activity));
     }
