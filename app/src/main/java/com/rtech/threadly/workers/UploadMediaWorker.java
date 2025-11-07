@@ -32,36 +32,37 @@ public class UploadMediaWorker extends Worker {
     @NonNull
     @Override
     public Result doWork() {
-
+        int notificationCode=(int)Math.round(Math.random()*9999);
         Data data = getInputData();
         //extract all data passed
         String type = data.getString("type");
         String path = data.getString("path");
         String caption = data.getString("caption");
         //create a file reference
+        assert path != null;
         media = new File(path);
         //check files  existance
         if (!media.exists()) {
             return Result.failure();
         }
-        boolean [] isSucess={false};
+        boolean [] isSuccess={false};
         CountDownLatch latch=new CountDownLatch(1);
         NetworkCallbackInterfaceWithProgressTracking callbackInterfaceWithProgressTracking=new NetworkCallbackInterfaceWithProgressTracking() {
             @Override
             public void onSuccess(JSONObject response) {
-                showUploadProgressNotification(0,0,false,true);
+                showUploadProgressNotification(0,0,false,true,notificationCode);
                 media.delete();
-                isSucess[0]=true;
+                isSuccess[0]=true;
                 latch.countDown();
             }
 
             @Override
             public void onError(String err) {
-                showUploadProgressNotification(0,0,false,false);
+                showUploadProgressNotification(0,0,false,false,notificationCode);
                 Log.d(TAG, "onError: "+err);
 
-                media.delete();
-                isSucess[0]=false;
+                boolean isDeleted=  media.delete();
+                isSuccess[0]=false;
                 latch.countDown();
 
             }
@@ -69,7 +70,7 @@ public class UploadMediaWorker extends Worker {
             @Override
             public void progress(long bytesUploaded, long totalBytes) {
 
-                showUploadProgressNotification((int)totalBytes,(int)bytesUploaded,true,isSucess[0]);
+                showUploadProgressNotification((int)totalBytes,(int)bytesUploaded,true,isSuccess[0],notificationCode);
 
             }
         };
@@ -87,10 +88,10 @@ public class UploadMediaWorker extends Worker {
             return Result.failure();
         }
 
-        return isSucess[0]?Result.success():Result.failure();
+        return isSuccess[0]?Result.success():Result.failure();
     }
 
-    private void showUploadProgressNotification(int max,int current,boolean uploading,boolean isSuccess){
+    private void showUploadProgressNotification(int max,int current,boolean uploading,boolean isSuccess,int notificationCode){
         NotificationCompat.Builder builder=new NotificationCompat.Builder(Threadly.getGlobalContext()).setChannelId(Constants.MEDIA_UPLOAD_CHANNEL.toString()).setContentTitle("Uploading media").setSmallIcon(R.drawable.splash);
         if(uploading){
 
@@ -106,6 +107,6 @@ public class UploadMediaWorker extends Worker {
 
 
 
-        Core.getNotificationManager().notify(201,builder.build());
+        Core.getNotificationManager().notify(notificationCode,builder.build());
     }
 }

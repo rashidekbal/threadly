@@ -7,12 +7,17 @@ import android.util.Log;
 
 import com.androidnetworking.AndroidNetworking;
 
+import com.androidnetworking.common.Priority;
+import com.androidnetworking.error.ANError;
+import com.androidnetworking.interfaces.JSONObjectRequestListener;
 import com.rtech.threadly.BuildConfig;
 import com.rtech.threadly.constants.SharedPreferencesKeys;
 import com.rtech.threadly.core.Core;
+import com.rtech.threadly.interfaces.NetworkCallbackInterface;
 import com.rtech.threadly.interfaces.NetworkCallbackInterfaceWithJsonObjectDelivery;
 
 import com.rtech.threadly.constants.ApiEndPoints;
+import com.rtech.threadly.utils.PreferenceUtil;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -91,5 +96,28 @@ public class CommentsManager {
             throw new RuntimeException(e);
         }
 
+    }
+    public void ReplyToComment(int postId, int commentId, String comment, NetworkCallbackInterface callbackInterface) throws JSONException {
+        String Url=ApiEndPoints.REPLY_TO_COMMENT+Integer.toString(commentId);
+        JSONObject packet=new JSONObject();
+        packet.put("postId",postId);
+        packet.put("comment",comment);
+
+        AndroidNetworking.post(Url)
+                .setPriority(Priority.HIGH)
+                .addHeaders("Authorization" ,"Bearer "+ PreferenceUtil.getJWT())
+                .addApplicationJsonBody(packet)
+                .build()
+                .getAsJSONObject(new JSONObjectRequestListener() {
+                    @Override
+                    public void onResponse(JSONObject jsonObject) {
+                        callbackInterface.onSuccess();
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+                      callbackInterface.onError(anError.getErrorDetail());
+                    }
+                });
     }
 }

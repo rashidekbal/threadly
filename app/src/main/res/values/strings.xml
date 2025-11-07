@@ -172,4 +172,5 @@
     <string name="delete_for_you">Delete for you</string>
     <string name="unsend">Unsend</string>
     <string name="post_image">post image</string>
+    <string name="replying_to">Replying to</string>
 </resources>

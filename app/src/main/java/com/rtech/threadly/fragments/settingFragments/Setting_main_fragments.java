@@ -2,6 +2,7 @@ package com.rtech.threadly.fragments.settingFragments;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -13,8 +14,12 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.rtech.threadly.SocketIo.SocketManager;
+import com.rtech.threadly.activities.LoginActivity;
 import com.rtech.threadly.databinding.FragmentSettingMainFragmentsBinding;
 import com.rtech.threadly.interfaces.FragmentItemClickInterface;
+import com.rtech.threadly.interfaces.NetworkCallbackInterface;
+import com.rtech.threadly.utils.LoginSequenceUtil;
+import com.rtech.threadly.utils.LogoutSequenceUtil;
 import com.rtech.threadly.utils.ReUsableFunctions;
 
 
@@ -51,11 +56,9 @@ FragmentItemClickInterface clickInterface;
                                 public void onClick(DialogInterface dialog, int which) {
                                     dialog.dismiss();
                                     //disconnect to avoid multi instance when logged in again
-                                    SocketManager.getInstance().disconnect();
-                                    ReUsableFunctions.logout((AppCompatActivity) requireActivity());
-                                    ReUsableFunctions.ShowToast("logged out");
-
+                                    LogoutSequenceUtil.Logout((AppCompatActivity) requireActivity());
                                 }
+
                             }).setNegativeButton("no", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {

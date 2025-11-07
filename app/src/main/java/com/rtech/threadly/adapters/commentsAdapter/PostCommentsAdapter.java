@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -14,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.androidnetworking.AndroidNetworking;
 import com.bumptech.glide.Glide;
 import com.rtech.threadly.R;
+import com.rtech.threadly.interfaces.Comments.RecyclerView.replyClick.OnReplyClick;
 import com.rtech.threadly.interfaces.NetworkCallbackInterface;
 import com.rtech.threadly.network_managers.LikeManager;
 import com.rtech.threadly.models.Posts_Comments_Model;
@@ -26,17 +28,19 @@ public class PostCommentsAdapter extends RecyclerView.Adapter<PostCommentsAdapte
     Context context;
     ArrayList<Posts_Comments_Model> dataList;
     LikeManager likeManager;
+    OnReplyClick onReplyClickCallback;
 
-    public  PostCommentsAdapter (Context c,ArrayList<Posts_Comments_Model> dataList){
+    public  PostCommentsAdapter (Context c,ArrayList<Posts_Comments_Model> dataList,OnReplyClick onReplyClick){
         this.context=c;
         this.dataList=dataList;
         this.likeManager=new LikeManager();
+        this.onReplyClickCallback=onReplyClick;
 
     }
     @NonNull
     @Override
     public viewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view= LayoutInflater.from(context).inflate(R.layout.comment_card,parent,false);
+        View view= LayoutInflater.from(context).inflate(R.layout.comment_card_v2,parent,false);
         return new viewHolder(view);
     }
 
@@ -45,7 +49,7 @@ public class PostCommentsAdapter extends RecyclerView.Adapter<PostCommentsAdapte
         AndroidNetworking.initialize(context);
 
         Glide.with(context).load(dataList.get(position).userDpUrl).circleCrop().placeholder(R.drawable.blank_profile).into(holder.userProfileImage);
-        holder.username.setText(dataList.get(position).username);
+        holder.username.setText(dataList.get(position).getUserId());
         holder.comment.setText(dataList.get(position).comment);
         if(dataList.get(position).isLiked){
             holder.likeBtn.setImageResource(R.drawable.red_heart_active_icon);
@@ -115,10 +119,32 @@ public class PostCommentsAdapter extends RecyclerView.Adapter<PostCommentsAdapte
 //        open userProfile on click of profile pic
         holder.userProfileImage.setOnClickListener(v -> ReUsableFunctions.openProfile(context,dataList.get(position).userId));
         holder.username.setOnClickListener(v -> ReUsableFunctions.openProfile(context,dataList.get(position).userId));
+//set reply btn click action
+        holder.ReplyBtn.setOnClickListener(v->onReplyClickCallback.ReplyTo(dataList.get(position).getCommentId(),position));
+//check and show replies btn
+        if(dataList.get(position).getReplyCount()<=0){
+            holder.replies_holderLayout.setVisibility(View.GONE);
+
+        }else{
+            holder.replies_holderLayout.setVisibility(View.VISIBLE);
+        }
+        holder.load_replies_btn.setText(encodeReplyLoaderCount(dataList.get(position).getReplyCount()));
+
+
+        //show replies btn onclick listener
+        holder.load_replies_btn.setOnClickListener(v -> {
+            ///action to load replies for the comment
+            /// probably load with comment manager maybe
+
+        });
 
 
 
+    }
 
+    private String encodeReplyLoaderCount(int replyCount) {
+        if(replyCount==1) return "View Replies";
+        return ("View "+replyCount+" more Replies");
     }
 
     @Override
@@ -128,7 +154,8 @@ public class PostCommentsAdapter extends RecyclerView.Adapter<PostCommentsAdapte
 
     public static class viewHolder extends RecyclerView.ViewHolder {
         ImageView userProfileImage,likeBtn;
-        TextView username,comment,likes_count_text;
+        TextView username,comment,likes_count_text,load_replies_btn,ReplyBtn;
+        RelativeLayout replies_holderLayout;
         public viewHolder(@NonNull View itemView) {
             super(itemView);
             userProfileImage=itemView.findViewById(R.id.userProfile_img);
@@ -136,6 +163,9 @@ public class PostCommentsAdapter extends RecyclerView.Adapter<PostCommentsAdapte
             comment=itemView.findViewById(R.id.comment_text);
             likeBtn=itemView.findViewById(R.id.like_btn_image);
             likes_count_text=itemView.findViewById(R.id.likes_count_text);
+            replies_holderLayout=itemView.findViewById(R.id.replies_holder);
+            load_replies_btn=itemView.findViewById(R.id.load_replies_btn);
+            ReplyBtn=itemView.findViewById(R.id.ReplyBtn);
 
         }
     }

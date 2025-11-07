@@ -25,6 +25,7 @@ import com.rtech.threadly.databinding.FragmentCustomPostFeedBinding;
 import com.rtech.threadly.models.ExtendedPostModel;
 import com.rtech.threadly.models.Posts_Model;
 import com.rtech.threadly.utils.ExoplayerUtil;
+import com.rtech.threadly.utils.ReUsableFunctions;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,6 +35,8 @@ FragmentCustomPostFeedBinding mainXml;
 ArrayList<ExtendedPostModel> postsArray=new ArrayList<>();
 AllTypePostFeedAdapter feedAdapter;
 int position;
+    boolean isFirstLaunch=true;
+    int currentPosition;
     public CustomPostFeedFragment() {
         // Required empty public constructor
     }
@@ -63,13 +66,16 @@ int position;
     }
 
     private void init(){
+        isFirstLaunch=false;
         setUpViewPager();
 
     }
 
     @OptIn(markerClass = UnstableApi.class)
     private void setUpViewPager() {
-        List<ExtendedPostModel> postModels=postsArray.subList(position,postsArray.size()-1);
+
+        List<ExtendedPostModel> postModels;
+        postModels=postsArray.subList(position,postsArray.size());
         feedAdapter=new AllTypePostFeedAdapter(requireActivity(),postModels,position);
         mainXml.viewPager.setOrientation(ORIENTATION_VERTICAL);
         mainXml.viewPager.setAdapter(feedAdapter);
@@ -91,6 +97,7 @@ int position;
                                 );
                             }
                         }
+                        currentPosition=position;
                     }
                 });
 
@@ -102,5 +109,17 @@ int position;
         ExoplayerUtil.stop();
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        if(!isFirstLaunch){
+            RecyclerView.ViewHolder viewHolder= ((RecyclerView)mainXml.viewPager.getChildAt(0)).findViewHolderForAdapterPosition(currentPosition);
+            if(viewHolder instanceof AllTypePostFeedAdapter.VideoPostViewHolder){
+                ExoplayerUtil.play(
+                        Uri.parse(postsArray.get(currentPosition).postUrl),
+                        ((AllTypePostFeedAdapter.VideoPostViewHolder) viewHolder).videoPlayer_view);
 
+            }
+        }
+    }
 }

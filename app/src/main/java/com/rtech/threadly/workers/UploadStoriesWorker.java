@@ -20,7 +20,6 @@ import java.io.File;
 
 public class UploadStoriesWorker extends Worker {
     StoriesManager storiesManager;
-    int notificationCode=102;
     public UploadStoriesWorker(@NonNull Context context, @NonNull WorkerParameters workerParams) {
         super(context, workerParams);
         this.storiesManager=new StoriesManager();
@@ -29,6 +28,7 @@ public class UploadStoriesWorker extends Worker {
     @NonNull
     @Override
     public Result doWork() {
+        int notificationCode=(int)Math.round(Math.random()*9999);
         boolean[] isSuccess={false};
         Data data=getInputData();
         String type = data.getString("type");
@@ -39,7 +39,7 @@ public class UploadStoriesWorker extends Worker {
             @Override
             public void onSuccess() {
                 media.delete();
-                ShowNotification("Upload Complete","Your Story has been uploaded successfully");
+                ShowNotification("Upload Complete","Your Story has been uploaded successfully",notificationCode);
                 isSuccess[0]=true;
 
             }
@@ -47,7 +47,7 @@ public class UploadStoriesWorker extends Worker {
             @Override
             public void onError(String err) {
                 media.delete();
-                ShowNotification("Upload Failed","Something went wrong");
+                ShowNotification("Upload Failed","Something went wrong",notificationCode);
                 Log.d("storyUploadError", "onError: "+err);
                 isSuccess[0]=false;
 
@@ -56,7 +56,7 @@ public class UploadStoriesWorker extends Worker {
         return isSuccess[0]?Result.success():Result.failure();
     }
 
-    private void ShowNotification(String title,String content){
+    private void ShowNotification(String title,String content,int notificationCode){
         Notification notification=new Notification.Builder(Threadly.getGlobalContext())
                 .setSmallIcon(R.drawable.splash)
                 .setContentTitle(title)

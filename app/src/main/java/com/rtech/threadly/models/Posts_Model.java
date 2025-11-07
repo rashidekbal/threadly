@@ -7,6 +7,9 @@ public class Posts_Model {
     /// or content
     /// if the item is a content then it must be 0
     /// else if the item is of type suggestion then the code must be 1
+    ///
+    /// due to some flaw in coding understanding all the variable are public convert to private one by one please
+    ///
     public int CONTENT_TYPE;
    public int postId,likeCount,commentCount,shareCount;
    public String userId;

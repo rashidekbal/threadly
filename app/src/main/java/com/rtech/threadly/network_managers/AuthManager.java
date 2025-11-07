@@ -14,6 +14,7 @@ import com.rtech.threadly.constants.SharedPreferencesKeys;
 import com.rtech.threadly.core.Core;
 import com.rtech.threadly.interfaces.NetworkCallbackInterfaceWithJsonObjectDelivery;
 import com.rtech.threadly.interfaces.NetworkCallbackInterface;
+import com.rtech.threadly.utils.PreferenceUtil;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -186,19 +187,20 @@ public class AuthManager {
         }
 
     }
-    public  void logout(){
+    public  void logout(NetworkCallbackInterface callbackInterface){
         String url=ApiEndPoints.LOGOUT;
         AndroidNetworking.get(url).setPriority(Priority.HIGH)
-                .addHeaders("Authorization","Bearer "+Core.getPreference().getString(SharedPreferencesKeys.JWT_TOKEN,"null"))
+                .addHeaders("Authorization","Bearer "+ PreferenceUtil.getJWT())
                 .build().getAsJSONObject(new JSONObjectRequestListener() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        //nothing to do
+                       callbackInterface.onSuccess();
                     }
 
                     @Override
                     public void onError(ANError anError) {
-//nothing to do
+                        callbackInterface.onError(anError.getErrorDetail());
+
                     }
                 });
     }

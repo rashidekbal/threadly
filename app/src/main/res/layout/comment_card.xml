@@ -45,7 +45,8 @@
                     android:layout_height="wrap_content"
                     android:text="Nice pic 🫣"
                     android:textColor="@color/black"
-                    android:textSize="@dimen/sp_16"/>
+                    android:textSize="@dimen/sp_14"
+                    />
 
 
             </LinearLayout>

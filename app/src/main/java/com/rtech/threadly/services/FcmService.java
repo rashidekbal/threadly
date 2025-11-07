@@ -33,7 +33,9 @@ import org.json.JSONObject;
 import java.util.Objects;
 import java.util.concurrent.Executors;
 
+@SuppressWarnings("deprecation")
 public class FcmService extends FirebaseMessagingService {
+
     @Override
     public void onNewToken(@NonNull String token) {
         super.onNewToken(token);
@@ -160,7 +162,6 @@ public class FcmService extends FirebaseMessagingService {
     private void StatusUpdateHandler(RemoteMessage message){
         String MsgUid=message.getData().get("MsgUid");
         int deliveryStatus=Integer.parseInt(Objects.requireNonNull(message.getData().get("deliveryStatus")));
-        boolean isDeleted=message.getData().get("isDeleted").equals("true");
         ReUsableFunctions.updateMessageStatus(MsgUid,deliveryStatus);
 
     }

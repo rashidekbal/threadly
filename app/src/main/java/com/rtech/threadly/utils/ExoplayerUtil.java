@@ -67,9 +67,9 @@ cont=context;
                 currentPlayerView.setPlayer(null);
             }
             currentPlayerView = playerView;
-            previewView=previewImageView;
-            previewView.setVisibility(View.VISIBLE);
-            Glide.with(Threadly.getGlobalContext()).load(uri).thumbnail(0.1f).diskCacheStrategy(DiskCacheStrategy.AUTOMATIC).into(previewView);
+//            previewView=previewImageView;
+//            previewView.setVisibility(View.VISIBLE);
+//            Glide.with(Threadly.getGlobalContext()).load(uri).thumbnail(0.1f).diskCacheStrategy(DiskCacheStrategy.AUTOMATIC).into(previewView);
             MediaItem mediaItem=MediaItem.fromUri(uri);
 
             MediaSource mediaSource = new ProgressiveMediaSource.Factory(
@@ -80,7 +80,7 @@ cont=context;
             playerView.setPlayer(exoplayer);
             exoplayer.prepare();
             exoplayer.play();
-            previewView.setVisibility(View.GONE);
+//            previewView.setVisibility(View.GONE);
         }
 
 

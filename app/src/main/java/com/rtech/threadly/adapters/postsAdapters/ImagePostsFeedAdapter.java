@@ -54,6 +54,7 @@ import com.rtech.threadly.models.Posts_Model;
 import com.rtech.threadly.models.Profile_Model_minimal;
 import com.rtech.threadly.utils.DownloadManagerUtil;
 import com.rtech.threadly.utils.LoggerUtil;
+import com.rtech.threadly.utils.PostCommentsViewerUtil;
 import com.rtech.threadly.utils.ReUsableFunctions;
 import com.rtech.threadly.viewmodels.MessageAbleUsersViewModel;
 
@@ -92,7 +93,7 @@ public class ImagePostsFeedAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
     @Override
     public int getItemViewType(int position) {
-        return list.get(position).CONTENT_TYPE;
+        return list.get(position).getCONTENT_TYPE();
     }
 
     // Inflates the layout for each post item
@@ -167,12 +168,7 @@ public class ImagePostsFeedAdapter extends RecyclerView.Adapter<RecyclerView.Vie
           holder.post_creationDate.setText(list.get(position).createdAt.split("T")[0]);
 
           // Show comments dialog on comment button click
-          holder.comment_btn.setOnClickListener(new View.OnClickListener() {
-              @Override
-              public void onClick(View v) {
-                  showComments(list.get(position).postId);
-              }
-          });
+          holder.comment_btn.setOnClickListener(v -> new PostCommentsViewerUtil(context).setUpCommentDialog(list.get(position).postId));
           if(list.get(position).likeCount>0){
               holder.likes_count_text.setVisibility(View.VISIBLE);
           }else{
@@ -195,15 +191,12 @@ public class ImagePostsFeedAdapter extends RecyclerView.Adapter<RecyclerView.Vie
           }
 
           // Show options dialog on options button click
-          holder.options_btn.setOnClickListener(new View.OnClickListener(){
-              @Override
-              public void onClick(View v) {
-                  BottomSheetDialog OptionsDialog =new BottomSheetDialog(context,R.style.TransparentBottomSheet);
-                  OptionsDialog.setContentView(R.layout.posts_action_options_layout);
-                  setOptionsBtnBehaviour(OptionsDialog,position);
-                  OptionsDialog.setCancelable(true);
-                  OptionsDialog.show();
-              }
+          holder.options_btn.setOnClickListener(v -> {
+              BottomSheetDialog OptionsDialog =new BottomSheetDialog(context,R.style.TransparentBottomSheet);
+              OptionsDialog.setContentView(R.layout.posts_action_options_layout);
+              setOptionsBtnBehaviour(OptionsDialog,position);
+              OptionsDialog.setCancelable(true);
+              OptionsDialog.show();
           });
 
           // Like/unlike post on like button click
@@ -464,147 +457,6 @@ public class ImagePostsFeedAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         }
     }
 
-    // Shows the comments dialog for a post
-    private void showComments(int postId){
-        commentDialog.show();
-        ArrayList<Posts_Comments_Model> dataList=new ArrayList<>();
-        PostCommentsAdapter postCommentsAdapter=new PostCommentsAdapter(context,dataList);
-        LinearLayoutManager layoutManager=new LinearLayoutManager(context,LinearLayoutManager.VERTICAL,false);
-        RecyclerView comments_recyclerView=commentDialog.findViewById(R.id.comments_recyclerView);
-        assert comments_recyclerView != null;
-        comments_recyclerView.setLayoutManager(layoutManager);
-        comments_recyclerView.setAdapter(postCommentsAdapter);
-        EditText inputComment=commentDialog.findViewById(R.id.comment_editText);
-        ImageView sendCommentBtn=commentDialog.findViewById(R.id.post_comment_imgBtn);
-        TextView posting_progressbar=commentDialog.findViewById(R.id.posting_progress_text);
-        ImageView currentUserProfileImg=commentDialog.findViewById(R.id.user_profile);
-        ShimmerFrameLayout shimmerFrameLayout=commentDialog.findViewById(R.id.shimmer_comments_holder);
-        assert shimmerFrameLayout != null;
-        shimmerFrameLayout.setVisibility(View.VISIBLE);
-        shimmerFrameLayout.startShimmer();
-        LinearLayout noCommentsLayout=commentDialog.findViewById(R.id.no_comment_msg_linear_layout);
-        comments_recyclerView.setVisibility(View.GONE);
-        assert noCommentsLayout != null;
-        noCommentsLayout.setVisibility(View.GONE);
-        Glide.with(context).load(loginInfo.getString(SharedPreferencesKeys.USER_PROFILE_PIC,"null")).placeholder(R.drawable.blank_profile)
-                .error(R.drawable.blank_profile).circleCrop().into(currentUserProfileImg);
-
-        // Fetch comments from server
-        commentsManager.getCommentOf(postId, new NetworkCallbackInterfaceWithJsonObjectDelivery() {
-            @Override
-            public void onSuccess(JSONObject response) {
-                try {
-                    JSONArray data=response.getJSONArray("data");
-                    if(data.length()>0){
-                        noCommentsLayout.setVisibility(View.GONE);
-                        comments_recyclerView.setVisibility(View.VISIBLE);
-                        // Add each comment to the list
-                        for (int i=0;i<data.length();i++){
-                            JSONObject individualComment=data.getJSONObject(i);
-                            dataList.add(new Posts_Comments_Model(individualComment.getInt("commentid"),individualComment.getInt("postid"),individualComment.getInt("comment_likes_count"),individualComment.getInt("isLiked"),individualComment.getString("userid"),individualComment.getString("username"),individualComment.getString("profilepic"),individualComment.getString("comment_text"),individualComment.getString("createdAt")));
-                        }
-                        postCommentsAdapter.notifyDataSetChanged();
-                        shimmerFrameLayout.stopShimmer();
-                        shimmerFrameLayout.setVisibility(View.GONE);
-                    }else {
-                        // Show no comments layout if empty
-                        noCommentsLayout.setVisibility(View.VISIBLE);
-                        comments_recyclerView.setVisibility(View.GONE);
-                        shimmerFrameLayout.stopShimmer();
-                        shimmerFrameLayout.setVisibility(View.GONE);
-                    }
-                } catch (JSONException e) {
-                    throw new RuntimeException(e);
-                }
-
-            }
-
-            @Override
-            public void onError(String err) {
-                Toast.makeText(context, "Error fetching comments: ".concat(Objects.requireNonNull(err)), Toast.LENGTH_SHORT).show();
-                shimmerFrameLayout.stopShimmer();
-                noCommentsLayout.setVisibility(View.VISIBLE);
-                comments_recyclerView.setVisibility(View.GONE);
-                shimmerFrameLayout.setVisibility(View.GONE);
-
-            }
-        });
-        // Add comment to the post
-        assert sendCommentBtn != null;
-        sendCommentBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.hideSoftInputFromWindow( v.getWindowToken(),0);
-
-                sendCommentBtn.setClickable(false);
-                sendCommentBtn.setVisibility(View.GONE);
-                assert posting_progressbar != null;
-                posting_progressbar.setVisibility(View.VISIBLE);
-                assert inputComment != null;
-                String commentText=inputComment.getText().toString();
-                if(commentText.isEmpty()){
-                    Toast.makeText(context, "Please enter a comment", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                commentsManager.addComment(postId, commentText, new NetworkCallbackInterfaceWithJsonObjectDelivery() {
-                    @Override
-                    public void onSuccess(JSONObject response) {
-
-                                    posting_progressbar.setVisibility(View.GONE);
-                                    sendCommentBtn.setVisibility(View.VISIBLE);
-                                    sendCommentBtn.setClickable(true);
-                                  try{
-                                        JSONObject data=response.getJSONObject("data");
-                                        int commentid=data.getInt("commentid");
-                                      Log.d("cmnt", "onSuccess: ");
-
-                                        // Add new comment to the top of the list
-                                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
-                                            dataList.addFirst(new Posts_Comments_Model(
-                                                    commentid,
-                                                    postId,
-                                                    0,
-                                                    0,
-                                                    loginInfo.getString("userid","unknown"),
-                                                    loginInfo.getString("username","unknown"),
-                                                    loginInfo.getString("profileUrl","https://res.cloudinary.com/dphwlcyhg/image/upload/v1747240475/ulpdxajfwpwhlt4ntzn5.webp"),
-                                                    commentText,
-                                                    new Date().toString()));
-                                            postCommentsAdapter.notifyItemInserted(0);
-                                            comments_recyclerView.scrollToPosition(0);
-                                        }else{
-                                            dataList.add(new Posts_Comments_Model(
-                                                    commentid,
-                                                    postId,
-                                                    0,
-                                                    0,
-                                                    loginInfo.getString("userid","unknown"),
-                                                    loginInfo.getString("username","unknown"),
-                                                    loginInfo.getString("profileUrl","https://res.cloudinary.com/dphwlcyhg/image/upload/v1747240475/ulpdxajfwpwhlt4ntzn5.webp"),
-                                                    commentText,
-                                                    new Date().toString()));
-                                            postCommentsAdapter.notifyItemInserted(dataList.size()-1);
-                                            comments_recyclerView.scrollToPosition(dataList.size()-1);
-                                        }
-                                        inputComment.setText("");
-                                    }catch(JSONException jsonError){
-                                        // Handle JSON error
-                                    }
-
-                    }
-
-                    @Override
-                    public void onError(String err) {
-                                    posting_progressbar.setVisibility(View.GONE);
-                                    sendCommentBtn.setVisibility(View.VISIBLE);
-                                    sendCommentBtn.setClickable(true);
-
-                    }
-                });
-            }
-        });
-    }
 
     // Sets the like count text for a post
 

@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 
+import android.util.Log;
 import android.view.inputmethod.InputMethodManager;
 import android.webkit.MimeTypeMap;
 
@@ -25,6 +26,7 @@ import com.rtech.threadly.activities.UserProfileActivity;
 import com.rtech.threadly.constants.SharedPreferencesKeys;
 import com.rtech.threadly.core.Core;
 import com.rtech.threadly.interfaces.NetworkCallbackInterface;
+import com.rtech.threadly.network_managers.AuthManager;
 import com.rtech.threadly.network_managers.FcmManager;
 
 import org.json.JSONException;
@@ -59,27 +61,19 @@ public class ReUsableFunctions {
     public static void ShowToast( String message) {
         android.widget.Toast.makeText(Threadly.getGlobalContext(), message, android.widget.Toast.LENGTH_SHORT).show();
     }
-    public static void logout(AppCompatActivity activity){
-        SharedPreferences loginInfo= Core.getPreference();
-        SharedPreferences.Editor editor=loginInfo.edit();
-        editor.clear();
-        editor.apply();
-        Executors.newSingleThreadExecutor().execute(() -> DataBase.getInstance().clearAllTables());
-        Intent intent=new Intent(activity,LoginActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        activity.startActivity(intent);
-        activity.finish();
-    }
+
     public static void logoutWithoutActivity(){
-        SharedPreferences loginInfo= Core.getPreference();
-        SharedPreferences.Editor editor=loginInfo.edit();
-        editor.clear();
-        editor.apply();
-        SocketManager.getInstance().disconnect();
-        Executors.newSingleThreadExecutor().execute(() -> DataBase.getInstance().clearAllTables());
-        Intent intent=new Intent(Threadly.getGlobalContext(),LoginActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        Threadly.getGlobalContext().startActivity(intent);
+                SharedPreferences loginInfo= Core.getPreference();
+                SharedPreferences.Editor editor=loginInfo.edit();
+                editor.clear();
+                editor.apply();
+                SocketManager.getInstance().disconnect();
+                Executors.newSingleThreadExecutor().execute(() -> DataBase.getInstance().clearAllTables());
+                Intent intent=new Intent(Threadly.getGlobalContext(),LoginActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                Threadly.getGlobalContext().startActivity(intent);
+
+
     }
 
     public static File getFileFromUri(Context context, Uri uri) throws IOException {
@@ -115,6 +109,7 @@ public class ReUsableFunctions {
     }
 
     public static void updateFcmTokenToServer(){
+
         FirebaseMessaging.getInstance().getToken().addOnCompleteListener(task -> {
             String token=task.getResult();
             if(token!=null){

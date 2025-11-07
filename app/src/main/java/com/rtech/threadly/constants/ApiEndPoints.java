@@ -8,6 +8,7 @@ public class ApiEndPoints {
     // Comments
     public static final String GET_COMMENTS = baseUrl + "/comment/getComments/";
     public static final String ADD_COMMENT = baseUrl + "/comment/addComment/";
+    public static final String REPLY_TO_COMMENT= baseUrl + "/comment/replyTo/";
 
     // Likes
     public static final String LIKE_POST = baseUrl + "/like/likePost/";
@@ -61,7 +62,7 @@ public class ApiEndPoints {
     public static final String LOGIN_MOBILE = baseUrl + "/auth/login/mobile/";
     public static final String LOGIN_EMAIL = baseUrl + "/auth/login/email/";
     public static final String LOGIN_USERID = baseUrl + "/auth/login/userid/";
-    public static final String LOGOUT=baseUrl+"auth/login/logout/";
+    public static final String LOGOUT=baseUrl+"/auth/login/logout/";
 
     //Edit userDetails
     public static final String EDIT_USERNAME = baseUrl + "/profile/edit/username/";

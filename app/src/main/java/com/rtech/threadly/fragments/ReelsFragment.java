@@ -28,7 +28,8 @@ public class ReelsFragment extends Fragment {
     ArrayList<Posts_Model> reelsList=new ArrayList<>();
     VideoPostsFeedViewModel ReelsViewModel;
     ReelsAdapter adapter;
-
+     boolean isFirstLaunch=true;
+     int currentPosition;
 
     public ReelsFragment() {
         // Required empty public constructor
@@ -43,6 +44,7 @@ public class ReelsFragment extends Fragment {
                              Bundle savedInstanceState) {
         mainXml=FragmentReelsBinding.inflate(inflater,container,false);
         init();
+
 
 
         //observe reels feed
@@ -78,6 +80,7 @@ public class ReelsFragment extends Fragment {
                             viewHolder.videoPlayer_view,viewHolder.previewImageView
                     );
                 }
+                currentPosition=position;
             }
         });
 
@@ -89,8 +92,22 @@ public class ReelsFragment extends Fragment {
         adapter=new ReelsAdapter(requireActivity(),reelsList);
         mainXml.reelsViewpager.setAdapter(adapter);
         mainXml.reelsViewpager.setOrientation(ViewPager2.ORIENTATION_VERTICAL);
+        isFirstLaunch=false;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        if(!isFirstLaunch){
+            ReelsAdapter.viewHolder viewHolder=(ReelsAdapter.viewHolder) ((RecyclerView)mainXml.reelsViewpager.getChildAt(0)).findViewHolderForAdapterPosition(currentPosition);
+            if(viewHolder!=null){
+                ExoplayerUtil.play(
+                        Uri.parse(reelsList.get(currentPosition).postUrl),
+                        viewHolder.videoPlayer_view
+                );
+            }
+        }
+    }
 
     @Override
     public void onPause() {

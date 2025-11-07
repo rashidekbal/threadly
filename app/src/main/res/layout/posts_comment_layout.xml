@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -108,63 +109,135 @@
     android:layout_height="wrap_content"
     app:cardElevation="3dp"
     >
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingHorizontal="@dimen/dp_10"
-        android:paddingVertical="@dimen/dp_10"
-        android:background="@color/white"
+ <LinearLayout
+     android:layout_width="match_parent"
+     android:layout_height="wrap_content"
+     android:orientation="vertical">
+     <LinearLayout
+         android:id="@+id/replyToSection"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:paddingHorizontal="@dimen/dp_10"
+         android:orientation="vertical"
+         android:visibility="gone"
+         >
+         <RelativeLayout
+             android:layout_width="match_parent"
+             android:layout_height="wrap_content"
+             android:paddingVertical="@dimen/dp_10">
+             <ImageView
+                 android:id="@+id/replyToUserProfile"
+                 android:layout_width="@dimen/dp_30"
+                 android:layout_height="@dimen/dp_30"
+                 tools:src="@drawable/sample_post"
+                 android:background="@drawable/round_edge_pics"
+                 android:clipToOutline="true"
+                 android:layout_centerVertical="true"
+                 />
+             <TextView
+                 android:id="@+id/placeholderForReplyToId"
+                 android:layout_width="wrap_content"
+                 android:layout_height="wrap_content"
+                 android:text="@string/replying_to"
+                 android:layout_toEndOf="@id/replyToUserProfile"
+                 android:layout_centerVertical="true"
+                 android:layout_marginStart="@dimen/dp_10"
+                 />
+             <TextView
+                 android:id="@+id/replyToUserId"
+                 android:layout_width="wrap_content"
+                 android:layout_height="wrap_content"
+                 tools:text="SamarPreetKaur"
+                 android:layout_toEndOf="@id/placeholderForReplyToId"
+                 android:maxLength="20"
+                 android:layout_centerVertical="true"
+                 android:layout_marginStart="@dimen/dp_4"
+                 />
+ <ImageView
+     android:id="@+id/discardReplyToBtn"
+     android:layout_width="@dimen/dp_24"
+     android:layout_height="@dimen/dp_24"
+     android:src="@drawable/cross"
+     android:layout_alignParentEnd="true"
+     />
+
+         </RelativeLayout>
+         <TextView
+             android:id="@+id/CommentGuideline"
+             android:layout_width="match_parent"
+             android:layout_height="wrap_content"
+             android:text="Welcome to the conversation. When commenting, please treat other people with respect."
+             android:textAlignment="center"
+             android:paddingVertical="@dimen/sp_10"
+             />
+     </LinearLayout>
+     <View
+         android:layout_width="match_parent"
+         android:layout_height="1dp"
+         android:background="@drawable/bar_appearence"
+         android:layout_marginVertical="2dp"/>
+     <RelativeLayout
+         android:id="@+id/comment_add_main_body"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:paddingHorizontal="@dimen/dp_10"
+         android:paddingVertical="@dimen/dp_10"
+         android:background="@color/white"
 
 
-        >
-        <ImageView
-            android:id="@+id/user_profile"
-            android:layout_width="@dimen/dp_45"
-            android:layout_height="@dimen/dp_45"
-            android:src="@drawable/sample_post"
-            android:background="@drawable/round_edge_pics"
-            android:clipToOutline="true"
-            android:layout_gravity="center_vertical"
+         >
+         <ImageView
+             android:id="@+id/user_profile"
+             android:layout_width="@dimen/dp_45"
+             android:layout_height="@dimen/dp_45"
+             android:src="@drawable/sample_post"
+             android:background="@drawable/round_edge_pics"
+             android:clipToOutline="true"
+             android:layout_gravity="center_vertical"
 
-           />
-        <EditText
-            android:id="@+id/comment_editText"
-            android:layout_width="@dimen/dp_270"
-            android:layout_height="@dimen/dp_40"
-            android:ems="50"
-            android:hint="Add a coment"
-            android:background="@android:color/transparent"
-            android:paddingStart="@dimen/dp_10"
-            android:layout_marginStart="@dimen/dp_50"
-            android:textColor="@color/black"
-            android:textColorHint="@color/DarkGreyText"
+             />
 
-            />
+         <EditText
+             android:id="@+id/comment_editText"
+             android:layout_width="@dimen/dp_270"
+             android:layout_height="@dimen/dp_40"
+             android:layout_marginStart="@dimen/dp_50"
+             android:background="@android:color/transparent"
+             android:ems="50"
+             android:hint="Add a coment"
+             android:paddingStart="@dimen/dp_10"
+             android:textColor="@color/black"
+             android:textColorHint="@color/DarkGreyText"
+             android:textSize="@dimen/sp_15"
+             tools:ignore="TouchTargetSizeCheck" />
 
-        <ImageView
-            android:id="@+id/post_comment_imgBtn"
-            android:layout_width="@dimen/dp_30"
-            android:layout_height="@dimen/dp_30"
-            android:src="@drawable/messanger"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:layout_alignParentEnd="true"
+         <ImageView
+             android:id="@+id/post_comment_imgBtn"
+             android:layout_width="@dimen/dp_30"
+             android:layout_height="@dimen/dp_30"
+             android:src="@drawable/messanger"
+             android:layout_alignParentRight="true"
+             android:layout_centerVertical="true"
+             android:layout_alignParentEnd="true"
 
-            />
-        <TextView
-            android:id="@+id/posting_progress_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="posting..."
-            android:textColor="@color/AllWhite"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            android:padding="@dimen/dp_5"
-            android:background="@drawable/slight_round_btn_blue"
-            android:visibility="gone"/>
+             />
+         <TextView
+             android:id="@+id/posting_progress_text"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:text="posting..."
+             android:textColor="@color/AllWhite"
+             android:layout_alignParentEnd="true"
+             android:layout_centerVertical="true"
+             android:padding="@dimen/dp_5"
+             android:background="@drawable/slight_round_btn_blue"
+             android:visibility="gone"/>
 
 
-    </RelativeLayout>
+     </RelativeLayout>
+ </LinearLayout>
+
+
 </androidx.cardview.widget.CardView>
 
 
