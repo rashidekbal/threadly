@@ -120,4 +120,23 @@ public class CommentsManager {
                     }
                 });
     }
+    public void GetCommentReplies(int commentId,NetworkCallbackInterfaceWithJsonObjectDelivery callbackInterfaceWithJsonObjectDelivery){
+        String Url=ApiEndPoints.GET_COMMENT_REPLIES+Integer.toString(commentId);
+        AndroidNetworking.get(Url)
+                .setPriority(Priority.HIGH)
+                .addHeaders("Authorization","Bearer "+PreferenceUtil.getJWT())
+                .build()
+                .getAsJSONObject(new JSONObjectRequestListener() {
+                    @Override
+                    public void onResponse(JSONObject jsonObject) {
+                        callbackInterfaceWithJsonObjectDelivery.onSuccess(jsonObject);
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+                        callbackInterfaceWithJsonObjectDelivery.onError(anError.getErrorDetail());
+                    }
+                });
+
+    }
 }

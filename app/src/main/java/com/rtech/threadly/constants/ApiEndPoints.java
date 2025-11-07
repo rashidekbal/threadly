@@ -9,6 +9,7 @@ public class ApiEndPoints {
     public static final String GET_COMMENTS = baseUrl + "/comment/getComments/";
     public static final String ADD_COMMENT = baseUrl + "/comment/addComment/";
     public static final String REPLY_TO_COMMENT= baseUrl + "/comment/replyTo/";
+    public static final String GET_COMMENT_REPLIES= baseUrl+"/comment/getCommentReplies/";
 
     // Likes
     public static final String LIKE_POST = baseUrl + "/like/likePost/";

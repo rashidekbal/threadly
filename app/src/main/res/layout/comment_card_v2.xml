@@ -94,7 +94,7 @@
             android:textStyle="bold"
             android:layout_marginTop="6dp"
             />
-    <RelativeLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/replies_holder"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -103,16 +103,41 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="@dimen/dp_5"
         >
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/repliesRecyclerView"
+            android:visibility="gone"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/load_replies_btn"
 
+
+            />
+        <ProgressBar
+            android:id="@+id/progress_circular"
+            android:layout_width="@dimen/dp_20"
+            android:layout_height="@dimen/dp_50"
+            android:layout_margin="@dimen/dp_20"
+           app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:visibility="gone"/>
 
         <TextView
             android:id="@+id/load_replies_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="View 4 more Replies"
-            android:layout_centerHorizontal="true"
-            android:textColor="@color/light_grey_text"/>
-    </RelativeLayout>
+            android:text="@string/view_more_replies"
+            android:textColor="@color/light_grey_text"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+
+            />
+    </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 
