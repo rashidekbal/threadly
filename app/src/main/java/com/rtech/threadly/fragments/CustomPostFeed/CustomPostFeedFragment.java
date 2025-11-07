@@ -10,22 +10,17 @@ import androidx.annotation.Nullable;
 import androidx.annotation.OptIn;
 import androidx.fragment.app.Fragment;
 import androidx.media3.common.util.UnstableApi;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.rtech.threadly.adapters.postsAdapters.AllTypePostFeedAdapter;
-import com.rtech.threadly.adapters.postsAdapters.ReelsAdapter;
 import com.rtech.threadly.databinding.FragmentCustomPostFeedBinding;
 import com.rtech.threadly.models.ExtendedPostModel;
-import com.rtech.threadly.models.Posts_Model;
 import com.rtech.threadly.utils.ExoplayerUtil;
-import com.rtech.threadly.utils.ReUsableFunctions;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -87,7 +82,7 @@ int position;
                         super.onPageSelected(position);
                         // Stop current playing player if needed
                         ExoplayerUtil.stop();
-                        RecyclerView.ViewHolder viewHolder= (RecyclerView.ViewHolder) ((RecyclerView) mainXml.viewPager.getChildAt(0))
+                        RecyclerView.ViewHolder viewHolder= ((RecyclerView) mainXml.viewPager.getChildAt(0))
                                 .findViewHolderForAdapterPosition(position);
                         if (viewHolder != null) {
                             if(viewHolder instanceof AllTypePostFeedAdapter.VideoPostViewHolder){

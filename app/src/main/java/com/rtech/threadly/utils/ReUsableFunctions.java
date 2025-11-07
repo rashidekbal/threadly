@@ -187,6 +187,7 @@ public class ReUsableFunctions {
     }
 
 public static void addNotification(NotificationSchema schema){
+    Log.d("addingNotification", "addNotification: going to add ");
         Executors.newSingleThreadExecutor().execute(() -> DataBase.getInstance().notificationDao().addNotification(schema));
 }
 public static void MarkAllNotificationRead(){

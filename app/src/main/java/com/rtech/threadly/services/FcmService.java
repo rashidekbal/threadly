@@ -26,6 +26,7 @@ import com.rtech.threadly.core.Core;
 import com.rtech.threadly.interfaces.NetworkCallbackInterface;
 import com.rtech.threadly.network_managers.FcmManager;
 import com.rtech.threadly.utils.MessengerUtils;
+import com.rtech.threadly.utils.PreferenceUtil;
 import com.rtech.threadly.utils.ReUsableFunctions;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -79,7 +80,7 @@ public class FcmService extends FirebaseMessagingService {
 
                 break;
             case "newFollower":
-                if(ReUsableFunctions.isLoggedIn()){  newFollowerController(message);}
+                if(ReUsableFunctions.isLoggedIn()){  newFollowerNotificationHandler(message);}
 
                 break;
             case "UnFollow":
@@ -103,17 +104,20 @@ public class FcmService extends FirebaseMessagingService {
        }
 
     private void MsgUnSendHandler(RemoteMessage message) {
+        if(!Objects.requireNonNull(message.getData().get("ReceiverUUId")).equals(PreferenceUtil.getUUID())) {return ;}
         String MessageUid=message.getData().get("MsgUid");
         ReUsableFunctions.DeleteMessage(MessageUid);
     }
 
     private void commentUnlikeHandler(RemoteMessage message) {
+        if(!Objects.requireNonNull(message.getData().get("ReceiverUserId")).equals(PreferenceUtil.getUserId())){return;}
         String userId=message.getData().get("userId");
         int commentId=Integer.parseInt(Objects.requireNonNull(message.getData().get("commentId")));
         Executors.newSingleThreadExecutor().execute(() -> DataBase.getInstance().notificationDao().deleteCommentLikeNotification(userId,commentId));
     }
 
     private void commentLikeNotifyController(RemoteMessage message) {
+        if(!Objects.requireNonNull(message.getData().get("ReceiverUserId")).equals(PreferenceUtil.getUserId())){return;}
         String userId=message.getData().get("userId");
         String username=message.getData().get("username");
         String profile=message.getData().get("profile");
@@ -124,6 +128,9 @@ public class FcmService extends FirebaseMessagingService {
     }
 
     private void ChatReceivedHandler(RemoteMessage message){
+        if(!Objects.requireNonNull(message.getData().get("receiverUserId")).equals(PreferenceUtil.getUserId())){
+            return;
+        }
         JSONObject object=new JSONObject();
         try {
             object.put("senderUuid",message.getData().get("senderUuid"));
@@ -160,12 +167,17 @@ public class FcmService extends FirebaseMessagingService {
     }
 
     private void StatusUpdateHandler(RemoteMessage message){
+        if(!Objects.requireNonNull(message.getData().get("receiverUserId")).equals(PreferenceUtil.getUserId())){
+           //if not for the current user do not process anyway
+            return;
+        }
         String MsgUid=message.getData().get("MsgUid");
         int deliveryStatus=Integer.parseInt(Objects.requireNonNull(message.getData().get("deliveryStatus")));
         ReUsableFunctions.updateMessageStatus(MsgUid,deliveryStatus);
 
     }
     private void PostLikedNotificationHandler(RemoteMessage message){
+        if(!Objects.requireNonNull(message.getData().get("ReceiverUserId")).equals(PreferenceUtil.getUserId())){return;}
         String userId=message.getData().get("userId");
         String username=message.getData().get("username");
         String userProfile=message.getData().get("userprofile");
@@ -175,6 +187,7 @@ public class FcmService extends FirebaseMessagingService {
         ReUsableFunctions.addNotification(new NotificationSchema(Constants.POST_LIKE_NOTIFICATION.toString(),insertId,userId,userProfile,username,postId,0,postLink,false,false,ReUsableFunctions.getTimestamp()));
     }
     private void postUnlikedNotificationHandler(RemoteMessage message){
+        if(!Objects.requireNonNull(message.getData().get("ReceiverUserId")).equals(PreferenceUtil.getUserId())){return;}
         String userId=message.getData().get("userId");
         int postId=Integer.parseInt(Objects.requireNonNull(message.getData().get("postId")));
         Executors.newSingleThreadExecutor().execute(() -> DataBase.getInstance().notificationDao().deletePostLikeNotification(userId,postId));
@@ -217,7 +230,8 @@ public class FcmService extends FirebaseMessagingService {
         }
 
     }
-    private void newFollowerController(RemoteMessage message){
+    private void newFollowerNotificationHandler(RemoteMessage message){
+        if(!Objects.requireNonNull(message.getData().get("ReceiverUserId")).equals(PreferenceUtil.getUserId())){return;}
         String userId=message.getData().get("userid");
         String username=message.getData().get("username");
         String profile=message.getData().get("profile");
@@ -226,6 +240,7 @@ public class FcmService extends FirebaseMessagingService {
 
     }
     private void unFollowNotifyController(RemoteMessage message){
+        if(!Objects.requireNonNull(message.getData().get("ReceiverUserId")).equals(PreferenceUtil.getUserId())){return;}
         String userId=message.getData().get("userId");
         Executors.newSingleThreadExecutor().execute(() -> DataBase.getInstance().notificationDao().deleteFollowNotification(userId,Constants.FOLLOW_NOTIFICATION.toString()));
 

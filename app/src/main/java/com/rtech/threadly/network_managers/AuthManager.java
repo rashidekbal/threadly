@@ -1,21 +1,16 @@
 package com.rtech.threadly.network_managers;
-
-
 import android.content.SharedPreferences;
 import android.util.Log;
-
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.JSONObjectRequestListener;
 import com.rtech.threadly.BuildConfig;
 import com.rtech.threadly.constants.ApiEndPoints;
-import com.rtech.threadly.constants.SharedPreferencesKeys;
 import com.rtech.threadly.core.Core;
 import com.rtech.threadly.interfaces.NetworkCallbackInterfaceWithJsonObjectDelivery;
 import com.rtech.threadly.interfaces.NetworkCallbackInterface;
 import com.rtech.threadly.utils.PreferenceUtil;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 

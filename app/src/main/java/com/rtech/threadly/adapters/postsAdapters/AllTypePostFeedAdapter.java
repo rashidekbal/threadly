@@ -3,8 +3,6 @@ package com.rtech.threadly.adapters.postsAdapters;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.SharedPreferences;
 import android.net.Uri;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -22,7 +20,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.OptIn;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.media3.common.util.UnstableApi;
 import androidx.media3.ui.PlayerView;
@@ -36,7 +33,6 @@ import com.rtech.threadly.adapters.messanger.UsersShareSheetGridAdapter;
 import com.rtech.threadly.constants.SharedPreferencesKeys;
 import com.rtech.threadly.constants.TypeConstants;
 import com.rtech.threadly.core.Core;
-import com.rtech.threadly.interfaces.Messanger.OnUserSelectedListener;
 import com.rtech.threadly.interfaces.NetworkCallbackInterface;
 import com.rtech.threadly.models.ExtendedPostModel;
 import com.rtech.threadly.models.Posts_Model;
@@ -63,7 +59,6 @@ public class AllTypePostFeedAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     Context context;
     int TYPE_IMAGE=0;
     CommentsManager commentsManager;
-    SharedPreferences loginInfo=Core.getPreference();
     FollowManager followManager;
     LikeManager likeManager;
     int position;
@@ -102,11 +97,37 @@ public class AllTypePostFeedAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, @SuppressLint("RecyclerView") int position) {
 
-        if(viewHolder.getItemViewType()==TYPE_IMAGE){
+        if(viewHolder instanceof ImagePostViewHolder){
             ImagePostViewHolder holder=(ImagePostViewHolder) viewHolder;
             Glide.with(context).load(Uri.parse(postModels.get(position).getPostUrl())).thumbnail(0.1f).into(holder.post_image_view);
             //setUpFollowBtn
-            setUpFollowBtn(holder,position);
+            if(postModels.get(position).userId.equals(PreferenceUtil.getUserId())||postModels.get(position).isFollowed()){
+                holder.followBtn.setVisibility(View.GONE);
+            }
+            else{
+                holder.followBtn.setVisibility(View.VISIBLE);
+                holder.followBtn.setOnClickListener(v -> {
+                    holder.followBtn.setEnabled(false);
+                    holder.followBtn.setVisibility(View.GONE);
+                    followManager.follow(postModels.get(position).userId, new NetworkCallbackInterface() {
+                        @Override
+                        public void onSuccess() {
+                            postModels.get(position).setFollowed(true);
+                            holder.followBtn.setEnabled(true);
+                            ReUsableFunctions.ShowToast("Following");
+
+                        }
+
+                        @Override
+                        public void onError(String err) {
+                            holder.followBtn.setVisibility(View.VISIBLE);
+                            holder.followBtn.setEnabled(true);
+                            ReUsableFunctions.ShowToast("something went wrong..");
+
+                        }
+                    });
+                });
+            }
 
 
 
@@ -259,11 +280,6 @@ public class AllTypePostFeedAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 
 
         }
-
-
-
-
-
         else{
             VideoPostViewHolder holder=(VideoPostViewHolder) viewHolder;
             holder.videoPlayer_view.setPlayer(null);
@@ -286,7 +302,33 @@ public class AllTypePostFeedAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             });
 
          //follow button visibility and functionality
-            setUpFollowBtn(holder,position);
+            if(postModels.get(position).userId.equals(PreferenceUtil.getUserId())||postModels.get(position).isFollowed()){
+                holder.followBtn.setVisibility(View.GONE);
+            }
+            else{
+                holder.followBtn.setVisibility(View.VISIBLE);
+                holder.followBtn.setOnClickListener(v -> {
+                    holder.followBtn.setEnabled(false);
+                    holder.followBtn.setVisibility(View.GONE);
+                    followManager.follow(postModels.get(position).userId, new NetworkCallbackInterface() {
+                        @Override
+                        public void onSuccess() {
+                            postModels.get(position).setFollowed(true);
+                            holder.followBtn.setEnabled(true);
+                            ReUsableFunctions.ShowToast("Following");
+
+                        }
+
+                        @Override
+                        public void onError(String err) {
+                            holder.followBtn.setVisibility(View.VISIBLE);
+                            holder.followBtn.setEnabled(true);
+                            ReUsableFunctions.ShowToast("something went wrong..");
+
+                        }
+                    });
+                });
+            }
 
 
 
@@ -461,14 +503,13 @@ public class AllTypePostFeedAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             Toast.makeText(context,"Coming soon",Toast.LENGTH_SHORT).show();
             OptionsDialog.dismiss();
         });
+        assert unfollowBtnLayout != null;
         if (postModels.get(position).isFollowed){
-            assert unfollowBtnLayout != null;
             unfollowBtnLayout.setVisibility(View.VISIBLE);
             assert followBtnLayout != null;
             followBtnLayout.setVisibility(View.GONE);
 
         }else{
-            assert unfollowBtnLayout != null;
             unfollowBtnLayout.setVisibility(View.GONE);
             assert followBtnLayout != null;
             followBtnLayout.setVisibility(View.VISIBLE);
@@ -574,70 +615,6 @@ public class AllTypePostFeedAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 
     }
 
-    private void setUpFollowBtn(RecyclerView.ViewHolder holderView, int position) {
-        if(holderView instanceof VideoPostViewHolder){
-            VideoPostViewHolder holder=(VideoPostViewHolder) holderView;
-            if(postModels.get(position).isFollowed||postModels.get(position).userId.equals(loginInfo.getString(SharedPreferencesKeys.USER_ID,"null"))){
-                holder.followBtn.setVisibility(View.GONE);
-            }
-            else{
-                holder.followBtn.setVisibility(View.VISIBLE);
-                holder.followBtn.setOnClickListener(v -> {
-                    holder.followBtn.setEnabled(false);
-                    holder.followBtn.setVisibility(View.GONE);
-                    followManager.follow(postModels.get(position).userId, new NetworkCallbackInterface() {
-                        @Override
-                        public void onSuccess() {
-                            postModels.get(position).isFollowed=true;
-                            holder.followBtn.setEnabled(true);
-                            ReUsableFunctions.ShowToast("Following");
-
-                        }
-
-                        @Override
-                        public void onError(String err) {
-                            holder.followBtn.setVisibility(View.VISIBLE);
-                            holder.followBtn.setEnabled(true);
-                            ReUsableFunctions.ShowToast("something went wrong..");
-
-                        }
-                    });
-                });
-            }
-        }else{
-            ImagePostViewHolder holder=(ImagePostViewHolder) holderView;
-            if(postModels.get(position).isFollowed||postModels.get(position).userId.equals(loginInfo.getString(SharedPreferencesKeys.USER_ID,"null"))){
-                holder.followBtn.setVisibility(View.GONE);
-            }
-            else{
-                holder.followBtn.setVisibility(View.VISIBLE);
-                holder.followBtn.setOnClickListener(v -> {
-                    holder.followBtn.setEnabled(false);
-                    holder.followBtn.setVisibility(View.GONE);
-                    followManager.follow(postModels.get(position).userId, new NetworkCallbackInterface() {
-                        @Override
-                        public void onSuccess() {
-                            postModels.get(position).isFollowed=true;
-                            holder.followBtn.setEnabled(true);
-                            ReUsableFunctions.ShowToast("Following");
-
-                        }
-
-                        @Override
-                        public void onError(String err) {
-                            holder.followBtn.setVisibility(View.VISIBLE);
-                            holder.followBtn.setEnabled(true);
-                            ReUsableFunctions.ShowToast("something went wrong..");
-
-                        }
-                    });
-                });
-            }
-        }
-
-
-    }
-
 
     @Override
     public int getItemCount() {
@@ -734,51 +711,47 @@ public class AllTypePostFeedAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         assert Users_List_recyclerView != null;
         Users_List_recyclerView.setLayoutManager(gridLayoutManager);
         ArrayList<UsersModel> usersModelList=new ArrayList<>();
-        UsersShareSheetGridAdapter adapter=new UsersShareSheetGridAdapter(context, usersModelList, new OnUserSelectedListener() {
-            @Override
-            public void onSelect(UsersModel model) {
-                if(selectedUsers.contains(model)){
-                    selectedUsers.remove(model);
-                }else{
-                    selectedUsers.add(model);
-                }
-                assert actionButtons_rl != null;
-                if(selectedUsers.isEmpty()){
-                    actionButtons_rl.setVisibility(View.VISIBLE);
-                    assert sendBtn != null;
-                    sendBtn.setVisibility(View.GONE);
-
-                }else{
-                    actionButtons_rl.setVisibility(View.GONE);
-                    assert sendBtn != null;
-                    sendBtn.setVisibility(View.VISIBLE);
-                }
-
+        UsersShareSheetGridAdapter adapter=new UsersShareSheetGridAdapter(context, usersModelList, model -> {
+            if(selectedUsers.contains(model)){
+                selectedUsers.remove(model);
+            }else{
+                selectedUsers.add(model);
             }
+            assert actionButtons_rl != null;
+            if(selectedUsers.isEmpty()){
+                actionButtons_rl.setVisibility(View.VISIBLE);
+                assert sendBtn != null;
+                sendBtn.setVisibility(View.GONE);
+
+            }else{
+                actionButtons_rl.setVisibility(View.GONE);
+                assert sendBtn != null;
+                sendBtn.setVisibility(View.VISIBLE);
+            }
+
         });
         Users_List_recyclerView.setAdapter(adapter);
 
 
 
         MessageAbleUsersViewModel messageAbleUsersViewModel=new ViewModelProvider((AppCompatActivity)context).get(MessageAbleUsersViewModel.class);
-        messageAbleUsersViewModel.getUsersList().observe((AppCompatActivity) context, new Observer<ArrayList<UsersModel>>() {
-            @Override
-            public void onChanged(ArrayList<UsersModel> usersModels) {
-                if(usersModels.isEmpty()){
-                    Toast.makeText(context, "No users found", Toast.LENGTH_SHORT).show();
+        messageAbleUsersViewModel.getUsersList().observe((AppCompatActivity) context, usersModels -> {
+            if(usersModels.isEmpty()){
+                Toast.makeText(context, "No users found", Toast.LENGTH_SHORT).show();
 
-                }else{
-                    usersModelList.clear();
-                    usersModelList.addAll(usersModels);
-                    adapter.notifyDataSetChanged();
-
-                }
-                progressBar.setVisibility(View.GONE);
+            }else{
+                usersModelList.clear();
+                usersModelList.addAll(usersModels);
+                adapter.notifyDataSetChanged();
 
             }
+            assert progressBar != null;
+            progressBar.setVisibility(View.GONE);
+
         });
 
         //send btn action
+        assert sendBtn != null;
         sendBtn.setOnClickListener(v->{
             int postid=post.postId;
             if(!selectedUsers.isEmpty()){
@@ -793,6 +766,7 @@ public class AllTypePostFeedAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                 }
                 selectedUsers.clear();
                 sendBtn.setVisibility(View.GONE);
+                assert actionButtons_rl != null;
                 actionButtons_rl.setVisibility(View.VISIBLE);
 
             }
