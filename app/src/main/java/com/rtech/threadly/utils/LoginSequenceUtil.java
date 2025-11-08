@@ -8,6 +8,6 @@ public class LoginSequenceUtil {
 
         Core.startSocketEvents();
         ReUsableFunctions.updateFcmTokenToServer();
-        new MessengerUtils().LoadAllChatsForLoginAction();
+//        new MessengerUtils().LoadAllChatsForLoginAction();
     }
 }

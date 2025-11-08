@@ -213,6 +213,11 @@ public class MessageManager {
 
 
     }
+
+    public static void CancelMessageMediaUploadRequest(String Tag){
+        AndroidNetworking.cancel(Tag);
+    }
+
     public static void GetAllChatsAssociatedWithUser(NetworkCallbackInterfaceWithJsonObjectDelivery callback){
         String Url=ApiEndPoints.GET_ALL_CHATS;
         AndroidNetworking.get(Url)

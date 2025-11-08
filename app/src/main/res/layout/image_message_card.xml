@@ -66,16 +66,37 @@
                 android:visibility="gone"
                 >
 
-
-                <ImageView
-                    android:id="@+id/sent_MediaImageView"
+                <RelativeLayout
                     android:layout_width="@dimen/dp_150"
-                    android:layout_height="@dimen/dp_150"
-                    tools:src="@drawable/image_test"
-                    android:scaleType="centerCrop"
-                    android:background="@drawable/curved_big_square_box"
-                    android:clipToOutline="true"
-                    android:layout_marginBottom="@dimen/dp_6"/>
+                    android:layout_height="@dimen/dp_150">
+                    <ImageView
+                        android:id="@+id/sent_MediaImageView"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        tools:src="@drawable/image_test"
+                        android:scaleType="centerCrop"
+                        android:background="@drawable/curved_big_square_box"
+                        android:clipToOutline="true"
+                        android:layout_marginBottom="@dimen/dp_6"/>
+                    <ProgressBar
+                        android:id="@+id/progress_circular"
+                        style="@android:style/Widget.Holo.Light.ProgressBar"
+                        android:progressTint="@color/ui_blue"
+                        android:layout_width="@dimen/dp_70"
+                        android:layout_height="@dimen/dp_70"
+                        android:layout_centerInParent="true"
+                        android:background="@drawable/circle"/>
+                    <ImageView
+                        android:id="@+id/cancelBtn"
+                        android:layout_width="@dimen/dp_30"
+                        android:layout_height="@dimen/dp_30"
+                        android:src="@drawable/cross_light"
+                        android:layout_centerInParent="true"
+                        android:background="@drawable/circle"
+                        android:clipToOutline="true"
+                        />
+                </RelativeLayout>
+
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

@@ -25,11 +25,16 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.work.Data;
+import androidx.work.OneTimeWorkRequest;
+
 import com.bumptech.glide.Glide;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.rtech.threadly.R;
 import com.rtech.threadly.RoomDb.schemas.MessageSchema;
 import com.rtech.threadly.activities.PostActivity;
+import com.rtech.threadly.adapters.postsAdapters.AllTypePostFeedAdapter;
+import com.rtech.threadly.constants.MessageStateEnum;
 import com.rtech.threadly.constants.SharedPreferencesKeys;
 import com.rtech.threadly.constants.TypeConstants;
 import com.rtech.threadly.core.Core;
@@ -43,10 +48,12 @@ import com.rtech.threadly.utils.MessengerUtils;
 import com.rtech.threadly.utils.PreferenceUtil;
 import com.rtech.threadly.utils.ReUsableFunctions;
 import com.rtech.threadly.viewmodels.MessageAbleUsersViewModel;
+import com.rtech.threadly.workers.MessageMediaHandlerWorker;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -120,7 +127,7 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 holder.senderProfile.setVisibility(View.GONE);
               holder.rec_msg_layout.setVisibility(View.GONE);
               holder.sent_msg_layout.setVisibility(View.VISIBLE);
-              Glide.with(context).load(list.get(position).getPostLink()).placeholder(R.drawable.post_placeholder).into(holder.sent_MediaImageView);
+
               holder.status_img.setImageResource(deliveryStatus==0?R.drawable.msg_pending:deliveryStatus==1?R.drawable.single_tick:deliveryStatus==2?R.drawable.double_tick_recieved:R.drawable.double_tick_viewed);
               if (!list.get(position).getMsg().isEmpty()){
                   holder.sent_caption.setVisibility(View.VISIBLE);
@@ -128,12 +135,44 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
               }else{
                   holder.sent_caption.setVisibility(View.GONE);
               }
-              holder.sent_MediaImageView.setOnClickListener(v-> openMedia(list.get(position), TypeConstants.IMAGE));
-              holder.sent_MediaImageView.setOnLongClickListener(v -> {
 
-                  showActionMenu(holder.sent_MediaImageView,position);
-                  return true;
+              if(list.get(position).getMediaUploadState().equals(MessageStateEnum.FAILED.toString())){
+                  holder.progress_circular.setVisibility(View.GONE);
+                  holder.cancelBtn.setVisibility(View.VISIBLE);
+                  holder.cancelBtn.setTag("retry");
+                  holder.cancelBtn.setImageResource(R.drawable.retry_icon);
+                }
+              else if(!list.get(position).getMediaUploadState().equals(MessageStateEnum.SUCCESS.toString())||list.get(position).getPostLink()==null){
+                  Glide.with(context).load(new File(list.get(position).getMediaLocalPath())).placeholder(R.drawable.post_placeholder).into(holder.sent_MediaImageView);
+                  holder.progress_circular.setVisibility(View.VISIBLE);
+                  holder.cancelBtn.setImageResource(R.drawable.cross_light);
+                  holder.cancelBtn.setVisibility(View.VISIBLE);
+                  holder.progress_circular.setMax((int)list.get(position).getTotalSize());
+                  holder.progress_circular.setProgress((int)list.get(position).getUploadedSize(),true);
+                  holder.cancelBtn.setTag("cancel");
+              }else{
+                  holder.progress_circular.setVisibility(View.GONE);
+                  holder.cancelBtn.setVisibility(View.GONE);
+                  Glide.with(context).load(list.get(position).getPostLink()).placeholder(R.drawable.post_placeholder).into(holder.sent_MediaImageView);
+                  holder.sent_MediaImageView.setOnClickListener(v-> openMedia(list.get(position), TypeConstants.IMAGE));
+                  holder.sent_MediaImageView.setOnLongClickListener(v -> {
+                      showActionMenu(holder.sent_MediaImageView,position);
+                      return true;
+                  });
+              }
+              holder.cancelBtn.setOnClickListener((v)->{
+                  if(holder.cancelBtn.getTag().equals("cancel")){
+                      handelMediaSendCancel(position,holderView);
+                  }else{
+                      holder.cancelBtn.setTag("cancel");
+                      holder.cancelBtn.setImageResource(R.drawable.cross_light);
+                      holder.progress_circular.setVisibility(View.VISIBLE);
+                      StartResendingMessage(position);
+
+                  }
+
               });
+
 
 
             }
@@ -200,7 +239,7 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 holder.senderProfile.setVisibility(View.GONE);
                 holder.rec_msg_layout.setVisibility(View.GONE);
                 holder.sent_msg_layout.setVisibility(View.VISIBLE);
-                Glide.with(context).load(list.get(position).getPostLink()).placeholder(R.drawable.post_placeholder).into(holder.sent_MediaImageView);
+
                 holder.status_img.setImageResource(deliveryStatus==0?R.drawable.msg_pending:deliveryStatus==1?R.drawable.single_tick:deliveryStatus==2?R.drawable.double_tick_recieved:R.drawable.double_tick_viewed);
                 if (!list.get(position).getMsg().isEmpty()){
                     holder.sent_caption.setVisibility(View.VISIBLE);
@@ -209,13 +248,47 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                     holder.sent_caption.setVisibility(View.GONE);
                 }
 
-                //on click of video message
-                holder.sent_MediaImageView.setOnClickListener(v-> openMedia(list.get(position), TypeConstants.VIDEO));
-                holder.sent_MediaImageView.setOnLongClickListener(v -> {
+
+                if(list.get(position).getMediaUploadState().equals(MessageStateEnum.FAILED.toString())){
+                    holder.progress_circular.setVisibility(View.GONE);
+                    holder.cancelBtn.setVisibility(View.VISIBLE);
+                    holder.cancelBtn.setTag("retry");
+                    holder.cancelBtn.setImageResource(R.drawable.retry_icon);
+                }
+                else if(!list.get(position).getMediaUploadState().equals(MessageStateEnum.SUCCESS.toString())||list.get(position).getPostLink()==null){
+                    Glide.with(context).load(new File(list.get(position).getMediaLocalPath())).placeholder(R.drawable.post_placeholder).into(holder.sent_MediaImageView);
+                    holder.progress_circular.setVisibility(View.VISIBLE);
+                    holder.cancelBtn.setImageResource(R.drawable.cross_light);
+                    holder.cancelBtn.setVisibility(View.VISIBLE);
+                    holder.progress_circular.setMax((int)list.get(position).getTotalSize());
+                    holder.progress_circular.setProgress((int)list.get(position).getUploadedSize(),true);
+                    holder.cancelBtn.setTag("cancel");
+                }else{
+                    holder.progress_circular.setVisibility(View.GONE);
+                    holder.cancelBtn.setVisibility(View.GONE);
+                    holder.playIcon.setVisibility(View.VISIBLE);
+                    Glide.with(context).load(list.get(position).getPostLink()).placeholder(R.drawable.post_placeholder).into(holder.sent_MediaImageView);
+                    holder.sent_MediaImageView.setOnClickListener(v-> openMedia(list.get(position), TypeConstants.VIDEO));
+                    holder.sent_MediaImageView.setOnLongClickListener(v -> {
                     showActionMenu(holder.sent_MediaImageView,position);
                     return true;
+                    });
+                }
+                holder.cancelBtn.setOnClickListener((v)->{
+                    if(holder.cancelBtn.getTag().equals("cancel")){
+                        handelMediaSendCancel(position,holderView);
+                    }else{
+                        holder.cancelBtn.setTag("cancel");
+                        holder.cancelBtn.setImageResource(R.drawable.cross_light);
+                        holder.progress_circular.setVisibility(View.VISIBLE);
+                        StartResendingMessage(position);
+
+                    }
 
                 });
+
+
+
 
             }else{
                 holder.sent_msg_layout.setVisibility(View.GONE);
@@ -561,6 +634,29 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     }
 
+    private void StartResendingMessage(int position) {
+        Data data=new Data.Builder()
+                .put("path",list.get(position).getMediaLocalPath())
+                        .put("messageUid",list.get(position).getMessageUid()).build();
+        Core.getWorkManager().enqueue(new OneTimeWorkRequest.Builder(MessageMediaHandlerWorker.class).setInputData(data).build());
+    }
+
+    private void handelMediaSendCancel(int position, RecyclerView.ViewHolder holderView) {
+        MessageManager.CancelMessageMediaUploadRequest(list.get(position).getMessageUid());
+        if(holderView instanceof ImageMessageViewHolder){
+            ImageMessageViewHolder holder=(ImageMessageViewHolder) holderView;
+            holder.cancelBtn.setImageResource(R.drawable.retry_icon);
+            holder.cancelBtn.setTag("retry");
+            holder.progress_circular.setVisibility(View.GONE);
+
+        }else{
+            VideoMessageViewHolder holder=(VideoMessageViewHolder) holderView;
+            holder.cancelBtn.setImageResource(R.drawable.retry_icon);
+            holder.cancelBtn.setTag("retry");
+            holder.progress_circular.setVisibility(View.GONE);
+        }
+    }
+
     @Override
     public int getItemCount() {
         return list.size();
@@ -593,8 +689,9 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     public static class ImageMessageViewHolder extends RecyclerView.ViewHolder{
         ImageView senderProfile,status_img;
         LinearLayout rec_msg_layout,sent_msg_layout;
-        ImageView received_MediaImageView,sent_MediaImageView;
+        ImageView received_MediaImageView,sent_MediaImageView,cancelBtn;
         TextView rec_caption,sent_caption;
+        ProgressBar progress_circular;
         public ImageMessageViewHolder(@NonNull View itemView) {
             super(itemView);
             senderProfile=itemView.findViewById(R.id.senderProfile);
@@ -605,14 +702,17 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             sent_msg_layout=itemView.findViewById(R.id.sent_msg_layout);
             sent_MediaImageView=itemView.findViewById(R.id.sent_MediaImageView);
             sent_caption=itemView.findViewById(R.id.sent_caption);
+            progress_circular=itemView.findViewById(R.id.progress_circular);
+            cancelBtn=itemView.findViewById(R.id.cancelBtn);
 
         }
     }
     public static class VideoMessageViewHolder extends RecyclerView.ViewHolder{
-        ImageView senderProfile,status_img;
+        ImageView senderProfile,status_img,playIcon;
         LinearLayout rec_msg_layout,sent_msg_layout;
-        ImageView received_MediaImageView,sent_MediaImageView;
+        ImageView received_MediaImageView,sent_MediaImageView,cancelBtn;
         TextView rec_caption,sent_caption;
+        ProgressBar progress_circular;
         public VideoMessageViewHolder(@NonNull View itemView) {
             super(itemView);
 
@@ -624,7 +724,11 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             sent_msg_layout=itemView.findViewById(R.id.sent_msg_layout);
             sent_MediaImageView=itemView.findViewById(R.id.sent_MediaImageView);
             sent_caption=itemView.findViewById(R.id.sent_caption);
+            progress_circular=itemView.findViewById(R.id.progress_circular);
+            cancelBtn=itemView.findViewById(R.id.cancelBtn);
+            playIcon=itemView.findViewById(R.id.playIcon);
         }
+
     }
     public static class PostMessageViewHolder extends RecyclerView.ViewHolder{
         ImageView senderProfile,status_img;

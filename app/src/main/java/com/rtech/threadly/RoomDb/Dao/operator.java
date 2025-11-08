@@ -39,6 +39,16 @@ public interface operator {
 
     @Query("update messages set isDeleted=1 where messageUid=:msgUid")
     void deleteMessage(String msgUid);
+    @Query("select * from messages where messageUid=:messageUid limit 1")
+    MessageSchema getMessageWithUid(String messageUid);
+    @Query("update messages set totalSize=:totalSize , uploadedSize=:uploadedSize where messageUid=:messageUid")
+    void updateUploadProgress(String messageUid,long totalSize,long uploadedSize);
+    @Query("select * from messages where mediaUploadState=:state1  order by timestamp desc")
+    List<MessageSchema> getAllUnUploadedMessages(String state1);
+    @Query("update messages set postLink=:link , mediaUploadState=:mediaUploadState where messageUid=:messageUid")
+    void updatePostLinkWithState(String messageUid,String link,String mediaUploadState);
+
+
 
 
 

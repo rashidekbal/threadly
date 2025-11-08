@@ -32,9 +32,21 @@ public class MessageSchema {
     private int deliveryStatus;
     @ColumnInfo(name = "isDeleted")
     private boolean isDeleted;
+    @ColumnInfo (name="mediaLocalPath")
+    private String mediaLocalPath;
+    @ColumnInfo(name="mediaUploadState")
+    private String mediaUploadState;
+    @ColumnInfo(name="totalSize")
+    private long totalSize;
+    @ColumnInfo(name="uploadedSize")
+    private long uploadedSize;
 
 
-    public MessageSchema(long msgId, String messageUid, String conversationId, String replyToMsgId, String senderId, String receiverId, String msg, String type, String timestamp, int deliveryStatus, boolean isDeleted) {
+
+
+
+
+    public MessageSchema(long msgId, String messageUid, String conversationId, String replyToMsgId, String senderId, String receiverId, String msg, String type, String timestamp, int deliveryStatus, boolean isDeleted,String mediaLocalPath,String mediaUploadState,long totalSize,long uploadedSize) {
         this.msgId = msgId;
         this.messageUid = messageUid;
         this.conversationId = conversationId;
@@ -46,6 +58,10 @@ public class MessageSchema {
         this.timestamp = timestamp;
         this.deliveryStatus = deliveryStatus;
         this.isDeleted = isDeleted;
+        this.mediaLocalPath=mediaLocalPath;
+        this.mediaUploadState=mediaUploadState;
+        this.totalSize=totalSize;
+        this.uploadedSize=uploadedSize;
     }
     @Ignore
 
@@ -62,6 +78,26 @@ public class MessageSchema {
         this.isDeleted = isDeleted;
         this.postId=postId;
         this.postLink=postLink;
+    }
+    @Ignore
+    public MessageSchema(String messageUid, String conversationId, String replyToMsgId, String senderId, String receiverId, String msg, String type,int postId,String postLink ,String timestamp, int deliveryStatus, boolean isDeleted,String mediaLocalPath,String mediaUploadState,long totalSize,long uploadedSize) {
+        this.messageUid = messageUid;
+        this.conversationId = conversationId;
+        this.replyToMsgId = replyToMsgId;
+        this.senderId = senderId;
+        this.receiverId = receiverId;
+        this.msg = msg;
+        this.type = type;
+        this.timestamp = timestamp;
+        this.deliveryStatus = deliveryStatus;
+        this.isDeleted = isDeleted;
+        this.postId=postId;
+        this.postLink=postLink;
+        this.mediaLocalPath=mediaLocalPath;
+        this.mediaUploadState=mediaUploadState;
+        this.totalSize=totalSize;
+        this.uploadedSize=uploadedSize;
+
     }
 
     public long getMsgId() {
@@ -161,4 +197,36 @@ public class MessageSchema {
         postLink=pl;
     }
     public String getPostLink(){return postLink;}
+
+    public String getMediaUploadState() {
+        return mediaUploadState;
+    }
+
+    public void setMediaUploadState(String mediaUploadState) {
+        this.mediaUploadState = mediaUploadState;
+    }
+
+    public long getTotalSize() {
+        return totalSize;
+    }
+
+    public void setTotalSize(long totalSize) {
+        this.totalSize = totalSize;
+    }
+
+    public long getUploadedSize() {
+        return uploadedSize;
+    }
+
+    public void setUploadedSize(long uploadedSize) {
+        this.uploadedSize = uploadedSize;
+    }
+
+    public String getMediaLocalPath() {
+        return mediaLocalPath;
+    }
+
+    public void setMediaLocalPath(String mediaLocalPath) {
+        this.mediaLocalPath = mediaLocalPath;
+    }
 }

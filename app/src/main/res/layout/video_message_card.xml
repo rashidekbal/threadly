@@ -76,7 +76,7 @@
             android:orientation="vertical"
             android:layout_alignParentEnd="true"
             android:gravity="end"
-            android:visibility="visible"
+            android:visibility="gone"
             >
            <RelativeLayout
                android:layout_width="wrap_content"
@@ -92,12 +92,32 @@
                    android:layout_marginBottom="@dimen/dp_6"
                    android:layout_centerInParent="true"/>
                <ImageView
+                   android:id="@+id/playIcon"
                    android:layout_width="@dimen/dp_60"
                    android:layout_height="@dimen/dp_60"
                    android:src="@drawable/play_icon_dark"
                    android:layout_centerInParent="true"
                    android:background="@drawable/circle"
-                   android:padding="@dimen/dp_20"/>
+                   android:padding="@dimen/dp_20"
+                   android:visibility="gone"/>
+               <ProgressBar
+                   android:id="@+id/progress_circular"
+                   style="@android:style/Widget.Holo.Light.ProgressBar"
+                   android:progressTint="@color/ui_blue"
+                   android:layout_width="@dimen/dp_70"
+                   android:layout_height="@dimen/dp_70"
+                   android:layout_centerInParent="true"
+                   android:background="@drawable/circle"/>
+               <ImageView
+                   android:id="@+id/cancelBtn"
+                   android:layout_width="@dimen/dp_30"
+                   android:layout_height="@dimen/dp_30"
+                   android:src="@drawable/cross_light"
+                   android:layout_centerInParent="true"
+                   android:background="@drawable/circle"
+                   android:clipToOutline="true"
+                   android:elevation="4dp"
+                   />
 
            </RelativeLayout>
 

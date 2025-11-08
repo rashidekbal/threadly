@@ -147,6 +147,10 @@ public class ReUsableFunctions {
     }
     public static void updateMessageStatus(String MsgUid,int status){
         Executors.newSingleThreadExecutor().execute(() -> getInstance().MessageDao().updateDeliveryStatus(MsgUid,status));
+        Executors.newSingleThreadExecutor().execute(()->{
+            MessageSchema messageSchema=DataBase.getInstance().MessageDao().getMessageWithUid(MsgUid);
+            Log.d("check", "updateMessageStatus: "+messageSchema.getMediaUploadState());
+        });
     }
     public static void DeleteMessage(String messageUid){
         Executors.newSingleThreadExecutor().execute(()-> DataBase.getInstance().MessageDao().deleteMessage(messageUid));
