@@ -24,7 +24,6 @@ import java.util.concurrent.Executors;
 
 public class MessageMediaHandlerWorker extends Worker {
     Context context;
-    private static final ExecutorService executor = Executors.newSingleThreadExecutor();
     String TAG = "MEDIA_UPLOADING_TASK";
     public MessageMediaHandlerWorker(@NonNull Context context, @NonNull WorkerParameters workerParams) {
         super(context, workerParams);
@@ -89,7 +88,7 @@ public class MessageMediaHandlerWorker extends Worker {
 
     private void onFailureCleanUp(CountDownLatch latch, String messageUid, String err) {
         Log.d(TAG, "onFailureCleanUp: "+err);
-        executor.execute(()-> DataBase.getInstance().MessageDao().updatePostLinkWithState( messageUid,null, MessageStateEnum.FAILED.toString()));
+        DataBase.getInstance().MessageDao().updatePostLinkWithState( messageUid,null, MessageStateEnum.FAILED.toString());
         latch.countDown();
     }
 
@@ -98,7 +97,7 @@ public class MessageMediaHandlerWorker extends Worker {
         boolean[] isDone={true};
         assert data != null;
         String mediaUrl=data.optString("link");
-        executor.execute(()->{
+
             DataBase.getInstance().MessageDao().updatePostLinkWithState(messageUid,mediaUrl, MessageStateEnum.SUCCESS.toString());
             try {
                 Core.sendCtoS(DataBase.getInstance().MessageDao().getMessageWithUid(messageUid));
@@ -106,14 +105,14 @@ public class MessageMediaHandlerWorker extends Worker {
                 Log.d(TAG, "onSuccessCleanUp: json exception "+e.getMessage());
                 isDone[0]=false;
             }
-        });
+
 
 
         return isDone[0];
     }
 
     private void updateProgress(String messageUid, long bytesUploaded, long totalBytes) {
-        executor.execute(()-> DataBase.getInstance().MessageDao().updateUploadProgress(messageUid,totalBytes,bytesUploaded));
+       DataBase.getInstance().MessageDao().updateUploadProgress(messageUid,totalBytes,bytesUploaded);
     }
 
 }

@@ -1,5 +1,6 @@
 package com.rtech.threadly.workers;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 
 import androidx.annotation.NonNull;
@@ -28,15 +29,15 @@ public class MessageUploadCheckBrokerWorker extends Worker {
     @Override
     public Result doWork() {
 
-        Executors.newSingleThreadExecutor().execute(()->{
+
          List<MessageSchema> messageSchemas= DataBase.getInstance().MessageDao().getAllUnUploadedMessages(MessageStateEnum.UPLOADING.toString());
          for(MessageSchema schema : messageSchemas){
-             Data data=new Data.Builder().
+             @SuppressLint("RestrictedApi") Data data=new Data.Builder().
                      put("path",schema.getMediaLocalPath())
                      .put("messageUid",schema.getMessageUid()).build();
              Core.getWorkManager().enqueue(new OneTimeWorkRequest.Builder(MessageMediaHandlerWorker.class).setInputData(data).build());
          }
-        });
+
        return Result.success();
 
     }

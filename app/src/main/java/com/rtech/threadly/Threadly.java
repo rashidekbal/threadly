@@ -19,6 +19,7 @@ public class Threadly extends Application {
 
        }
        if(Core.getPreference().getBoolean(SharedPreferencesKeys.IS_LOGGED_IN,false)){
+           //TODO uncomment after fix
 //           ReUsableFunctions.resendPendingMessages();
            
        }

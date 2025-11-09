@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.concurrent.Executors;
 
 public class MessengerUtils {
+    //TODO consider special care for message with media which is sent
     public  void LoadAllChatsForLoginAction(){
         GetAllChatsAssociatedWithUser(new NetworkCallbackInterfaceWithJsonObjectDelivery() {
             @Override

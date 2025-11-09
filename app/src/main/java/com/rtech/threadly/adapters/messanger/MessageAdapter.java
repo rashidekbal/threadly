@@ -33,7 +33,6 @@ import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.rtech.threadly.R;
 import com.rtech.threadly.RoomDb.schemas.MessageSchema;
 import com.rtech.threadly.activities.PostActivity;
-import com.rtech.threadly.adapters.postsAdapters.AllTypePostFeedAdapter;
 import com.rtech.threadly.constants.MessageStateEnum;
 import com.rtech.threadly.constants.SharedPreferencesKeys;
 import com.rtech.threadly.constants.TypeConstants;
@@ -41,7 +40,6 @@ import com.rtech.threadly.core.Core;
 import com.rtech.threadly.interfaces.Messanger.MessageClickCallBack;
 import com.rtech.threadly.interfaces.Messanger.OnUserSelectedListener;
 import com.rtech.threadly.interfaces.NetworkCallbackInterface;
-import com.rtech.threadly.models.Posts_Model;
 import com.rtech.threadly.models.UsersModel;
 import com.rtech.threadly.network_managers.MessageManager;
 import com.rtech.threadly.utils.MessengerUtils;
@@ -51,7 +49,6 @@ import com.rtech.threadly.viewmodels.MessageAbleUsersViewModel;
 import com.rtech.threadly.workers.MessageMediaHandlerWorker;
 
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -254,6 +251,7 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                     holder.cancelBtn.setVisibility(View.VISIBLE);
                     holder.cancelBtn.setTag("retry");
                     holder.cancelBtn.setImageResource(R.drawable.retry_icon);
+                    holder.playIcon.setVisibility(View.GONE);
                 }
                 else if(!list.get(position).getMediaUploadState().equals(MessageStateEnum.SUCCESS.toString())||list.get(position).getPostLink()==null){
                     Glide.with(context).load(new File(list.get(position).getMediaLocalPath())).placeholder(R.drawable.post_placeholder).into(holder.sent_MediaImageView);
@@ -263,6 +261,7 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                     holder.progress_circular.setMax((int)list.get(position).getTotalSize());
                     holder.progress_circular.setProgress((int)list.get(position).getUploadedSize(),true);
                     holder.cancelBtn.setTag("cancel");
+                    holder.playIcon.setVisibility(View.GONE);
                 }else{
                     holder.progress_circular.setVisibility(View.GONE);
                     holder.cancelBtn.setVisibility(View.GONE);
@@ -635,7 +634,7 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     }
 
     private void StartResendingMessage(int position) {
-        Data data=new Data.Builder()
+        @SuppressLint("RestrictedApi") Data data=new Data.Builder()
                 .put("path",list.get(position).getMediaLocalPath())
                         .put("messageUid",list.get(position).getMessageUid()).build();
         Core.getWorkManager().enqueue(new OneTimeWorkRequest.Builder(MessageMediaHandlerWorker.class).setInputData(data).build());
@@ -791,11 +790,11 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 return true;
             }else if(itemId==R.id.DeleteForYouBtn){
                 //delete for me action
-                deleteForMe(list.get(position),position);
+                deleteForMe(list.get(position));
                 return true;
             }else{
                 // unSend action
-                unSendMessage(list.get(position),position);
+                unSendMessage(list.get(position));
                 return true;
             }
 
@@ -818,7 +817,7 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 return true;
             }else if(itemId==R.id.DeleteForYouBtn){
                 //delete for me action
-                deleteForMe(list.get(position),position);
+                deleteForMe(list.get(position));
                 return true;
             }
 
@@ -829,7 +828,7 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
         actionMenu.show();
     }
-    private void deleteForMe(MessageSchema messageSchema,int position) {
+    private void deleteForMe(MessageSchema messageSchema) {
         MessengerUtils.deleteMsg(messageSchema.getMessageUid());
         String Role=messageSchema.getSenderId().equals(PreferenceUtil.getUUID())?"sender":"receiver";
         MessageManager.DeleteMessageForLoggedInUser(messageSchema.getMessageUid(), Role, new NetworkCallbackInterface() {
@@ -846,7 +845,7 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         });
 
     }
-    private void unSendMessage(MessageSchema messageSchema,int position){
+    private void unSendMessage(MessageSchema messageSchema){
         MessengerUtils.deleteMsg(messageSchema.getMessageUid());
         MessageManager.unSendMessage(messageSchema.getMessageUid(), messageSchema.getReceiverId(), new NetworkCallbackInterface() {
             @Override

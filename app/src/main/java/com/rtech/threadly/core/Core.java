@@ -229,7 +229,7 @@ public static Emitter.Listener msg_UnSend_eventHandler=new Emitter.Listener() {
         object.put("type",messageSchema.getType());
         object.put("link",messageSchema.getPostLink());
         object.put("postId",messageSchema.getPostId());
-
+        MessengerUtils.AddNewConversationHistory(messageSchema.getReceiverId());
         if (!SocketManager.getInstance().getSocket().connected()){
             Log.d(Constants.NETWORK_ERROR_TAG.toString(), "sendCtoS: socket not connected adding fall back");
             MessageManager.sendMessage(object);

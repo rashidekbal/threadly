@@ -1,0 +1,18 @@
+package com.rtech.threadly.constants;
+
+public enum HomeActivityFragmentsIdEnum {
+    HOME,
+    SEARCH,
+    REELS,
+    PROFILE,
+    PROFILE_EDITOR_MAIN,
+    EDIT_NAME_FRAGMENT,
+    USERNAME_EDIT_FRAGMENT,
+    BIO_EDIT_FRAGMENT,
+    CHANGE_PROFILE_PIC_FRAGMENT,
+    CUSTOM_POST_FEED_FRAGMENT,
+    VIEW_STORIES_FRAGMENT
+
+
+
+}

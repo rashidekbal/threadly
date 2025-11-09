@@ -23,6 +23,7 @@ import com.rtech.threadly.SocketIo.SocketManager;
 import com.rtech.threadly.Threadly;
 import com.rtech.threadly.activities.LoginActivity;
 import com.rtech.threadly.activities.UserProfileActivity;
+import com.rtech.threadly.constants.MessageStateEnum;
 import com.rtech.threadly.constants.SharedPreferencesKeys;
 import com.rtech.threadly.core.Core;
 import com.rtech.threadly.interfaces.NetworkCallbackInterface;
@@ -155,11 +156,13 @@ public class ReUsableFunctions {
     public static void DeleteMessage(String messageUid){
         Executors.newSingleThreadExecutor().execute(()-> DataBase.getInstance().MessageDao().deleteMessage(messageUid));
     }
+    //TODO consider media type message with grace and all factors
     public static void resendPendingMessages(){
         Executors.newSingleThreadExecutor().execute(() -> {
             List<MessageSchema> pendingToSendMessagesList=DataBase.getInstance().MessageDao().getPendingToSendMessages();
             if(!pendingToSendMessagesList.isEmpty()){
                 for(MessageSchema msg:pendingToSendMessagesList){
+
                     try {
                         Core.sendCtoS(msg);
                     } catch (JSONException e) {

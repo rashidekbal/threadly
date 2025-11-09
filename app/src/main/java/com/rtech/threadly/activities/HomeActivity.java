@@ -28,7 +28,9 @@ import androidx.lifecycle.ViewModelProvider;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
+import com.google.android.datatransport.runtime.dagger.Reusable;
 import com.rtech.threadly.R;
+import com.rtech.threadly.constants.HomeActivityFragmentsIdEnum;
 import com.rtech.threadly.constants.SharedPreferencesKeys;
 import com.rtech.threadly.core.Core;
 import com.rtech.threadly.databinding.ActivityHomeBinding;
@@ -65,7 +67,7 @@ SharedPreferences loginInfo;
     StoryOpenCallback storyOpenCallback;
 OnDestroyFragmentCallback onDestroyStoriesFragmentCallback;
     ProfileViewModel profileViewModel;
-
+boolean isFirstLaunch=true;
 
 int currentFragment;
     @Override
@@ -108,7 +110,7 @@ int currentFragment;
                         storyOpenCallback.openStoryOf(list.get(position - 1).userid, list.get(position - 1).userProfile, list, position - 1);
                     }else{
 //                            getSupportFragmentManager().popBackStack();
-                        addFragment(new homeFragment(storyOpenCallback));
+                        addFragment(new homeFragment(storyOpenCallback),HomeActivityFragmentsIdEnum.HOME.toString());
                         binding.bottomNavigation.setVisibility(View.VISIBLE);
                         binding.cardView.setBackgroundColor(getResources().getColor(R.color.white));
 
@@ -121,7 +123,7 @@ int currentFragment;
                         storyOpenCallback.openStoryOf(list.get(position+1).userid,list.get(position+1).userProfile,list,position+1);
                     }else{
 //                            getSupportFragmentManager().popBackStack();
-                        addFragment(new homeFragment(storyOpenCallback));
+                        addFragment(new homeFragment(storyOpenCallback),HomeActivityFragmentsIdEnum.HOME.toString());
                         binding.bottomNavigation.setVisibility(View.VISIBLE);
                 binding.cardView.setBackgroundColor(getResources().getColor(R.color.white));
                     }
@@ -133,7 +135,7 @@ int currentFragment;
             bundle.putString("userId",userid);
             bundle.putString("profilePic",profilePic);
             fragment.setArguments(bundle);
-            addFragment(fragment);
+            addFragment(fragment,HomeActivityFragmentsIdEnum.VIEW_STORIES_FRAGMENT.toString());
             binding.bottomNavigation.setVisibility(View.INVISIBLE);
             binding.cardView.setBackgroundColor(Color.BLACK);
 
@@ -198,8 +200,7 @@ int currentFragment;
 //                        binding.cardView.setBackgroundColor(Color.BLACK);
 //                    }
                                 storyOpenCallback
-              )
-                );
+                        ), HomeActivityFragmentsIdEnum.HOME.toString());
                 currentFragment=item.getItemId();
 
 
@@ -210,7 +211,7 @@ int currentFragment;
             } else if (item.getItemId()==R.id.search) {
                 if(currentFragment!=R.id.search){
                     currentFragment=item.getItemId();
-                    addFragment(new searchFragment());
+                    addFragment(new searchFragment(),HomeActivityFragmentsIdEnum.SEARCH.toString());
                 }
 
 
@@ -222,7 +223,7 @@ int currentFragment;
             } else if (item.getItemId()==R.id.reels) {
                 if(currentFragment!=R.id.reels){
                 currentFragment=item.getItemId();
-                addFragment(new ReelsFragment());}
+                addFragment(new ReelsFragment(),HomeActivityFragmentsIdEnum.REELS.toString());}
 
             }else if (item.getItemId()==R.id.profile){
                 if(currentFragment!=R.id.profile){
@@ -254,7 +255,7 @@ int currentFragment;
                            data.putParcelableArrayList("postList",postArrayList);
                            data.putInt("position",position);
                            customPostFeedFragment.setArguments(data);
-                            addFragment(customPostFeedFragment);
+                            addFragment(customPostFeedFragment,HomeActivityFragmentsIdEnum.CUSTOM_POST_FEED_FRAGMENT.toString());
                         }
 
                         @Override
@@ -267,14 +268,14 @@ int currentFragment;
                                     assert v != null;
                                     if(v.getId()==R.id.name_layout){
 
-                                        addFragment(new EditNameFragment());
+                                        addFragment(new EditNameFragment(),HomeActivityFragmentsIdEnum.EDIT_NAME_FRAGMENT.toString());
 
                                     }else if(v.getId()==R.id.username_layout){
-                                        addFragment(new UsernameEditFragment());
+                                        addFragment(new UsernameEditFragment(),HomeActivityFragmentsIdEnum.USERNAME_EDIT_FRAGMENT.toString());
 
 
                                     }else if(v.getId()==R.id.bio_layout){
-                                        addFragment(new EditBioFragment());
+                                        addFragment(new EditBioFragment(),HomeActivityFragmentsIdEnum.BIO_EDIT_FRAGMENT.toString());
 
                                     } else if (v.getId()==R.id.openCameraButton) {
                                         addFragmentNoBackStack(new ChangeProfileCameraFragment((filePath, mediaType) -> {
@@ -287,7 +288,7 @@ int currentFragment;
 
                                     }else if(v.getId()==R.id.pictureSelector_gallery_btn){
                                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                                            addFragment(new ChangeProfileImageSelector());
+                                            addFragment(new ChangeProfileImageSelector(),HomeActivityFragmentsIdEnum.CHANGE_PROFILE_PIC_FRAGMENT.toString());
                                         }else{
                                             ReUsableFunctions.ShowToast("something went wrong");
                                         }
@@ -301,12 +302,12 @@ int currentFragment;
                                     binding.bottomNavigation.setVisibility(View.VISIBLE);
 
                                 }
-                            }));
+                            }),HomeActivityFragmentsIdEnum.PROFILE_EDITOR_MAIN.toString());
                             binding.bottomNavigation.setVisibility(View.INVISIBLE);
 
                         }
 
-                    }));
+                    }),HomeActivityFragmentsIdEnum.PROFILE.toString());
                 }
 
 
@@ -315,20 +316,47 @@ int currentFragment;
             return true;
         });
         binding.bottomNavigation.setSelectedItemId(R.id.home);
+
         getSupportFragmentManager().addOnBackStackChangedListener(() -> {
-
-            if(getSupportFragmentManager().getBackStackEntryCount() == 0) {
-
+            int backstackEntryCount=getSupportFragmentManager().getBackStackEntryCount();
+            if(backstackEntryCount==0) {
              HomeActivity.super.onBackPressed();
-                }
+            }
 
-            });
+
+        });
+
+
 
 
 
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        int backstackEntryCount=getSupportFragmentManager().getBackStackEntryCount();
+            String entryID=getSupportFragmentManager().getBackStackEntryAt(backstackEntryCount-1).getName();
+            assert entryID != null;
 
+                if(entryID.equals(HomeActivityFragmentsIdEnum.HOME.toString())){
+                    binding.bottomNavigation.setSelectedItemId(R.id.home);
+
+                }else if(entryID.equals(HomeActivityFragmentsIdEnum.REELS.toString())){
+                    binding.bottomNavigation.setSelectedItemId(R.id.reels);
+
+                }else if(entryID.equals(HomeActivityFragmentsIdEnum.PROFILE.toString())){
+                    binding.bottomNavigation.setSelectedItemId(R.id.profile);
+
+                }else if(entryID.equals(HomeActivityFragmentsIdEnum.SEARCH.toString())){
+                    binding.bottomNavigation.setSelectedItemId(R.id.search);
+
+                }
+
+
+
+
+    }
 
     protected void init(){
         loginInfo= Core.getPreference();
@@ -339,11 +367,11 @@ int currentFragment;
 
     }
 
-    private void addFragment(Fragment fragment ){
+    private void addFragment(Fragment fragment,String fragmentId ){
         FragmentManager manager=getSupportFragmentManager();
         FragmentTransaction transaction=manager.beginTransaction();
         transaction.replace(R.id.fragmentHolder,fragment);
-        transaction.addToBackStack(null);
+        transaction.addToBackStack(fragmentId);
         transaction.commit();
 
     }

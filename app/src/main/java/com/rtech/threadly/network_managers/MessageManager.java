@@ -90,6 +90,7 @@ public class MessageManager {
                                     Executors.newSingleThreadExecutor().execute(new Runnable() {
                                         @Override
                                         public void run() {
+                                           // TODO consider all type of messages
                                             DataBase.getInstance().MessageDao().insertMessage(new MessageSchema(
                                                     MsgUid,conversationUid,replyToMsgUid,
                                                     senderUuid,receiverUuid,message,type,-1,"null",timeStamp,-1,isDeleted
