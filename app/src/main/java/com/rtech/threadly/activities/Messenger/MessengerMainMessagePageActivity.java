@@ -73,8 +73,14 @@ import org.json.JSONObject;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.Queue;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -91,6 +97,8 @@ public class MessengerMainMessagePageActivity extends AppCompatActivity {
     ArrayList<String> pendingMessageUids=new ArrayList<>();
     File currentMedia;
     ExecutorService executor= Executors.newSingleThreadExecutor();
+    final Queue<Map<String ,String >> messageSendQueue=new LinkedList<>();
+    boolean isMessageQueueRunning=false;
     OnCapturedMediaFinalizedCallback onCapturedMediaFinalizedCallback=new OnCapturedMediaFinalizedCallback() {
         @Override
         public void OnFinalized(String filePath, String mediaType) {
@@ -295,12 +303,118 @@ public class MessengerMainMessagePageActivity extends AppCompatActivity {
 
     }
 
+//    private void startMediaAsMessageSendingProcess(String message, String selectedMediaType, File currentMedia) {
+//        String messageUid=ReUsableFunctions.GenerateUUid();
+//        executor.execute(()->{
+//            DataBase.getInstance().MessageDao().insertMessage(new MessageSchema(
+//                    messageUid,
+//                    MessengerUtils.getConversationId(PreferenceUtil.getUUID(),uuid),
+//                    null,
+//                    PreferenceUtil.getUUID(),
+//                    uuid,
+//                    message,
+//                    selectedMediaType,
+//                    -1,
+//                    null,
+//                    ReUsableFunctions.getTimestamp(),
+//                    0,
+//                    false,
+//                    currentMedia.getPath(),
+//                    MessageStateEnum.UPLOADING.toString(),
+//                    0,
+//                    0
+//            ));
+//            pendingMessageUids.add(messageUid);
+//            //if queue is empty then start uploading
+//
+//            if(!isMessageQueueRunning){
+//                map.clear();
+//                map.put(messageUid,currentMedia.getAbsolutePath());
+//                messageSendQueue.add(map);
+//                startUploading();
+//                return;
+//            }
+//            //if it is running then just enque new message
+//            map.clear();
+//            map.put(messageUid,currentMedia.getAbsolutePath());
+//            messageSendQueue.add(map);
+//        });
+//    }
+
+//    private void startUploading() {
+//        isMessageQueueRunning=true;
+//        Map<String,String> localMap;
+//        while(!messageSendQueue.isEmpty()){
+//            localMap=messageSendQueue.peek();
+//            assert localMap != null;
+//            String messageUid=localMap.keySet().iterator().next();
+//            File Media=new File(Objects.requireNonNull(localMap.get(messageUid)));
+//           if(!Media.exists()){
+//               localMap.remove(messageUid);
+//               executor.execute(()->{
+//                   DataBase.getInstance().MessageDao().updatePostLinkWithState(messageUid,null,MessageStateEnum.FAILED.toString());
+//               });
+//               pendingMessageUids.remove(messageUid);
+//               messageSendQueue.remove();
+//               continue;
+//           }
+//           MessageManager.UploadMsgMedia(Media, messageUid, new NetworkCallbackInterfaceWithProgressTracking() {
+//                   @Override
+//                   public void onSuccess(JSONObject response) {
+//                       String link=response.optJSONObject("data").optString("link");
+//
+//                       executor.execute(()->{
+//                           DataBase.getInstance().MessageDao().updatePostLinkWithState(messageUid,link,MessageStateEnum.SUCCESS.toString());
+//                           pendingMessageUids.remove(messageUid);
+//                           try {
+//                               //actual message sending logic is here
+//                               MessageSchema schema=DataBase.getInstance().MessageDao().getMessageWithUid(messageUid);
+//                               schema.setPostLink(link);
+//                               Core.sendCtoS(schema);
+//                           } catch (JSONException e) {
+//                               ReUsableFunctions.ShowToast(e.getMessage());
+//                           }
+//                       });
+//                       messageSendQueue.remove();
+//
+//
+//                   }
+//
+//                   @Override
+//                   public void onError(String err) {
+//                       executor.execute(()->{
+//                           DataBase.getInstance().MessageDao().updatePostLinkWithState(messageUid,null,MessageStateEnum.FAILED.toString());
+//                       });
+//                       pendingMessageUids.remove(messageUid);
+//                       messageSendQueue.remove();
+//
+//                   }
+//
+//                   @Override
+//                   public void progress(long bytesUploaded, long totalBytes) {
+//                       executor.execute(()->{
+//                           DataBase.getInstance().MessageDao().updateUploadProgress(messageUid,totalBytes,bytesUploaded);
+//                       });
+//
+//
+//                   }
+//               });
+//
+//
+//        }
+//
+//    }
+
+
+    // in your class: remove the field 'map' if you only used it for queuing
+// private Map<String,String> map = new HashMap<>(); <-- remove this field
+
     private void startMediaAsMessageSendingProcess(String message, String selectedMediaType, File currentMedia) {
-        String messageUid=ReUsableFunctions.GenerateUUid();
-        executor.execute(()->{
+        final String messageUid = ReUsableFunctions.GenerateUUid();
+        executor.execute(() -> {
             DataBase.getInstance().MessageDao().insertMessage(new MessageSchema(
                     messageUid,
-                    MessengerUtils.getConversationId(PreferenceUtil.getUUID(),uuid),
+                    MessengerUtils.getConversationId(PreferenceUtil.getUUID(), uuid),
                     null,
                     PreferenceUtil.getUUID(),
                     uuid,
@@ -317,51 +431,100 @@ public class MessengerMainMessagePageActivity extends AppCompatActivity {
                     0
             ));
             pendingMessageUids.add(messageUid);
-            startUploading(messageUid,currentMedia);
+
+            // create a fresh map for each queued item
+            Map<String, String> item = new HashMap<>();
+            item.put(messageUid, currentMedia.getAbsolutePath());
+
+            // enqueue and start uploader if not running
+            synchronized (messageSendQueue) {
+                messageSendQueue.add(item);
+                if (!isMessageQueueRunning) {
+                    // startUploading runs on executor thread
+                    isMessageQueueRunning = true;
+                    executor.execute(this::startUploading);
+                }
+            }
         });
     }
 
-    private void startUploading(String messageUid, File currentMedia) {
-        MessageManager.UploadMsgMedia(currentMedia, messageUid, new NetworkCallbackInterfaceWithProgressTracking() {
-            @Override
-            public void onSuccess(JSONObject response) {
-                String link=response.optJSONObject("data").optString("link");
+    private void startUploading() {
+        try {
+            while (true) {
+                Map<String, String> localMap;
+                synchronized (messageSendQueue) {
+                    localMap = messageSendQueue.poll(); // REMOVE the head atomically
+                }
+                if (localMap == null) break; // queue empty -> exit
 
-                executor.execute(()->{
-                    DataBase.getInstance().MessageDao().updatePostLinkWithState(messageUid,link,MessageStateEnum.SUCCESS.toString());
+                // extract uid and path
+                final String messageUid = localMap.keySet().iterator().next();
+                final File Media = new File(Objects.requireNonNull(localMap.get(messageUid)));
+
+                if (!Media.exists()) {
+                    // mark failed and continue
+                    DataBase.getInstance().MessageDao().updatePostLinkWithState(messageUid, null, MessageStateEnum.FAILED.toString());
                     pendingMessageUids.remove(messageUid);
-                    try {
-                        //actual message sending logic is here
-                        MessageSchema schema=DataBase.getInstance().MessageDao().getMessageWithUid(messageUid);
-                        schema.setPostLink(link);
-                        Core.sendCtoS(schema);
-                    } catch (JSONException e) {
-                        ReUsableFunctions.ShowToast(e.getMessage());
+                    continue;
+                }
+
+                // Wait for the async upload to finish before continuing to next item
+                final CountDownLatch latch = new CountDownLatch(1);
+
+                MessageManager.UploadMsgMedia(Media, messageUid, new NetworkCallbackInterfaceWithProgressTracking() {
+                    @Override
+                    public void onSuccess(JSONObject response) {
+                        String link = response.optJSONObject("data").optString("link");
+                        // use executor thread for DB ops (you're already on executor but callbacks may be on a different thread)
+                        executor.execute(() -> {
+                            DataBase.getInstance().MessageDao().updatePostLinkWithState(messageUid, link, MessageStateEnum.SUCCESS.toString());
+                            pendingMessageUids.remove(messageUid);
+                            try {
+                                MessageSchema schema = DataBase.getInstance().MessageDao().getMessageWithUid(messageUid);
+                                schema.setPostLink(link);
+                                Core.sendCtoS(schema);
+                            } catch (JSONException e) {
+                                ReUsableFunctions.ShowToast(e.getMessage());
+                            }
+                        });
+                        latch.countDown();
+                    }
+
+                    @Override
+                    public void onError(String err) {
+                        executor.execute(() -> {
+                            DataBase.getInstance().MessageDao().updatePostLinkWithState(messageUid, null, MessageStateEnum.FAILED.toString());
+                        });
+                        pendingMessageUids.remove(messageUid);
+                        latch.countDown();
+                    }
+
+                    @Override
+                    public void progress(long bytesUploaded, long totalBytes) {
+                        executor.execute(() -> {
+                            DataBase.getInstance().MessageDao().updateUploadProgress(messageUid, totalBytes, bytesUploaded);
+                        });
                     }
                 });
 
-
+                // wait for upload callback to call latch.countDown()
+                try {
+                    latch.await(); // this blocks the single-thread executor until upload finished
+                } catch (InterruptedException e) {
+                    // restore interrupt and mark this message failed so we don't stall forever
+                    Thread.currentThread().interrupt();
+                    executor.execute(() -> {
+                        DataBase.getInstance().MessageDao().updatePostLinkWithState(messageUid, null, MessageStateEnum.FAILED.toString());
+                    });
+                    pendingMessageUids.remove(messageUid);
+                }
             }
-
-            @Override
-            public void onError(String err) {
-                executor.execute(()->{
-                    DataBase.getInstance().MessageDao().updatePostLinkWithState(messageUid,null,MessageStateEnum.FAILED.toString());
-                });
-                pendingMessageUids.remove(messageUid);
-
-            }
-
-            @Override
-            public void progress(long bytesUploaded, long totalBytes) {
-                executor.execute(()->{
-                    DataBase.getInstance().MessageDao().updateUploadProgress(messageUid,totalBytes,bytesUploaded);
-                });
-
-
-            }
-        });
+        } finally {
+            // ensure flag cleared even if something throws
+            isMessageQueueRunning = false;
+        }
     }
+
 
     @Override
     protected void onStop() {

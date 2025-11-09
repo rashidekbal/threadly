@@ -20,7 +20,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class MessageUploadCheckBrokerWorker extends Worker {
-
+  ExecutorService executor=Executors.newSingleThreadExecutor();
     public MessageUploadCheckBrokerWorker(@NonNull Context context, @NonNull WorkerParameters workerParams) {
         super(context, workerParams);
     }
@@ -28,17 +28,25 @@ public class MessageUploadCheckBrokerWorker extends Worker {
     @NonNull
     @Override
     public Result doWork() {
+         CountDownLatch latch=new CountDownLatch(1);
 
+          executor.execute(()->{
+              List<MessageSchema> messageSchemas= DataBase.getInstance().MessageDao().getAllUnUploadedMessages(MessageStateEnum.UPLOADING.toString());
+              for(MessageSchema schema : messageSchemas){
+                  @SuppressLint("RestrictedApi") Data data=new Data.Builder().
+                          put("path",schema.getMediaLocalPath())
+                          .put("messageUid",schema.getMessageUid()).build();
+                  Core.getWorkManager().enqueue(new OneTimeWorkRequest.Builder(MessageMediaHandlerWorker.class).setInputData(data).build());
+              }
+              latch.countDown();
 
-         List<MessageSchema> messageSchemas= DataBase.getInstance().MessageDao().getAllUnUploadedMessages(MessageStateEnum.UPLOADING.toString());
-         for(MessageSchema schema : messageSchemas){
-             @SuppressLint("RestrictedApi") Data data=new Data.Builder().
-                     put("path",schema.getMediaLocalPath())
-                     .put("messageUid",schema.getMessageUid()).build();
-             Core.getWorkManager().enqueue(new OneTimeWorkRequest.Builder(MessageMediaHandlerWorker.class).setInputData(data).build());
-         }
-
-       return Result.success();
+          });
+        try {
+            latch.await();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        return Result.success();
 
     }
 }

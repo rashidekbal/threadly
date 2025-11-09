@@ -25,6 +25,7 @@ import java.util.concurrent.Executors;
 public class MessageMediaHandlerWorker extends Worker {
     Context context;
     String TAG = "MEDIA_UPLOADING_TASK";
+    ExecutorService executor= Executors.newSingleThreadExecutor();
     public MessageMediaHandlerWorker(@NonNull Context context, @NonNull WorkerParameters workerParams) {
         super(context, workerParams);
         this.context=context;
@@ -88,7 +89,10 @@ public class MessageMediaHandlerWorker extends Worker {
 
     private void onFailureCleanUp(CountDownLatch latch, String messageUid, String err) {
         Log.d(TAG, "onFailureCleanUp: "+err);
-        DataBase.getInstance().MessageDao().updatePostLinkWithState( messageUid,null, MessageStateEnum.FAILED.toString());
+        executor.execute(()->{
+                DataBase.getInstance().MessageDao().updatePostLinkWithState( messageUid,null, MessageStateEnum.FAILED.toString());
+        });
+
         latch.countDown();
     }
 
@@ -97,22 +101,32 @@ public class MessageMediaHandlerWorker extends Worker {
         boolean[] isDone={true};
         assert data != null;
         String mediaUrl=data.optString("link");
+        CountDownLatch latch=new CountDownLatch(1);
+    executor.execute(()->{
+    DataBase.getInstance().MessageDao().updatePostLinkWithState(messageUid,mediaUrl, MessageStateEnum.SUCCESS.toString());
+    try {
+        Core.sendCtoS(DataBase.getInstance().MessageDao().getMessageWithUid(messageUid));
+        latch.countDown();
+    } catch (JSONException e) {
+        Log.d(TAG, "onSuccessCleanUp: json exception "+e.getMessage());
+        latch.countDown();
+        isDone[0]=false;
+    }
+     });
+        try {
+            latch.await();
 
-            DataBase.getInstance().MessageDao().updatePostLinkWithState(messageUid,mediaUrl, MessageStateEnum.SUCCESS.toString());
-            try {
-                Core.sendCtoS(DataBase.getInstance().MessageDao().getMessageWithUid(messageUid));
-            } catch (JSONException e) {
-                Log.d(TAG, "onSuccessCleanUp: json exception "+e.getMessage());
-                isDone[0]=false;
-            }
-
-
-
+        } catch (InterruptedException e) {
+            Log.d(TAG, "onSuccessCleanUp: "+e.getLocalizedMessage());
+        }
         return isDone[0];
     }
 
     private void updateProgress(String messageUid, long bytesUploaded, long totalBytes) {
-       DataBase.getInstance().MessageDao().updateUploadProgress(messageUid,totalBytes,bytesUploaded);
+        executor.execute(()->{
+            DataBase.getInstance().MessageDao().updateUploadProgress(messageUid,totalBytes,bytesUploaded);
+        });
+
     }
 
 }
