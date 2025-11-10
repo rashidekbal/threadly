@@ -196,9 +196,10 @@ public class AllTypePostFeedAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 
                 }else{
                     OptionsDialog.setContentView(R.layout.posts_action_options_layout);
+                    setOptionBtnBehaviourNormalUser(OptionsDialog,position);
                 }
 
-                setOptionBtnBehaviourNormalUser(OptionsDialog,position);
+
                 OptionsDialog.setCancelable(true);
                 OptionsDialog.show();
             });
