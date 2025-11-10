@@ -29,9 +29,9 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.work.Data;
 import androidx.work.OneTimeWorkRequest;
 
-import com.androidnetworking.AndroidNetworking;
 import com.bumptech.glide.Glide;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
@@ -73,7 +73,6 @@ import org.json.JSONObject;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -534,7 +533,13 @@ public class MessengerMainMessagePageActivity extends AppCompatActivity {
             for(String uid :pendingMessageUids){
                 MessageManager.CancelMessageMediaUploadRequest(uid);
             }
-            Core.getWorkManager().enqueue(new OneTimeWorkRequest.Builder(MessageUploadCheckBrokerWorker.class).build());
+            String[] ids=new String[pendingMessageUids.size()];
+            for(int i=0;i<pendingMessageUids.size();i++){
+                ids[i]=pendingMessageUids.get(i);
+            }
+            Data pendingUids=new Data.Builder().putStringArray("pendingUids",ids).build();
+            pendingMessageUids.clear();
+            Core.getWorkManager().enqueue(new OneTimeWorkRequest.Builder(MessageUploadCheckBrokerWorker.class).setInputData(pendingUids).build());
 
         }
     }

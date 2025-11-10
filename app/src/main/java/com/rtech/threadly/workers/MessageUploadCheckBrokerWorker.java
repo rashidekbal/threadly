@@ -29,13 +29,15 @@ public class MessageUploadCheckBrokerWorker extends Worker {
     @Override
     public Result doWork() {
          CountDownLatch latch=new CountDownLatch(1);
+         String[] messageUIds=getInputData().getStringArray("pendingUids");
 
           executor.execute(()->{
-              List<MessageSchema> messageSchemas= DataBase.getInstance().MessageDao().getAllUnUploadedMessages(MessageStateEnum.UPLOADING.toString());
-              for(MessageSchema schema : messageSchemas){
-                  @SuppressLint("RestrictedApi") Data data=new Data.Builder().
-                          put("path",schema.getMediaLocalPath())
-                          .put("messageUid",schema.getMessageUid()).build();
+              for(String MessageUid: messageUIds){
+                  MessageSchema schema=DataBase.getInstance().MessageDao().getMessageWithUid(MessageUid);
+                  if(!schema.getMediaUploadState().equals(MessageStateEnum.UPLOADING.toString())){
+                      continue;
+                  }
+                  Data data=new Data.Builder().putString("messageUid",schema.getMessageUid()).put("path",schema.getMediaLocalPath()).build();
                   Core.getWorkManager().enqueue(new OneTimeWorkRequest.Builder(MessageMediaHandlerWorker.class).setInputData(data).build());
               }
               latch.countDown();

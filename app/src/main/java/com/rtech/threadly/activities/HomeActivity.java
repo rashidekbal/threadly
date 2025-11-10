@@ -210,9 +210,15 @@ int currentFragment;
 
             } else if (item.getItemId()==R.id.search) {
                 if(currentFragment!=R.id.search){
-                    currentFragment=item.getItemId();
-                    addFragment(new searchFragment(),HomeActivityFragmentsIdEnum.SEARCH.toString());
+                    if(doesThisFragmentExistInStack(HomeActivityFragmentsIdEnum.SEARCH.toString())){
+                      getSupportFragmentManager().popBackStack(HomeActivityFragmentsIdEnum.SEARCH.toString(),0);
+                    }else{
+
+                        addFragment(new searchFragment(),HomeActivityFragmentsIdEnum.SEARCH.toString());
+                    }
+
                 }
+                currentFragment=item.getItemId();
 
 
             } else if (item.getItemId()==R.id.add_post) {
@@ -222,93 +228,103 @@ int currentFragment;
 
             } else if (item.getItemId()==R.id.reels) {
                 if(currentFragment!=R.id.reels){
-                currentFragment=item.getItemId();
-                addFragment(new ReelsFragment(),HomeActivityFragmentsIdEnum.REELS.toString());}
+                    if(doesThisFragmentExistInStack(HomeActivityFragmentsIdEnum.REELS.toString())){
+                        getSupportFragmentManager().popBackStack(HomeActivityFragmentsIdEnum.REELS.toString(),0);
+                    }else{
+                        addFragment(new ReelsFragment(),HomeActivityFragmentsIdEnum.REELS.toString());
+                    }
+                    currentFragment=item.getItemId();
+               }
 
             }else if (item.getItemId()==R.id.profile){
                 if(currentFragment!=R.id.profile){
-                    currentFragment=item.getItemId();
-                    addFragment(new profileFragment(new Post_fragmentSetCallback() {
+                    if(doesThisFragmentExistInStack(HomeActivityFragmentsIdEnum.PROFILE.toString())){
+                        getSupportFragmentManager().popBackStack(HomeActivityFragmentsIdEnum.PROFILE.toString(),0);
+                    }else{
+                        addFragment(new profileFragment(new Post_fragmentSetCallback() {
 
-                        @Override
-                        public void openPostFragment(ArrayList<Posts_Model> postsArray, int position) {
-                            ArrayList<ExtendedPostModel> postArrayList=new ArrayList<>();
-                            for(Posts_Model model:postsArray){
-                                postArrayList.add(new ExtendedPostModel(model.getCONTENT_TYPE(),
-                                        model.getPostId(),
-                                        model.getUserId(),
-                                        model.getUsername(),
-                                        model.getUserDpUrl(),
-                                        model.getPostUrl(),
-                                        model.getCaption(),
-                                        model.getCreatedAt(),
-                                        model.getLikedBy(),
-                                        model.getLikeCount(),
-                                        model.getCommentCount(),
-                                        model.getShareCount(),
-                                        model.getIsliked()?1:0,
-                                        model.isVideo(),
-                                        model.isFollowed()));
+                            @Override
+                            public void openPostFragment(ArrayList<Posts_Model> postsArray, int position) {
+                                ArrayList<ExtendedPostModel> postArrayList=new ArrayList<>();
+                                for(Posts_Model model:postsArray){
+                                    postArrayList.add(new ExtendedPostModel(model.getCONTENT_TYPE(),
+                                            model.getPostId(),
+                                            model.getUserId(),
+                                            model.getUsername(),
+                                            model.getUserDpUrl(),
+                                            model.getPostUrl(),
+                                            model.getCaption(),
+                                            model.getCreatedAt(),
+                                            model.getLikedBy(),
+                                            model.getLikeCount(),
+                                            model.getCommentCount(),
+                                            model.getShareCount(),
+                                            model.getIsliked()?1:0,
+                                            model.isVideo(),
+                                            model.isFollowed()));
+                                }
+                                CustomPostFeedFragment customPostFeedFragment=new CustomPostFeedFragment();
+                                Bundle data=new Bundle();
+                                data.putParcelableArrayList("postList",postArrayList);
+                                data.putInt("position",position);
+                                customPostFeedFragment.setArguments(data);
+                                addFragment(customPostFeedFragment,HomeActivityFragmentsIdEnum.CUSTOM_POST_FEED_FRAGMENT.toString());
                             }
-                           CustomPostFeedFragment customPostFeedFragment=new CustomPostFeedFragment();
-                           Bundle data=new Bundle();
-                           data.putParcelableArrayList("postList",postArrayList);
-                           data.putInt("position",position);
-                           customPostFeedFragment.setArguments(data);
-                            addFragment(customPostFeedFragment,HomeActivityFragmentsIdEnum.CUSTOM_POST_FEED_FRAGMENT.toString());
-                        }
 
-                        @Override
-                        public void openEditor() {
+                            @Override
+                            public void openEditor() {
 
-                            addFragment(new EditProfileMainFragment(new FragmentItemClickInterface() {
-                                @Override
-                                public void onItemClick(@Nullable  View v) {
+                                addFragment(new EditProfileMainFragment(new FragmentItemClickInterface() {
+                                    @Override
+                                    public void onItemClick(@Nullable  View v) {
 
-                                    assert v != null;
-                                    if(v.getId()==R.id.name_layout){
+                                        assert v != null;
+                                        if(v.getId()==R.id.name_layout){
 
-                                        addFragment(new EditNameFragment(),HomeActivityFragmentsIdEnum.EDIT_NAME_FRAGMENT.toString());
+                                            addFragment(new EditNameFragment(),HomeActivityFragmentsIdEnum.EDIT_NAME_FRAGMENT.toString());
 
-                                    }else if(v.getId()==R.id.username_layout){
-                                        addFragment(new UsernameEditFragment(),HomeActivityFragmentsIdEnum.USERNAME_EDIT_FRAGMENT.toString());
+                                        }else if(v.getId()==R.id.username_layout){
+                                            addFragment(new UsernameEditFragment(),HomeActivityFragmentsIdEnum.USERNAME_EDIT_FRAGMENT.toString());
 
 
-                                    }else if(v.getId()==R.id.bio_layout){
-                                        addFragment(new EditBioFragment(),HomeActivityFragmentsIdEnum.BIO_EDIT_FRAGMENT.toString());
+                                        }else if(v.getId()==R.id.bio_layout){
+                                            addFragment(new EditBioFragment(),HomeActivityFragmentsIdEnum.BIO_EDIT_FRAGMENT.toString());
 
-                                    } else if (v.getId()==R.id.openCameraButton) {
-                                        addFragmentNoBackStack(new ChangeProfileCameraFragment((filePath, mediaType) -> {
-                                            Bundle bundle =new Bundle();
-                                            bundle.putString("path",filePath);
-                                            profileUploadFinalPreview fragment=new profileUploadFinalPreview();
-                                            fragment.setArguments(bundle);
-                                            addFragmentNoBackStack(fragment);
-                                        }));
+                                        } else if (v.getId()==R.id.openCameraButton) {
+                                            addFragmentNoBackStack(new ChangeProfileCameraFragment((filePath, mediaType) -> {
+                                                Bundle bundle =new Bundle();
+                                                bundle.putString("path",filePath);
+                                                profileUploadFinalPreview fragment=new profileUploadFinalPreview();
+                                                fragment.setArguments(bundle);
+                                                addFragmentNoBackStack(fragment);
+                                            }));
 
-                                    }else if(v.getId()==R.id.pictureSelector_gallery_btn){
-                                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                                            addFragment(new ChangeProfileImageSelector(),HomeActivityFragmentsIdEnum.CHANGE_PROFILE_PIC_FRAGMENT.toString());
-                                        }else{
-                                            ReUsableFunctions.ShowToast("something went wrong");
+                                        }else if(v.getId()==R.id.pictureSelector_gallery_btn){
+                                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                                                addFragment(new ChangeProfileImageSelector(),HomeActivityFragmentsIdEnum.CHANGE_PROFILE_PIC_FRAGMENT.toString());
+                                            }else{
+                                                ReUsableFunctions.ShowToast("something went wrong");
+                                            }
+
                                         }
 
                                     }
 
-                                }
+                                    @Override
+                                    public void onFragmentDestroy() {
+                                        binding.bottomNavigation.setVisibility(View.VISIBLE);
 
-                                @Override
-                                public void onFragmentDestroy() {
-                                    binding.bottomNavigation.setVisibility(View.VISIBLE);
+                                    }
+                                }),HomeActivityFragmentsIdEnum.PROFILE_EDITOR_MAIN.toString());
+                                binding.bottomNavigation.setVisibility(View.INVISIBLE);
 
-                                }
-                            }),HomeActivityFragmentsIdEnum.PROFILE_EDITOR_MAIN.toString());
-                            binding.bottomNavigation.setVisibility(View.INVISIBLE);
+                            }
 
-                        }
+                        }),HomeActivityFragmentsIdEnum.PROFILE.toString());
+                    }
 
-                    }),HomeActivityFragmentsIdEnum.PROFILE.toString());
                 }
+                currentFragment=item.getItemId();
 
 
             }
@@ -329,6 +345,20 @@ int currentFragment;
 
 
 
+
+    }
+
+    private boolean doesThisFragmentExistInStack(String string) {
+        FragmentManager manager=getSupportFragmentManager();
+        int entryCount=manager.getBackStackEntryCount();
+        for(int i=0;i<entryCount;i++){
+            String entryID=manager.getBackStackEntryAt(i).getName();
+            if(entryID==null)return false;
+            if(entryID.equals(string)){
+                return true;
+            }
+        }
+        return false;
 
     }
 
