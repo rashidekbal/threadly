@@ -1,7 +1,11 @@
 [versions]
-agp = "8.13.0"
+agp = "8.13.1"
 androidNetworking = "1.0.4"
 
+cameraCamera2 = "1.4.0"
+cameraCore = "1.4.0"
+cameraLifecycle = "1.4.0"
+coil = "3.3.0"
 glide = "4.16.0"
 junit = "4.13.2"
 junitVersion = "1.2.1"
@@ -16,13 +20,31 @@ media3ExoplayerDash = "1.3.1"
 media3Ui = "1.3.1"
 navigationFragment = "2.9.0"
 navigationUi = "2.9.0"
+roomRuntime = "2.6.1"
 shimmer = "0.5.0"
 googleGmsGoogleServices = "4.4.3"
 firebaseMessaging = "25.0.0"
+socketIoClient = "2.0.0"
+swiperefreshlayout = "1.1.0"
+workRuntime = "2.10.2"
+kotlin = "1.9.22"
+coreKtx = "1.15.0"
 
 [libraries]
 android-networking = { module = "com.github.amitshekhariitbhu.Fast-Android-Networking:android-networking", version.ref = "androidNetworking" }
+androidx-camera-core = { module = "androidx.camera:camera-core", version.ref = "cameraCore" }
+androidx-camera-extensions = { module = "androidx.camera:camera-extensions", version.ref = "cameraCamera2" }
+androidx-camera-video = { module = "androidx.camera:camera-video", version.ref = "cameraCamera2" }
+androidx-camera-view = { module = "androidx.camera:camera-view", version.ref = "cameraCamera2" }
 androidx-media3-ui = { module = "androidx.media3:media3-ui", version.ref = "media3Ui" }
+androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "roomRuntime" }
+androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "roomRuntime" }
+androidx-swiperefreshlayout = { module = "androidx.swiperefreshlayout:swiperefreshlayout", version.ref = "swiperefreshlayout" }
+androidx-work-runtime = { module = "androidx.work:work-runtime", version.ref = "workRuntime" }
+camera-camera2 = { module = "androidx.camera:camera-camera2", version.ref = "cameraCamera2" }
+camera-lifecycle = { module = "androidx.camera:camera-lifecycle", version.ref = "cameraLifecycle" }
+coil = { module = "io.coil-kt.coil3:coil", version.ref = "coil" }
+coil-network-okhttp = { module = "io.coil-kt.coil3:coil-network-okhttp", version.ref = "coil" }
 glide = { module = "com.github.bumptech.glide:glide", version.ref = "glide" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
@@ -38,8 +60,11 @@ navigation-fragment = { group = "androidx.navigation", name = "navigation-fragme
 navigation-ui = { group = "androidx.navigation", name = "navigation-ui", version.ref = "navigationUi" }
 shimmer = { module = "com.facebook.shimmer:shimmer", version.ref = "shimmer" }
 firebase-messaging = { group = "com.google.firebase", name = "firebase-messaging", version.ref = "firebaseMessaging" }
+socket-io-client = { module = "io.socket:socket.io-client", version.ref = "socketIoClient" }
+androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 google-gms-google-services = { id = "com.google.gms.google-services", version.ref = "googleGmsGoogleServices" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 

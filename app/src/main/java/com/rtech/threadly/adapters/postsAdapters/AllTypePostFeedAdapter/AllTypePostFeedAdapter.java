@@ -1,4 +1,4 @@
-package com.rtech.threadly.adapters.postsAdapters;
+package com.rtech.threadly.adapters.postsAdapters.AllTypePostFeedAdapter;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
@@ -41,6 +41,7 @@ import com.rtech.threadly.network_managers.CommentsManager;
 import com.rtech.threadly.network_managers.FollowManager;
 import com.rtech.threadly.network_managers.LikeManager;
 import com.rtech.threadly.network_managers.PostsManager;
+import com.rtech.threadly.utils.CoilUtil;
 import com.rtech.threadly.utils.DownloadManagerUtil;
 import com.rtech.threadly.utils.ExoplayerUtil;
 import com.rtech.threadly.utils.LoggerUtil;
@@ -99,7 +100,8 @@ public class AllTypePostFeedAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 
         if(viewHolder instanceof ImagePostViewHolder){
             ImagePostViewHolder holder=(ImagePostViewHolder) viewHolder;
-            Glide.with(context).load(Uri.parse(postModels.get(position).getPostUrl())).thumbnail(0.1f).into(holder.post_image_view);
+//            Glide.with(context).load(Uri.parse(postModels.get(position).getPostUrl())).thumbnail(0.1f).into(holder.post_image_view);
+            CoilUtil.loadImage(holder.post_image_view,postModels.get(position).getPostUrl());
             //setUpFollowBtn
             if(postModels.get(position).userId.equals(PreferenceUtil.getUserId())||postModels.get(position).isFollowed()){
                 holder.followBtn.setVisibility(View.GONE);
@@ -203,6 +205,7 @@ public class AllTypePostFeedAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                 OptionsDialog.setCancelable(true);
                 OptionsDialog.show();
             });
+
 
 
             // Like/unlike post on like button click

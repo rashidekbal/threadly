@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.google.gms.google.services)
+    alias(libs.plugins.kotlin.android)
 }
 
 android {
@@ -45,6 +46,9 @@ android {
         sourceCompatibility JavaVersion.VERSION_11
         targetCompatibility JavaVersion.VERSION_11
     }
+    kotlinOptions {
+        jvmTarget = '11'
+    }
 }
 
 dependencies {
@@ -56,6 +60,7 @@ dependencies {
     implementation libs.navigation.fragment
     implementation libs.navigation.ui
     implementation libs.firebase.messaging
+    implementation libs.androidx.core.ktx
     testImplementation libs.junit
     androidTestImplementation libs.ext.junit
     androidTestImplementation libs.espresso.core
@@ -63,15 +68,15 @@ dependencies {
     implementation libs.glide
     implementation libs.shimmer
 
-    implementation "androidx.camera:camera-core:1.4.0"
-    implementation "androidx.camera:camera-camera2:1.4.0"
-    implementation "androidx.camera:camera-lifecycle:1.4.0"
-    implementation "androidx.camera:camera-view:1.4.0"
-    implementation "androidx.camera:camera-video:1.4.0"
-    implementation "androidx.camera:camera-extensions:1.4.0"
-    implementation "androidx.work:work-runtime:2.10.2"
+    implementation libs.androidx.camera.core
+    implementation libs.camera.camera2
+    implementation libs.camera.lifecycle
+    implementation libs.androidx.camera.view
+    implementation libs.androidx.camera.video
+    implementation libs.androidx.camera.extensions
+    implementation libs.androidx.work.runtime
 
-    implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
+    implementation libs.androidx.swiperefreshlayout
 
 
 // ExoPlayer (core + UI)
@@ -82,13 +87,16 @@ dependencies {
     implementation libs.media3.exoplayer.dash
     implementation libs.media3.datasource
 // socket io-client
-    implementation ('io.socket:socket.io-client:2.0.0') {
+    implementation (libs.socket.io.client) {
         exclude group: 'org.json', module: 'json'
     }
 //    room database
-    implementation "androidx.room:room-runtime:2.6.1"
-    annotationProcessor "androidx.room:room-compiler:2.6.1"
+    implementation libs.androidx.room.runtime
+    annotationProcessor libs.androidx.room.compiler
 
+//coil dependencies
+    implementation(libs.coil) // Use the latest version
+    implementation(libs.coil.network.okhttp) // For network requests
 
 
 
