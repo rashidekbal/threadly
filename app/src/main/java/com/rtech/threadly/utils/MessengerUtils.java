@@ -1,16 +1,17 @@
 package com.rtech.threadly.utils;
 
 import static com.rtech.threadly.RoomDb.DataBase.getInstance;
-import static com.rtech.threadly.network_managers.MessageManager.GetAllChatsAssociatedWithUser;
 
 import android.util.Log;
 
 import com.rtech.threadly.RoomDb.DataBase;
 import com.rtech.threadly.RoomDb.schemas.HistorySchema;
 import com.rtech.threadly.RoomDb.schemas.MessageSchema;
+import com.rtech.threadly.constants.MessageStateEnum;
 import com.rtech.threadly.constants.SharedPreferencesKeys;
 import com.rtech.threadly.core.Core;
 import com.rtech.threadly.interfaces.NetworkCallbackInterfaceWithJsonObjectDelivery;
+import com.rtech.threadly.network_managers.MessageManager;
 import com.rtech.threadly.network_managers.ProfileManager;
 
 import org.json.JSONArray;
@@ -23,7 +24,7 @@ import java.util.concurrent.Executors;
 public class MessengerUtils {
     //TODO consider special care for message with media which is sent
     public  void LoadAllChatsForLoginAction(){
-        GetAllChatsAssociatedWithUser(new NetworkCallbackInterfaceWithJsonObjectDelivery() {
+        MessageManager.GetAllChatsAssociatedWithUser(new NetworkCallbackInterfaceWithJsonObjectDelivery() {
             @Override
             public void onSuccess(JSONObject response) {
                 JSONArray data=response.optJSONArray("data");
@@ -110,7 +111,11 @@ public class MessengerUtils {
                                 postLink,
                                 ReUsableFunctions.toIso8601Utc(creationTime),
                                 deliveryStatus,
-                                isDeleted
+                                isDeleted,
+                                null,
+                                MessageStateEnum.SUCCESS.toString(),
+                                0,
+                                0
                                 ));
 
                         if(chats.length()==1){
@@ -146,7 +151,11 @@ public class MessengerUtils {
                         postLink,
                         ReUsableFunctions.toIso8601Utc(creationTime),
                         deliveryStatus,
-                        isDeleted
+                        isDeleted,
+                        null,
+                        MessageStateEnum.SUCCESS.toString(),
+                        0,
+                        0
                 ));
 
             }
