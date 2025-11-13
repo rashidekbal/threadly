@@ -291,6 +291,18 @@
                             android:textColor="@color/AllWhite"
                             android:layout_alignParentLeft="true"
                             android:visibility="visible"/>
+<!--                        cancel request btn-->
+                        <androidx.appcompat.widget.AppCompatButton
+                            android:id="@+id/requestCancelBtn"
+                            android:layout_width="@dimen/dp_170"
+                            android:layout_height="@dimen/dp_35"
+                            android:layout_centerVertical="true"
+                            android:background="@drawable/slight_round_btn_grey"
+                            android:text="@string/requested"
+                            android:textAllCaps="false"
+                            android:textColor="@color/AllWhite"
+                            android:layout_alignParentLeft="true"
+                            android:visibility="gone"/>
 
                         <!--                        unfollow button-->
                         <androidx.appcompat.widget.AppCompatButton

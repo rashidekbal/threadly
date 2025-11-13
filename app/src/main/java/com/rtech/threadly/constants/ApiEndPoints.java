@@ -21,7 +21,9 @@ public class ApiEndPoints {
 
     // Follows
     public static final String FOLLOW = baseUrl + "/follow/follow/";
+    public static final String FOLLOW_V2 = baseUrl + "/follow/follow/V2";
     public static final String UNFOLLOW = baseUrl + "/follow/unfollow/";
+    public static final String CANCEL_FOLLOW_REQUEST= baseUrl + "/follow/cancelFollowRequest/";
     public static final String GET_FOLLOWERS=baseUrl+"/follow/getFollowers/";
     public static final String GET_FOLLOWINGS=baseUrl+"/follow/getFollowings/";
 

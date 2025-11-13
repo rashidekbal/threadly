@@ -24,6 +24,7 @@ import com.bumptech.glide.Glide;
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.rtech.threadly.R;
 import com.rtech.threadly.adapters.postsAdapters.GridPostAdapter;
+import com.rtech.threadly.constants.FollowRouteResponse;
 import com.rtech.threadly.core.Core;
 import com.rtech.threadly.databinding.ActivityUserProfileBinding;
 import com.rtech.threadly.fragments.CustomPostFeed.CustomPostFeedFragment;
@@ -180,7 +181,8 @@ public class UserProfileActivity extends AppCompatActivity {
                             ,object.getInt("Posts")
                             ,object.getInt("isFollowedByUser"),
                             object.getInt("isFollowingUser"),
-                            object.getInt("isPrivate")==1);
+                            object.getInt("isPrivate")==1,
+                            object.optInt("isApproved") == 1);
 
                     setData(profileData);
 
@@ -226,20 +228,18 @@ if(data.userid.equals(PreferenceUtil.getUserId())){
 
 }else{
     if(data.isFollowedByMe){
-        mainXml.unfollowBtn.setVisibility(View.VISIBLE);
+        if(data.isFollowRequestApproved()){mainXml.unfollowBtn.setVisibility(View.VISIBLE);}
+        else{
+            mainXml.requestCancelBtn.setVisibility(View.VISIBLE);
+            ifPrivateSetup(data);
+        }
         mainXml.followBtn.setVisibility(View.GONE);
         // get user posts
         getPosts(intentData.getStringExtra("userid"));
     }else{
         mainXml.unfollowBtn.setVisibility(View.GONE);
         mainXml.followBtn.setVisibility(View.VISIBLE);
-        if(data.isPrivate()){
-            mainXml.accountPrivateBanner.setVisibility(View.VISIBLE);
-            mainXml.postsShimmer.setVisibility(View.GONE);
-            mainXml.lockIcon.setVisibility(View.VISIBLE);
-        }else {
-            mainXml.accountPrivateBanner.setVisibility(View.GONE);
-        }
+       ifPrivateSetup(data);
 
     }
     if(data.isFollowingMe){
@@ -255,22 +255,45 @@ if(data.userid.equals(PreferenceUtil.getUserId())){
 
 
     mainXml.followBtn.setOnClickListener(v -> {
-        mainXml.unfollowBtn.setVisibility(View.VISIBLE);
         mainXml.followBtn.setVisibility(View.GONE);
         mainXml.followBtn.setEnabled(false);
         mainXml.unfollowBtn.setEnabled(false);
+        mainXml.requestCancelBtn.setEnabled(false);
+        if(data.isPrivate()){
+            mainXml.requestCancelBtn.setVisibility(View.VISIBLE);
+        }else{
+            mainXml.unfollowBtn.setVisibility(View.VISIBLE);
+        }
 
-        followManager.follow(data.userid, new NetworkCallbackInterface() {
+
+        followManager.follow(data.userid, new NetworkCallbackInterfaceJsonObject() {
             @Override
-            public void onSuccess() {
-                mainXml.unfollowBtn.setEnabled(true);
+            public void onSuccess(JSONObject response) {
+                JSONObject data=response.optJSONObject("data");
+                assert data != null;
+                String status=data.optString("status");
+                if(status.equals(FollowRouteResponse.SUCCESS.toString())){
+                    mainXml.unfollowBtn.setEnabled(true);
+                    return;
+                }
+                mainXml.requestCancelBtn.setVisibility(View.VISIBLE);
+                mainXml.requestCancelBtn.setEnabled(true);
+
+
+
 
             }
 
             @Override
-            public void onError(String err) {
+            public void onError(int errorCode) {
                 mainXml.followBtn.setVisibility(View.VISIBLE);
-                mainXml.unfollowBtn.setVisibility(View.GONE);
+
+                if(data.isPrivate()){
+                    mainXml.requestCancelBtn.setVisibility(View.GONE);
+                    mainXml.requestCancelBtn.setEnabled(false);
+                }else{
+                    mainXml.unfollowBtn.setVisibility(View.GONE);
+                }
                 mainXml.followBtn.setEnabled(true);
                 mainXml.unfollowBtn.setEnabled(false);
 
@@ -299,6 +322,28 @@ if(data.userid.equals(PreferenceUtil.getUserId())){
         });
 
     });
+    mainXml.requestCancelBtn.setOnClickListener(v->{
+        mainXml.followBtn.setVisibility(View.VISIBLE);
+        mainXml.followBtn.setEnabled(false);
+        mainXml.unfollowBtn.setEnabled(false);
+        mainXml.requestCancelBtn.setEnabled(false);
+        followManager.cancelFollowRequest(data.getUserid(), new NetworkCallbackInterface() {
+            @Override
+            public void onSuccess() {
+                mainXml.followBtn.setEnabled(true);
+
+            }
+
+            @Override
+            public void onError(String err) {
+                mainXml.requestCancelBtn.setVisibility(View.VISIBLE);
+                mainXml.followBtn.setVisibility(View.GONE);
+                mainXml.followBtn.setEnabled(false);
+                mainXml.requestCancelBtn.setEnabled(true);
+
+            }
+        });
+    });
 
 
 
@@ -307,6 +352,17 @@ if(data.userid.equals(PreferenceUtil.getUserId())){
 
 
         
+
+    }
+
+    private void ifPrivateSetup(Profile_Model data){
+        if(data.isPrivate()){
+            mainXml.accountPrivateBanner.setVisibility(View.VISIBLE);
+            mainXml.postsShimmer.setVisibility(View.GONE);
+            mainXml.lockIcon.setVisibility(View.VISIBLE);
+        }else {
+            mainXml.accountPrivateBanner.setVisibility(View.GONE);
+        }
 
     }
     private void getPosts(String userId){

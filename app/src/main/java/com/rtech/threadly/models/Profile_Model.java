@@ -12,6 +12,7 @@ public class Profile_Model {
     public boolean isFollowingMe;
     public boolean isFollowedByMe;
     private boolean isPrivate;
+    private boolean isFollowRequestApproved;
 
     public Profile_Model(String userid, String username, String profilepic, String bio, String dob, int  followers, int following, int posts, int isFollowedByMe, int isFollowingMe) {
         this.userid = userid;
@@ -27,7 +28,7 @@ public class Profile_Model {
 
 
     }
-    public Profile_Model(String userid, String username, String profilepic, String bio, String dob, int  followers, int following, int posts, int isFollowedByMe, int isFollowingMe,boolean isPrivate) {
+    public Profile_Model(String userid, String username, String profilepic, String bio, String dob, int  followers, int following, int posts, int isFollowedByMe, int isFollowingMe,boolean isPrivate,boolean isFollowRequestApproved) {
         this.userid = userid;
         this.username = username;
         this.profilepic = profilepic;
@@ -39,6 +40,7 @@ public class Profile_Model {
         this.isFollowedByMe = isFollowedByMe>0;
         this.isFollowingMe= isFollowingMe>0;
         this.isPrivate=isPrivate;
+        this.isFollowRequestApproved=isFollowRequestApproved;
     }
 
     public String getUsername() {
@@ -127,5 +129,13 @@ public class Profile_Model {
 
     public void setPrivate(boolean aPrivate) {
         isPrivate = aPrivate;
+    }
+
+    public boolean isFollowRequestApproved() {
+        return isFollowRequestApproved;
+    }
+
+    public void setFollowRequestApproved(boolean followRequestApproved) {
+        isFollowRequestApproved = followRequestApproved;
     }
 }

@@ -175,4 +175,5 @@
     <string name="replying_to">Replying to</string>
     <string name="view_more_replies">View more Replies</string>
     <string name="accountPrivateMessage">This account is private follow to see their posts</string>
+    <string name="requested">requested</string>
 </resources>

@@ -11,6 +11,7 @@ import com.androidnetworking.interfaces.JSONObjectRequestListener;
 import com.rtech.threadly.BuildConfig;
 import com.rtech.threadly.constants.SharedPreferencesKeys;
 import com.rtech.threadly.core.Core;
+import com.rtech.threadly.interfaces.NetworkCallBacks.NetworkCallbackInterfaceJsonObject;
 import com.rtech.threadly.interfaces.NetworkCallbackInterface;
 import com.rtech.threadly.interfaces.NetworkCallbackInterfaceWithJsonObjectDelivery;
 import com.rtech.threadly.constants.ApiEndPoints;
@@ -53,6 +54,71 @@ public class FollowManager {
 
                 }
             });
+
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    public void  follow(String userid, NetworkCallbackInterfaceJsonObject callbackIterface) {
+        String url=ApiEndPoints.FOLLOW_V2;
+
+        JSONObject packet = new JSONObject();
+        try {
+            packet.put("followingid", userid);
+
+            AndroidNetworking.post(url)
+                    .setPriority(Priority.HIGH)
+                    .addApplicationJsonBody(packet)
+                    .addHeaders("Authorization", "Bearer "+getToken()).build().getAsJSONObject(new JSONObjectRequestListener() {
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            callbackIterface.onSuccess(response);
+
+                        }
+
+
+                        @Override
+                        public void onError(ANError anError) {
+                            if(BuildConfig.DEBUG){
+                                Log.d("ApiError", "Error"+ anError.getMessage());
+
+                            }
+                            callbackIterface.onError(anError.getErrorCode());
+
+                        }
+                    });
+
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    public void cancelFollowRequest(String userid,NetworkCallbackInterface callbackInterface){
+        String url=ApiEndPoints.CANCEL_FOLLOW_REQUEST;
+        JSONObject packet = new JSONObject();
+        try {
+            packet.put("followingid", userid);
+
+            AndroidNetworking.post(url)
+                    .setPriority(Priority.HIGH)
+                    .addApplicationJsonBody(packet)
+                    .addHeaders("Authorization", "Bearer "+getToken()).build().getAsJSONObject(new JSONObjectRequestListener() {
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            callbackInterface.onSuccess();
+
+                        }
+
+
+                        @Override
+                        public void onError(ANError anError) {
+                            if(BuildConfig.DEBUG){
+                                Log.d("ApiError", "Error"+ anError.getMessage());
+
+                            }
+                            callbackInterface.onError(anError.getMessage());
+
+                        }
+                    });
 
         } catch (JSONException e) {
             throw new RuntimeException(e);
