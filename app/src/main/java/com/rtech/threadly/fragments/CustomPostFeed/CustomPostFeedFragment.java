@@ -17,7 +17,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.rtech.threadly.adapters.postsAdapters.AllTypePostFeedAdapter.AllTypePostFeedAdapter;
+import com.rtech.threadly.adapters.postsAdapters.AllTypePostFeedAdapter;
 import com.rtech.threadly.databinding.FragmentCustomPostFeedBinding;
 import com.rtech.threadly.models.ExtendedPostModel;
 import com.rtech.threadly.utils.ExoplayerUtil;
