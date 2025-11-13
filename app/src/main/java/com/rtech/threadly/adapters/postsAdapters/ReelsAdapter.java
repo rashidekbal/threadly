@@ -55,6 +55,7 @@ import com.rtech.threadly.utils.DownloadManagerUtil;
 import com.rtech.threadly.utils.ExoplayerUtil;
 import com.rtech.threadly.utils.LoggerUtil;
 import com.rtech.threadly.utils.PostCommentsViewerUtil;
+import com.rtech.threadly.utils.PostShareHelperUtil;
 import com.rtech.threadly.utils.ReUsableFunctions;
 import com.rtech.threadly.viewmodels.MessageAbleUsersViewModel;
 
@@ -209,9 +210,10 @@ public class ReelsAdapter extends RecyclerView.Adapter<ReelsAdapter.viewHolder> 
 
 
         // Set like button image if already liked
-        if(dataList.get(position).isliked){
+        if(isLikeByMe(position)){
             holder.like_btn_image.setImageResource(R.drawable.red_heart_active_icon);
-        }else{
+        }
+        else{
             holder.like_btn_image.setImageResource(R.drawable.heart_inactive_icon_white);
         }
 
@@ -295,7 +297,7 @@ public class ReelsAdapter extends RecyclerView.Adapter<ReelsAdapter.viewHolder> 
 
 
         holder.share_icon_white.setOnClickListener(V->{
-            OpenPostShareDialog(dataList.get(position));
+            PostShareHelperUtil.OpenPostShareDialog(dataList.get(position),context);
 
         });
 
@@ -306,6 +308,10 @@ public class ReelsAdapter extends RecyclerView.Adapter<ReelsAdapter.viewHolder> 
 
 
 
+    }
+
+    private boolean isLikeByMe(int position) {
+        return dataList.get(position).getIsliked();
     }
 
     private void setOptionBtnBehaviour(BottomSheetDialog OptionsDialog, int position) {
@@ -443,89 +449,7 @@ public class ReelsAdapter extends RecyclerView.Adapter<ReelsAdapter.viewHolder> 
             holder.likes_count_text.setText(Integer.toString(likes.intValue()));
         }
     }
-    private void OpenPostShareDialog(Posts_Model post){
-        ArrayList<UsersModel> selectedUsers=new ArrayList<>();
-        BottomSheetDialog shareBottomSheet=new BottomSheetDialog(context,R.style.TransparentBottomSheet);
-        shareBottomSheet.setContentView(R.layout.post_share_layout);
-        AppCompatButton sendBtn=shareBottomSheet.findViewById(R.id.sendBtn);
-        RelativeLayout actionButtons_rl=shareBottomSheet.findViewById(R.id.actionButtons_rl);
-        ImageView search_btn=shareBottomSheet.findViewById(R.id.search_btn);
-        EditText search_edit_text=shareBottomSheet.findViewById(R.id.search_edit_text);
-        ImageView suggestUsersBtn=shareBottomSheet.findViewById(R.id.suggestUsersBtn);
-        RecyclerView Users_List_recyclerView=shareBottomSheet.findViewById(R.id.Users_List_recyclerView);
-        LinearLayout Story_add_ll_btn=shareBottomSheet.findViewById(R.id.Story_add_ll_btn);
-        ProgressBar progressBar=shareBottomSheet.findViewById(R.id.progressBar);
-        GridLayoutManager gridLayoutManager=new GridLayoutManager(context,3);
-        Users_List_recyclerView.setLayoutManager(gridLayoutManager);
-        ArrayList<UsersModel> usersModelList=new ArrayList<>();
-        UsersShareSheetGridAdapter adapter=new UsersShareSheetGridAdapter(context, usersModelList, new OnUserSelectedListener() {
-            @Override
-            public void onSelect(UsersModel model) {
-                if(selectedUsers.contains(model)){
-                    selectedUsers.remove(model);
-                }else{
-                    selectedUsers.add(model);
-                }
-                assert actionButtons_rl != null;
-                if(selectedUsers.isEmpty()){
-                    actionButtons_rl.setVisibility(View.VISIBLE);
-                    assert sendBtn != null;
-                    sendBtn.setVisibility(View.GONE);
 
-                }else{
-                    actionButtons_rl.setVisibility(View.GONE);
-                    assert sendBtn != null;
-                    sendBtn.setVisibility(View.VISIBLE);
-                }
-
-            }
-        });
-        Users_List_recyclerView.setAdapter(adapter);
-
-
-
-        MessageAbleUsersViewModel messageAbleUsersViewModel=new ViewModelProvider((AppCompatActivity)context).get(MessageAbleUsersViewModel.class);
-        messageAbleUsersViewModel.getUsersList().observe((AppCompatActivity) context, new Observer<ArrayList<UsersModel>>() {
-            @Override
-            public void onChanged(ArrayList<UsersModel> usersModels) {
-                if(usersModels.isEmpty()){
-                    Toast.makeText(context, "No users found", Toast.LENGTH_SHORT).show();
-
-                }else{
-                    usersModelList.clear();
-                    usersModelList.addAll(usersModels);
-                    adapter.notifyDataSetChanged();
-
-                }
-                progressBar.setVisibility(View.GONE);
-
-            }
-        });
-
-        //send btn action
-        sendBtn.setOnClickListener(v->{
-            int postid=post.postId;
-            if(!selectedUsers.isEmpty()){
-                for(UsersModel model:selectedUsers){
-                    try {
-                        ReUsableFunctions.ShowToast(" "+postid);
-                        Core.sendCtoS(model.getUuid(),"", TypeConstants.POST,post.postUrl,postid,"sent a reel by "+post.username);
-
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-                selectedUsers.clear();
-                sendBtn.setVisibility(View.GONE);
-                actionButtons_rl.setVisibility(View.VISIBLE);
-
-            }
-            shareBottomSheet.dismiss();
-        });
-
-        shareBottomSheet.show();
-
-    }
 
 
 }
