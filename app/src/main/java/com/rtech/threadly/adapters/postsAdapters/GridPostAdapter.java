@@ -16,6 +16,7 @@ import com.rtech.threadly.R;
 import com.rtech.threadly.models.Posts_Model;
 import com.rtech.threadly.models.Preview_Post_model;
 import com.rtech.threadly.interfaces.Post_fragmentSetCallback;
+import com.rtech.threadly.utils.CoilUtil;
 
 import java.util.ArrayList;
 
@@ -41,7 +42,8 @@ public class GridPostAdapter extends RecyclerView.Adapter<GridPostAdapter.ViewHo
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, @SuppressLint("RecyclerView") int position) {
-        Glide.with(context).load(dataList.get(position).postUrl).placeholder(R.drawable.post_placeholder).thumbnail(0.1f).into(holder.imageView);
+        String previewUrl=dataList.get(position).postUrl.replace(".mp4",".jpg");
+                CoilUtil.loadImage(holder.imageView,previewUrl);
         holder.imageView.setOnClickListener(v -> post_fragmentSetCallback.openPostFragment(dataList,position));
 
     }

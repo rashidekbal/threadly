@@ -160,16 +160,19 @@ public class ReUsableFunctions {
     public static void resendPendingMessages(){
         Executors.newSingleThreadExecutor().execute(() -> {
             List<MessageSchema> pendingToSendMessagesList=DataBase.getInstance().MessageDao().getPendingToSendMessages();
-            if(!pendingToSendMessagesList.isEmpty()){
-                for(MessageSchema msg:pendingToSendMessagesList){
+            if(pendingToSendMessagesList.isEmpty()){return ;}
 
+                for(MessageSchema msg:pendingToSendMessagesList){
+                    if(msg.getPostLink()==null){
+                     continue ;
+                    }
                     try {
                         Core.sendCtoS(msg);
                     } catch (JSONException e) {
                         throw new RuntimeException(e);
                     }
                 }
-            }
+
         });
     }
 
