@@ -13,6 +13,7 @@ import com.rtech.threadly.BuildConfig;
 import com.rtech.threadly.constants.ApiEndPoints;
 import com.rtech.threadly.constants.SharedPreferencesKeys;
 import com.rtech.threadly.core.Core;
+import com.rtech.threadly.interfaces.NetworkCallBacks.NetworkCallbackInterfaceJsonObject;
 import com.rtech.threadly.interfaces.NetworkCallbackInterfaceWithJsonObjectDelivery;
 
 import org.json.JSONObject;
@@ -27,7 +28,7 @@ public class ProfileManager {
        return loginInfo.getString(SharedPreferencesKeys.JWT_TOKEN,"null");
     }
 
-    public final void GetProfile(String Userid, NetworkCallbackInterfaceWithJsonObjectDelivery callback){
+    public final void GetProfile(String Userid, NetworkCallbackInterfaceJsonObject callback){
         String url= ApiEndPoints.GET_PROFILE.concat(Userid);
         AndroidNetworking.get(url).setPriority(Priority.HIGH)
                 .addHeaders("Authorization", "Bearer "+getToken())
@@ -45,7 +46,7 @@ public class ProfileManager {
                             Log.d("ApiError", "Error"+ anError.getMessage());
 
                         }
-                        callback.onError(anError.getMessage());
+                        callback.onError(anError.getErrorCode());
 
                     }
                 });

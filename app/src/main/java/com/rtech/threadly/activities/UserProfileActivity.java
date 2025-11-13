@@ -24,12 +24,11 @@ import com.bumptech.glide.Glide;
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.rtech.threadly.R;
 import com.rtech.threadly.adapters.postsAdapters.GridPostAdapter;
-import com.rtech.threadly.constants.SharedPreferencesKeys;
 import com.rtech.threadly.core.Core;
 import com.rtech.threadly.databinding.ActivityUserProfileBinding;
 import com.rtech.threadly.fragments.CustomPostFeed.CustomPostFeedFragment;
+import com.rtech.threadly.interfaces.NetworkCallBacks.NetworkCallbackInterfaceJsonObject;
 import com.rtech.threadly.interfaces.NetworkCallbackInterface;
-import com.rtech.threadly.interfaces.NetworkCallbackInterfaceWithJsonObjectDelivery;
 import com.rtech.threadly.interfaces.Post_fragmentSetCallback;
 import com.rtech.threadly.models.ExtendedPostModel;
 import com.rtech.threadly.models.Posts_Model;
@@ -37,6 +36,7 @@ import com.rtech.threadly.network_managers.FollowManager;
 import com.rtech.threadly.network_managers.PostsManager;
 import com.rtech.threadly.network_managers.ProfileManager;
 import com.rtech.threadly.models.Profile_Model;
+import com.rtech.threadly.utils.PreferenceUtil;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -74,8 +74,7 @@ public class UserProfileActivity extends AppCompatActivity {
         init();
         //get profile data
         getProfileData();
-        // get user posts
-        getPosts(intentData.getStringExtra("userid"));
+
        mainXml.swipeRefresh.setOnRefreshListener(this::getProfileData);
         //on click listeners for followers and following text views
         mainXml.followersCountText.setOnClickListener(v -> {
@@ -161,7 +160,7 @@ public class UserProfileActivity extends AppCompatActivity {
     }
 
     private void getProfileData(){
-        profileManager.GetProfile(intentData.getStringExtra("userid"), new NetworkCallbackInterfaceWithJsonObjectDelivery() {
+        profileManager.GetProfile(intentData.getStringExtra("userid"), new NetworkCallbackInterfaceJsonObject() {
             @Override
             public void onSuccess(JSONObject response) {
 
@@ -180,7 +179,8 @@ public class UserProfileActivity extends AppCompatActivity {
                             ,object.getInt("Following")
                             ,object.getInt("Posts")
                             ,object.getInt("isFollowedByUser"),
-                            object.getInt("isFollowingUser"));
+                            object.getInt("isFollowingUser"),
+                            object.getInt("isPrivate")==1);
 
                     setData(profileData);
 
@@ -193,8 +193,8 @@ public class UserProfileActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onError(String err) {
-                Log.d("error_loadingProfile",  err);
+            public void onError(int errorCode) {
+                Log.d("error_loadingProfile", Integer.toString(errorCode));
 
             }
         });
@@ -211,7 +211,7 @@ public class UserProfileActivity extends AppCompatActivity {
         mainXml.followingCountText.setText(String.valueOf(data.following));
         mainXml.bioText.setText(data.bio);
         Glide.with(getApplicationContext()).load(data.profilepic).placeholder(R.drawable.blank_profile).circleCrop().into(mainXml.profileImg);
-if(data.userid.equals(loginInfo.getString(SharedPreferencesKeys.USER_ID,"null"))){
+if(data.userid.equals(PreferenceUtil.getUserId())){
     ViewGroup.LayoutParams layoutParams=mainXml.shareProfileBtn.getLayoutParams();
     layoutParams.width=ViewGroup.LayoutParams.MATCH_PARENT;
     mainXml.shareProfileBtn.setLayoutParams(layoutParams);
@@ -220,15 +220,27 @@ if(data.userid.equals(loginInfo.getString(SharedPreferencesKeys.USER_ID,"null"))
     mainXml.shareProfileBtn.setVisibility(ImageView.VISIBLE);
     mainXml.followsMsgText.setVisibility(TextView.GONE);
     mainXml.NotFollowsMsgText.setVisibility(TextView.GONE);
+    // get user posts
+    getPosts(intentData.getStringExtra("userid"));
 
 
 }else{
     if(data.isFollowedByMe){
         mainXml.unfollowBtn.setVisibility(View.VISIBLE);
         mainXml.followBtn.setVisibility(View.GONE);
+        // get user posts
+        getPosts(intentData.getStringExtra("userid"));
     }else{
         mainXml.unfollowBtn.setVisibility(View.GONE);
         mainXml.followBtn.setVisibility(View.VISIBLE);
+        if(data.isPrivate()){
+            mainXml.accountPrivateBanner.setVisibility(View.VISIBLE);
+            mainXml.postsShimmer.setVisibility(View.GONE);
+            mainXml.lockIcon.setVisibility(View.VISIBLE);
+        }else {
+            mainXml.accountPrivateBanner.setVisibility(View.GONE);
+        }
+
     }
     if(data.isFollowingMe){
         mainXml.followsMsgText.setVisibility(View.VISIBLE);
@@ -238,6 +250,8 @@ if(data.userid.equals(loginInfo.getString(SharedPreferencesKeys.USER_ID,"null"))
         mainXml.followsMsgText.setVisibility(View.GONE);
         mainXml.NotFollowsMsgText.setVisibility(View.VISIBLE);
     }
+
+
 
 
     mainXml.followBtn.setOnClickListener(v -> {
@@ -296,7 +310,7 @@ if(data.userid.equals(loginInfo.getString(SharedPreferencesKeys.USER_ID,"null"))
 
     }
     private void getPosts(String userId){
-        postsManager.getUserPosts(userId, new NetworkCallbackInterfaceWithJsonObjectDelivery() {
+        postsManager.getUserPosts(userId, new NetworkCallbackInterfaceJsonObject() {
             @SuppressLint("NotifyDataSetChanged")
             @Override
             public void onSuccess(JSONObject response) {
@@ -332,8 +346,8 @@ if(data.userid.equals(loginInfo.getString(SharedPreferencesKeys.USER_ID,"null"))
             }
 
             @Override
-            public void onError(String err) {
-                Log.d("PostLoadingErr", err);
+            public void onError(int errorCode) {
+                Log.d("PostLoadingErr",Integer.toString(errorCode));
 
             }
         });

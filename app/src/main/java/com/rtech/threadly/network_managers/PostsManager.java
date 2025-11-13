@@ -11,6 +11,7 @@ import com.androidnetworking.interfaces.UploadProgressListener;
 import com.rtech.threadly.BuildConfig;
 import com.rtech.threadly.constants.SharedPreferencesKeys;
 import com.rtech.threadly.core.Core;
+import com.rtech.threadly.interfaces.NetworkCallBacks.NetworkCallbackInterfaceJsonObject;
 import com.rtech.threadly.interfaces.NetworkCallbackInterface;
 import com.rtech.threadly.interfaces.NetworkCallbackInterfaceWithJsonObjectDelivery;
 import com.rtech.threadly.constants.ApiEndPoints;
@@ -104,7 +105,7 @@ public class PostsManager {
                     }
                 });
     }
-    public void getUserPosts(String userId,NetworkCallbackInterfaceWithJsonObjectDelivery callbackInterface)
+    public void getUserPosts(String userId, NetworkCallbackInterfaceJsonObject callbackInterface)
     {
 
         String url=ApiEndPoints.GET_USER_POSTS.concat(userId);
@@ -124,7 +125,7 @@ public class PostsManager {
                             Log.d("ApiError", "Error"+ anError.getMessage());
 
                         }
-                        callbackInterface.onError(anError.getErrorDetail());
+                        callbackInterface.onError(anError.getErrorCode());
 
                     }
                 });
