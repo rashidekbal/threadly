@@ -246,6 +246,7 @@ public homeFragment(){
             public void onRefresh() {
                 mainXml.swipeRefresh.setEnabled(false);
                 postsViewModel.loadFeedPosts();
+                suggestUsersViewModel.loadSuggestedUsers();
                 storiesViewModel.loadStories();
                 storiesViewModel.loadMyStories();
 

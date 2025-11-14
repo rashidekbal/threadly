@@ -31,8 +31,10 @@ public class NotificationSchema {
     boolean isFollowed;
     @ColumnInfo(name = "isViewed")
     boolean isViewed;
+    @ColumnInfo(name = "isApproved")
+    boolean isApprovedByMe;
 
-    public NotificationSchema(int notificationId, String notificationType, int insertId, String userId, String username, String profilePic, int postId,int commentId, String timeStamp, String postLink, boolean isFollowed, boolean isViewed) {
+    public NotificationSchema(int notificationId, String notificationType, int insertId, String userId, String username, String profilePic, int postId,int commentId, String timeStamp, String postLink, boolean isFollowed, boolean isViewed,boolean isApprovedByMe) {
         this.notificationId = notificationId;
         this.notificationType = notificationType;
         this.insertId = insertId;
@@ -45,8 +47,9 @@ public class NotificationSchema {
         this.isFollowed = isFollowed;
         this.isViewed = isViewed;
         this.commentId=commentId;
+        this.isApprovedByMe=isApprovedByMe;
     }
-
+  //this is especially for follow requests
     @Ignore
     public NotificationSchema(String notificationType, int insertId, String userId, String profilePic, String username, int postId,int commentId, String postLink, boolean isFollowed,boolean isViewed,String timestamp) {
         this.notificationType = notificationType;
@@ -60,6 +63,18 @@ public class NotificationSchema {
         this.isViewed=isViewed;
         this.timeStamp=timestamp;
         this.commentId=commentId;
+    }
+    @Ignore
+    public NotificationSchema(String notificationType, int insertId, String userId, String profilePic, String username, boolean isFollowed,boolean isViewed,String timestamp,boolean isApprovedByMe) {
+        this.notificationType = notificationType;
+        this.insertId = insertId;
+        this.userId = userId;
+        this.profilePic = profilePic;
+        this.username = username;
+        this.isFollowed = isFollowed;
+        this.isViewed=isViewed;
+        this.timeStamp=timestamp;
+        this.isApprovedByMe=isApprovedByMe;
     }
 
     public int getNotificationId() {
@@ -124,5 +139,13 @@ public class NotificationSchema {
 
     public void setCommentId(int commentId) {
         this.commentId = commentId;
+    }
+
+    public boolean isApprovedByMe() {
+        return isApprovedByMe;
+    }
+
+    public void setApprovedByMe(boolean approvedByMe) {
+        isApprovedByMe = approvedByMe;
     }
 }

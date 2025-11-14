@@ -99,9 +99,60 @@ public class FcmService extends FirebaseMessagingService {
 
                 LogOutSignalHandler(message);
                 break;
+                
+            case "newFollowRequest":
+                if(ReUsableFunctions.isLoggedIn()){  newFollowRequestNotificationHandler(message);}
 
+                break;
+            case "followRequestCancel":
+                if(ReUsableFunctions.isLoggedIn()){  newFollowRequestCancelNotificationHandler(message);}
+                break;
+            case "followAccepted":
+                if(ReUsableFunctions.isLoggedIn()){  FollowRequestAcceptedNotificationHandler(message);}
+                break;
         }
        }
+
+    private void FollowRequestAcceptedNotificationHandler(RemoteMessage message) {
+        if(!Objects.requireNonNull(message.getData().get("ReceiverUserId")).equals(PreferenceUtil.getUserId())){return;}
+        String userId=message.getData().get("userid");
+        String username=message.getData().get("username");
+        String profile=message.getData().get("profile");
+        boolean isFollowed=Boolean.parseBoolean(message.getData().get("isFollowed"));
+        ReUsableFunctions.addNotification(new NotificationSchema(Constants.FOLLOW_ACCEPTED_NOTIFICATION.toString(),
+                0,
+                userId,
+                profile,
+                username,
+                isFollowed,
+                false,
+                ReUsableFunctions.getTimestamp(),
+                true));
+    }
+
+    private void newFollowRequestNotificationHandler(RemoteMessage message) {
+        if(!Objects.requireNonNull(message.getData().get("ReceiverUserId")).equals(PreferenceUtil.getUserId())) {return ;}
+        String userId=message.getData().get("userid");
+        String username=message.getData().get("username");
+        String profile=message.getData().get("profile");
+        boolean isFollowed=Boolean.parseBoolean(message.getData().get("isFollowed"));
+        ReUsableFunctions.addNotification(new NotificationSchema(Constants.FOLLOW_REQUEST_NOTIFICATION.toString(),
+                0,
+                userId,
+                profile,
+                username,
+                isFollowed,
+                false,
+                ReUsableFunctions.getTimestamp(),
+                false));
+    }
+    private void newFollowRequestCancelNotificationHandler(RemoteMessage message) {
+        if(!Objects.requireNonNull(message.getData().get("ReceiverUserId")).equals(PreferenceUtil.getUserId())) {return ;}
+        String userId=message.getData().get("userId");
+        Executors.newSingleThreadExecutor().execute(() -> DataBase.getInstance().notificationDao().deleteFollowNotification(userId,Constants.FOLLOW_REQUEST_NOTIFICATION.toString()));
+
+
+    }
 
     private void MsgUnSendHandler(RemoteMessage message) {
         if(!Objects.requireNonNull(message.getData().get("ReceiverUUId")).equals(PreferenceUtil.getUUID())) {return ;}
@@ -243,6 +294,7 @@ public class FcmService extends FirebaseMessagingService {
         if(!Objects.requireNonNull(message.getData().get("ReceiverUserId")).equals(PreferenceUtil.getUserId())){return;}
         String userId=message.getData().get("userId");
         Executors.newSingleThreadExecutor().execute(() -> DataBase.getInstance().notificationDao().deleteFollowNotification(userId,Constants.FOLLOW_NOTIFICATION.toString()));
+        Executors.newSingleThreadExecutor().execute(() -> DataBase.getInstance().notificationDao().deleteFollowNotification(userId,Constants.FOLLOW_REQUEST_NOTIFICATION.toString()));
 
     }
 }

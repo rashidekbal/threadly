@@ -20,4 +20,10 @@ public class PreferenceUtil {
         return Core.getPreference().getString(SharedPreferencesKeys.USER_PROFILE_PIC,"null");
 
     }
+    public static Boolean isPrivate(){
+        return Core.getPreference().getBoolean(SharedPreferencesKeys.IS_PRIVATE,false);
+    }
+    public static void setPrivate(boolean isPrivate){
+        Core.getPreference().edit().putBoolean(SharedPreferencesKeys.IS_PRIVATE,isPrivate);
+    }
 }

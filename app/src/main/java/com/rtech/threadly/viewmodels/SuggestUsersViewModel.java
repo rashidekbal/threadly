@@ -33,7 +33,7 @@ public class SuggestUsersViewModel extends AndroidViewModel {
         return profileModelMutableLiveData;
     }
 
-    private void loadSuggestedUsers() {
+    public void loadSuggestedUsers() {
         UserSuggestionManager.getSuggestedUsers(new NetworkCallbackInterfaceWithJsonObjectDelivery() {
             @Override
             public void onSuccess(JSONObject response) {

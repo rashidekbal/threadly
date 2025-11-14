@@ -15,6 +15,8 @@ import com.rtech.threadly.interfaces.NetworkCallBacks.NetworkCallbackInterfaceJs
 import com.rtech.threadly.interfaces.NetworkCallbackInterface;
 import com.rtech.threadly.interfaces.NetworkCallbackInterfaceWithJsonObjectDelivery;
 import com.rtech.threadly.constants.ApiEndPoints;
+import com.rtech.threadly.utils.PreferenceUtil;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 public class FollowManager {
@@ -59,6 +61,7 @@ public class FollowManager {
             throw new RuntimeException(e);
         }
     }
+    //new version of follow
     public void  follow(String userid, NetworkCallbackInterfaceJsonObject callbackIterface) {
         String url=ApiEndPoints.FOLLOW_V2;
 
@@ -205,5 +208,31 @@ public class FollowManager {
 
                     }
                 });
+    }
+    public void approveFollowRequest(String folowerId,NetworkCallbackInterfaceJsonObject callbackInterfaceJsonObject){
+        String Url=ApiEndPoints.ACCEPT_FOLLOW_REQUEST;
+        JSONObject packet = new JSONObject();
+        try {
+            packet.put("followerId",folowerId);
+            AndroidNetworking.post(Url)
+                    .setPriority(Priority.HIGH)
+                    .addHeaders("Authorization","Bearer "+PreferenceUtil.getJWT()).
+                    addApplicationJsonBody(packet)
+                    .build().getAsJSONObject(new JSONObjectRequestListener() {
+                        @Override
+                        public void onResponse(JSONObject jsonObject) {
+                            callbackInterfaceJsonObject.onSuccess(jsonObject);
+                        }
+
+                        @Override
+                        public void onError(ANError anError) {
+                            callbackInterfaceJsonObject.onError(anError.getErrorCode());
+                        }
+                    });
+
+
+        } catch (JSONException e) {
+            callbackInterfaceJsonObject.onError(500);
+        }
     }
 }

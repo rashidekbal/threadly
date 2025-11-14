@@ -9,4 +9,5 @@ public class SharedPreferencesKeys {
     public static final String JWT_TOKEN = "token";
     public static final String UUID="uuid";
     public static final String IS_FCM_TOKEN_UPLOADED="is_fcm_token_uploaded";
+    public static final String IS_PRIVATE="isPrivate";
 }

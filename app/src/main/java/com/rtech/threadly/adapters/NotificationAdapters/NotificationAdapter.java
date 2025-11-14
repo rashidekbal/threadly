@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.AppCompatButton;
+import androidx.media3.common.util.NotificationUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -18,9 +19,12 @@ import com.rtech.threadly.RoomDb.DataBase;
 import com.rtech.threadly.RoomDb.schemas.NotificationSchema;
 import com.rtech.threadly.activities.PostActivity;
 import com.rtech.threadly.constants.Constants;
+import com.rtech.threadly.interfaces.NetworkCallBacks.NetworkCallbackInterfaceJsonObject;
 import com.rtech.threadly.interfaces.NetworkCallbackInterface;
 import com.rtech.threadly.network_managers.FollowManager;
 import com.rtech.threadly.utils.ReUsableFunctions;
+
+import org.json.JSONObject;
 
 import java.util.List;
 import java.util.concurrent.Executors;
@@ -33,6 +37,8 @@ public class NotificationAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     int FOLLOW_NOTIFICATION_TYPE=0;
     int POST_LIKE_NOTIFICATION_TYPE=1;
     int COMMENT_LIKE_NOTIFICATION_TYPE=2;
+    int FOLLOW_REQUEST_NOTIFICATION_TYPE=3;
+    int FOLLOW_ACCEPTED_NOTIFICATION_TYPE=4;
 
 
     public NotificationAdapter(List<NotificationSchema> dataSource, Context context) {
@@ -47,7 +53,12 @@ public class NotificationAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             return FOLLOW_NOTIFICATION_TYPE;
         }else if(dataSource.get(position).getNotificationType().equals(Constants.POST_LIKE_NOTIFICATION.toString())){
             return POST_LIKE_NOTIFICATION_TYPE;
-        }else{
+        } else if (dataSource.get(position).getNotificationType().equals(Constants.FOLLOW_REQUEST_NOTIFICATION.toString())) {
+            return FOLLOW_REQUEST_NOTIFICATION_TYPE;
+
+        }else if(dataSource.get(position).getNotificationType().equals(Constants.FOLLOW_ACCEPTED_NOTIFICATION.toString())){
+            return FOLLOW_ACCEPTED_NOTIFICATION_TYPE;
+        } else{
             return COMMENT_LIKE_NOTIFICATION_TYPE;
         }
     }
@@ -63,7 +74,13 @@ public class NotificationAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         } else if (viewType==POST_LIKE_NOTIFICATION_TYPE) {
             return new PostLikeViewHolder(inflater.inflate(R.layout.post_like_card_layout,parent,false));
 
-        }else{
+        }else if(viewType==FOLLOW_REQUEST_NOTIFICATION_TYPE) {
+            return new FollowRequestViewHolder(inflater.inflate(R.layout.follow_request_card,parent,false));
+
+        }else if(viewType==FOLLOW_ACCEPTED_NOTIFICATION_TYPE){
+            return new FollowRequestAcceptedViewHolder(inflater.inflate(R.layout.follow_request_card,parent,false));
+        }
+        else{
             return new CommentLikeViewHolder(inflater.inflate(R.layout.comment_liked_notification_card,parent,false));
 
 
@@ -73,7 +90,8 @@ public class NotificationAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
     @SuppressLint("SetTextI18n")
     @Override
-    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewholder, @SuppressLint("RecyclerView") int position) {
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewholder, @SuppressLint("RecyclerView") int rawPositon) {
+        int position=viewholder.getLayoutPosition();
         if(viewholder instanceof FollowViewHolder){
             //follow view holder
             FollowViewHolder holder=(FollowViewHolder) viewholder;
@@ -115,7 +133,8 @@ public class NotificationAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             }
 
 
-        }else if(viewholder instanceof PostLikeViewHolder){
+        }
+        else if(viewholder instanceof PostLikeViewHolder){
             //post like viewHolder
             PostLikeViewHolder holder=(PostLikeViewHolder) viewholder;
             Glide.with(context).load(dataSource.get(position).getProfilePic()).placeholder(R.drawable.blank_profile).circleCrop().into(holder.User_profile);
@@ -128,7 +147,13 @@ public class NotificationAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
 
 
-        }else{
+        }else if(viewholder instanceof FollowRequestViewHolder){
+            BindFollowRequestViewHolder((FollowRequestViewHolder) viewholder,position);
+
+        }else  if(viewholder instanceof FollowRequestAcceptedViewHolder){
+            BindFollowRequestAcceptedViewHolder((FollowRequestAcceptedViewHolder) viewholder,position);
+        }
+        else{
             CommentLikeViewHolder holder=(CommentLikeViewHolder) viewholder;
             Glide.with(context).load(dataSource.get(position).getProfilePic()).placeholder(R.drawable.blank_profile).circleCrop().into(holder.User_profile);
             holder.userId_text.setText(dataSource.get(position).getUsername()+" like your Comment ");
@@ -138,6 +163,49 @@ public class NotificationAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             holder.postPreviewImg.setOnClickListener(v-> context.startActivity(new Intent(context, PostActivity.class).putExtra("postid",dataSource.get(position).getPostId())));
 
         }
+
+    }
+
+    private void BindFollowRequestViewHolder(@NonNull FollowRequestViewHolder holder, int position) {
+        Glide.with(context).load(dataSource.get(position).getProfilePic()).placeholder(R.drawable.blank_profile).circleCrop().into(holder.User_profile);
+        holder.User_profile.setOnClickListener(v-> ReUsableFunctions.openProfile(context,dataSource.get(position).getUserId()));
+        if(dataSource.get(position).isApprovedByMe()){
+           holder.approveBtn.setVisibility(View.GONE);
+            holder.userId_text.setText(dataSource.get(position).getUsername()+" started following you");
+        }else{
+            holder.approveBtn.setVisibility(View.VISIBLE);
+            holder.userId_text.setText(dataSource.get(position).getUsername()+" requested to follow you");
+        }
+        holder.approveBtn.setOnClickListener(v -> {
+            holder.approveBtn.setEnabled(false);
+           holder.approveBtn.setVisibility(View.GONE);
+            followManager.approveFollowRequest(dataSource.get(position).getUserId(), new NetworkCallbackInterfaceJsonObject() {
+                @Override
+                public void onSuccess(JSONObject response) {
+                    Executors.newSingleThreadExecutor().execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            DataBase.getInstance().notificationDao().markFollowApprovalStatus(true,dataSource.get(position).getNotificationId());
+                        }
+                    });
+
+                }
+
+                @Override
+                public void onError(int errorCode) {
+                    ReUsableFunctions.ShowToast("something went wrong code: "+errorCode );
+                    holder.approveBtn.setEnabled(true);
+                    holder.approveBtn.setVisibility(View.VISIBLE);
+                }
+            });
+        });
+
+
+    }
+    private void BindFollowRequestAcceptedViewHolder(@NonNull FollowRequestAcceptedViewHolder holder, int position) {
+        Glide.with(context).load(dataSource.get(position).getProfilePic()).placeholder(R.drawable.blank_profile).circleCrop().into(holder.User_profile);
+        holder.User_profile.setOnClickListener(v-> ReUsableFunctions.openProfile(context,dataSource.get(position).getUserId()));
+        holder.userId_text.setText(dataSource.get(position).getUsername()+" accepted your follow requested");
 
     }
 
@@ -175,6 +243,29 @@ TextView userId_text;
             User_profile=itemView.findViewById(R.id.User_profile);
             userId_text=itemView.findViewById(R.id.userId_text);
             postPreviewImg=itemView.findViewById(R.id.postPreviewImg);
+        }
+    }
+    private static class FollowRequestViewHolder extends  RecyclerView.ViewHolder{
+        ImageView User_profile;
+        AppCompatButton approveBtn;
+        TextView userId_text;
+        public FollowRequestViewHolder(@NonNull View itemView) {
+            super(itemView);
+            User_profile=itemView.findViewById(R.id.User_profile);
+            userId_text=itemView.findViewById(R.id.userId_text);
+            approveBtn=itemView.findViewById(R.id.ApproveBtn);
+        }
+    }
+    private static class FollowRequestAcceptedViewHolder extends  RecyclerView.ViewHolder{
+        ImageView User_profile;
+        AppCompatButton approveBtn;
+        TextView userId_text;
+        public FollowRequestAcceptedViewHolder(@NonNull View itemView) {
+            super(itemView);
+            User_profile=itemView.findViewById(R.id.User_profile);
+            userId_text=itemView.findViewById(R.id.userId_text);
+            approveBtn=itemView.findViewById(R.id.ApproveBtn);
+            approveBtn.setVisibility(View.GONE);
         }
     }
 }

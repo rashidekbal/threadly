@@ -24,6 +24,7 @@ public class ApiEndPoints {
     public static final String FOLLOW_V2 = baseUrl + "/follow/follow/V2";
     public static final String UNFOLLOW = baseUrl + "/follow/unfollow/";
     public static final String CANCEL_FOLLOW_REQUEST= baseUrl + "/follow/cancelFollowRequest/";
+    public static final String ACCEPT_FOLLOW_REQUEST= baseUrl + "/follow/acceptFollowRequest/";
     public static final String GET_FOLLOWERS=baseUrl+"/follow/getFollowers/";
     public static final String GET_FOLLOWINGS=baseUrl+"/follow/getFollowings/";
 
@@ -98,6 +99,11 @@ public class ApiEndPoints {
     public static final String GET_ALL_CHATS=baseUrl+"/messages/getAllChats/";
     public static final String DELETE_MSG_WITH_ROLE=baseUrl+"/messages/deleteMessageForMe/";
     public static final String UN_SEND_MESSAGE=baseUrl+"/messages/unSendMessage/";
+
+    //Account privacy routes
+    public static final String SET_PRIVATE=baseUrl+"/privacy/setPrivate/";
+    public static final String SET_PUBLIC=baseUrl+"/privacy/setPublic/";
+
 
 
 

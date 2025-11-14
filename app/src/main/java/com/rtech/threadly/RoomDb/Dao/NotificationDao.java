@@ -30,5 +30,7 @@ public interface NotificationDao {
     void markedFollowState(int state,int notificationId);
     @Query("delete from notification_schema where userId=:userId and commentId=:commentId")
     void deleteCommentLikeNotification(String userId,int commentId);
+    @Query("update notification_schema set isApproved=:isApproved where notificationId=:notificationId")
+    void markFollowApprovalStatus(boolean isApproved,int notificationId);
 
 }

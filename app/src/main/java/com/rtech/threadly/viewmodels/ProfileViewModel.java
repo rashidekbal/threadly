@@ -58,7 +58,10 @@ public class ProfileViewModel extends AndroidViewModel {
                             ,object.getInt("followersCount")
                             ,object.getInt("followingCount")
                             ,object.getInt("PostsCount")
-                            ,0,0);
+                            ,0,
+                            0,
+                            object.getInt("isPrivate")==1,
+                            true);
                     profileLiveData.postValue(userdata);
                 } catch (JSONException e) {
                     profileLiveData.postValue(null);

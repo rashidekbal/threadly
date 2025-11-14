@@ -13,15 +13,20 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.rtech.threadly.R;
 import com.rtech.threadly.databinding.ActivitySettingsBinding;
 import com.rtech.threadly.fragments.settingFragments.PrivacySetting_fragment;
 import com.rtech.threadly.fragments.settingFragments.Setting_main_fragments;
 import com.rtech.threadly.interfaces.FragmentItemClickInterface;
+import com.rtech.threadly.viewmodels.ProfileViewModel;
+
+import java.security.Provider;
 
 public class SettingsActivity extends AppCompatActivity {
     ActivitySettingsBinding mainXml;
+    ProfileViewModel profileViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,7 +42,8 @@ public class SettingsActivity extends AppCompatActivity {
         Window window = getWindow();
         window.getDecorView().setSystemUiVisibility(0); // clear light status flag
         window.setStatusBarColor(Color.BLACK); // or any dark color you're using
-
+        profileViewModel= new ViewModelProvider(this).get(ProfileViewModel.class);
+        profileViewModel.loadProfile();
 
         openMain();
         getSupportFragmentManager().addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {

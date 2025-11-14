@@ -204,6 +204,9 @@ public class UserProfileActivity extends AppCompatActivity {
     }
 
     private void setData(Profile_Model data){
+        mainXml.followBtn.setVisibility(View.GONE);
+        mainXml.requestCancelBtn.setVisibility(View.GONE);
+        mainXml.unfollowBtn.setVisibility(View.GONE);
         mainXml.swipeRefresh.setRefreshing(false
         );
         mainXml.useridText.setText(data.userid);
@@ -228,16 +231,16 @@ if(data.userid.equals(PreferenceUtil.getUserId())){
 
 }else{
     if(data.isFollowedByMe){
-        if(data.isFollowRequestApproved()){mainXml.unfollowBtn.setVisibility(View.VISIBLE);}
+        if(data.isFollowRequestApproved()){mainXml.unfollowBtn.setVisibility(View.VISIBLE);
+            // get user posts
+            getPosts(intentData.getStringExtra("userid"));
+        }
         else{
             mainXml.requestCancelBtn.setVisibility(View.VISIBLE);
             ifPrivateSetup(data);
         }
-        mainXml.followBtn.setVisibility(View.GONE);
-        // get user posts
-        getPosts(intentData.getStringExtra("userid"));
+
     }else{
-        mainXml.unfollowBtn.setVisibility(View.GONE);
         mainXml.followBtn.setVisibility(View.VISIBLE);
        ifPrivateSetup(data);
 
@@ -256,9 +259,7 @@ if(data.userid.equals(PreferenceUtil.getUserId())){
 
     mainXml.followBtn.setOnClickListener(v -> {
         mainXml.followBtn.setVisibility(View.GONE);
-        mainXml.followBtn.setEnabled(false);
-        mainXml.unfollowBtn.setEnabled(false);
-        mainXml.requestCancelBtn.setEnabled(false);
+
         if(data.isPrivate()){
             mainXml.requestCancelBtn.setVisibility(View.VISIBLE);
         }else{
@@ -273,11 +274,11 @@ if(data.userid.equals(PreferenceUtil.getUserId())){
                 assert data != null;
                 String status=data.optString("status");
                 if(status.equals(FollowRouteResponse.SUCCESS.toString())){
-                    mainXml.unfollowBtn.setEnabled(true);
                     return;
                 }
                 mainXml.requestCancelBtn.setVisibility(View.VISIBLE);
-                mainXml.requestCancelBtn.setEnabled(true);
+                mainXml.followBtn.setEnabled(true);
+
 
 
 
@@ -290,12 +291,10 @@ if(data.userid.equals(PreferenceUtil.getUserId())){
 
                 if(data.isPrivate()){
                     mainXml.requestCancelBtn.setVisibility(View.GONE);
-                    mainXml.requestCancelBtn.setEnabled(false);
                 }else{
                     mainXml.unfollowBtn.setVisibility(View.GONE);
                 }
                 mainXml.followBtn.setEnabled(true);
-                mainXml.unfollowBtn.setEnabled(false);
 
             }
         });
@@ -303,19 +302,19 @@ if(data.userid.equals(PreferenceUtil.getUserId())){
     mainXml.unfollowBtn.setOnClickListener(v -> {
         mainXml.unfollowBtn.setVisibility(View.GONE);
         mainXml.followBtn.setVisibility(View.VISIBLE);
-        mainXml.followBtn.setEnabled(false);
         mainXml.unfollowBtn.setEnabled(false);
         followManager.unfollow(data.userid, new NetworkCallbackInterface() {
             @Override
             public void onSuccess() {
-                mainXml.followBtn.setEnabled(true);
+                mainXml.unfollowBtn.setEnabled(true);
+                getProfileData();
+
             }
 
             @Override
             public void onError(String err) {
                 mainXml.unfollowBtn.setVisibility(View.VISIBLE);
                 mainXml.followBtn.setVisibility(View.GONE);
-                mainXml.followBtn.setEnabled(false);
                 mainXml.unfollowBtn.setEnabled(true);
 
             }
@@ -324,21 +323,19 @@ if(data.userid.equals(PreferenceUtil.getUserId())){
     });
     mainXml.requestCancelBtn.setOnClickListener(v->{
         mainXml.followBtn.setVisibility(View.VISIBLE);
-        mainXml.followBtn.setEnabled(false);
-        mainXml.unfollowBtn.setEnabled(false);
         mainXml.requestCancelBtn.setEnabled(false);
         followManager.cancelFollowRequest(data.getUserid(), new NetworkCallbackInterface() {
             @Override
             public void onSuccess() {
-                mainXml.followBtn.setEnabled(true);
-
+             mainXml.requestCancelBtn.setVisibility(View.GONE);
+             mainXml.followBtn.setVisibility(View.VISIBLE);
+             mainXml.requestCancelBtn.setEnabled(true);
             }
 
             @Override
             public void onError(String err) {
                 mainXml.requestCancelBtn.setVisibility(View.VISIBLE);
                 mainXml.followBtn.setVisibility(View.GONE);
-                mainXml.followBtn.setEnabled(false);
                 mainXml.requestCancelBtn.setEnabled(true);
 
             }
@@ -359,9 +356,11 @@ if(data.userid.equals(PreferenceUtil.getUserId())){
         if(data.isPrivate()){
             mainXml.accountPrivateBanner.setVisibility(View.VISIBLE);
             mainXml.postsShimmer.setVisibility(View.GONE);
+           mainXml.postsRecyclerView.setVisibility(View.GONE);
             mainXml.lockIcon.setVisibility(View.VISIBLE);
         }else {
             mainXml.accountPrivateBanner.setVisibility(View.GONE);
+            mainXml.postsRecyclerView.setVisibility(View.VISIBLE);
         }
 
     }
