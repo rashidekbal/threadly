@@ -11,4 +11,5 @@
     <color name="DarkGreyText">#DEDADA</color>
     <color name="settings_background">#868686</color>
     <color name="received_msg_bg_color">#232020</color>
+    <color name="suggestionBackgroundColor">#312D2D</color>
 </resources>

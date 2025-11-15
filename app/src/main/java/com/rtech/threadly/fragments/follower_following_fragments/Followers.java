@@ -86,7 +86,9 @@ public class Followers extends Fragment {
                         dataList.add(new Profile_Model_minimal(followerObject.getString("userid")
                                 ,followerObject.getString("username"),
                                 followerObject.getString("profilepic"),
-                                followerObject.getInt("ifFollowed")));
+                                followerObject.getInt("ifFollowed"),
+                                followerObject.getInt("isPrivate")==1,
+                                followerObject.getInt("isApproved")==1));
                     }
                     adapter.notifyDataSetChanged();}else{
                         loadingData_relativeLayout.setVisibility(View.GONE);

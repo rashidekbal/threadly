@@ -48,7 +48,9 @@ public class SuggestUsersViewModel extends AndroidViewModel {
                                         individualUser.getString("userid"),
                                         individualUser.getString("username"),
                                         individualUser.getString("profilepic"),
-                                        individualUser.getInt("isfollowedBy")
+                                        individualUser.getInt("isfollowedBy"),
+                                        individualUser.getInt("isPrivate")==1,
+                                        false
                                 ));
                             }
                             profileModelMutableLiveData.postValue(suggestUsersList);

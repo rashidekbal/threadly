@@ -16,4 +16,5 @@
     <color name="received_msg_bg_color">#EFEFEF</color>
     <color name="sent_msg_bg_color">#405DDB</color>
     <color name="transparentColor">#00000000</color>
+    <color name="suggestionBackgroundColor">#ECE8E8</color>
     </resources>

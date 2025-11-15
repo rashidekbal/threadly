@@ -280,9 +280,6 @@ if(data.userid.equals(PreferenceUtil.getUserId())){
                 mainXml.followBtn.setEnabled(true);
 
 
-
-
-
             }
 
             @Override

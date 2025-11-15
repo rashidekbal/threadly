@@ -88,6 +88,18 @@
             android:layout_alignParentStart="true"
             android:layout_centerVertical="true"
             android:visibility="gone"/>
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/discardBtn"
+            android:layout_width="@dimen/dp_110"
+            android:layout_height="@dimen/dp_35"
+            android:background="@drawable/slight_round_btn_grey"
+            android:text="@string/requested"
+            android:textAllCaps="false"
+            android:textColor="@color/AllWhite"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:visibility="gone"/>
+
         <ImageView
             android:id="@+id/options_btn"
             android:layout_width="@dimen/dp_25"
