@@ -22,4 +22,7 @@ public class InteractionNotificationViewModel extends AndroidViewModel {
     public LiveData<Integer> getPendingNotificationCount(){
         return DataBase.getInstance().notificationDao().getUnseenNotificationCount();
     }
+    public LiveData<Integer> getUnInteractedRequestCount(){
+        return DataBase.getInstance().notificationDao().getUnInteractedRequestCount();
+    }
 }

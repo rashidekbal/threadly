@@ -12,7 +12,7 @@ import java.util.List;
 
 @Dao
 public interface NotificationDao {
-    @Query("select * from notification_schema order by notificationId desc")
+    @Query("select * from notification_schema where not notificationType='FOLLOW_REQUEST_NOTIFICATION' order by notificationId desc")
     LiveData<List<NotificationSchema>> getNotification();
     @Insert
     void addNotification(NotificationSchema schema);
@@ -30,7 +30,11 @@ public interface NotificationDao {
     void markedFollowState(int state,int notificationId);
     @Query("delete from notification_schema where userId=:userId and commentId=:commentId")
     void deleteCommentLikeNotification(String userId,int commentId);
-    @Query("update notification_schema set isApproved=:isApproved where notificationId=:notificationId")
-    void markFollowApprovalStatus(boolean isApproved,int notificationId);
+    @Query("update notification_schema set isApproved=:isApproved where notificationType=:notificationType and userId=:userid")
+    void markFollowApprovalStatus(boolean isApproved,String notificationType,String userid);
+    @Query("delete from notification_schema where notificationType=:notificationType")
+    void deleteAllNotificationsOfType(String notificationType);
+    @Query("select count(distinct ns.insertId)as requestCount  from notification_schema as ns where isApproved=0 and  notificationType='FOLLOW_REQUEST_NOTIFICATION' order by notificationId desc")
+    LiveData<Integer> getUnInteractedRequestCount();
 
 }

@@ -176,4 +176,8 @@
     <string name="view_more_replies">View more Replies</string>
     <string name="accountPrivateMessage">This account is private follow to see their posts</string>
     <string name="requested">requested</string>
+    <string name="follow_requests">Follow requests</string>
+    <string name="reject">Reject</string>
+    <string name="accept">Accept</string>
+    <string name="no_requests_found">No Requests found...</string>
 </resources>

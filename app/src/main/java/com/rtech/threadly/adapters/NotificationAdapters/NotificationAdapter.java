@@ -37,8 +37,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     int FOLLOW_NOTIFICATION_TYPE=0;
     int POST_LIKE_NOTIFICATION_TYPE=1;
     int COMMENT_LIKE_NOTIFICATION_TYPE=2;
-    int FOLLOW_REQUEST_NOTIFICATION_TYPE=3;
-    int FOLLOW_ACCEPTED_NOTIFICATION_TYPE=4;
+    int FOLLOW_ACCEPTED_NOTIFICATION_TYPE=3;
 
 
     public NotificationAdapter(List<NotificationSchema> dataSource, Context context) {
@@ -53,9 +52,6 @@ public class NotificationAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             return FOLLOW_NOTIFICATION_TYPE;
         }else if(dataSource.get(position).getNotificationType().equals(Constants.POST_LIKE_NOTIFICATION.toString())){
             return POST_LIKE_NOTIFICATION_TYPE;
-        } else if (dataSource.get(position).getNotificationType().equals(Constants.FOLLOW_REQUEST_NOTIFICATION.toString())) {
-            return FOLLOW_REQUEST_NOTIFICATION_TYPE;
-
         }else if(dataSource.get(position).getNotificationType().equals(Constants.FOLLOW_ACCEPTED_NOTIFICATION.toString())){
             return FOLLOW_ACCEPTED_NOTIFICATION_TYPE;
         } else{
@@ -73,9 +69,6 @@ public class NotificationAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             return new FollowViewHolder(inflater.inflate(R.layout.followed_by_user_card,parent,false));
         } else if (viewType==POST_LIKE_NOTIFICATION_TYPE) {
             return new PostLikeViewHolder(inflater.inflate(R.layout.post_like_card_layout,parent,false));
-
-        }else if(viewType==FOLLOW_REQUEST_NOTIFICATION_TYPE) {
-            return new FollowRequestViewHolder(inflater.inflate(R.layout.follow_request_card,parent,false));
 
         }else if(viewType==FOLLOW_ACCEPTED_NOTIFICATION_TYPE){
             return new FollowRequestAcceptedViewHolder(inflater.inflate(R.layout.follow_request_card,parent,false));
@@ -147,10 +140,8 @@ public class NotificationAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
 
 
-        }else if(viewholder instanceof FollowRequestViewHolder){
-            BindFollowRequestViewHolder((FollowRequestViewHolder) viewholder,position);
-
-        }else  if(viewholder instanceof FollowRequestAcceptedViewHolder){
+        }
+        else  if(viewholder instanceof FollowRequestAcceptedViewHolder){
             BindFollowRequestAcceptedViewHolder((FollowRequestAcceptedViewHolder) viewholder,position);
         }
         else{
@@ -166,42 +157,6 @@ public class NotificationAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
     }
 
-    private void BindFollowRequestViewHolder(@NonNull FollowRequestViewHolder holder, int position) {
-        Glide.with(context).load(dataSource.get(position).getProfilePic()).placeholder(R.drawable.blank_profile).circleCrop().into(holder.User_profile);
-        holder.User_profile.setOnClickListener(v-> ReUsableFunctions.openProfile(context,dataSource.get(position).getUserId()));
-        if(dataSource.get(position).isApprovedByMe()){
-           holder.approveBtn.setVisibility(View.GONE);
-            holder.userId_text.setText(dataSource.get(position).getUsername()+" started following you");
-        }else{
-            holder.approveBtn.setVisibility(View.VISIBLE);
-            holder.userId_text.setText(dataSource.get(position).getUsername()+" requested to follow you");
-        }
-        holder.approveBtn.setOnClickListener(v -> {
-            holder.approveBtn.setEnabled(false);
-           holder.approveBtn.setVisibility(View.GONE);
-            followManager.approveFollowRequest(dataSource.get(position).getUserId(), new NetworkCallbackInterfaceJsonObject() {
-                @Override
-                public void onSuccess(JSONObject response) {
-                    Executors.newSingleThreadExecutor().execute(new Runnable() {
-                        @Override
-                        public void run() {
-                            DataBase.getInstance().notificationDao().markFollowApprovalStatus(true,dataSource.get(position).getNotificationId());
-                        }
-                    });
-
-                }
-
-                @Override
-                public void onError(int errorCode) {
-                    ReUsableFunctions.ShowToast("something went wrong code: "+errorCode );
-                    holder.approveBtn.setEnabled(true);
-                    holder.approveBtn.setVisibility(View.VISIBLE);
-                }
-            });
-        });
-
-
-    }
     private void BindFollowRequestAcceptedViewHolder(@NonNull FollowRequestAcceptedViewHolder holder, int position) {
         Glide.with(context).load(dataSource.get(position).getProfilePic()).placeholder(R.drawable.blank_profile).circleCrop().into(holder.User_profile);
         holder.User_profile.setOnClickListener(v-> ReUsableFunctions.openProfile(context,dataSource.get(position).getUserId()));
@@ -245,17 +200,7 @@ TextView userId_text;
             postPreviewImg=itemView.findViewById(R.id.postPreviewImg);
         }
     }
-    private static class FollowRequestViewHolder extends  RecyclerView.ViewHolder{
-        ImageView User_profile;
-        AppCompatButton approveBtn;
-        TextView userId_text;
-        public FollowRequestViewHolder(@NonNull View itemView) {
-            super(itemView);
-            User_profile=itemView.findViewById(R.id.User_profile);
-            userId_text=itemView.findViewById(R.id.userId_text);
-            approveBtn=itemView.findViewById(R.id.ApproveBtn);
-        }
-    }
+
     private static class FollowRequestAcceptedViewHolder extends  RecyclerView.ViewHolder{
         ImageView User_profile;
         AppCompatButton approveBtn;

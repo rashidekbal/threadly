@@ -21,12 +21,14 @@ public class ApiEndPoints {
 
     // Follows
     public static final String FOLLOW = baseUrl + "/follow/follow/";
-    public static final String FOLLOW_V2 = baseUrl + "/follow/follow/V2";
+    public static final String FOLLOW_V2 = baseUrl + "/follow/follow/V2/";
     public static final String UNFOLLOW = baseUrl + "/follow/unfollow/";
+    public static final String GET_ALL_FOLLOW_REQUEST = baseUrl + "/follow/getAllFollowRequests/";
     public static final String CANCEL_FOLLOW_REQUEST= baseUrl + "/follow/cancelFollowRequest/";
     public static final String ACCEPT_FOLLOW_REQUEST= baseUrl + "/follow/acceptFollowRequest/";
     public static final String GET_FOLLOWERS=baseUrl+"/follow/getFollowers/";
     public static final String GET_FOLLOWINGS=baseUrl+"/follow/getFollowings/";
+    public static final String REJECT_FOLLOW_REQUEST=baseUrl+"/follow/rejectFollowRequest/";
 
     // Posts
     public static final String GET_POST_BY_ID = baseUrl + "/posts/getPost/";

@@ -17,6 +17,7 @@ import com.rtech.threadly.databinding.FragmentPrivacySettingBinding;
 import com.rtech.threadly.interfaces.NetworkCallbackInterface;
 import com.rtech.threadly.models.Profile_Model;
 import com.rtech.threadly.network_managers.PrivacyManager;
+import com.rtech.threadly.utils.NotificationPageManagerUtil;
 import com.rtech.threadly.utils.PreferenceUtil;
 import com.rtech.threadly.utils.ReUsableFunctions;
 import com.rtech.threadly.viewmodels.ProfileViewModel;
@@ -127,6 +128,7 @@ public class PrivacySetting_fragment extends Fragment {
         mainXml.progressBar.setVisibility(View.GONE);
         mainXml.doneBtn.setVisibility(View.GONE);
         mainXml.doneBtn.setEnabled(true);
+        NotificationPageManagerUtil.clearFollowRequest();
 
 
     }

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -36,31 +36,82 @@
 
         </LinearLayout>
     </com.google.android.material.appbar.AppBarLayout>
-<!--    <com.facebook.shimmer.ShimmerFrameLayout-->
-<!--        android:id="@+id/NotificationShimmer"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="match_parent"-->
-<!--        android:layout_below="@+id/appBar"-->
-<!--        >-->
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/appBar">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/followRequestsLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/dp_10"
+                android:background="?attr/selectableItemBackground"
+                >
+                <ImageView
+                    android:id="@+id/follow_request_icon"
+                    android:layout_width="@dimen/dp_40"
+                    android:layout_height="@dimen/dp_40"
+                    android:src="@drawable/follow_icon"
+                    android:background="@drawable/circle_with_grey_outline"
+                    android:clipToOutline="true"
+                    android:padding="@dimen/dp_10"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    />
+                <TextView
+                    android:id="@+id/requestsCountText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:text="4+"
+                    app:layout_constraintEnd_toEndOf="@id/follow_request_icon"
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:layout_marginStart="@dimen/dp_15"
+                    android:background="@color/white"
+                    android:textColor="@color/danger"/>
+                <TextView
+                    android:id="@+id/requests_layout_heading"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/follow_requests"
+                    android:textStyle="bold"
+                    android:textColor="@color/black"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/follow_request_icon"
+                    android:layout_marginStart="20dp"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Approve or ignore requests"
+                    android:textColor="@color/light_grey_text"
+                    app:layout_constraintTop_toBottomOf="@id/requests_layout_heading"
+                    app:layout_constraintStart_toStartOf="@id/requests_layout_heading"
+                    />
 
-<!--        <LinearLayout-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="match_parent"-->
-<!--            android:orientation="vertical"-->
-<!--           >-->
 
-<!--            <include layout="@layout/shimmer_post_comment_layout" />-->
 
-<!--            <include layout="@layout/shimmer_post_comment_layout" />-->
-<!--        </LinearLayout>-->
-<!--    </com.facebook.shimmer.ShimmerFrameLayout>-->
-    <androidx.recyclerview.widget.RecyclerView
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+            <androidx.recyclerview.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/NotificationRecyclerView"
+                android:visibility="gone"
+                />
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+
+    <FrameLayout
+        android:id="@+id/frameLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/NotificationRecyclerView"
+        android:elevation="4dp"
         android:visibility="gone"
-        android:layout_below="@id/appBar"
-        />
-
+        android:layout_alignParentTop="true"/>
 
 </RelativeLayout>
