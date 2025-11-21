@@ -12,7 +12,8 @@
     <RelativeLayout
         android:id="@+id/post_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:visibility="visible">
 
         <!--        main image holder -->
         <ImageView
@@ -210,6 +211,23 @@
 
         </LinearLayout>
     </RelativeLayout>
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/error_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        >
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Content not available"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:textColor="@color/AllWhite"
+            android:textSize="@dimen/sp_16"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 
 </LinearLayout>

@@ -398,7 +398,7 @@ public class AllTypePostFeedAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 
                     @Override
                     public void onError(String err) {
-                        holder.like_btn_image.setImageResource(R.drawable.heart_inactive_icon);
+                        holder.like_btn_image.setImageResource(R.drawable.heart_inactive);
 
                         setLikeCount(postModels.get(position).getLikeCount() - 1.0, holder);
                         postModels.get(position).setIsliked(false);
@@ -409,7 +409,7 @@ public class AllTypePostFeedAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 
                 // Unlike the post if already liked
             } else {
-                holder.like_btn_image.setImageResource(R.drawable.heart_inactive_icon);
+                holder.like_btn_image.setImageResource(R.drawable.heart_inactive);
 
                 setLikeCount(postModels.get(position).getLikeCount() - 1.0, holder);
                 postModels.get(position).setIsliked(false);
@@ -483,7 +483,7 @@ public class AllTypePostFeedAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 
                     @Override
                     public void onError(String err) {
-                        holder.like_btn_image.setImageResource(R.drawable.heart_inactive_icon);
+                        holder.like_btn_image.setImageResource(R.drawable.heart_inactive);
 
                         setLikeCount(postModels.get(position).getLikeCount() - 1.0, holder);
                         postModels.get(position).setIsliked(false);
@@ -494,7 +494,7 @@ public class AllTypePostFeedAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 
                 // Unlike the post if already liked
             } else {
-                holder.like_btn_image.setImageResource(R.drawable.heart_inactive_icon);
+                holder.like_btn_image.setImageResource(R.drawable.heart_inactive);
 
                 setLikeCount(postModels.get(position).getLikeCount() - 1.0, holder);
                 postModels.get(position).setIsliked(false);
@@ -634,15 +634,15 @@ public class AllTypePostFeedAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 
 
 
-    private void setOptionBtnBehaviourAdmin(@NonNull BottomSheetDialog Optionsdialog, int position) {
+    private void setOptionBtnBehaviourAdmin(@NonNull BottomSheetDialog optionsDialog, int position) {
         LinearLayout download_btn,archive_btn,toggle_like_btn,toggle_share_btn,toggle_commenting_btn,edit_caption_btn,delete_btn;
-        download_btn=Optionsdialog.findViewById(R.id.download_btn);
-        archive_btn=Optionsdialog.findViewById(R.id.archive_btn);
-        toggle_like_btn=Optionsdialog.findViewById(R.id.toggle_like_btn);
-        toggle_share_btn=Optionsdialog.findViewById(R.id.toggle_share_btn);
-        toggle_commenting_btn=Optionsdialog.findViewById(R.id.toggle_commenting_btn);
-        edit_caption_btn=Optionsdialog.findViewById(R.id.edit_caption_btn);
-        delete_btn=Optionsdialog.findViewById(R.id.delete_btn);
+        download_btn=optionsDialog.findViewById(R.id.download_btn);
+        archive_btn=optionsDialog.findViewById(R.id.archive_btn);
+        toggle_like_btn=optionsDialog.findViewById(R.id.toggle_like_btn);
+        toggle_share_btn=optionsDialog.findViewById(R.id.toggle_share_btn);
+        toggle_commenting_btn=optionsDialog.findViewById(R.id.toggle_commenting_btn);
+        edit_caption_btn=optionsDialog.findViewById(R.id.edit_caption_btn);
+        delete_btn=optionsDialog.findViewById(R.id.delete_btn);
 
 
         assert delete_btn != null;
@@ -656,21 +656,22 @@ public class AllTypePostFeedAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                             dialog.dismiss();
                             delete_btn.setEnabled(true);
                             ReUsableFunctions.ShowToast("post remove success");
-                            Optionsdialog.hide();
+                            optionsDialog.hide();
                             postModels.remove(position);
-                            notifyItemChanged(position);
+
+
                         }
 
                         @Override
                         public void onError(String err) {
                             delete_btn.setEnabled(true);
-                            Optionsdialog.hide();
+                            optionsDialog.hide();
                             dialog.dismiss();
                             ReUsableFunctions.ShowToast("Something went wrong ..");
 
                         }
                     })).setNegativeButton("no", (dialog, which) -> {
-                        Optionsdialog.hide();
+                        optionsDialog.hide();
                         dialog.dismiss();
                         delete_btn.setEnabled(true);
 
@@ -682,7 +683,7 @@ public class AllTypePostFeedAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         assert download_btn != null;
         download_btn.setOnClickListener(v->{
             DownloadManagerUtil.downloadFromUri(context,Uri.parse(postModels.get(position).getPostUrl()));
-            Optionsdialog.dismiss();
+            optionsDialog.dismiss();
         });
 
 

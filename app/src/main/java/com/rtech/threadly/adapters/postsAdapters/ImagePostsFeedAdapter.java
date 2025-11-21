@@ -221,7 +221,7 @@ public class ImagePostsFeedAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
                           @Override
                           public void onError(String err) {
-                              holder.like_btn_image.setImageResource(R.drawable.heart_inactive_icon);
+                              holder.like_btn_image.setImageResource(R.drawable.heart_inactive);
                               holder.likes-=1.0;
                               setLikeCount(holder.likes,holder);
                               holder.is_liked=false;
@@ -234,7 +234,7 @@ public class ImagePostsFeedAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                       // Unlike the post if already liked
                   }
                   else {
-                      holder.like_btn_image.setImageResource(R.drawable.heart_inactive_icon);
+                      holder.like_btn_image.setImageResource(R.drawable.heart_inactive);
                       holder.likes-=1.0;
                       setLikeCount(holder.likes,holder);
                       holder.is_liked=false;

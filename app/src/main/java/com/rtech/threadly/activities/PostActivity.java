@@ -169,7 +169,8 @@ public class PostActivity extends AppCompatActivity {
 
             @Override
             public void onError(String err) {
-                ReUsableFunctions.ShowToast(err);
+                mainXml.errorLayout.setVisibility(View.VISIBLE);
+                mainXml.postContainer.setVisibility(View.GONE);
 
             }
         });

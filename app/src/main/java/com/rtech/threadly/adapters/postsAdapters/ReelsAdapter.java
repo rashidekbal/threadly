@@ -247,7 +247,7 @@ public class ReelsAdapter extends RecyclerView.Adapter<ReelsAdapter.viewHolder> 
 
                     @Override
                     public void onError(String err) {
-                        holder.like_btn_image.setImageResource(R.drawable.heart_inactive_icon);
+                        holder.like_btn_image.setImageResource(R.drawable.heart_inactive);
                         holder.likes-=1.0;
                         setLikeCount(holder.likes,holder);
                         holder.is_liked=false;
@@ -260,7 +260,7 @@ public class ReelsAdapter extends RecyclerView.Adapter<ReelsAdapter.viewHolder> 
                 // Unlike the post if already liked
             }
             else {
-                holder.like_btn_image.setImageResource(R.drawable.heart_inactive_icon);
+                holder.like_btn_image.setImageResource(R.drawable.heart_inactive);
                 holder.likes-=1.0;
                 setLikeCount(holder.likes,holder);
                 holder.is_liked=false;
