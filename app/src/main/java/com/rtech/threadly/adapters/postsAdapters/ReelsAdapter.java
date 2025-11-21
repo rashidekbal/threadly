@@ -107,11 +107,6 @@ public class ReelsAdapter extends RecyclerView.Adapter<ReelsAdapter.viewHolder> 
     public void onBindViewHolder(@NonNull viewHolder holder, @SuppressLint("RecyclerView") int position) {
 
         holder.videoPlayer_view.setPlayer(null);
-        if(holder.isPlaying[0]){
-            holder.play_btn.setVisibility(View.GONE);
-        }else{
-            holder.play_btn.setVisibility(View.VISIBLE);
-        }
         holder.videoPlayer_view.setOnClickListener(v->{
             if(holder.isPlaying[0]){
                 ExoplayerUtil.pause();

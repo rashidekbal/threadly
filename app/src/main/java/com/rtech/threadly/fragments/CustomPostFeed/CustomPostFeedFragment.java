@@ -86,6 +86,7 @@ int position;
                                 .findViewHolderForAdapterPosition(position);
                         if (viewHolder != null) {
                             if(viewHolder instanceof AllTypePostFeedAdapter.VideoPostViewHolder){
+                                ((AllTypePostFeedAdapter.VideoPostViewHolder) viewHolder).play_btn.setVisibility(View.GONE);
                                 ExoplayerUtil.play(
                                         Uri.parse(postModels.get(position).postUrl),
                                         ((AllTypePostFeedAdapter.VideoPostViewHolder) viewHolder).videoPlayer_view,((AllTypePostFeedAdapter.VideoPostViewHolder) viewHolder).previewImageView
@@ -104,6 +105,7 @@ int position;
         ExoplayerUtil.stop();
     }
 
+    @OptIn(markerClass = UnstableApi.class)
     @Override
     public void onResume() {
         super.onResume();

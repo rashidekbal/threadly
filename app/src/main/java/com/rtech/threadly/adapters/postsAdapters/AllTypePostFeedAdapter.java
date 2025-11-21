@@ -107,15 +107,10 @@ public class AllTypePostFeedAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     }
     /// -----------------------   Video Feed Binder -----------------------------///
     private void BindVideoFeed(@NonNull AllTypePostFeedAdapter.VideoPostViewHolder holder, int position) {
+
         boolean[] isPlaying = {true};
         holder.videoPlayer_view.setPlayer(null);
 
-        //play video accordingly
-        if (isPlaying[0]) {
-            holder.play_btn.setVisibility(View.GONE);
-        } else {
-            holder.play_btn.setVisibility(View.VISIBLE);
-        }
 
         //video player onclick listeners
         holder.videoPlayer_view.setOnClickListener(v -> {

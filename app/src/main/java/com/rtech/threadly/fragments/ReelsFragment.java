@@ -75,6 +75,7 @@ public class ReelsFragment extends Fragment {
                 ReelsAdapter.viewHolder viewHolder= (ReelsAdapter.viewHolder) ((RecyclerView) mainXml.reelsViewpager.getChildAt(0))
                         .findViewHolderForAdapterPosition(position);
                 if (viewHolder != null) {
+                    viewHolder.play_btn.setVisibility(View.GONE);
                     ExoplayerUtil.play(
                             Uri.parse(reelsList.get(position).postUrl),
                             viewHolder.videoPlayer_view,viewHolder.previewImageView
