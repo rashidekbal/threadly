@@ -91,9 +91,10 @@ public class ViewStoriesFragment extends Fragment {
                         mainXml.viewPager.setVisibility(View.VISIBLE);
                     }
                 } catch (JSONException e) {
-                    ReUsableFunctions.ShowToast("something went Wrong!"+e);
+                   mainXml.errorLayout.setVisibility(View.VISIBLE);
+                   mainXml.contentLayout.setVisibility(View.GONE);
                     e.printStackTrace();
-                    requireActivity().onBackPressed();
+
                 }
 
             }
@@ -117,6 +118,8 @@ public class ViewStoriesFragment extends Fragment {
         }else{
             Userid="null";
         }
+        mainXml.contentLayout.setVisibility(View.VISIBLE);
+        mainXml.errorLayout.setVisibility(View.GONE);
         storiesData=new ArrayList<>();
         storiesViewpagerAdapter=new StoriesViewpagerAdapter(storiesData, requireActivity(), Userid, profilePic, new StoriesBackAndForthInterface() {
             @Override
