@@ -56,10 +56,12 @@ import com.rtech.threadly.fragments.PostAddCameraFragment;
 import com.rtech.threadly.fragments.common_ui_pages.Media_Capture_finalizer_fragment;
 import com.rtech.threadly.interfaces.CameraFragmentInterface;
 import com.rtech.threadly.interfaces.Messanger.MessageClickCallBack;
+import com.rtech.threadly.interfaces.NetworkCallbackInterface;
 import com.rtech.threadly.interfaces.NetworkCallbackInterfaceWithProgressTracking;
 import com.rtech.threadly.interfaces.general_ui_callbacks.OnCapturedMediaFinalizedCallback;
 import com.rtech.threadly.models.MediaModel;
 import com.rtech.threadly.network_managers.MessageManager;
+import com.rtech.threadly.utils.ConnectivityUtil;
 import com.rtech.threadly.utils.MessengerUtils;
 import com.rtech.threadly.utils.PermissionManagementUtil;
 import com.rtech.threadly.utils.PreferenceUtil;
@@ -191,20 +193,34 @@ public class MessengerMainMessagePageActivity extends AppCompatActivity {
         });
         messagesViewModel.getConversationUnreadMsg_count(conversationId,Core.getPreference().getString(SharedPreferencesKeys.UUID,"null")).observe(this, integer -> {
             if(integer>0){
-                //new unread message arrived or already exists
-                // update local db as seen and send message to global db to set as seen
-                try {
-                    if(SocketManager.getInstance().getSocket().connected()){
-                        SocketEmitterEvents.UpdateSeenMsg_status(uuid,Core.getPreference().getString(SharedPreferencesKeys.USER_ID,"null"));
-                    }else{
-                        MessageManager.setSeenMessage(uuid,Core.getPreference().getString(SharedPreferencesKeys.UUID,"null"));
-                    }
-                } catch (JSONException e) {
-                    throw new RuntimeException(e);
-                }
+                if(ConnectivityUtil.IsInternetConnected(this)){
+                    //new unread message arrived or already exists
+                    // update local db as seen and send message to global db to set as seen
+                    try {
+                        if(SocketManager.getInstance().getSocket().connected()){
+                            SocketEmitterEvents.UpdateSeenMsg_status(uuid,Core.getPreference().getString(SharedPreferencesKeys.USER_ID,"null"));
+                            Executors.newSingleThreadExecutor().execute(() -> DataBase.getInstance().MessageDao().updateMessagesSeen(conversationId, PreferenceUtil.getUUID()));
+                        }else{
+                            MessageManager.setSeenMessage(uuid, Core.getPreference().getString(SharedPreferencesKeys.UUID, "null"), new NetworkCallbackInterface() {
+                                @Override
+                                public void onSuccess() {
+                                    Executors.newSingleThreadExecutor().execute(() -> DataBase.getInstance().MessageDao().updateMessagesSeen(conversationId, PreferenceUtil.getUUID()));
+                                }
 
-                Executors.newSingleThreadExecutor().execute(() -> DataBase.getInstance().MessageDao().updateMessagesSeen(conversationId, PreferenceUtil.getUUID()));
-            }
+                                @Override
+                                public void onError(String err) {
+
+                                }
+                            });
+                        }
+                    } catch (JSONException e) {
+                        throw new RuntimeException(e);
+                    }
+
+
+
+                }
+                }
         });
 
 

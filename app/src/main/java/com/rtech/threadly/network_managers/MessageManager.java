@@ -164,7 +164,7 @@ public class MessageManager {
                     }
                 });
     }
-    public static void setSeenMessage(String senderUUid,String receiverUUid)throws JSONException{
+    public static void setSeenMessage(String senderUUid,String receiverUUid,NetworkCallbackInterface  callbackInterface)throws JSONException{
      String Url=ApiEndPoints.UPDATE_MSG_SEEN_STATUS;
      JSONObject object=new JSONObject();
      object.put("senderUUid",senderUUid);
@@ -177,11 +177,13 @@ public class MessageManager {
                  @Override
                  public void onResponse(JSONObject response) {
                      Log.d(TAG, "done");
+                     callbackInterface.onSuccess();
                  }
 
                  @Override
                  public void onError(ANError anError) {
                      Log.d(TAG, "onError: "+anError.getErrorDetail());
+                     callbackInterface.onError(anError.getMessage());
                  }
              });
 
