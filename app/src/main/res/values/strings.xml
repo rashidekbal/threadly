@@ -181,4 +181,6 @@
     <string name="accept">Accept</string>
     <string name="no_requests_found">No Requests found...</string>
     <string name="content_not_available">Content not available</string>
+    <string name="from">from</string>
+    <string name="company_name">R-technologies</string>
 </resources>

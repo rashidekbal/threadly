@@ -51,6 +51,9 @@ public class ViewStoriesFragment extends Fragment {
         // Required empty public constructor
     }
 
+    public ViewStoriesFragment() {
+        // Required empty public constructor
+    }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,

@@ -60,8 +60,11 @@ Post_fragmentSetCallback callback;
 ProfileViewModel profileViewModel;
 
     public profileFragment(Post_fragmentSetCallback callback) {
-        // Required empty public constructor
+
         this.callback=callback;
+    }
+    public profileFragment(){
+        // Required empty public constructor
     }
 
 

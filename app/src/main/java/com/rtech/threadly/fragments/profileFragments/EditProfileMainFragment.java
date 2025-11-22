@@ -39,7 +39,9 @@ ProfileViewModel profileViewModel;
         this.callback = callback;
 
     }
-
+    public EditProfileMainFragment(){
+        // Required empty public constructor
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

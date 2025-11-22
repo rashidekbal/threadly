@@ -36,10 +36,9 @@ public class UploadPostFinalFragment extends Fragment {
     WorkRequest uploadRequest;
     Data data;
 
-
-
-
-
+    public UploadPostFinalFragment() {
+        // Required empty public constructor
+    }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,

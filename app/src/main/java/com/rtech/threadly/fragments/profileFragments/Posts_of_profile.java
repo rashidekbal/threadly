@@ -41,6 +41,9 @@ ArrayList<Posts_Model> postsArray =new ArrayList<>();
     public Posts_of_profile(Post_fragmentSetCallback callback) {
    this.callback=callback;
     }
+    public Posts_of_profile(){
+        // Required empty public constructor
+    }
 
 
 

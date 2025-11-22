@@ -48,6 +48,9 @@ public class PostAddCameraFragment extends Fragment {
         this.callback=callback;
         // Required empty public constructor
     }
+    public PostAddCameraFragment(){
+        // Required empty public constructor
+    }
 
 
 

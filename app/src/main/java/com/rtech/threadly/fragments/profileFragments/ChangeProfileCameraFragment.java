@@ -44,6 +44,9 @@ public class ChangeProfileCameraFragment extends Fragment {
         this.callback=callback;
 
     }
+    public ChangeProfileCameraFragment(){
+        // Required empty public constructor
+    }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
