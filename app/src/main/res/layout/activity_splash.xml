@@ -17,7 +17,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="from"
+        android:text="@string/from"
         android:layout_centerHorizontal="true"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="@dimen/dp_78"
@@ -30,6 +30,6 @@
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="@dimen/dp_60"
         android:textColor="@color/black"
-        android:text="R-technologies"/>
+        android:text="@string/company_name"/>
 
 </RelativeLayout>
