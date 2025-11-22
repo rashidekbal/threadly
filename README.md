@@ -22,7 +22,7 @@ Threadly is an Android social media app under development. Key features:
 | ------------------------------------- | ------------------------- |
 | User registration / login             | ✅                        |
 | Real-time 1-on-1 messaging            | ✅                        |
-| Fallback messaging (FCM)              | ⚠ partially / in progress |
+| Fallback messaging (FCM)              | ✅
 | Uploading stories (videos & images)   | ✅                        |
 | Reels section (scrollable media feed) | ⚠ needs polishing         |
 | UI styling & category sorting         | ✅                        |
