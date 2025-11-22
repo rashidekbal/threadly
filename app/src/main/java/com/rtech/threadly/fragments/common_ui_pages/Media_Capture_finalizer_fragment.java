@@ -63,13 +63,11 @@ public class Media_Capture_finalizer_fragment extends Fragment {
         // add buttons functionality
 
        mainXMl.discardBtn.setOnClickListener(v->{
-           imageFile.delete();
-           oncapturedMediaFinalizedCallback.discard();
+          boolean isDeleteSuccess= imageFile.delete();
+          if(isDeleteSuccess) oncapturedMediaFinalizedCallback.discard();
 
        });
-        mainXMl.ApproveBtn.setOnClickListener(v->{
-          oncapturedMediaFinalizedCallback.OnFinalized(imageFile.getAbsolutePath(),mediaType);
-        });
+        mainXMl.ApproveBtn.setOnClickListener(v-> oncapturedMediaFinalizedCallback.OnFinalized(imageFile.getAbsolutePath(),mediaType));
 
 
 

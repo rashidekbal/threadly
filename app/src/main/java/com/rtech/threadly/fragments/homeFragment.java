@@ -1,5 +1,6 @@
 package com.rtech.threadly.fragments;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -7,10 +8,8 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.appcompat.content.res.AppCompatResources;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,7 +29,6 @@ import com.rtech.threadly.interfaces.StoryOpenCallback;
 import com.rtech.threadly.models.Posts_Model;
 import com.rtech.threadly.models.Profile_Model_minimal;
 import com.rtech.threadly.models.StoriesModel;
-import com.rtech.threadly.models.StoryMediaModel;
 import com.rtech.threadly.utils.ExoplayerUtil;
 import com.rtech.threadly.viewmodels.ImagePostsFeedViewModel;
 import com.rtech.threadly.viewmodels.InteractionNotificationViewModel;
@@ -64,6 +62,7 @@ public homeFragment(){
         // main constructor
     }
 
+    @SuppressLint({"NotifyDataSetChanged", "SetTextI18n"})
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate layout using ViewBinding
@@ -82,35 +81,26 @@ public homeFragment(){
         // -------------------------
         Glide.with(this).load(loginInfo.getString(SharedPreferencesKeys.USER_PROFILE_PIC,"null")).placeholder(R.drawable.blank_profile).circleCrop().into(mainXml.profileImg);
         LinearLayoutManager layoutManager = new LinearLayoutManager(requireActivity(), LinearLayoutManager.HORIZONTAL, false);
-        StatusViewAdapter StoriesAdapter = new StatusViewAdapter(requireActivity(), storiesData, new StoryOpenCallback() {
-            @Override
-            public void openStoryOf(String userid,String profilePic,ArrayList<StoriesModel> list,int position) {
-                callback.openStoryOf(userid,profilePic,list,position);
-
-            }
-        });
+        StatusViewAdapter StoriesAdapter = new StatusViewAdapter(requireActivity(), storiesData, (userid, profilePic, list, position) -> callback.openStoryOf(userid,profilePic,list,position));
         mainXml.storyRecyclerView.setLayoutManager(layoutManager);
         mainXml.storyRecyclerView.setAdapter(StoriesAdapter);
 
         //load my stories
-        storiesViewModel.getMyStories().observe(getViewLifecycleOwner(), new Observer<ArrayList<StoryMediaModel>>() {
-            @Override
-            public void onChanged(ArrayList<StoryMediaModel> storyMediaModels) {
-                if(!storyMediaModels.isEmpty()){
-                    mainXml.StoryOuterBorderColor.setBackground(AppCompatResources.getDrawable(requireActivity(),R.drawable.red_circle));
-                    mainXml.addStorySymbol.setVisibility(View.GONE);
-                    mainXml.MyStoryUsername.setText(R.string.your_story);
-                    mainXml.myStoryLayoutMain.setVisibility(View.VISIBLE);
+        storiesViewModel.getMyStories().observe(getViewLifecycleOwner(), storyMediaModels -> {
+            if(!storyMediaModels.isEmpty()){
+                mainXml.StoryOuterBorderColor.setBackground(AppCompatResources.getDrawable(requireActivity(),R.drawable.red_circle));
+                mainXml.addStorySymbol.setVisibility(View.GONE);
+                mainXml.MyStoryUsername.setText(R.string.your_story);
+                mainXml.myStoryLayoutMain.setVisibility(View.VISIBLE);
 
-                }else{
-                    mainXml.myStoryLayoutMain.setVisibility(View.VISIBLE);
-                    mainXml.addStorySymbol.setVisibility(View.VISIBLE);
+            }else{
+                mainXml.myStoryLayoutMain.setVisibility(View.VISIBLE);
+                mainXml.addStorySymbol.setVisibility(View.VISIBLE);
 
-                }
             }
         });
 
-        setMyStoryClickCallback(loginInfo.getString(SharedPreferencesKeys.USER_ID,"null"),loginInfo.getString(SharedPreferencesKeys.USER_PROFILE_PIC,"null"),new ArrayList<>());
+        setMyStoryClickCallback(loginInfo.getString(SharedPreferencesKeys.USER_ID,"null"),loginInfo.getString(SharedPreferencesKeys.USER_PROFILE_PIC,"null"));
 
 
 
@@ -119,21 +109,18 @@ public homeFragment(){
         // loadStories
 
 
-        storiesViewModel.getStories().observe(getViewLifecycleOwner(), new Observer<ArrayList<StoriesModel>>() {
-            @Override
-            public void onChanged(ArrayList<StoriesModel> storiesModels) {
+        storiesViewModel.getStories().observe(getViewLifecycleOwner(), storiesModels -> {
 
-                if(storiesModels.isEmpty()){
-                    mainXml.storiesShimmer.setVisibility(View.GONE);
+            if(storiesModels.isEmpty()){
+                mainXml.storiesShimmer.setVisibility(View.GONE);
 
-                }
-                else{
-                    storiesData.clear();
-                    storiesData.addAll(storiesModels);
-                    StoriesAdapter.notifyDataSetChanged();
-                   mainXml.storiesShimmer.setVisibility(View.GONE);
-                   mainXml.storyRecyclerView.setVisibility(View.VISIBLE);
-                }
+            }
+            else{
+                storiesData.clear();
+                storiesData.addAll(storiesModels);
+                StoriesAdapter.notifyDataSetChanged();
+               mainXml.storiesShimmer.setVisibility(View.GONE);
+               mainXml.storyRecyclerView.setVisibility(View.VISIBLE);
             }
         });
 
@@ -141,55 +128,42 @@ public homeFragment(){
 
         // -------------------------
         //observe and display count of unread messages
-        messagesViewModel.getUnreadConversationCunt(Core.getPreference().getString(SharedPreferencesKeys.UUID,"null")).observe(getViewLifecycleOwner(), new Observer<Integer>() {
-            @Override
-            public void onChanged(Integer integer) {
-                if(integer>0){
-                    mainXml.unreadMessageCounterLayout.setVisibility(View.VISIBLE);
-                    mainXml.unreadMessagesCounterText.setText(Integer.toString(integer));
+        messagesViewModel.getUnreadConversationCunt(Core.getPreference().getString(SharedPreferencesKeys.UUID,"null")).observe(getViewLifecycleOwner(), integer -> {
+            if(integer>0){
+                mainXml.unreadMessageCounterLayout.setVisibility(View.VISIBLE);
+                mainXml.unreadMessagesCounterText.setText(Integer.toString(integer));
 
-                }else{
-                    mainXml.unreadMessageCounterLayout.setVisibility(View.GONE);
-                }
-
+            }else{
+                mainXml.unreadMessageCounterLayout.setVisibility(View.GONE);
             }
+
         });
         mainXml.notificationBtn.setOnClickListener(v->requireActivity().startActivity(new Intent(requireActivity(), NotificationActivity.class)));
         // -------------------------
         // -------------------------
         //observe unseen Notifications
-        notificationViewModel.getPendingNotificationCount().observe(getViewLifecycleOwner(), new Observer<Integer>() {
-            @Override
-            public void onChanged(Integer integer) {
-                if(integer!=null){
-                    if(integer>0){
-                        mainXml.notificationDot.setVisibility(View.VISIBLE);
-                    }else{
-                        mainXml.notificationDot.setVisibility(View.GONE);
-                    }
-                }else {
+        notificationViewModel.getPendingNotificationCount().observe(getViewLifecycleOwner(), integer -> {
+            if(integer!=null){
+                if(integer>0){
+                    mainXml.notificationDot.setVisibility(View.VISIBLE);
+                }else{
                     mainXml.notificationDot.setVisibility(View.GONE);
                 }
-                }
-
-        });
+            }else {
+                mainXml.notificationDot.setVisibility(View.GONE);
+            }
+            });
         // --------------------------
 
-        mainXml.MessageBtn.setOnClickListener(v->{
-            requireActivity().startActivity(new Intent(requireActivity(), MessengerActivity.class));
-
-        });
+        mainXml.MessageBtn.setOnClickListener(v-> requireActivity().startActivity(new Intent(requireActivity(), MessengerActivity.class)));
 
 
         // -----------------------------------
         // Load suggested users from the server
         // -----------------------------------
-        suggestUsersViewModel.getSuggestedUsers().observe(requireActivity(), new Observer<ArrayList<Profile_Model_minimal>>() {
-            @Override
-            public void onChanged(ArrayList<Profile_Model_minimal> profileModelMinimals) {
-                suggestUsersList.clear();
-                suggestUsersList.addAll(profileModelMinimals);
-            }
+        suggestUsersViewModel.getSuggestedUsers().observe(requireActivity(), profileModelMinimals -> {
+            suggestUsersList.clear();
+            suggestUsersList.addAll(profileModelMinimals);
         });
         // ----------------------
         // Setup posts RecyclerView
@@ -209,55 +183,44 @@ public homeFragment(){
 
         // Observe LiveData from ViewModel
         // ----------------------------
-        postsViewModel.getPostsLiveData().observe(getViewLifecycleOwner(), new Observer<ArrayList<Posts_Model>>() {
-            @Override
-            public void onChanged(ArrayList<Posts_Model> posts_liveData) {
+        postsViewModel.getPostsLiveData().observe(getViewLifecycleOwner(), posts_liveData -> {
 
-                if (posts_liveData != null && !posts_liveData.isEmpty()) {
-//                    Log.d("homefragmentobserver", "onChanged: " + posts_liveData.toString());
-                    posts.clear();
-                    posts.addAll(posts_liveData);
-                    postsFeedAdapter.notifyDataSetChanged();
-                    mainXml.swipeRefresh.setRefreshing(false);
-                    mainXml.swipeRefresh.setEnabled(true);
-                    // Hide shimmer and show content
-                    mainXml.shimmerView.stopShimmer();
-                    mainXml.shimmerView.setVisibility(View.GONE);
-                    mainXml.postsRecyclerView.setVisibility(View.VISIBLE);
-                } else {
-                    // Show shimmer if no data
-                    mainXml.shimmerView.setVisibility(View.VISIBLE);
-                    mainXml.shimmerView.startShimmer();
-                }
+            if (posts_liveData != null && !posts_liveData.isEmpty()) {
+
+                posts.clear();
+                posts.addAll(posts_liveData);
+                postsFeedAdapter.notifyDataSetChanged();
+                mainXml.swipeRefresh.setRefreshing(false);
+                mainXml.swipeRefresh.setEnabled(true);
+                // Hide shimmer and show content
+                mainXml.shimmerView.stopShimmer();
+                mainXml.shimmerView.setVisibility(View.GONE);
+                mainXml.postsRecyclerView.setVisibility(View.VISIBLE);
+            } else {
+                // Show shimmer if no data
+                mainXml.shimmerView.setVisibility(View.VISIBLE);
+                mainXml.shimmerView.startShimmer();
             }
         });
 
         // ---------------------------------
         // Open AddPostActivity on button tap
         // ---------------------------------
-        mainXml.addPostImageBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                requireActivity().startActivity(new Intent(getContext(), AddStoryActivity.class).putExtra("title","New Story"));
-            }
-        });
-        mainXml.swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                mainXml.swipeRefresh.setEnabled(false);
-                postsViewModel.loadFeedPosts();
-                suggestUsersViewModel.loadSuggestedUsers();
-                storiesViewModel.loadStories();
-                storiesViewModel.loadMyStories();
+        mainXml.addPostImageBtn.setOnClickListener(v -> requireActivity().startActivity(new Intent(getContext(), AddStoryActivity.class).putExtra("title","New Story")));
+        mainXml.swipeRefresh.setOnRefreshListener(() -> {
+            mainXml.swipeRefresh.setEnabled(false);
+            postsViewModel.loadFeedPosts();
+            suggestUsersViewModel.loadSuggestedUsers();
+            storiesViewModel.loadStories();
+            storiesViewModel.loadMyStories();
 
 
-            }
         });
 
         return mainXml.getRoot();
     }
 
-    private void setMyStoryClickCallback(String userid, String profile, ArrayList<StoryMediaModel> storyMediaModels) {
+    private void setMyStoryClickCallback(String userid, String profile) {
     mainXml.myStoryLayoutMain.setOnClickListener(v->{
         if(mainXml.addStorySymbol.getVisibility()==View.VISIBLE){
             Intent intent=new Intent(requireActivity(),AddStoryActivity.class);

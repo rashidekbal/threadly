@@ -6,7 +6,6 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.text.Editable;
@@ -52,13 +51,10 @@ public class EditBioFragment extends Fragment {
         activity.setSupportActionBar(mainXml.toolbar);
         profileEditorManager=new ProfileEditorManager();
         profileViewModel=new ViewModelProvider(activity).get(ProfileViewModel.class);
-        profileViewModel.getProfileLiveData().observe(getViewLifecycleOwner(), new Observer<Profile_Model>() {
-            @Override
-            public void onChanged(Profile_Model profileModel) {
-                userdata=profileModel;
-                if(userdata!=null){
-                    mainXml.bioEdittext.setText(userdata.bio);
-                }
+        profileViewModel.getProfileLiveData().observe(getViewLifecycleOwner(), profileModel -> {
+            userdata=profileModel;
+            if(userdata!=null){
+                mainXml.bioEdittext.setText(userdata.bio);
             }
         });
         mainXml.bioEdittext.addTextChangedListener(new TextWatcher() {

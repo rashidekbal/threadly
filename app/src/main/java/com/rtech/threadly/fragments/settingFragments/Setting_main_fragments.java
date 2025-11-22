@@ -1,8 +1,6 @@
 package com.rtech.threadly.fragments.settingFragments;
 
 import android.app.AlertDialog;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -13,14 +11,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.rtech.threadly.SocketIo.SocketManager;
-import com.rtech.threadly.activities.LoginActivity;
 import com.rtech.threadly.databinding.FragmentSettingMainFragmentsBinding;
 import com.rtech.threadly.interfaces.FragmentItemClickInterface;
-import com.rtech.threadly.interfaces.NetworkCallbackInterface;
-import com.rtech.threadly.utils.LoginSequenceUtil;
 import com.rtech.threadly.utils.LogoutSequenceUtil;
-import com.rtech.threadly.utils.ReUsableFunctions;
 
 
 public class Setting_main_fragments extends Fragment {
@@ -51,29 +44,18 @@ FragmentItemClickInterface clickInterface;
         mainXml.logoutBtn.setOnClickListener(v->{
             mainXml.logoutBtn.setEnabled(false);
             new AlertDialog.Builder(requireActivity()).setTitle("Logout").setMessage("Do you want to logout ?")
-                            .setPositiveButton("yes", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.dismiss();
-                                    //disconnect to avoid multi instance when logged in again
-                                    LogoutSequenceUtil.Logout((AppCompatActivity) requireActivity());
-                                }
+                            .setPositiveButton("yes", (dialog, which) -> {
+                                dialog.dismiss();
+                                //disconnect to avoid multi instance when logged in again
+                                LogoutSequenceUtil.Logout((AppCompatActivity) requireActivity());
+                            }).setNegativeButton("no", (dialog, which) -> {
+                                mainXml.logoutBtn.setEnabled(true);
+                                dialog.dismiss();
 
-                            }).setNegativeButton("no", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            mainXml.logoutBtn.setEnabled(true);
-                            dialog.dismiss();
-
-                        }
-                    }).show();
+                            }).show();
 
         });
-        mainXml.openPrivacySettingBtn.setOnClickListener(v->{
-            clickInterface.onItemClick(mainXml.openPrivacySettingBtn);
-        });
-        mainXml.backBtn.setOnClickListener(v->{
-            requireActivity().finish();
-        });
+        mainXml.openPrivacySettingBtn.setOnClickListener(v-> clickInterface.onItemClick(mainXml.openPrivacySettingBtn));
+        mainXml.backBtn.setOnClickListener(v-> requireActivity().finish());
     }
 }

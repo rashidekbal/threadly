@@ -1,5 +1,6 @@
 package com.rtech.threadly.fragments.follower_following_fragments;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -54,6 +55,7 @@ public class Followings extends Fragment {
         followings_recycler_view=v.findViewById(R.id.followings_recycler_view);
         noData_relativeLayout=v.findViewById(R.id.noData_relativeLayout);
         loadingData_relativeLayout=v.findViewById(R.id.loadingData_relativeLayout);
+        assert getArguments() != null;
         userId = getArguments().getString("userid");
         followManager = new FollowManager();
         adapter = new FollowerFollowing_UserList_adapter(v.getContext(), dataList);
@@ -68,6 +70,7 @@ public class Followings extends Fragment {
         loadingData_relativeLayout.setVisibility(View.VISIBLE);
         noData_relativeLayout.setVisibility(View.GONE);
         followManager.getFollowings(userId, new NetworkCallbackInterfaceWithJsonObjectDelivery() {
+            @SuppressLint("NotifyDataSetChanged")
             @Override
             public void onSuccess(JSONObject response) {
                 followings_recycler_view.setVisibility(View.VISIBLE);

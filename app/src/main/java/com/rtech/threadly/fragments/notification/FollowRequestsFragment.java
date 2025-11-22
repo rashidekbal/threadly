@@ -1,7 +1,9 @@
 package com.rtech.threadly.fragments.notification;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
@@ -13,9 +15,7 @@ import com.rtech.threadly.adapters.followRequestsAdapter.FollowRequestsAdapter;
 import com.rtech.threadly.databinding.FragmentFollowRequestsBinding;
 import com.rtech.threadly.interfaces.NetworkCallBacks.NetworkCallbackInterfaceJsonObject;
 import com.rtech.threadly.models.FollowRequestModel;
-import com.rtech.threadly.models.Profile_Model_minimal;
 import com.rtech.threadly.network_managers.FollowManager;
-import com.rtech.threadly.utils.ReUsableFunctions;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -35,7 +35,7 @@ FollowRequestsAdapter adapter;
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         mainXml=FragmentFollowRequestsBinding.inflate(inflater,container,false);
@@ -53,6 +53,7 @@ FollowRequestsAdapter adapter;
     }
     private void loadFollowRequests(){
         FollowManager.getAllFollowRequests(new NetworkCallbackInterfaceJsonObject() {
+            @SuppressLint("NotifyDataSetChanged")
             @Override
             public void onSuccess(JSONObject response) {
                 mainXml.progressBar.setVisibility(View.GONE);

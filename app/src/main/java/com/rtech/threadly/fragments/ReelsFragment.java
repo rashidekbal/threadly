@@ -1,11 +1,12 @@
 package com.rtech.threadly.fragments;
 
+import android.annotation.SuppressLint;
 import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.OptIn;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.media3.common.util.UnstableApi;
 import androidx.recyclerview.widget.RecyclerView;
@@ -39,6 +40,7 @@ public class ReelsFragment extends Fragment {
 
 
 
+    @SuppressLint("NotifyDataSetChanged")
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -48,16 +50,13 @@ public class ReelsFragment extends Fragment {
 
 
         //observe reels feed
-        ReelsViewModel.getLiveVideoPostsFeed().observe(getViewLifecycleOwner(), new Observer<ArrayList<Posts_Model>>() {
-            @Override
-            public void onChanged(ArrayList<Posts_Model> postsModels) {
-                if(postsModels!=null){
-                    reelsList.clear();
-                    reelsList.addAll(postsModels);
-                    adapter.notifyDataSetChanged();
-                    mainXml.shimmer.setVisibility(View.GONE);
-                    mainXml.reelsViewpager.setVisibility(View.VISIBLE);
-                }
+        ReelsViewModel.getLiveVideoPostsFeed().observe(getViewLifecycleOwner(), postsModels -> {
+            if(postsModels!=null){
+                reelsList.clear();
+                reelsList.addAll(postsModels);
+                adapter.notifyDataSetChanged();
+                mainXml.shimmer.setVisibility(View.GONE);
+                mainXml.reelsViewpager.setVisibility(View.VISIBLE);
             }
         });
 
@@ -96,6 +95,7 @@ public class ReelsFragment extends Fragment {
         isFirstLaunch=false;
     }
 
+    @OptIn(markerClass = UnstableApi.class)
     @Override
     public void onResume() {
         super.onResume();

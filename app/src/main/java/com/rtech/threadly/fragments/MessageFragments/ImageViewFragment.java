@@ -1,7 +1,6 @@
 package com.rtech.threadly.fragments.MessageFragments;
 
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -59,9 +58,7 @@ public class ImageViewFragment extends Fragment {
             requireActivity().getSupportFragmentManager().popBackStack();
         }
         setUserdata();
-        mainXml.optionDots.setOnClickListener(v->{
-            showOptionsSheet();
-        });
+        mainXml.optionDots.setOnClickListener(v-> showOptionsSheet());
     }
     private void setUserdata() {
         mainXml.username.setText(username);
@@ -88,56 +85,40 @@ public class ImageViewFragment extends Fragment {
     private void setOnclickListeners_optionSheet(BottomSheetDialog optionsDialog) {
         LinearLayout downloadBtn=optionsDialog.findViewById(R.id.download_btn);
         LinearLayout deleteBtn=optionsDialog.findViewById(R.id.delete_btn);
-        downloadBtn.setOnClickListener(v->{
-            new AlertDialog.Builder(requireActivity())
-                    .setTitle("download")
-                    .setMessage("do you want to save this media")
-                    .setPositiveButton("yes", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            ReUsableFunctions.ShowToast("saving....");
-                            DownloadManagerUtil.downloadFromUri(requireActivity(),Uri.parse(mediaUrl));
-                            dialog.dismiss();
-                            optionsDialog.dismiss();
+        assert downloadBtn != null;
+        downloadBtn.setOnClickListener(v-> new AlertDialog.Builder(requireActivity())
+                .setTitle("download")
+                .setMessage("do you want to save this media")
+                .setPositiveButton("yes", (dialog, which) -> {
+                    ReUsableFunctions.ShowToast("saving....");
+                    DownloadManagerUtil.downloadFromUri(requireActivity(),Uri.parse(mediaUrl));
+                    dialog.dismiss();
+                    optionsDialog.dismiss();
 
-                        }
-                    })
-                    .setNegativeButton("no thanks ", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                            optionsDialog.dismiss();
-                        }
-                    })
-                    .setCancelable(true)
-                    .show();
+                })
+                .setNegativeButton("no thanks ", (dialog, which) -> {
+                    dialog.dismiss();
+                    optionsDialog.dismiss();
+                })
+                .setCancelable(true)
+                .show());
+        assert deleteBtn != null;
+        deleteBtn.setOnClickListener(v-> new AlertDialog.Builder(requireActivity())
+                .setTitle("delete")
+                .setMessage("do you want delete this media, this can't be undone")
+                .setPositiveButton("yes", (dialog, which) -> {
+                    ReUsableFunctions.ShowToast("deleted...");
+                    ReUsableFunctions.DeleteMessage(messageUid);
+                    dialog.dismiss();
+                    optionsDialog.dismiss();
+                    requireActivity().getSupportFragmentManager().popBackStack();
 
-        });
-        deleteBtn.setOnClickListener(v->{
-            new AlertDialog.Builder(requireActivity())
-                    .setTitle("delete")
-                    .setMessage("do you want delete this media, this can't be undone")
-                    .setPositiveButton("yes", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            ReUsableFunctions.ShowToast("deleted...");
-                            ReUsableFunctions.DeleteMessage(messageUid);
-                            dialog.dismiss();
-                            optionsDialog.dismiss();
-                            requireActivity().getSupportFragmentManager().popBackStack();
-
-                        }
-                    })
-                    .setNegativeButton("no thanks ", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                            optionsDialog.dismiss();
-                        }
-                    })
-                    .setCancelable(true)
-                    .show();
-
-        });
+                })
+                .setNegativeButton("no thanks ", (dialog, which) -> {
+                    dialog.dismiss();
+                    optionsDialog.dismiss();
+                })
+                .setCancelable(true)
+                .show());
     }
 }

@@ -1,5 +1,6 @@
 package com.rtech.threadly.fragments;
 
+import android.annotation.SuppressLint;
 import android.content.ContentUris;
 import android.database.Cursor;
 import android.net.Uri;
@@ -98,27 +99,22 @@ public class AddPostMainFragment extends Fragment {
     }
 
     private void setOnclickListeners(){
-        mainXml.cancelButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //noinspection deprecation
-                activity.onBackPressed();
-            }
+        mainXml.cancelButton.setOnClickListener(v -> {
+            //noinspection deprecation
+            activity.onBackPressed();
         });
-        mainXml.nextBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(selectedImageUri!=null){
-                    callback.itemPicked(selectedImageUri.toString(),MediaType);
-                }else{
-                    ReUsableFunctions.ShowToast(activity,"Please select an image or video to continue");
-                }
-
+        mainXml.nextBtn.setOnClickListener(v -> {
+            if(selectedImageUri!=null){
+                callback.itemPicked(selectedImageUri.toString(),MediaType);
+            }else{
+                ReUsableFunctions.ShowToast(activity,"Please select an image or video to continue");
             }
+
         });
 
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private void getInternalImage_video(){
         Uri collection = MediaStore.Files.getContentUri("external");
         String [] projection={
@@ -132,7 +128,7 @@ public class AddPostMainFragment extends Fragment {
                 MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO;
         String SortOrder=MediaStore.Files.FileColumns.DATE_ADDED+" DESC";
 
-        Cursor cursor= getContext().getContentResolver().query(collection,projection,selection,null,SortOrder);
+        Cursor cursor= requireContext().getContentResolver().query(collection,projection,selection,null,SortOrder);
         if(cursor!=null){
             int idColumn =cursor.getColumnIndexOrThrow(MediaStore.Files.FileColumns._ID);
             int mediaTypeColumn=cursor.getColumnIndexOrThrow(MediaStore.Files.FileColumns.MEDIA_TYPE);

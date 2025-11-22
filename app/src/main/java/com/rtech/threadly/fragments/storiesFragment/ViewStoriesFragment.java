@@ -7,7 +7,6 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.media3.common.util.UnstableApi;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
@@ -39,7 +38,6 @@ public class ViewStoriesFragment extends Fragment {
     ArrayList<StoryMediaModel> storiesData;
     String Userid,profilePic;
     StoriesViewpagerAdapter storiesViewpagerAdapter;
-    LinearLayoutManager layoutManager;
     StoriesBackAndForthInterface backAndForthInterface;
     StoriesManager storiesManager;
 

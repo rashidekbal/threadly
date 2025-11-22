@@ -22,7 +22,6 @@ import com.rtech.threadly.Threadly;
 import com.rtech.threadly.adapters.mediaExplorerAdapter.uploadProfileAdapter;
 import com.rtech.threadly.databinding.FragmentChangeProfileImageSelectorBinding;
 import com.rtech.threadly.interfaces.NetworkCallbackInterfaceWithJsonObjectDelivery;
-import com.rtech.threadly.interfaces.uploadProfileSelectCallbackInterface;
 import com.rtech.threadly.network_managers.ProfileEditorManager;
 import com.rtech.threadly.utils.PermissionManagementUtil;
 import com.rtech.threadly.utils.ReUsableFunctions;
@@ -39,7 +38,6 @@ import java.util.ArrayList;
 public class ChangeProfileImageSelector extends Fragment {
     FragmentChangeProfileImageSelectorBinding mainXml;
     String AndroidAPi33AndAbovePermission= Manifest.permission.READ_MEDIA_IMAGES;
-    String AndroidApi32AndBelowPermission=Manifest.permission.READ_EXTERNAL_STORAGE;
     ArrayList<Uri> uris;
     Uri pickedUri;
     ProfileEditorManager profileEditorManager;
@@ -66,19 +64,10 @@ public class ChangeProfileImageSelector extends Fragment {
     }
 
     private void checkPermissionAndStart() {
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
-           if( !PermissionManagementUtil.isAllPermissionGranted(requireContext(),new String []{AndroidAPi33AndAbovePermission})){
-               PermissionManagementUtil.requestPermission(requireActivity(),new String[]{AndroidAPi33AndAbovePermission},101);
-           }else{
-               StartMain();
-           }
-
-        }else{
-          if(!PermissionManagementUtil.isAllPermissionGranted(requireContext(),new String[]{AndroidApi32AndBelowPermission})){
-              PermissionManagementUtil.requestPermission(requireActivity(),new String[]{AndroidApi32AndBelowPermission},101);
-          }else{
-              StartMain();
-          }
+        if (!PermissionManagementUtil.isAllPermissionGranted(requireContext(), new String[]{AndroidAPi33AndAbovePermission})) {
+            PermissionManagementUtil.requestPermission(requireActivity(), new String[]{AndroidAPi33AndAbovePermission}, 101);
+        } else {
+            StartMain();
         }
 
     }
@@ -86,12 +75,9 @@ public class ChangeProfileImageSelector extends Fragment {
     private void StartMain() {
         pickedUri=null;
        uris =new ArrayList<>();
-        uploadProfileAdapter adapter=new uploadProfileAdapter(uris, requireContext(), new uploadProfileSelectCallbackInterface() {
-            @Override
-            public void itemPicked(Uri uri) {
-                mainXml.selectImagePreview.setImageURI(uri);
-                pickedUri=uri;
-            }
+        uploadProfileAdapter adapter=new uploadProfileAdapter(uris, requireContext(), uri -> {
+            mainXml.selectImagePreview.setImageURI(uri);
+            pickedUri=uri;
         });
         GridLayoutManager layoutManager=new GridLayoutManager(requireContext(),3,GridLayoutManager.VERTICAL,false);
         mainXml.mediaRecyclerView.setLayoutManager(layoutManager);
@@ -126,9 +112,7 @@ public class ChangeProfileImageSelector extends Fragment {
     }
 
     private void setOnclickListeners() {
-        mainXml.cancelButton.setOnClickListener(v->{
-            requireActivity().onBackPressed();
-        });
+        mainXml.cancelButton.setOnClickListener(v-> requireActivity().onBackPressed());
         mainXml.nextBtn.setOnClickListener(v->{
             mainXml.nextBtn.setEnabled(false);
             mainXml.progressbar.setVisibility(View.VISIBLE);
@@ -139,7 +123,7 @@ public class ChangeProfileImageSelector extends Fragment {
                   profileEditorManager.ChangeUserProfile(photo, new NetworkCallbackInterfaceWithJsonObjectDelivery() {
                       @Override
                       public void onSuccess(JSONObject response) {
-                          JSONObject data= null;
+                          JSONObject data;
                           try {
                               data = response.getJSONObject("data");
                               String url=data.getString("url");

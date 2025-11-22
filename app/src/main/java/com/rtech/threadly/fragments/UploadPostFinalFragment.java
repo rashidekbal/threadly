@@ -24,6 +24,7 @@ import com.rtech.threadly.workers.UploadMediaWorker;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Objects;
 
 
 public class UploadPostFinalFragment extends Fragment {
@@ -48,7 +49,7 @@ public class UploadPostFinalFragment extends Fragment {
         activity=(AppCompatActivity) requireActivity();
 
             activity.setSupportActionBar(mainXml.toolbar);
-            activity.getSupportActionBar().setTitle("New Post");
+            Objects.requireNonNull(activity.getSupportActionBar()).setTitle("New Post");
             activity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             setHasOptionsMenu(true);
 
@@ -75,6 +76,7 @@ public class UploadPostFinalFragment extends Fragment {
     }
     private void getData(){
         Bundle bundle = getArguments();
+        assert bundle != null;
         filePath= bundle.getString("filePath");
         mediaType = bundle.getString("mediaType");
         from = bundle.getString("from");
@@ -93,37 +95,34 @@ public class UploadPostFinalFragment extends Fragment {
         }
     }
     private void setOnclickListeners() {
-        mainXml.shareBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mainXml.shareBtn.setEnabled(false);
-                if(file.exists()){
-                    String caption=mainXml.captionText.getText().toString().trim();
-                    if(mediaType.equals("image")){
-                        data=new Data.Builder()
-                                .putString("type","image")
-                                .putString("path",file.getAbsolutePath())
-                                .putString("caption",caption)
-                                .build();
+        mainXml.shareBtn.setOnClickListener(v -> {
+            mainXml.shareBtn.setEnabled(false);
+            if(file.exists()){
+                String caption=mainXml.captionText.getText().toString().trim();
+                if(mediaType.equals("image")){
+                    data=new Data.Builder()
+                            .putString("type","image")
+                            .putString("path",file.getAbsolutePath())
+                            .putString("caption",caption)
+                            .build();
 
-                    }else{
-                        data=new Data.Builder()
-                                .putString("type","video")
-                                .putString("path",file.getAbsolutePath())
-                                .putString("caption",caption)
-                                .build();
+                }else{
+                    data=new Data.Builder()
+                            .putString("type","video")
+                            .putString("path",file.getAbsolutePath())
+                            .putString("caption",caption)
+                            .build();
 
-                    }
-                    uploadRequest=new OneTimeWorkRequest.Builder(UploadMediaWorker.class).setInputData(data).build();
-                    Core.getWorkManager().enqueue(uploadRequest);
-                    ReUsableFunctions.ShowToast("Uploading");
-                    requireActivity().finish();
-
-
-                }else {
-                    ReUsableFunctions.ShowToast(activity,"no image found err");
-                    requireActivity().onBackPressed();
                 }
+                uploadRequest=new OneTimeWorkRequest.Builder(UploadMediaWorker.class).setInputData(data).build();
+                Core.getWorkManager().enqueue(uploadRequest);
+                ReUsableFunctions.ShowToast("Uploading");
+                requireActivity().finish();
+
+
+            }else {
+                ReUsableFunctions.ShowToast(activity,"no image found err");
+                requireActivity().onBackPressed();
             }
         });
     }
