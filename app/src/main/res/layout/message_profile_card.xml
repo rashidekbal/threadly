@@ -6,12 +6,14 @@
     android:gravity="center_vertical"
     android:paddingHorizontal="@dimen/dp_10"
     android:background="@color/white"
+    android:id="@+id/mainLayout"
     >
    <LinearLayout
        android:layout_width="match_parent"
        android:layout_height="match_parent"
        android:orientation="horizontal"
-       android:gravity="center_vertical">
+       android:gravity="center_vertical"
+       android:background="?attr/selectableItemBackground">
        <ImageView
            android:id="@+id/profile"
            android:layout_width="@dimen/dp_53"
@@ -21,32 +23,48 @@
            android:clipToOutline="true"
            android:scaleType="fitCenter"
            />
-       <LinearLayout
+       <RelativeLayout
            android:layout_width="wrap_content"
            android:layout_height="wrap_content"
-           android:orientation="vertical"
            android:layout_toEndOf="@+id/profile"
            android:layout_marginStart="@dimen/dp_19"
            >
            <TextView
-               android:id="@+id/userid"
+               android:id="@+id/username"
                android:layout_width="wrap_content"
-               android:maxWidth="@dimen/dp_200"
+               android:maxWidth="@dimen/dp_180"
                android:layout_height="wrap_content"
                tools:text="Rashid ekbal"
                android:textColor="@color/black"
-               android:textSize="@dimen/sp_16"/>
+               android:textSize="@dimen/sp_16"
+               />
+           <TextView
+               android:id="@+id/unReadCounter"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:maxWidth="25dp"
+               android:text="4+"
+               android:visibility="gone"
+               android:layout_toEndOf="@id/username"
+               android:layout_marginStart="@dimen/dp_10"
+               android:textColor="@color/danger"
+               android:textStyle="bold"
+
+               />
+
            <TextView
                android:id="@+id/recent"
                android:maxWidth="@dimen/dp_200"
                android:layout_width="wrap_content"
                android:layout_height="wrap_content"
                tools:text="sent a reel by guru"
-               android:layout_marginTop="2dp"
+               android:layout_marginTop="4dp"
                android:textSize="@dimen/sp_14"
-               android:textColor="@color/light_grey_text"/>
+               android:layout_below="@id/username"
+               android:textColor="@color/danger"
+               />
 
-       </LinearLayout>
+       </RelativeLayout>
    </LinearLayout>
     <ImageView
         android:id="@+id/sendMedia_btn"

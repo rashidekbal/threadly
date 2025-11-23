@@ -44,7 +44,7 @@ import java.util.ArrayList;
 
 
 public class profileFragment extends Fragment {
-AppCompatActivity activity;
+    AppCompatActivity activity;
     SharedPreferences loginInfo;
     TextView userid_text,username_text,posts_count_text,followers_count_text,following_count_text,bio_text;
     AppCompatButton EditProfile_btn;

@@ -183,4 +183,5 @@
     <string name="content_not_available">Content not available</string>
     <string name="from">from</string>
     <string name="company_name">R-technologies</string>
+    <string name="userid_page">UserId</string>
 </resources>

@@ -39,16 +39,16 @@
                 android:clipToOutline="true"
                 android:background="@drawable/circle"
                 />
+
             <TextView
                 android:id="@+id/changeProfile_btn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/change_profile_picture"
-                android:textColor="@color/ui_blue"
-                android:textStyle="bold"
                 android:layout_marginTop="@dimen/dp_15"
+                android:text="@string/change_profile_picture"
                 android:textAlignment="center"
-                />
+                android:textColor="@color/ui_blue"
+                android:textStyle="bold" />
         </LinearLayout>
         <LinearLayout
             android:id="@+id/name_layout"

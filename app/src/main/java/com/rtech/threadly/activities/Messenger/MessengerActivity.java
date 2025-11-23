@@ -13,6 +13,7 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.rtech.threadly.POJO.ConvMessageCounter;
 import com.rtech.threadly.R;
 import com.rtech.threadly.RoomDb.schemas.HistorySchema;
 import com.rtech.threadly.adapters.messanger.HistoryListAdapter;
@@ -23,6 +24,9 @@ import com.rtech.threadly.fragments.UsersListFragment;
 import com.rtech.threadly.viewmodels.UsersMessageHistoryProfileViewModel;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class MessengerActivity extends AppCompatActivity {
     ActivityMessangerBinding mainXml;
@@ -30,6 +34,8 @@ public class MessengerActivity extends AppCompatActivity {
     ArrayList<HistorySchema> historylist;
     HistoryListAdapter adapter;
     UsersMessageHistoryProfileViewModel historyCardViewModel;
+
+    List<ConvMessageCounter> unreadCountList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +50,7 @@ public class MessengerActivity extends AppCompatActivity {
         });
         historyCardViewModel=new ViewModelProvider(MessengerActivity.this).get(UsersMessageHistoryProfileViewModel.class);
         historylist = new ArrayList<>();
+        unreadCountList=new ArrayList<>();
 
         adapter = new HistoryListAdapter(MessengerActivity.this, model -> {
             Bundle data = new Bundle();
@@ -55,7 +62,7 @@ public class MessengerActivity extends AppCompatActivity {
             Intent msgPage = new Intent(MessengerActivity.this, MessengerMainMessagePageActivity.class);
             msgPage.putExtras(data);
             startActivity(msgPage);
-        }, historylist);
+        }, historylist, unreadCountList);
 
         loginInfo=Core.getPreference();
 
@@ -65,6 +72,15 @@ public class MessengerActivity extends AppCompatActivity {
         historyCardViewModel.getHistory().observe(MessengerActivity.this, historySchemas -> {
             historylist.clear();
             historylist.addAll(historySchemas);
+            adapter.notifyDataSetChanged();
+        });
+        historyCardViewModel.getUnreadPerConversation().observe(MessengerActivity.this,list->{
+            if(list.isEmpty()){
+                adapter.notifyDataSetChanged();
+                return ;
+            }
+            unreadCountList.clear();
+            unreadCountList.addAll(list);
             adapter.notifyDataSetChanged();
         });
 
