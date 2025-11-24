@@ -3,6 +3,7 @@ package com.rtech.threadly.adapters.messanger;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -115,325 +116,21 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
 
     @Override
-    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holderView, @SuppressLint("RecyclerView") int position) {
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holderView, @SuppressLint("RecyclerView") int rawposition) {
+        int position =holderView.getLayoutPosition();
 
         //-------------------   ImageMessageViewHolder -------------------//
         if(holderView instanceof ImageMessageViewHolder){
-            ImageMessageViewHolder holder=(ImageMessageViewHolder) holderView;
-            //if i had sent the media
-            if(list.get(position).getSenderId().equals(Core.getPreference().getString(SharedPreferencesKeys.UUID,"null"))){
-                int deliveryStatus=list.get(position).getDeliveryStatus();
-                holder.senderProfile.setVisibility(View.GONE);
-                holder.rec_msg_layout.setVisibility(View.GONE);
-                holder.sent_msg_layout.setVisibility(View.VISIBLE);
-
-                holder.status_img.setImageResource(deliveryStatus==0?R.drawable.msg_pending:deliveryStatus==1?R.drawable.single_tick:deliveryStatus==2?R.drawable.double_tick_recieved:R.drawable.double_tick_viewed);
-                if (!list.get(position).getMsg().isEmpty()){
-                    holder.sent_caption.setVisibility(View.VISIBLE);
-                    holder.sent_caption.setText(list.get(position).getMsg());
-                }else{
-                    holder.sent_caption.setVisibility(View.GONE);
-                }
-                if(list.get(position).getPostLink()!=null){
-                    Glide.with(context).load(list.get(position).getPostLink()).placeholder(R.drawable.post_placeholder).into(holder.sent_MediaImageView);
-                }else{
-                    Glide.with(context).load(new File(list.get(position).getMediaLocalPath())).placeholder(R.drawable.post_placeholder).into(holder.sent_MediaImageView);
-                }
-
-                if(((list.get(position).getMediaUploadState().equals(MessageStateEnum.FAILED.toString())||
-                        list.get(position).getMediaUploadState().equals(MessageStateEnum.SUCCESS.toString()))&&list.get(position).getDeliveryStatus()==0)&&list.get(position).getPostLink()!=null){
-                    holder.cancelBtn.setTag("retry");
-                    holder.cancelBtn.setImageResource(R.drawable.retry_icon);
-                    holder.progress_circular.setVisibility(View.GONE);
-                    holder.cancelBtn.setVisibility(View.VISIBLE);
-                    holder.sent_MediaImageView.setOnClickListener(v-> openMedia(list.get(position), TypeConstants.IMAGE));
-                    holder.sent_MediaImageView.setOnLongClickListener(v -> {
-                        showActionMenu(holder.sent_MediaImageView,position);
-                        return true;
-                    });
-                }
-                else if(list.get(position).getMediaUploadState().equals(MessageStateEnum.FAILED.toString())){
-                    holder.progress_circular.setVisibility(View.GONE);
-                    holder.cancelBtn.setVisibility(View.VISIBLE);
-                    holder.cancelBtn.setTag("retry");
-                    holder.cancelBtn.setImageResource(R.drawable.retry_icon);
-                }
-                else if(!list.get(position).getMediaUploadState().equals(MessageStateEnum.SUCCESS.toString())||list.get(position).getPostLink()==null){
-
-                    holder.progress_circular.setVisibility(View.VISIBLE);
-                    holder.cancelBtn.setImageResource(R.drawable.cross_light);
-                    holder.cancelBtn.setVisibility(View.VISIBLE);
-                    holder.progress_circular.setMax((int)list.get(position).getTotalSize());
-                    holder.progress_circular.setProgress((int)list.get(position).getUploadedSize(),true);
-                    holder.cancelBtn.setTag("cancel");
-                }else{
-                    holder.progress_circular.setVisibility(View.GONE);
-                    holder.cancelBtn.setVisibility(View.GONE);
-                    holder.sent_MediaImageView.setOnClickListener(v-> openMedia(list.get(position), TypeConstants.IMAGE));
-                    holder.sent_MediaImageView.setOnLongClickListener(v -> {
-                        showActionMenu(holder.sent_MediaImageView,position);
-                        return true;
-                    });
-                }
-                holder.cancelBtn.setOnClickListener((v)->{
-                    if(holder.cancelBtn.getTag().equals("cancel")){
-                        handelMediaSendCancel(position,holderView);
-                    }else{
-                        holder.cancelBtn.setTag("cancel");
-                        holder.cancelBtn.setImageResource(R.drawable.cross_light);
-                        holder.progress_circular.setVisibility(View.VISIBLE);
-                        StartResendingMessage(list.get(position).getMessageUid());
-
-                    }
-
-                });
-
-
-
-            }
-            else{
-                holder.sent_msg_layout.setVisibility(View.GONE);
-                holder.rec_msg_layout.setVisibility(View.VISIBLE);
-
-                // if i had  received the message
-
-                if(position>0){
-                    // if not first message
-                    if(list.get(position).getSenderId().equals(list.get(position-1).getSenderId())){
-                        //if sender is same as previous message
-                        holder.senderProfile.setVisibility(View.GONE);}
-                    else {
-                        //if sender is changed from previous
-                        holder.senderProfile.setVisibility(View.VISIBLE);
-                        Glide.with(context).load(profile).placeholder(R.drawable.blank_profile).circleCrop().into(holder.senderProfile);
-
-                    }
-
-                }else{
-                    //if first message
-                    holder.senderProfile.setVisibility(View.VISIBLE);
-                    Glide.with(context).load(profile).placeholder(R.drawable.blank_profile).circleCrop().into( holder.senderProfile);
-
-                }
-                Glide.with(context).load(list.get(position).getPostLink()).placeholder(R.drawable.post_placeholder).into(holder.received_MediaImageView);
-                if(!list.get(position).getMsg().isEmpty()){
-                    holder.rec_caption.setVisibility(View.VISIBLE);
-                    holder.rec_caption.setText(list.get(position).getMsg());
-
-                }else {
-                    holder.rec_caption.setVisibility(View.GONE);
-                }
-
-                holder.received_MediaImageView.setOnClickListener(v-> openMedia(list.get(position), TypeConstants.IMAGE));
-                holder.received_MediaImageView.setOnLongClickListener(v -> {
-
-                    showActionMenu(holder.received_MediaImageView,position);
-                    return true;
-                });
-
-
-            }
-
-
+            BindImageMessageType((ImageMessageViewHolder)holderView,position);
         }
-
-
-
-
-
-
-
-
 
         //-------------------   VideoMessageViewHolder -------------------//
         else if(holderView instanceof VideoMessageViewHolder){
-            VideoMessageViewHolder holder=(VideoMessageViewHolder) holderView;
-            //if i had sent the media
-            if(list.get(position).getSenderId().equals(Core.getPreference().getString(SharedPreferencesKeys.UUID,"null"))){
-                int deliveryStatus=list.get(position).getDeliveryStatus();
-                holder.senderProfile.setVisibility(View.GONE);
-                holder.rec_msg_layout.setVisibility(View.GONE);
-                holder.sent_msg_layout.setVisibility(View.VISIBLE);
-
-                holder.status_img.setImageResource(deliveryStatus==0?R.drawable.msg_pending:deliveryStatus==1?R.drawable.single_tick:deliveryStatus==2?R.drawable.double_tick_recieved:R.drawable.double_tick_viewed);
-                if (!list.get(position).getMsg().isEmpty()){
-                    holder.sent_caption.setVisibility(View.VISIBLE);
-                    holder.sent_caption.setText(list.get(position).getMsg());
-                }else{
-                    holder.sent_caption.setVisibility(View.GONE);
-                }
-
-                if(list.get(position).getPostLink()!=null){
-                    Glide.with(context).load(list.get(position).getPostLink()).placeholder(R.drawable.post_placeholder).into(holder.sent_MediaImageView);
-                }else{
-                    Glide.with(context).load(new File(list.get(position).getMediaLocalPath())).placeholder(R.drawable.post_placeholder).into(holder.sent_MediaImageView);
-                }
-
-                if(list.get(position).getMediaUploadState().equals(MessageStateEnum.FAILED.toString())){
-                    holder.progress_circular.setVisibility(View.GONE);
-                    holder.cancelBtn.setVisibility(View.VISIBLE);
-                    holder.cancelBtn.setTag("retry");
-                    holder.cancelBtn.setImageResource(R.drawable.retry_icon);
-                    holder.playIcon.setVisibility(View.GONE);
-                }
-                else if(!list.get(position).getMediaUploadState().equals(MessageStateEnum.SUCCESS.toString())||list.get(position).getPostLink()==null){
-                    holder.progress_circular.setVisibility(View.VISIBLE);
-                    holder.cancelBtn.setImageResource(R.drawable.cross_light);
-                    holder.cancelBtn.setVisibility(View.VISIBLE);
-                    holder.progress_circular.setMax((int)list.get(position).getTotalSize());
-                    holder.progress_circular.setProgress((int)list.get(position).getUploadedSize(),true);
-                    holder.cancelBtn.setTag("cancel");
-                    holder.playIcon.setVisibility(View.GONE);
-                }else{
-                    holder.progress_circular.setVisibility(View.GONE);
-                    holder.cancelBtn.setVisibility(View.GONE);
-                    holder.playIcon.setVisibility(View.VISIBLE);
-                    holder.sent_MediaImageView.setOnClickListener(v-> openMedia(list.get(position), TypeConstants.VIDEO));
-                    holder.sent_MediaImageView.setOnLongClickListener(v -> {
-                        showActionMenu(holder.sent_MediaImageView,position);
-                        return true;
-                    });
-                }
-                holder.cancelBtn.setOnClickListener((v)->{
-                    if(holder.cancelBtn.getTag().equals("cancel")){
-                        handelMediaSendCancel(position,holderView);
-                    }else{
-                        holder.cancelBtn.setTag("cancel");
-                        holder.cancelBtn.setImageResource(R.drawable.cross_light);
-                        holder.progress_circular.setVisibility(View.VISIBLE);
-                        StartResendingMessage(list.get(position).getMessageUid());
-
-                    }
-
-                });
-
-
-
-
-            }else{
-                holder.sent_msg_layout.setVisibility(View.GONE);
-                holder.rec_msg_layout.setVisibility(View.VISIBLE);
-
-                // if i had  received the message
-
-                if(position>0){
-                    // if not first message
-                    if(list.get(position).getSenderId().equals(list.get(position-1).getSenderId())){
-                        //if sender is same as previous message
-                        holder.senderProfile.setVisibility(View.GONE);}
-                    else {
-                        //if sender is changed from previous
-                        holder.senderProfile.setVisibility(View.VISIBLE);
-                        Glide.with(context).load(profile).placeholder(R.drawable.blank_profile).circleCrop().into(holder.senderProfile);
-
-                    }
-
-                }else{
-                    //if first message
-                    holder.senderProfile.setVisibility(View.VISIBLE);
-                    Glide.with(context).load(profile).placeholder(R.drawable.blank_profile).circleCrop().into( holder.senderProfile);
-
-                }
-                Glide.with(context).load(list.get(position).getPostLink()).placeholder(R.drawable.post_placeholder).into(holder.received_MediaImageView);
-                if(!list.get(position).getMsg().isEmpty()){
-                    holder.rec_caption.setVisibility(View.VISIBLE);
-                    holder.rec_caption.setText(list.get(position).getMsg());
-
-                }else {
-                    holder.rec_caption.setVisibility(View.GONE);
-                }
-                //on click of media message
-                holder.received_MediaImageView.setOnClickListener(v-> openMedia(list.get(position), TypeConstants.VIDEO));
-                holder.received_MediaImageView.setOnLongClickListener(v -> {
-                    showActionMenu(holder.received_MediaImageView,position);
-                    return true;
-                });
-
-            }
-
-
+            BindVideoMessageType((VideoMessageViewHolder) holderView,position);
         }
-
-
-
-
-
-
-
-
-
-
-
-
-
         //-------------------   PostMessageViewHolder -------------------//
         else if (holderView instanceof PostMessageViewHolder) {
-            PostMessageViewHolder holder=(PostMessageViewHolder) holderView;
-            //if i had sent the post
-            if(list.get(position).getSenderId().equals(Core.getPreference().getString(SharedPreferencesKeys.UUID,"null"))){
-                int deliveryStatus=list.get(position).getDeliveryStatus();
-                holder.senderProfile.setVisibility(View.GONE);
-                holder.rec_msg_layout.setVisibility(View.GONE);
-                holder.sent_msg_layout.setVisibility(View.VISIBLE);
-                Glide.with(context).load(list.get(position).getPostLink()).placeholder(R.drawable.post_placeholder).into(holder.sent_MediaImageView);
-                holder.status_img.setImageResource(deliveryStatus==0?R.drawable.msg_pending:deliveryStatus==1?R.drawable.single_tick:deliveryStatus==2?R.drawable.double_tick_recieved:R.drawable.double_tick_viewed);
-                if (!list.get(position).getMsg().isEmpty()||!list.get(position).getMsg().isBlank()){
-                    holder.sent_caption.setVisibility(View.VISIBLE);
-                    holder.sent_caption.setText(list.get(position).getMsg());
-                }else{
-                    holder.sent_caption.setVisibility(View.GONE);
-                }
-
-                //on click of video message i had sent
-                holder.sent_MediaImageView.setOnClickListener(v-> openPost(list.get(position)));
-                holder.sent_MediaImageView.setOnLongClickListener(v -> {
-                    showActionMenu(holder.sent_MediaImageView,position);
-                    return true;
-                });
-
-            }
-            else{
-                holder.sent_msg_layout.setVisibility(View.GONE);
-                holder.rec_msg_layout.setVisibility(View.VISIBLE);
-
-                // if i had  received the post
-
-                if(position>0){
-                    // if not first message
-                    if(list.get(position).getSenderId().equals(list.get(position-1).getSenderId())){
-                        //if sender is same as previous message
-                        holder.senderProfile.setVisibility(View.GONE);}
-                    else {
-                        //if sender is changed from previous
-                        holder.senderProfile.setVisibility(View.VISIBLE);
-                        Glide.with(context).load(profile).placeholder(R.drawable.blank_profile).circleCrop().into(holder.senderProfile);
-
-                    }
-
-                }else{
-                    //if first message
-                    holder.senderProfile.setVisibility(View.VISIBLE);
-                    holder.received_MediaImageView.setOnLongClickListener(v->{ ReUsableFunctions.ShowToast("long press detected");return true;});
-                    Glide.with(context).load(profile).placeholder(R.drawable.blank_profile).circleCrop().into( holder.senderProfile);
-
-                }
-                Glide.with(context).load(list.get(position).getPostLink()).placeholder(R.drawable.post_placeholder).into(holder.received_MediaImageView);
-                if(!list.get(position).getMsg().isEmpty()||!list.get(position).getMsg().isBlank()){
-                    holder.rec_caption.setVisibility(View.VISIBLE);
-                    holder.rec_caption.setText(list.get(position).getMsg());
-
-                }else {
-                    holder.rec_caption.setVisibility(View.GONE);
-                }
-                //on click of media message i have received
-                holder.received_MediaImageView.setOnClickListener(v->openPost(list.get(position)));
-                holder.received_MediaImageView.setOnLongClickListener(v -> {
-                    showActionMenu(holder.received_MediaImageView,position);
-                    return true;
-                });
-
-            }
-
+            BindPostMessageType((PostMessageViewHolder)holderView,position);
         }
 
 
@@ -446,6 +143,7 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
         //-------------------   DeletedMessageViewHolder -------------------//
         else if (holderView instanceof DeletedMessageViewHolder) {
+
             DeletedMessageViewHolder holder=(DeletedMessageViewHolder) holderView;
             if(list.get(position).getSenderId().equals(Core.getPreference().getString(SharedPreferencesKeys.UUID,"null"))){
                 //if i had sent
@@ -465,193 +163,567 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
         //-------------------   TextMessageViewHolder -------------------//
         else{
-            TextMessageviewHolder holder=(TextMessageviewHolder) holderView;
-
-            //layout background condition checking
-
-            if(position==0){
-                //exclusive for position 0
-                if(list.get(position).getSenderId().equals(ReUsableFunctions.getMyUuid())){
-                    if(list.size()-1>=position+1){
-                        //if the list contains another message item
-                        if(list.get(position).getSenderId().equals(list.get(position+1).getSenderId())){
-                            //if the pos+1 is having same sender in this case other user then
-                            holder.sent_msg_layout.setBackground(AppCompatResources.getDrawable(context,R.drawable.sent_msg_start_bg));
-
-
-                        }else{
-                            //if pos+1 is not the other user
-                            holder.sent_msg_layout.setBackground(AppCompatResources.getDrawable(context,R.drawable.sent_msg_solo_bg));
-                        }
-                    }else{
-                        //if no second message exists
-                        holder.sent_msg_layout.setBackground(AppCompatResources.getDrawable(context,R.drawable.sent_msg_solo_bg));
-                    }
-                }
-
-                //if received by user
-                else{
-                    if(list.size()-1>=position+1){
-                        //if the list contains another message item
-                        if(list.get(position).getSenderId().equals(list.get(position+1).getSenderId())){
-                            //if the pos+1 is having same sender in this case other user then
-                            holder.recMsg.setBackground(AppCompatResources.getDrawable(context,R.drawable.received_msg_bg_start));
-
-
-                        }else{
-                            //if pos+1 is not the other user
-                            holder.recMsg.setBackground(AppCompatResources.getDrawable(context,R.drawable.received_msg_bg_solo));
-                        }
-                    }else{
-                        //if no second message exists
-                        holder.recMsg.setBackground(AppCompatResources.getDrawable(context,R.drawable.received_msg_bg_solo));
-                    }
-
-                }
-
-
-
-
-            }else {
-                //if position is greater than 0
-                if(list.get(position).getSenderId().equals(ReUsableFunctions.getMyUuid())){
-                    //if current user id sender
-                    if(list.size()-1>=position+1){
-                        //if position+1 exists
-                        //we do double checking for both front and back
-                        if(list.get(position).getSenderId().equals(list.get(position-1).getSenderId())&&list.get(position).getSenderId().equals(list.get(position+1).getSenderId())){
-                            //if  message sender is same as previous and next message sender is same
-                            holder.sent_msg_layout.setBackground(AppCompatResources.getDrawable(context,R.drawable.sent_msg_mid_bg));
-
-                        }
-
-                        if(list.get(position).getSenderId().equals(list.get(position-1).getSenderId())&&!list.get(position).getSenderId().equals(list.get(position+1).getSenderId())){
-                            //if  message sender is same as previous but next message is not by the same user
-                            holder.sent_msg_layout.setBackground(AppCompatResources.getDrawable(context,R.drawable.sent_msg_end_bg));
-
-                        }
-                        if(!list.get(position).getSenderId().equals(list.get(position-1).getSenderId())&&!list.get(position).getSenderId().equals(list.get(position+1).getSenderId())){
-                            //if both side is different
-                            holder.sent_msg_layout.setBackground(AppCompatResources.getDrawable(context,R.drawable.sent_msg_solo_bg));
-
-                        }
-                        if(!list.get(position).getSenderId().equals(list.get(position-1).getSenderId())&&list.get(position).getSenderId().equals(list.get(position+1).getSenderId())){
-                            //if  message sender is same as previous and next message sender is same
-                            holder.sent_msg_layout.setBackground(AppCompatResources.getDrawable(context,R.drawable.sent_msg_start_bg));
-
-                        }
-
-
-                    }else{
-                        //if no next message available
-                        if(list.get(position).getSenderId().equals(list.get(position-1).getSenderId())){
-                            //since no next message available check if same sender as before
-                            holder.sent_msg_layout.setBackground(AppCompatResources.getDrawable(context,R.drawable.sent_msg_end_bg));
-
-                        }else{
-                            //if solo message
-                            holder.sent_msg_layout.setBackground(AppCompatResources.getDrawable(context,R.drawable.sent_msg_solo_bg));
-                        }
-
-                    }
-
-                }else{
-                    //if other user is sender or current user is receiver
-                    if(list.size()-1>=position+1){
-                        //if position+1 exists
-                        //we do double checking for both front and back
-                        if(list.get(position).getSenderId().equals(list.get(position-1).getSenderId())&&list.get(position).getSenderId().equals(list.get(position+1).getSenderId())){
-                            //if  message sender is same as previous and next message sender is same
-                            holder.recMsg.setBackground(AppCompatResources.getDrawable(context,R.drawable.received_msg_mid_bg));
-
-                        }
-
-                        if(list.get(position).getSenderId().equals(list.get(position-1).getSenderId())&&!list.get(position).getSenderId().equals(list.get(position+1).getSenderId())){
-                            //if  message sender is same as previous but next message is not by the same user
-                            holder.recMsg.setBackground(AppCompatResources.getDrawable(context,R.drawable.received_msg_bg_end));
-
-                        }
-                        if(!list.get(position).getSenderId().equals(list.get(position-1).getSenderId())&&!list.get(position).getSenderId().equals(list.get(position+1).getSenderId())){
-                            //if both side is different
-                            holder.recMsg.setBackground(AppCompatResources.getDrawable(context,R.drawable.received_msg_bg_solo));
-
-                        }
-                        if(!list.get(position).getSenderId().equals(list.get(position-1).getSenderId())&&list.get(position).getSenderId().equals(list.get(position+1).getSenderId())){
-                            //if  message sender is same as previous and next message sender is same
-                            holder.recMsg.setBackground(AppCompatResources.getDrawable(context,R.drawable.received_msg_bg_start));
-
-                        }
-
-
-                    }else{
-                        //if no next message available
-                        if(list.get(position).getSenderId().equals(list.get(position-1).getSenderId())){
-                            //since no next message available check if same sender as before
-                            holder.recMsg.setBackground(AppCompatResources.getDrawable(context,R.drawable.received_msg_bg_end));
-
-                        }else{
-                            //if solo message
-                            holder.recMsg.setBackground(AppCompatResources.getDrawable(context,R.drawable.received_msg_bg_solo));
-                        }
-
-                    }
-
-
-                }
-            }
-
-
-            //------------- actual logic --------------//
-            if(list.get(position).getSenderId().equals(Core.getPreference().getString(SharedPreferencesKeys.UUID,"null"))){
-
-                //if i had sent
-                int deliveryStatus=list.get(position).getDeliveryStatus();
-                holder.senderProfile.setVisibility(View.GONE);
-                holder.recMsg.setVisibility(View.GONE);
-                holder.sent_msg_layout.setVisibility(View.VISIBLE);
-                holder.sentMsg.setText(list.get(position).getMsg());
-                holder.status_img.setImageResource(deliveryStatus==0?R.drawable.msg_pending:deliveryStatus==1?R.drawable.single_tick:deliveryStatus==2?R.drawable.double_tick_recieved:R.drawable.double_tick_viewed);
-                holder.sent_msg_layout.setLongClickable(true);
-
-                holder.sent_msg_layout.setOnLongClickListener(v -> {
-
-
-                    showActionMenu(holder.sent_msg_layout,position);
-
-                    return true;
-                });
-            }
-
-            else {
-                if(position>0){
-                    if(list.get(position).getSenderId().equals(list.get(position-1).getSenderId())){
-                        holder.senderProfile.setVisibility(View.INVISIBLE);}
-                    else {
-                        holder.senderProfile.setVisibility(View.VISIBLE);
-                        Glide.with(context).load(profile).placeholder(R.drawable.blank_profile).circleCrop().into( holder.senderProfile);
-
-                    }
-                } else {
-                    holder.senderProfile.setVisibility(View.VISIBLE);
-                    Glide.with(context).load(profile).placeholder(R.drawable.blank_profile).circleCrop().into( holder.senderProfile);
-
-                }
-
-                holder.recMsg.setVisibility(View.VISIBLE);
-                holder.sent_msg_layout.setVisibility(View.GONE);
-                holder.recMsg.setText(list.get(position).getMsg());
-
-                holder.recMsg.setOnLongClickListener(v -> {
-                    showActionMenu(holder.recMsg,position);
-                    return true;
-                });
-
-
-            }
+            BindTextMessageType((TextMessageviewHolder) holderView,position);
         }
 
 
 
+    }
+    // -------------- ImageMessageBinder --------------//
+    private void BindImageMessageType(ImageMessageViewHolder holder,int position) {
+        //if i had sent the media
+        if(isMessageSent(position)){
+            holder.senderProfile.setVisibility(View.GONE);
+            holder.rec_msg_layout.setVisibility(View.GONE);
+            holder.sent_msg_layout.setVisibility(View.VISIBLE);
+            handleDeliverState(holder,position);
+
+            if (isHavingCaption(position)){
+                setUpCaption(holder,position);
+            }
+            else{
+                holder.sent_caption.setVisibility(View.GONE);
+            }
+
+            if(shouldUseLocalMediaPath(position)){
+                Glide.with(context).load(new File(list.get(position).getMediaLocalPath())).placeholder(R.drawable.post_placeholder).into(holder.sent_MediaImageView);
+            }else{
+                Glide.with(context).load(list.get(position).getPostLink()).placeholder(R.drawable.post_placeholder).into(holder.sent_MediaImageView);
+            }
+          if(isMediaUploadFailed(position)){
+                holder.progress_circular.setVisibility(View.GONE);
+                holder.cancelBtn.setVisibility(View.VISIBLE);
+                holder.cancelBtn.setTag("retry");
+                holder.cancelBtn.setImageResource(R.drawable.retry_icon);
+            }
+            else if(isMediaUploading(position)){
+
+                holder.progress_circular.setVisibility(View.VISIBLE);
+                holder.cancelBtn.setImageResource(R.drawable.cross_light);
+                holder.cancelBtn.setVisibility(View.VISIBLE);
+                holder.progress_circular.setMax((int)list.get(position).getTotalSize());
+                holder.progress_circular.setProgress((int)list.get(position).getUploadedSize(),true);
+                holder.cancelBtn.setTag("cancel");
+            }
+            else{
+                holder.progress_circular.setVisibility(View.GONE);
+                holder.cancelBtn.setVisibility(View.GONE);
+                holder.sent_MediaImageView.setOnClickListener(v-> openMedia(list.get(position), TypeConstants.IMAGE));
+                holder.sent_MediaImageView.setOnLongClickListener(v -> {
+                    showActionMenu(holder.sent_MediaImageView,position);
+                    return true;
+                });
+            }
+            holder.cancelBtn.setOnClickListener((v)->{
+                if(holder.cancelBtn.getTag().equals("cancel")){
+                    handelMediaSendCancel(position,holder);
+                }else{
+                    holder.cancelBtn.setTag("cancel");
+                    holder.cancelBtn.setImageResource(R.drawable.cross_light);
+                    holder.progress_circular.setVisibility(View.VISIBLE);
+                    StartResendingMessage(list.get(position).getMessageUid());
+
+                }
+
+            });
+
+
+        }
+        else{   // if i had  received the message
+            holder.sent_msg_layout.setVisibility(View.GONE);
+            holder.rec_msg_layout.setVisibility(View.VISIBLE);
+
+            if(isFirstMessage(position)){
+                //if first message
+                holder.senderProfile.setVisibility(View.VISIBLE);
+                Glide.with(context).load(profile).placeholder(R.drawable.blank_profile).circleCrop().into( holder.senderProfile);
+
+            }
+            if(!isFirstMessage(position)){
+                // if not first message
+                if(isPreviousSenderSame(position)){
+                    //if sender is same as previous message
+                    holder.senderProfile.setVisibility(View.INVISIBLE);}
+                else {
+                    //if sender is changed from previous
+                    holder.senderProfile.setVisibility(View.VISIBLE);
+                    Glide.with(context).load(profile).placeholder(R.drawable.blank_profile).circleCrop().into(holder.senderProfile);
+
+                }
+
+            }
+
+            Glide.with(context).load(list.get(position).getPostLink()).placeholder(R.drawable.post_placeholder).into(holder.received_MediaImageView);
+
+            if(isHavingCaption(position)){
+                holder.rec_caption.setVisibility(View.VISIBLE);
+                holder.rec_caption.setText(list.get(position).getMsg());
+
+            }
+            else {
+                holder.rec_caption.setVisibility(View.GONE);
+            }
+
+            holder.received_MediaImageView.setOnClickListener(v-> openMedia(list.get(position), TypeConstants.IMAGE));
+            holder.received_MediaImageView.setOnLongClickListener(v -> {
+
+                showActionMenu(holder.received_MediaImageView,position);
+                return true;
+            });
+
+
+        }
+
+
+    }
+    // -------------- VideoMessageBinder --------------//
+    private void BindVideoMessageType(VideoMessageViewHolder holder, int position) {
+        if(isMessageSent(position)){
+
+            holder.senderProfile.setVisibility(View.GONE);
+            holder.rec_msg_layout.setVisibility(View.GONE);
+            holder.sent_msg_layout.setVisibility(View.VISIBLE);
+           handleDeliverState(holder,position);
+            if (isHavingCaption(position)){
+                holder.sent_caption.setVisibility(View.VISIBLE);
+                holder.sent_caption.setText(list.get(position).getMsg());
+            }
+            else{
+                holder.sent_caption.setVisibility(View.GONE);
+            }
+
+            if(shouldUseLocalMediaPath(position)){
+                Glide.with(context).load(new File(list.get(position).getMediaLocalPath())).placeholder(R.drawable.post_placeholder).into(holder.sent_MediaImageView);
+            }
+            else{
+                Glide.with(context).load(list.get(position).getPostLink()).placeholder(R.drawable.post_placeholder).into(holder.sent_MediaImageView);
+            }
+
+            if(isMediaUploadFailed(position)){
+                holder.progress_circular.setVisibility(View.GONE);
+                holder.cancelBtn.setVisibility(View.VISIBLE);
+                holder.cancelBtn.setTag("retry");
+                holder.cancelBtn.setImageResource(R.drawable.retry_icon);
+                holder.playIcon.setVisibility(View.GONE);
+            }
+            else if(isMediaUploading(position)){
+                holder.progress_circular.setVisibility(View.VISIBLE);
+                holder.cancelBtn.setImageResource(R.drawable.cross_light);
+                holder.cancelBtn.setVisibility(View.VISIBLE);
+                holder.progress_circular.setMax((int)list.get(position).getTotalSize());
+                holder.progress_circular.setProgress((int)list.get(position).getUploadedSize(),true);
+                holder.cancelBtn.setTag("cancel");
+                holder.playIcon.setVisibility(View.GONE);
+            }
+            else{
+                holder.progress_circular.setVisibility(View.GONE);
+                holder.cancelBtn.setVisibility(View.GONE);
+                holder.playIcon.setVisibility(View.VISIBLE);
+                holder.sent_MediaImageView.setOnClickListener(v-> openMedia(list.get(position), TypeConstants.VIDEO));
+                holder.sent_MediaImageView.setOnLongClickListener(v -> {
+                    showActionMenu(holder.sent_MediaImageView,position);
+                    return true;
+                });
+            }
+            holder.cancelBtn.setOnClickListener((v)->{
+                if(holder.cancelBtn.getTag().equals("cancel")){
+                    handelMediaSendCancel(position, holder);
+                }else{
+                    holder.cancelBtn.setTag("cancel");
+                    holder.cancelBtn.setImageResource(R.drawable.cross_light);
+                    holder.progress_circular.setVisibility(View.VISIBLE);
+                    StartResendingMessage(list.get(position).getMessageUid());
+
+                }
+
+            });
+
+
+
+
+        }else{
+            // if i had  received the message
+            holder.sent_msg_layout.setVisibility(View.GONE);
+            holder.rec_msg_layout.setVisibility(View.VISIBLE);
+            if(isFirstMessage(position)){
+                //if first message
+                holder.senderProfile.setVisibility(View.VISIBLE);
+                Glide.with(context).load(profile).placeholder(R.drawable.blank_profile).circleCrop().into( holder.senderProfile);
+
+            }
+            if(!isFirstMessage(position))
+            {
+                // if not first message
+                if(isPreviousSenderSame(position)){
+                    //if sender is same as previous message
+                    holder.senderProfile.setVisibility(View.INVISIBLE);}
+                else {
+                    //if sender is changed from previous
+                    holder.senderProfile.setVisibility(View.VISIBLE);
+                    Glide.with(context).load(profile).placeholder(R.drawable.blank_profile).circleCrop().into(holder.senderProfile);
+
+                }
+
+            }
+
+            Glide.with(context).load(list.get(position).getPostLink()).placeholder(R.drawable.post_placeholder).into(holder.received_MediaImageView);
+            if(isHavingCaption(position)){
+                holder.rec_caption.setVisibility(View.VISIBLE);
+                holder.rec_caption.setText(list.get(position).getMsg());
+
+            }
+            else {
+                holder.rec_caption.setVisibility(View.GONE);
+            }
+            //on click of media message
+            holder.received_MediaImageView.setOnClickListener(v-> openMedia(list.get(position), TypeConstants.VIDEO));
+            holder.received_MediaImageView.setOnLongClickListener(v -> {
+                showActionMenu(holder.received_MediaImageView,position);
+                return true;
+            });
+
+        }
+
+    }
+
+
+
+    // -------------- PostMessageBinder --------------//
+    private void BindPostMessageType(PostMessageViewHolder holder, int position) {
+        //if i had sent the post
+        if(isMessageSent(position))
+        {
+
+            holder.senderProfile.setVisibility(View.GONE);
+            holder.rec_msg_layout.setVisibility(View.GONE);
+            holder.sent_msg_layout.setVisibility(View.VISIBLE);
+            Glide.with(context).load(list.get(position).getPostLink()).placeholder(R.drawable.post_placeholder).into(holder.sent_MediaImageView);
+            handleDeliverState(holder,position);
+            if (isHavingCaption(position)){
+                holder.sent_caption.setVisibility(View.VISIBLE);
+                holder.sent_caption.setText(list.get(position).getMsg());
+            }else{
+                holder.sent_caption.setVisibility(View.GONE);
+            }
+
+            //on click of video message i had sent
+            holder.sent_MediaImageView.setOnClickListener(v-> openPost(list.get(position)));
+            holder.sent_MediaImageView.setOnLongClickListener(v -> {
+                showActionMenu(holder.sent_MediaImageView,position);
+                return true;
+            });
+
+        }
+        else{
+            // if i had  received the post
+            holder.sent_msg_layout.setVisibility(View.GONE);
+            holder.rec_msg_layout.setVisibility(View.VISIBLE);
+
+
+            if(isFirstMessage(position)){
+                //if first message
+                holder.senderProfile.setVisibility(View.VISIBLE);
+                holder.received_MediaImageView.setOnLongClickListener(v->{ ReUsableFunctions.ShowToast("long press detected");return true;});
+                Glide.with(context).load(profile).placeholder(R.drawable.blank_profile).circleCrop().into( holder.senderProfile);
+
+            }
+            if(!isFirstMessage(position)){
+                // if not first message
+                if(list.get(position).getSenderId().equals(list.get(position-1).getSenderId())){
+                    //if sender is same as previous message
+                    holder.senderProfile.setVisibility(View.INVISIBLE);}
+                else {
+                    //if sender is changed from previous
+                    holder.senderProfile.setVisibility(View.VISIBLE);
+                    Glide.with(context).load(profile).placeholder(R.drawable.blank_profile).circleCrop().into(holder.senderProfile);
+
+                }
+
+            }
+            Glide.with(context).load(list.get(position).getPostLink()).placeholder(R.drawable.post_placeholder).into(holder.received_MediaImageView);
+            if(isHavingCaption(position)){
+                holder.rec_caption.setVisibility(View.VISIBLE);
+                holder.rec_caption.setText(list.get(position).getMsg());
+
+            }
+            else {
+                holder.rec_caption.setVisibility(View.GONE);
+            }
+            //on click of media message i have received
+            holder.received_MediaImageView.setOnClickListener(v->openPost(list.get(position)));
+            holder.received_MediaImageView.setOnLongClickListener(v -> {
+                showActionMenu(holder.received_MediaImageView,position);
+                return true;
+            });
+
+        }
+    }
+
+    private void BindTextMessageType(TextMessageviewHolder holder, int position) {
+        if(isMessageSent(position)){
+            holder.sent_msg_layout.setBackground(getSuitbaleDrawable(position));
+            //if i had sent
+            holder.senderProfile.setVisibility(View.GONE);
+            holder.recMsg.setVisibility(View.GONE);
+            holder.sent_msg_layout.setVisibility(View.VISIBLE);
+            holder.sentMsg.setText(list.get(position).getMsg());
+           handleDeliverState(holder,position);
+            holder.sent_msg_layout.setLongClickable(true);
+
+            holder.sent_msg_layout.setOnLongClickListener(v -> {
+
+
+                showActionMenu(holder.sent_msg_layout,position);
+
+                return true;
+            });
+        }
+
+        else {
+            holder.recMsg.setBackground(getSuitbaleDrawable(position));
+            if(!isFirstMessage(position)){
+                if(isPreviousSenderSame(position)){
+                    holder.senderProfile.setVisibility(View.INVISIBLE);}
+                else {
+                    holder.senderProfile.setVisibility(View.VISIBLE);
+                    Glide.with(context).load(profile).placeholder(R.drawable.blank_profile).circleCrop().into( holder.senderProfile);
+
+                }
+            } else {
+                holder.senderProfile.setVisibility(View.VISIBLE);
+                Glide.with(context).load(profile).placeholder(R.drawable.blank_profile).circleCrop().into( holder.senderProfile);
+
+            }
+
+            holder.recMsg.setVisibility(View.VISIBLE);
+            holder.sent_msg_layout.setVisibility(View.GONE);
+            holder.recMsg.setText(list.get(position).getMsg());
+
+            holder.recMsg.setOnLongClickListener(v -> {
+                showActionMenu(holder.recMsg,position);
+                return true;
+            });
+
+
+        }
+    }
+
+    private Drawable getSuitbaleDrawable(int position) {
+
+        if(isFirstMessage(position)){
+            //exclusive for position 0
+            if(!isMessageSent(position)){
+                //if received by user
+                //if no second message exists
+                if(isNotHavingNextMessage(position)){
+                    return(AppCompatResources.getDrawable(context,R.drawable.received_msg_bg_solo));
+                }
+                //if the list contains another message item
+                if(!isNextSenderSame(position)){   //if pos+1 is not the other user
+                    return(AppCompatResources.getDrawable(context,R.drawable.received_msg_bg_solo));
+                }
+                //if the pos+1 is having same sender in this case other user then
+                return(AppCompatResources.getDrawable(context,R.drawable.received_msg_bg_start));
+            }
+
+            // if message sent
+            // no next message
+            if(isNotHavingNextMessage(position)){
+                return (AppCompatResources.getDrawable(context,R.drawable.sent_msg_solo_bg));
+            }
+            //if next message has hame sender
+            if(!isNextSenderSame(position)){  //if pos+1 is not the other user
+                return (AppCompatResources.getDrawable(context,R.drawable.sent_msg_solo_bg));
+            }
+            //if the pos+1 is having same sender in this case other user then
+            return AppCompatResources.getDrawable(context,R.drawable.sent_msg_start_bg);
+
+        }
+
+        //if not first message
+        if(isMessageSent(position)){
+
+            //if current user id sender
+            if(isNotHavingNextMessage(position)){
+
+                //if no next message available
+                if(!isPreviousSenderSame(position)){
+                    //if solo message
+                    return(AppCompatResources.getDrawable(context,R.drawable.sent_msg_solo_bg));
+                }
+                return(AppCompatResources.getDrawable(context,R.drawable.sent_msg_end_bg));
+            }
+            //if position+1 exists
+//is next or previous message is not of type text
+            // Text + sender chain handling FIXED
+            if(isPreviousMessageNotOfTypeText(position) || !isPreviousSenderSame(position)) {
+
+                if(isNextMessageNotOfTypeText(position) || !isNextSenderSame(position)){
+                    return(AppCompatResources.getDrawable(context,R.drawable.sent_msg_solo_bg));
+                }
+
+                return(AppCompatResources.getDrawable(context,R.drawable.sent_msg_start_bg));
+            }
+
+            if(isNextMessageNotOfTypeText(position) || !isNextSenderSame(position)) {
+                return(AppCompatResources.getDrawable(context,R.drawable.sent_msg_end_bg));
+            }
+
+            //we do double checking for both front and back
+            if(isPreviousSenderSame(position)&&isNextSenderSame(position)){
+                //if  message sender is same as previous and next message sender is same
+                return (AppCompatResources.getDrawable(context,R.drawable.sent_msg_mid_bg));
+
+            }
+            if(isPreviousSenderSame(position)&&!isNextSenderSame(position)){
+                //if  message sender is same as previous but next message is not by the same user
+                return(AppCompatResources.getDrawable(context,R.drawable.sent_msg_end_bg));
+
+            }
+            if(!isPreviousSenderSame(position)&&isNextSenderSame(position)){
+                //if  message sender is not same as previous and next message sender is same
+                return(AppCompatResources.getDrawable(context,R.drawable.sent_msg_start_bg));
+
+            }
+            //if none of the above case is true then it might be that the message has not previous or next same sender
+            return(AppCompatResources.getDrawable(context,R.drawable.sent_msg_solo_bg));
+
+        }
+        else{
+            //if message is received
+            if(isNotHavingNextMessage(position)){
+                //if no next message available
+                if(!isPreviousSenderSame(position)){
+                    //if solo message
+                    return(AppCompatResources.getDrawable(context,R.drawable.received_msg_bg_solo));
+                }
+                //since no next message available and previous is same so end
+                return(AppCompatResources.getDrawable(context,R.drawable.received_msg_bg_end));
+
+            }
+            //if position+1 exists
+            //is next or previous message is not of type text
+            // Text + sender chain handling FIXED
+            if(isPreviousMessageNotOfTypeText(position) || !isPreviousSenderSame(position)) {
+
+                if(isNextMessageNotOfTypeText(position) || !isNextSenderSame(position)){
+                    return(AppCompatResources.getDrawable(context,R.drawable.received_msg_bg_solo));
+                }
+
+                return(AppCompatResources.getDrawable(context,R.drawable.received_msg_bg_start));
+            }
+
+            if(isNextMessageNotOfTypeText(position) || !isNextSenderSame(position)) {
+                return(AppCompatResources.getDrawable(context,R.drawable.received_msg_bg_end));
+            }
+
+
+            //we do double checking for both front and back
+            if(isPreviousSenderSame(position)&&isNextSenderSame(position)){
+                //if  message sender is same as previous and next message sender is same
+                return(AppCompatResources.getDrawable(context,R.drawable.received_msg_mid_bg));
+
+            }
+            if(isPreviousSenderSame(position)&&!isNextSenderSame(position)){
+                //if  message sender is same as previous but next message is not by the same user
+                return(AppCompatResources.getDrawable(context,R.drawable.received_msg_bg_end));
+
+            }
+
+            if(!isPreviousSenderSame(position)&&isNextSenderSame(position)){
+                //if  message sender is same as previous and next message sender is same
+                return(AppCompatResources.getDrawable(context,R.drawable.received_msg_bg_start));
+
+            }
+            //if both side is different
+            return(AppCompatResources.getDrawable(context,R.drawable.received_msg_bg_solo));
+
+
+
+        }
+
+
+    }
+
+    private boolean isNextMessageNotOfTypeText(int position) {
+        return !list.get(position + 1).getType().equals(TypeConstants.TEXT);
+    }
+
+    private boolean isPreviousMessageNotOfTypeText(int position) {
+        return !list.get(position - 1).getType().equals(TypeConstants.TEXT);
+    }
+
+
+    private boolean isNextSenderSame(int position) {
+        return list.get(position).getSenderId().equals(list.get(position+1).getSenderId());
+
+    }
+
+    private boolean isNotHavingNextMessage(int position) {
+       return list.size() - 1 < position + 1;
+    }
+
+    private boolean isPreviousSenderSame(int position) {
+        return list.get(position).getSenderId().equals(list.get(position-1).getSenderId());
+
+    }
+
+    private boolean isFirstMessage(int position) {
+        return position==0;
+    }
+
+    private boolean isMediaUploading(int position) {
+        return list.get(position).getMediaUploadState().equals(MessageStateEnum.UPLOADING.toString());
+    }
+    private boolean isMediaUploadFailed(int position) {
+        // this tells if the uploading of the media itself to server is failed or marked success but not received the link anyhow may be its a edge case
+        return list.get(position).getMediaUploadState().equals(MessageStateEnum.FAILED.toString())||(list.get(position).getMediaUploadState().equals(MessageStateEnum.SUCCESS.toString())&&list.get(position).getPostLink()==null);
+    }
+
+    private boolean shouldUseLocalMediaPath(int position) {
+        return list.get(position).getPostLink()==null;
+
+    }
+
+    private void handleDeliverState(ImageMessageViewHolder holder, int position) {
+        int deliveryStatus=getDeliveryStatus(position);
+            holder.status_img.setImageResource(deliveryStatus==0?R.drawable.msg_pending:deliveryStatus==1?R.drawable.single_tick:deliveryStatus==2?R.drawable.double_tick_recieved:R.drawable.double_tick_viewed);
+
+    }
+    private void handleDeliverState(VideoMessageViewHolder holder, int position) {
+        int deliveryStatus=getDeliveryStatus(position);
+        holder.status_img.setImageResource(deliveryStatus==0?R.drawable.msg_pending:deliveryStatus==1?R.drawable.single_tick:deliveryStatus==2?R.drawable.double_tick_recieved:R.drawable.double_tick_viewed);
+    }
+    private void handleDeliverState(PostMessageViewHolder holder, int position) {
+        int deliveryStatus=getDeliveryStatus(position);
+        holder.status_img.setImageResource(deliveryStatus==0?R.drawable.msg_pending:deliveryStatus==1?R.drawable.single_tick:deliveryStatus==2?R.drawable.double_tick_recieved:R.drawable.double_tick_viewed);
+    }
+    private void handleDeliverState(TextMessageviewHolder holder, int position) {
+        int deliveryStatus=getDeliveryStatus(position);
+        holder.status_img.setImageResource(deliveryStatus==0?R.drawable.msg_pending:deliveryStatus==1?R.drawable.single_tick:deliveryStatus==2?R.drawable.double_tick_recieved:R.drawable.double_tick_viewed);
+    }
+
+
+    private boolean isHavingCaption(int position) {
+        return !list.get(position).getMsg().isEmpty();
+    }
+    private void setUpCaption(RecyclerView.ViewHolder viewHolder, int position) {
+        if(viewHolder instanceof ImageMessageViewHolder ){
+            ImageMessageViewHolder holder=(ImageMessageViewHolder)viewHolder;
+            holder.sent_caption.setVisibility(View.VISIBLE);
+            holder.sent_caption.setText(list.get(position).getMsg());
+        }
+    }
+
+
+
+
+    private int getDeliveryStatus(int position) {
+        return list.get(position).getDeliveryStatus();
+    }
+
+    private boolean isMessageSent(int position) {
+        return list.get(position).getSenderId().equals(PreferenceUtil.getUUID());
     }
 
     private void StartResendingMessage(String msgUid) {
