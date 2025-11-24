@@ -23,13 +23,10 @@ import com.rtech.threadly.SocketIo.SocketManager;
 import com.rtech.threadly.Threadly;
 import com.rtech.threadly.activities.LoginActivity;
 import com.rtech.threadly.activities.UserProfileActivity;
-import com.rtech.threadly.constants.Constants;
-import com.rtech.threadly.constants.MessageStateEnum;
 import com.rtech.threadly.constants.SharedPreferencesKeys;
 import com.rtech.threadly.constants.TypeConstants;
 import com.rtech.threadly.core.Core;
 import com.rtech.threadly.interfaces.NetworkCallbackInterface;
-import com.rtech.threadly.network_managers.AuthManager;
 import com.rtech.threadly.network_managers.FcmManager;
 
 import org.json.JSONException;
