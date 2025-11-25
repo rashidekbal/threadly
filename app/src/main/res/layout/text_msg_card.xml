@@ -45,39 +45,43 @@
               android:id="@+id/sent_msg_layout"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
-              android:orientation="vertical"
               android:layout_alignParentEnd="true"
-              android:gravity="end"
-              android:background="@drawable/sent_msg_solo_bg"
-              tools:ignore="RelativeOverlap"
-              android:paddingVertical="@dimen/dp_10">
-
-
+              android:visibility="visible"
+              >
+              <RelativeLayout
+                  android:id="@+id/sentMessageMainLayout"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:background="@drawable/sent_msg_solo_bg"
+                  android:paddingVertical="@dimen/dp_10"
+                  app:layout_constraintStart_toStartOf="parent"
+                  app:layout_constraintEnd_toEndOf="parent"
+                  app:layout_constraintTop_toTopOf="parent">
+                  <TextView
+                      android:id="@+id/sent_text_msg"
+                      android:layout_width="wrap_content"
+                      android:layout_height="wrap_content"
+                      android:maxWidth="@dimen/dp_270"
+                      android:minWidth="@dimen/dp_40"
+                      android:justificationMode="inter_character"
+                      tools:text="recieved message this is  so desing it in such way"
+                      android:textColor="@color/AllWhite"
+                      android:paddingHorizontal="@dimen/dp_10"
+                      />
+              </RelativeLayout>
               <TextView
-                  android:id="@+id/sent_text_msg"
+                  android:id="@+id/deliveryStatus"
                   android:layout_width="wrap_content"
                   android:layout_height="wrap_content"
-                  android:maxWidth="@dimen/dp_270"
-                  android:minWidth="@dimen/dp_40"
-                  android:textAlignment="textEnd"
-                  tools:text="recieved message this is  so desing it in such way"
-                  android:textColor="@color/AllWhite"
+                  tools:text="sending.."
                   android:paddingHorizontal="@dimen/dp_15"
-                  app:layout_constraintTop_toTopOf="parent"
-                  app:layout_constraintStart_toStartOf="parent"
-                  app:layout_constraintBottom_toTopOf="@id/status_img"
+                  android:textColor="@color/light_grey_text"
+                  android:paddingVertical="@dimen/dp_1"
+                  android:visibility="visible"
+                  app:layout_constraintTop_toBottomOf="@id/sentMessageMainLayout"
                   app:layout_constraintEnd_toEndOf="parent"
+                  android:textSize="@dimen/sp_11"
                   />
-
-              <ImageView
-                  android:id="@+id/status_img"
-                  android:layout_width="20dp"
-                  android:layout_height="20dp"
-                  android:layout_marginEnd="4dp"
-                  android:contentDescription="@string/message_status_icon"
-                  app:layout_constraintBottom_toBottomOf="parent"
-                  app:layout_constraintEnd_toEndOf="parent"
-                  tools:src="@drawable/msg_pending" />
           </androidx.constraintlayout.widget.ConstraintLayout>
 
       </RelativeLayout>
