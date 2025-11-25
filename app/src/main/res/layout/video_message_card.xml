@@ -37,8 +37,8 @@
                 >
                 <ImageView
                     android:id="@+id/received_MediaImageView"
-                    android:layout_width="@dimen/dp_150"
-                    android:layout_height="@dimen/dp_150"
+                    android:layout_width="@dimen/dp_200"
+                    android:layout_height="@dimen/dp_300"
                     android:src="@drawable/image_test"
                     android:scaleType="centerCrop"
                     android:background="@drawable/curved_big_square_box"
@@ -83,8 +83,8 @@
                android:layout_height="wrap_content">
                <ImageView
                    android:id="@+id/sent_MediaImageView"
-                   android:layout_width="@dimen/dp_150"
-                   android:layout_height="@dimen/dp_150"
+                   android:layout_width="@dimen/dp_200"
+                   android:layout_height="@dimen/dp_300"
                    tools:src="@drawable/image_test"
                    android:scaleType="centerCrop"
                    android:background="@drawable/curved_big_square_box"
@@ -148,6 +148,7 @@
                     android:textColor="@color/light_grey_text"
                     android:paddingVertical="@dimen/dp_4"
                     android:visibility="visible"
+                    android:textSize="@dimen/sp_11"
                     />
             </LinearLayout>
 
