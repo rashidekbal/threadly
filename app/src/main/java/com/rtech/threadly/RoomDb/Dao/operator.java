@@ -9,7 +9,6 @@ import com.rtech.threadly.POJO.ConvMessageCounter;
 import com.rtech.threadly.RoomDb.schemas.MessageSchema;
 
 import java.util.List;
-import java.util.Map;
 
 @Dao
 public interface operator {
@@ -49,6 +48,8 @@ public interface operator {
     List<MessageSchema> getAllUnUploadedMessages(String state1);
     @Query("update messages set postLink=:link , mediaUploadState=:mediaUploadState where messageUid=:messageUid")
     void updatePostLinkWithState(String messageUid,String link,String mediaUploadState);
+    @Query("update messages set mediaUploadState=:mediaUploadState where messageUid=:messageUid")
+    void updateUploadState(String messageUid,String mediaUploadState);
 
     @Query("select conversationId,count(distinct messageUid)as unreadCount from messages where deliveryStatus=-1 group by conversationId")
     LiveData<List<ConvMessageCounter>> getUnreadCountPerConversation();
