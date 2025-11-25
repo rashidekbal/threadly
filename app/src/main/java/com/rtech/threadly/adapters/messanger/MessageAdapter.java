@@ -133,14 +133,6 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             BindPostMessageType((PostMessageViewHolder)holderView,position);
         }
 
-
-
-
-
-
-
-
-
         //-------------------   DeletedMessageViewHolder -------------------//
         else if (holderView instanceof DeletedMessageViewHolder) {
 
@@ -397,7 +389,17 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     }
 
     private boolean shouldShowDeliveryState(int position) {
-        return position== list.size()-1||(!isNotHavingNextMessage(position)&&!isNextSenderSame(position));
+        return position== list.size()-1||(!isNotHavingNextMessage(position)&&!isThereMyMessageAmongstNext(position));
+    }
+
+    private boolean isThereMyMessageAmongstNext(int position) {
+        String myUUID=PreferenceUtil.getUUID();
+        for(int i=position+1;i<list.size();i++){
+            if(list.get(i).getSenderId().equals(myUUID)){
+                return true;
+            }
+        }
+        return false;
     }
 
 
@@ -479,13 +481,18 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     private void BindTextMessageType(TextMessageviewHolder holder, int position) {
         if(isMessageSent(position)){
-            holder.sent_msg_layout.setBackground(getSuitbaleDrawable(position));
+            holder.sentMessageMainLayout.setBackground(getSuitbaleDrawable(position));
             //if i had sent
             holder.senderProfile.setVisibility(View.GONE);
             holder.recMsg.setVisibility(View.GONE);
             holder.sent_msg_layout.setVisibility(View.VISIBLE);
             holder.sentMsg.setText(list.get(position).getMsg());
-           handleDeliverState(holder,position);
+            if(shouldShowDeliveryState(position)){
+                holder.deliveryStatus.setVisibility(View.VISIBLE);
+                holder.deliveryStatus.setText(getDeliveryStateText(getDeliveryStatus(position)));
+            }else {
+                holder.deliveryStatus.setVisibility(View.GONE);
+            }
             holder.sent_msg_layout.setLongClickable(true);
 
             holder.sent_msg_layout.setOnLongClickListener(v -> {
@@ -711,10 +718,6 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         return deliveryStatus==0?"sending..":deliveryStatus==1?"sent":deliveryStatus==2?"sent":"seen";
     }
 
-    private void handleDeliverState(TextMessageviewHolder holder, int position) {
-        int deliveryStatus=getDeliveryStatus(position);
-        holder.status_img.setImageResource(deliveryStatus==0?R.drawable.msg_pending:deliveryStatus==1?R.drawable.single_tick:deliveryStatus==2?R.drawable.double_tick_recieved:R.drawable.double_tick_viewed);
-    }
 
 
     private boolean isHavingCaption(int position) {
@@ -783,15 +786,17 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
 
     public static class TextMessageviewHolder extends RecyclerView.ViewHolder {
-        TextView recMsg,sentMsg;
-        ImageView senderProfile,status_img;
+        TextView recMsg,sentMsg,deliveryStatus;
+        ImageView senderProfile;
         ConstraintLayout sent_msg_layout;
+        RelativeLayout sentMessageMainLayout;
         public TextMessageviewHolder(@NonNull View itemView) {
             super(itemView);
             recMsg=itemView.findViewById(R.id.rec_text_msg);
+            sentMessageMainLayout=itemView.findViewById(R.id.sentMessageMainLayout);
             sentMsg=itemView.findViewById(R.id.sent_text_msg);
             senderProfile=itemView.findViewById(R.id.senderProfile);
-            status_img=itemView.findViewById(R.id.status_img);
+            deliveryStatus=itemView.findViewById(R.id.deliveryStatus);
             sent_msg_layout=itemView.findViewById(R.id.sent_msg_layout);
 
         }
@@ -972,9 +977,6 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
 
     }
-
-
-
     private void showForwardMenu(MessageSchema Message){
         ArrayList<UsersModel> selectedUsers=new ArrayList<>();
         BottomSheetDialog shareBottomSheet=new BottomSheetDialog(context,R.style.TransparentBottomSheet);
