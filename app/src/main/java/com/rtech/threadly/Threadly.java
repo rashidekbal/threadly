@@ -18,11 +18,7 @@ public class Threadly extends Application {
            ReUsableFunctions.updateFcmTokenToServer();
 
        }
-       if(Core.getPreference().getBoolean(SharedPreferencesKeys.IS_LOGGED_IN,false)){
 
-           ReUsableFunctions.resendPendingMessages();
-           
-       }
 
 
     }

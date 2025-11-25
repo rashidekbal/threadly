@@ -196,26 +196,37 @@ public class MessengerMainMessagePageActivity extends AppCompatActivity {
                 if(ConnectivityUtil.IsInternetConnected(this)){
                     //new unread message arrived or already exists
                     // update local db as seen and send message to global db to set as seen
-                    try {
-                        if(SocketManager.getInstance().getSocket().connected()){
-                            SocketEmitterEvents.UpdateSeenMsg_status(uuid,Core.getPreference().getString(SharedPreferencesKeys.USER_ID,"null"));
+
+                        Executors.newSingleThreadExecutor().execute(()->{
+                            //get the message uids to send
+                           List <String> unNotifiedUids= DataBase.getInstance().MessageDao().getUnreadMessageUids(conversationId);
                             Executors.newSingleThreadExecutor().execute(() -> DataBase.getInstance().MessageDao().updateMessagesSeen(conversationId, PreferenceUtil.getUUID()));
-                        }else{
-                            MessageManager.setSeenMessage(uuid, Core.getPreference().getString(SharedPreferencesKeys.UUID, "null"), new NetworkCallbackInterface() {
-                                @Override
-                                public void onSuccess() {
-                                    Executors.newSingleThreadExecutor().execute(() -> DataBase.getInstance().MessageDao().updateMessagesSeen(conversationId, PreferenceUtil.getUUID()));
-                                }
 
-                                @Override
-                                public void onError(String err) {
+                           try {
 
-                                }
-                            });
-                        }
-                    } catch (JSONException e) {
-                        throw new RuntimeException(e);
-                    }
+                                   if(SocketManager.getInstance().getSocket().connected()){
+                                       SocketEmitterEvents.UpdateSeenMsg_status(unNotifiedUids,uuid,PreferenceUtil.getUserId());
+                                   }
+                                   else{
+                                       MessageManager.setSeenMessage(unNotifiedUids,uuid, PreferenceUtil.getUUID(), new NetworkCallbackInterface() {
+                                           @Override
+                                           public void onSuccess() {
+                                               Executors.newSingleThreadExecutor().execute(() -> DataBase.getInstance().MessageDao().updateMessagesSeen(conversationId, PreferenceUtil.getUUID()));
+                                           }
+
+                                           @Override
+                                           public void onError(String err) {
+
+                                           }
+                                       });
+                                   }
+
+                            } catch (JSONException e) {
+                                throw new RuntimeException(e);
+                            }
+
+                        });
+
 
 
 

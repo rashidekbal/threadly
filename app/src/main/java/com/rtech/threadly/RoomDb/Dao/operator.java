@@ -32,6 +32,9 @@ public interface operator {
     @Query("select count(distinct conversationId)as count from messages where deliveryStatus=-1 and receiverId=:rid and isDeleted=0" )
     LiveData<Integer> getUnreadConversationCount(String rid);
 
+    @Query("select messageUid from messages where conversationId=:conversationId and deliveryStatus=-1")
+    List<String>getUnreadMessageUids(String conversationId);
+
     @Query("update messages set deliveryStatus=-2 where conversationId=:conversationId and receiverId=:rid")
     void updateMessagesSeen(String conversationId,String rid);
 

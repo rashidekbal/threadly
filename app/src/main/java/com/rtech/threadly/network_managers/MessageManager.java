@@ -27,6 +27,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.util.List;
 import java.util.concurrent.Executors;
 
 public class MessageManager {
@@ -164,11 +165,16 @@ public class MessageManager {
                     }
                 });
     }
-    public static void setSeenMessage(String senderUUid,String receiverUUid,NetworkCallbackInterface  callbackInterface)throws JSONException{
+    public static void setSeenMessage(List<String> MessageUids, String senderUUid, String receiverUUid, NetworkCallbackInterface  callbackInterface)throws JSONException{
      String Url=ApiEndPoints.UPDATE_MSG_SEEN_STATUS;
      JSONObject object=new JSONObject();
+     JSONArray Uids=new JSONArray();
+     for(String uids:MessageUids){
+         Uids.put(uids);
+     }
      object.put("senderUUid",senderUUid);
      object.put("receiverUUid",receiverUUid);
+     object.put("uids",Uids);
      AndroidNetworking.post(Url).setPriority(Priority.HIGH)
              .addHeaders("Authorization","Bearer "+Core.getPreference().getString(SharedPreferencesKeys.JWT_TOKEN,"null"))
              .addApplicationJsonBody(object)
