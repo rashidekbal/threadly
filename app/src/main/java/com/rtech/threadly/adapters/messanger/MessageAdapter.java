@@ -176,7 +176,12 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             holder.senderProfile.setVisibility(View.GONE);
             holder.rec_msg_layout.setVisibility(View.GONE);
             holder.sent_msg_layout.setVisibility(View.VISIBLE);
-            handleDeliverState(holder,position);
+            if(shouldShowDeliveryState(position)){
+                holder.deliveryStatus.setVisibility(View.VISIBLE);
+                holder.deliveryStatus.setText(getDeliveryStateText(getDeliveryStatus(position)));
+            }else {
+                holder.deliveryStatus.setVisibility(View.GONE);
+            }
 
             if (isHavingCaption(position)){
                 setUpCaption(holder,position);
@@ -283,7 +288,12 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             holder.senderProfile.setVisibility(View.GONE);
             holder.rec_msg_layout.setVisibility(View.GONE);
             holder.sent_msg_layout.setVisibility(View.VISIBLE);
-           handleDeliverState(holder,position);
+            if(shouldShowDeliveryState(position)){
+                holder.deliveryStatus.setVisibility(View.VISIBLE);
+                holder.deliveryStatus.setText(getDeliveryStateText(getDeliveryStatus(position)));
+            }else {
+                holder.deliveryStatus.setVisibility(View.GONE);
+            }
             if (isHavingCaption(position)){
                 holder.sent_caption.setVisibility(View.VISIBLE);
                 holder.sent_caption.setText(list.get(position).getMsg());
@@ -386,6 +396,9 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     }
 
+    private boolean shouldShowDeliveryState(int position) {
+        return position== list.size()-1||(!isNotHavingNextMessage(position)&&!isNextSenderSame(position));
+    }
 
 
     // -------------- PostMessageBinder --------------//
@@ -398,7 +411,12 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             holder.rec_msg_layout.setVisibility(View.GONE);
             holder.sent_msg_layout.setVisibility(View.VISIBLE);
             Glide.with(context).load(list.get(position).getPostLink()).placeholder(R.drawable.post_placeholder).into(holder.sent_MediaImageView);
-            handleDeliverState(holder,position);
+            if(shouldShowDeliveryState(position)){
+                holder.deliveryStatus.setVisibility(View.VISIBLE);
+                holder.deliveryStatus.setText(getDeliveryStateText(getDeliveryStatus(position)));
+            }else {
+                holder.deliveryStatus.setVisibility(View.GONE);
+            }
             if (isHavingCaption(position)){
                 holder.sent_caption.setVisibility(View.VISIBLE);
                 holder.sent_caption.setText(list.get(position).getMsg());
@@ -685,19 +703,14 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     }
 
-    private void handleDeliverState(ImageMessageViewHolder holder, int position) {
-        int deliveryStatus=getDeliveryStatus(position);
-            holder.status_img.setImageResource(deliveryStatus==0?R.drawable.msg_pending:deliveryStatus==1?R.drawable.single_tick:deliveryStatus==2?R.drawable.double_tick_recieved:R.drawable.double_tick_viewed);
-
-    }
     private void handleDeliverState(VideoMessageViewHolder holder, int position) {
-        int deliveryStatus=getDeliveryStatus(position);
-        holder.status_img.setImageResource(deliveryStatus==0?R.drawable.msg_pending:deliveryStatus==1?R.drawable.single_tick:deliveryStatus==2?R.drawable.double_tick_recieved:R.drawable.double_tick_viewed);
+        holder.deliveryStatus.setText(getDeliveryStateText(getDeliveryStatus(position)));
     }
-    private void handleDeliverState(PostMessageViewHolder holder, int position) {
-        int deliveryStatus=getDeliveryStatus(position);
-        holder.status_img.setImageResource(deliveryStatus==0?R.drawable.msg_pending:deliveryStatus==1?R.drawable.single_tick:deliveryStatus==2?R.drawable.double_tick_recieved:R.drawable.double_tick_viewed);
+
+    private String getDeliveryStateText(int deliveryStatus) {
+        return deliveryStatus==0?"sending..":deliveryStatus==1?"sent":deliveryStatus==2?"sent":"seen";
     }
+
     private void handleDeliverState(TextMessageviewHolder holder, int position) {
         int deliveryStatus=getDeliveryStatus(position);
         holder.status_img.setImageResource(deliveryStatus==0?R.drawable.msg_pending:deliveryStatus==1?R.drawable.single_tick:deliveryStatus==2?R.drawable.double_tick_recieved:R.drawable.double_tick_viewed);
@@ -784,15 +797,15 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         }
     }
     public static class ImageMessageViewHolder extends RecyclerView.ViewHolder{
-        ImageView senderProfile,status_img;
+        ImageView senderProfile;
         LinearLayout rec_msg_layout,sent_msg_layout;
         ImageView received_MediaImageView,sent_MediaImageView,cancelBtn;
-        TextView rec_caption,sent_caption;
+        TextView rec_caption,sent_caption,deliveryStatus;
         ProgressBar progress_circular;
         public ImageMessageViewHolder(@NonNull View itemView) {
             super(itemView);
             senderProfile=itemView.findViewById(R.id.senderProfile);
-            status_img=itemView.findViewById(R.id.status_img);
+            deliveryStatus=itemView.findViewById(R.id.deliveryStatus);
             rec_msg_layout=itemView.findViewById(R.id.rec_msg_layout);
             received_MediaImageView=itemView.findViewById(R.id.received_MediaImageView);
             rec_caption=itemView.findViewById(R.id.rec_caption);
@@ -805,16 +818,15 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         }
     }
     public static class VideoMessageViewHolder extends RecyclerView.ViewHolder{
-        ImageView senderProfile,status_img,playIcon;
+        ImageView senderProfile,playIcon;
         LinearLayout rec_msg_layout,sent_msg_layout;
         ImageView received_MediaImageView,sent_MediaImageView,cancelBtn;
-        TextView rec_caption,sent_caption;
+        TextView rec_caption,sent_caption,deliveryStatus;
         ProgressBar progress_circular;
         public VideoMessageViewHolder(@NonNull View itemView) {
             super(itemView);
 
             senderProfile=itemView.findViewById(R.id.senderProfile);
-            status_img=itemView.findViewById(R.id.status_img);
             rec_msg_layout=itemView.findViewById(R.id.rec_msg_layout);
             received_MediaImageView=itemView.findViewById(R.id.received_MediaImageView);
             rec_caption=itemView.findViewById(R.id.rec_caption);
@@ -824,18 +836,19 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             progress_circular=itemView.findViewById(R.id.progress_circular);
             cancelBtn=itemView.findViewById(R.id.cancelBtn);
             playIcon=itemView.findViewById(R.id.playIcon);
+            deliveryStatus=itemView.findViewById(R.id.deliveryStatus);
         }
 
     }
     public static class PostMessageViewHolder extends RecyclerView.ViewHolder{
-        ImageView senderProfile,status_img;
+        ImageView senderProfile;
         LinearLayout rec_msg_layout,sent_msg_layout;
         ImageView received_MediaImageView,sent_MediaImageView;
-        TextView rec_caption,sent_caption;
+        TextView rec_caption,sent_caption,deliveryStatus;
         public PostMessageViewHolder(@NonNull View itemView) {
             super(itemView);
             senderProfile=itemView.findViewById(R.id.senderProfile);
-            status_img=itemView.findViewById(R.id.status_img);
+            deliveryStatus=itemView.findViewById(R.id.deliveryStatus);
             rec_msg_layout=itemView.findViewById(R.id.rec_msg_layout);
             received_MediaImageView=itemView.findViewById(R.id.received_MediaImageView);
             rec_caption=itemView.findViewById(R.id.rec_caption);

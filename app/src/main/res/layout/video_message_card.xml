@@ -125,7 +125,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:background="@drawable/sent_msg_solo_bg"
                 android:gravity="end">
                 <TextView
                     android:id="@+id/sent_caption"
@@ -136,17 +135,20 @@
                     tools:text="b"
                     android:paddingHorizontal="@dimen/dp_15"
                     android:textColor="@color/AllWhite"
+                    android:background="@drawable/sent_msg_solo_bg"
                     android:paddingVertical="@dimen/dp_10"
                     android:visibility="gone"
                     />
-                <ImageView
-                    android:id="@+id/status_img"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    tools:src="@drawable/msg_pending"
-                    android:layout_marginEnd="@dimen/dp_5"
+                <TextView
+                    android:id="@+id/deliveryStatus"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:text="sending.."
+                    android:paddingHorizontal="@dimen/dp_15"
+                    android:textColor="@color/light_grey_text"
+                    android:paddingVertical="@dimen/dp_4"
+                    android:visibility="visible"
                     />
-
             </LinearLayout>
 
         </LinearLayout>
