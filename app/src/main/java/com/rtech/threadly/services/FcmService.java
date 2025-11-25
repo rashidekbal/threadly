@@ -179,7 +179,7 @@ public class FcmService extends FirebaseMessagingService {
     }
 
     private void ChatReceivedHandler(RemoteMessage message){
-        if(!Objects.requireNonNull(message.getData().get("receiverUserId")).equals(PreferenceUtil.getUserId())){
+        if(!Objects.requireNonNull(message.getData().get("receiverUuid")).equals(PreferenceUtil.getUUID())){
             return;
         }
         JSONObject object=new JSONObject();

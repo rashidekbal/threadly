@@ -56,7 +56,7 @@ public class Core {
        String uuid=getPreference().getString(SharedPreferencesKeys.UUID,null) ;
        if(uuid!=null) {
            startSocketEvents();
-           MessageManager.checkAndGetPendingMessages();
+
        }
 
    }
@@ -151,6 +151,11 @@ public static Emitter.Listener msg_UnSend_eventHandler=new Emitter.Listener() {
        //for socket connection;
        SocketManager.getInstance().connect();
        //for sending the uuid on connection
+       if(Core.getPreference().getBoolean(SharedPreferencesKeys.IS_LOGGED_IN,false)){
+           ReUsableFunctions.resendPendingMessages();
+           MessageManager.checkAndGetPendingMessages();
+
+       }
        SocketManager.getInstance().getSocket().emit("onConnect",getPreference().getString(SharedPreferencesKeys.UUID,"null"));
        SocketManager.getInstance().getSocket().on("StoC",StoC_Listener);
        SocketManager.getInstance().getSocket().on("MsgStatusUpdate",MsgStatusUpdate);
@@ -237,6 +242,7 @@ public static Emitter.Listener msg_UnSend_eventHandler=new Emitter.Listener() {
         }else{
             SocketManager.getInstance().getSocket().emit("CToS",object);
         }
+
     }
 }
 

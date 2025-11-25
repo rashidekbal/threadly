@@ -42,6 +42,9 @@ public class MessageMediaHandlerWorker extends Worker {
         if(messageUid==null) {return Result.failure();}
         File file =new File(path);
         if(!file.exists()){return Result.failure();}
+        executor.execute(()->{
+            DataBase.getInstance().MessageDao().updateUploadState(messageUid,MessageStateEnum.UPLOADING.toString());
+        });
         CountDownLatch latch=new CountDownLatch(1);
 
         MessageManager.UploadMsgMedia(file, messageUid, new NetworkCallbackInterfaceWithProgressTracking() {
