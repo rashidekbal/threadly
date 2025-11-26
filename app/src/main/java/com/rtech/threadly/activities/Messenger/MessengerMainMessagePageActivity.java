@@ -55,7 +55,6 @@ import com.rtech.threadly.fragments.MessageFragments.VideoViewFragment;
 import com.rtech.threadly.fragments.PostAddCameraFragment;
 import com.rtech.threadly.fragments.common_ui_pages.Media_Capture_finalizer_fragment;
 import com.rtech.threadly.interfaces.CameraFragmentInterface;
-import com.rtech.threadly.interfaces.Messanger.MessageClickCallBack;
 import com.rtech.threadly.interfaces.NetworkCallbackInterface;
 import com.rtech.threadly.interfaces.NetworkCallbackInterfaceWithProgressTracking;
 import com.rtech.threadly.interfaces.general_ui_callbacks.OnCapturedMediaFinalizedCallback;
@@ -182,11 +181,12 @@ public class MessengerMainMessagePageActivity extends AppCompatActivity {
             if(!messageSchemas.isEmpty()){
                 msgList.clear();
                 msgList.addAll(messageSchemas);
-                messageAdapter.notifyItemChanged(msgList.size()-1);
+                messageAdapter.notifyDataSetChanged();
+                messageAdapter.notifyItemChanged(messageSchemas.size()-1);
                 if(msgList.size()>1){
-                    messageAdapter.notifyItemChanged(msgList.size()-2);
+                    messageAdapter.notifyItemChanged(messageSchemas.size()-2);
                 }
-                mainXml.RecyclerView.scrollToPosition(msgList.size()-1);
+                mainXml.RecyclerView.scrollToPosition(messageSchemas.size()-1);
             }
 
 
@@ -518,18 +518,14 @@ public class MessengerMainMessagePageActivity extends AppCompatActivity {
 
                     @Override
                     public void onError(String err) {
-                        executor.execute(() -> {
-                            DataBase.getInstance().MessageDao().updatePostLinkWithState(messageUid, null, MessageStateEnum.FAILED.toString());
-                        });
+                        executor.execute(() -> DataBase.getInstance().MessageDao().updatePostLinkWithState(messageUid, null, MessageStateEnum.FAILED.toString()));
                         pendingMessageUids.remove(messageUid);
                         latch.countDown();
                     }
 
                     @Override
                     public void progress(long bytesUploaded, long totalBytes) {
-                        executor.execute(() -> {
-                            DataBase.getInstance().MessageDao().updateUploadProgress(messageUid, totalBytes, bytesUploaded);
-                        });
+                        executor.execute(() -> DataBase.getInstance().MessageDao().updateUploadProgress(messageUid, totalBytes, bytesUploaded));
                     }
                 });
 
@@ -539,9 +535,7 @@ public class MessengerMainMessagePageActivity extends AppCompatActivity {
                 } catch (InterruptedException e) {
                     // restore interrupt and mark this message failed so we don't stall forever
                     Thread.currentThread().interrupt();
-                    executor.execute(() -> {
-                        DataBase.getInstance().MessageDao().updatePostLinkWithState(messageUid, null, MessageStateEnum.FAILED.toString());
-                    });
+                    executor.execute(() -> DataBase.getInstance().MessageDao().updatePostLinkWithState(messageUid, null, MessageStateEnum.FAILED.toString()));
                     pendingMessageUids.remove(messageUid);
                 }
             }
@@ -573,40 +567,37 @@ public class MessengerMainMessagePageActivity extends AppCompatActivity {
 
     private void setUpRecyclerView(){
         messageAdapter=new MessageAdapter(this, msgList, userdata.getString("profilePic"),
-                new MessageClickCallBack() {
-            @Override
-            public void onItemClicked(MessageSchema messageSchema,String type) {
-                // when message item is clicked mainLy for media opening
-               int position=msgList.indexOf(messageSchema);
-                if(type.equals(TypeConstants.IMAGE)){
-                    //when media is an image
-                    Bundle data=new Bundle();
-                    data.putString("username",userdata.getString("username"));
-                    data.putString("userid",userdata.getString("userid"));
-                    data.putString("profileUrl",userdata.getString("profilePic"));
-                    data.putString("mediaUrl",messageSchema.getPostLink());
-                    data.putString("messageUid",messageSchema.getMessageUid());
-                    ImageViewFragment fragment=new ImageViewFragment();
-                    fragment.setArguments(data);
-                    changeFragment(fragment,"Id_image_view_page");
+                (messageSchema, type) -> {
+                    // when message item is clicked mainLy for media opening
+                   int position=msgList.indexOf(messageSchema);
+                    if(type.equals(TypeConstants.IMAGE)){
+                        //when media is an image
+                        Bundle data=new Bundle();
+                        data.putString("username",userdata.getString("username"));
+                        data.putString("userid",userdata.getString("userid"));
+                        data.putString("profileUrl",userdata.getString("profilePic"));
+                        data.putString("mediaUrl",messageSchema.getPostLink());
+                        data.putString("messageUid",messageSchema.getMessageUid());
+                        ImageViewFragment fragment=new ImageViewFragment();
+                        fragment.setArguments(data);
+                        changeFragment(fragment,"Id_image_view_page");
 
-                } else {
-                    //when media is a video
-                    Bundle data=new Bundle();
-                    data.putString("username",userdata.getString("username"));
-                    data.putString("userid",userdata.getString("userid"));
-                    data.putString("profileUrl",userdata.getString("profilePic"));
-                    data.putString("mediaUrl",messageSchema.getPostLink());
-                    data.putString("messageUid",messageSchema.getMessageUid());
-                    VideoViewFragment fragment=new VideoViewFragment();
-                    fragment.setArguments(data);
-                    changeFragment(fragment,"Id_video_view_page");
+                    } else {
+                        //when media is a video
+                        Bundle data=new Bundle();
+                        data.putString("username",userdata.getString("username"));
+                        data.putString("userid",userdata.getString("userid"));
+                        data.putString("profileUrl",userdata.getString("profilePic"));
+                        data.putString("mediaUrl",messageSchema.getPostLink());
+                        data.putString("messageUid",messageSchema.getMessageUid());
+                        VideoViewFragment fragment=new VideoViewFragment();
+                        fragment.setArguments(data);
+                        changeFragment(fragment,"Id_video_view_page");
 
-                }
+                    }
 
 
-            }
-        });
+                });
         mainXml.RecyclerView.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false));
         mainXml.RecyclerView.setAdapter(messageAdapter);
     }
