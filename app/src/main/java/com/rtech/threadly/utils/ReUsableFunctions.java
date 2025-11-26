@@ -10,6 +10,7 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.inputmethod.InputMethodManager;
 import android.webkit.MimeTypeMap;
 
@@ -177,6 +178,14 @@ public class ReUsableFunctions {
                 }
 
         });
+    }
+    // Helper method to convert dp to pixels
+    public static int dpToPx(Context context, int dp) {
+        return (int) TypedValue.applyDimension(
+                TypedValue.COMPLEX_UNIT_DIP,
+                dp,
+                context.getResources().getDisplayMetrics()
+        );
     }
 
     public static String toIso8601Utc(String mysqlTimestamp) {
