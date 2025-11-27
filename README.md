@@ -1,4 +1,4 @@
-# Threadly
+# Threadly (MVP)
 
 A social media app (native Android) with real-time messaging, stories, and reels — built with care, from scratch.
 
