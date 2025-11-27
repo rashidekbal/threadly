@@ -35,6 +35,6 @@ public class SearchResultViewPagerAdapter extends FragmentPagerAdapter {
     @Override
     public CharSequence getPageTitle(int position) {
         if(position==0)return "Accounts";
-        return "Reels";
+        return "Posts";
     }
 }
