@@ -55,6 +55,7 @@ import com.rtech.threadly.models.ExtendedPostModel;
 import com.rtech.threadly.models.Posts_Model;
 import com.rtech.threadly.utils.ExoplayerUtil;
 import com.rtech.threadly.utils.ReUsableFunctions;
+import com.rtech.threadly.viewmodels.ExplorePostsViewModel;
 import com.rtech.threadly.viewmodels.ProfileViewModel;
 
 import java.util.ArrayList;
@@ -66,6 +67,7 @@ SharedPreferences loginInfo;
     StoryOpenCallback storyOpenCallback;
 OnDestroyFragmentCallback onDestroyStoriesFragmentCallback;
     ProfileViewModel profileViewModel;
+    ExplorePostsViewModel explorePostsViewModel;
 boolean isFirstLaunch=true;
 
 int currentFragment;
@@ -392,6 +394,8 @@ int currentFragment;
     protected void init(){
         loginInfo= Core.getPreference();
         profileViewModel=new ViewModelProvider(this).get(ProfileViewModel.class);
+        explorePostsViewModel=new ViewModelProvider(this).get(ExplorePostsViewModel.class);
+        explorePostsViewModel.loadExploreFeed();
 
 
 
