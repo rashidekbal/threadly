@@ -91,7 +91,6 @@ public class PostShareHelperUtil {
             if(!selectedUsers.isEmpty()){
                 for(UsersModel model:selectedUsers){
                     try {
-                        ReUsableFunctions.ShowToast(" "+postid);
                         Core.sendCtoS(model.getUuid(),"", TypeConstants.POST,post.postUrl,postid,"sent a reel by "+post.username);
 
                     } catch (JSONException e) {
