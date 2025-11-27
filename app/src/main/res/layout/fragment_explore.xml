@@ -3,7 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragments.searchFragments.ExploreFragment">
+    tools:context=".fragments.searchFragments.ExploreFragment"
+    android:background="@color/white">
     <ProgressBar
         android:id="@+id/progressBar"
         android:layout_width="@dimen/dp_40"

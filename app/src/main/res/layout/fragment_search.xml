@@ -36,10 +36,12 @@
         android:layout_marginEnd="@dimen/dp_30"/>
   
 </RelativeLayout>
+
  <FrameLayout
      android:id="@+id/fragmentContainer"
      android:layout_width="match_parent"
      android:layout_height="match_parent"/>
+
 
 
 

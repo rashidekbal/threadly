@@ -12,15 +12,16 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
-import com.rtech.threadly.R;
-import com.rtech.threadly.databinding.FragmentSearchBinding;
+import com.rtech.threadly.adapters.SearchPage.SearchResultViewPagerAdapter;
+import com.rtech.threadly.databinding.FragmentSearchReusltBinding;
 
 
-public class SearchReusltFragment extends Fragment {
-    FragmentSearchBinding mainXml;
+public class SearchResultFragment extends Fragment {
+    FragmentSearchReusltBinding mainXml;
+    SearchResultViewPagerAdapter adapter;
 
 
-    public SearchReusltFragment() {
+    public SearchResultFragment() {
         // Required empty public constructor
     }
 
@@ -28,12 +29,15 @@ public class SearchReusltFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-       mainXml=FragmentSearchBinding.inflate(inflater,container,false);
+       mainXml=FragmentSearchReusltBinding.inflate(inflater,container,false);
        init();
         return mainXml.getRoot();
     }
 
     private void init() {
+        adapter=new SearchResultViewPagerAdapter(getChildFragmentManager());
+        mainXml.viewPager.setAdapter(adapter);
+        mainXml.tabLayout.setupWithViewPager(mainXml.viewPager);
     }
 
 
