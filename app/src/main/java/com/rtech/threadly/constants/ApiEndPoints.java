@@ -107,6 +107,9 @@ public class ApiEndPoints {
     public static final String SET_PRIVATE=baseUrl+"/privacy/setPrivate/";
     public static final String SET_PUBLIC=baseUrl+"/privacy/setPublic/";
 
+    //Search Routes
+    public static final String SEARCH=baseUrl+"/search/get?target=";
+
 
 
 

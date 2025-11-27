@@ -216,9 +216,6 @@ public static void MarkAllNotificationRead(){
     Executors.newSingleThreadExecutor().execute(() -> DataBase.getInstance().notificationDao().markAllNotificationsAsViewed());
 }
 
-public static String getMyUuid(){
-        return Core.getPreference().getString(SharedPreferencesKeys.UUID,"null");
-}
 public static void hideKeyboard(AppCompatActivity activity){
     InputMethodManager imm=(InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
     imm.hideSoftInputFromWindow(activity.getWindow().getDecorView().getWindowToken(),0);

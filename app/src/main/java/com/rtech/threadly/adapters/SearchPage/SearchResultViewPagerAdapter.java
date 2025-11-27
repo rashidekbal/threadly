@@ -5,10 +5,8 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
-import androidx.lifecycle.Lifecycle;
-import androidx.viewpager2.adapter.FragmentStateAdapter;
 
-import com.rtech.threadly.fragments.searchFragments.ResultChildFragments.AccountsResultFragment;
+import com.rtech.threadly.fragments.searchFragments.ResultChildFragments.AccountsFragment;
 import com.rtech.threadly.fragments.searchFragments.ResultChildFragments.ReelsResultFragment;
 
 public class SearchResultViewPagerAdapter extends FragmentPagerAdapter {
@@ -21,8 +19,8 @@ public class SearchResultViewPagerAdapter extends FragmentPagerAdapter {
     @NonNull
     @Override
     public Fragment getItem(int position) {
-        if(position==1){
-            return new AccountsResultFragment();
+        if(position==0){
+            return new AccountsFragment();
         }else {
             return new ReelsResultFragment();
         }
@@ -36,7 +34,7 @@ public class SearchResultViewPagerAdapter extends FragmentPagerAdapter {
     @Nullable
     @Override
     public CharSequence getPageTitle(int position) {
-        if(position==1)return "Accounts";
+        if(position==0)return "Accounts";
         return "Reels";
     }
 }
