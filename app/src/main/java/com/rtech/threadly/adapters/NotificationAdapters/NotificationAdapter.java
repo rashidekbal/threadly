@@ -10,7 +10,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.AppCompatButton;
-import androidx.media3.common.util.NotificationUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -19,12 +18,9 @@ import com.rtech.threadly.RoomDb.DataBase;
 import com.rtech.threadly.RoomDb.schemas.NotificationSchema;
 import com.rtech.threadly.activities.PostActivity;
 import com.rtech.threadly.constants.Constants;
-import com.rtech.threadly.interfaces.NetworkCallBacks.NetworkCallbackInterfaceJsonObject;
 import com.rtech.threadly.interfaces.NetworkCallbackInterface;
 import com.rtech.threadly.network_managers.FollowManager;
 import com.rtech.threadly.utils.ReUsableFunctions;
-
-import org.json.JSONObject;
 
 import java.util.List;
 import java.util.concurrent.Executors;
@@ -160,7 +156,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     private void BindFollowRequestAcceptedViewHolder(@NonNull FollowRequestAcceptedViewHolder holder, int position) {
         Glide.with(context).load(dataSource.get(position).getProfilePic()).placeholder(R.drawable.blank_profile).circleCrop().into(holder.User_profile);
         holder.User_profile.setOnClickListener(v-> ReUsableFunctions.openProfile(context,dataSource.get(position).getUserId()));
-        holder.userId_text.setText(dataSource.get(position).getUsername()+" accepted your follow requested");
+        holder.messageText.setText(dataSource.get(position).getUsername()+context.getString(R.string.follow_request_accepted_text));
 
     }
 
@@ -204,12 +200,12 @@ TextView userId_text;
     private static class FollowRequestAcceptedViewHolder extends  RecyclerView.ViewHolder{
         ImageView User_profile;
         AppCompatButton approveBtn;
-        TextView userId_text;
+        TextView messageText;
         public FollowRequestAcceptedViewHolder(@NonNull View itemView) {
             super(itemView);
             User_profile=itemView.findViewById(R.id.User_profile);
-            userId_text=itemView.findViewById(R.id.userId_text);
-            approveBtn=itemView.findViewById(R.id.ApproveBtn);
+            messageText =itemView.findViewById(R.id.userId_text);
+            approveBtn=itemView.findViewById(R.id.approveBtn);
             approveBtn.setVisibility(View.GONE);
         }
     }

@@ -3,19 +3,21 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragments.searchFragment"
+    tools:context=".fragments.searchFragments.searchFragment"
     android:background="@color/white"
     android:orientation="vertical">
 <RelativeLayout
+    android:id="@+id/searchContainer"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginTop="@dimen/dp_10"
     android:layout_marginBottom="@dimen/dp_5">
     <EditText
+        android:id="@+id/search_edit_text"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_44"
         android:paddingStart="@dimen/dp_10"
-        android:hint="Search"
+        android:hint="@string/search"
         android:background="@drawable/edit_text_style_2"
         android:layout_centerVertical="true"
         android:layout_marginHorizontal="@dimen/dp_20"
@@ -25,6 +27,7 @@
         android:textColor="@color/black"
         />
     <ImageView
+        android:id="@+id/searchBtn"
         android:layout_width="@dimen/dp_25"
         android:layout_height="@dimen/dp_25"
         android:src="@drawable/search_inactive_icon_pale"
@@ -33,11 +36,10 @@
         android:layout_marginEnd="@dimen/dp_30"/>
   
 </RelativeLayout>
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/search_page_recycler_view"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_10"/>
+ <FrameLayout
+     android:id="@+id/fragmentContainer"
+     android:layout_width="match_parent"
+     android:layout_height="match_parent"/>
 
 
 

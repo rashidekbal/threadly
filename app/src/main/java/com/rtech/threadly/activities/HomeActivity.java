@@ -28,7 +28,6 @@ import androidx.lifecycle.ViewModelProvider;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
-import com.google.android.datatransport.runtime.dagger.Reusable;
 import com.rtech.threadly.R;
 import com.rtech.threadly.constants.HomeActivityFragmentsIdEnum;
 import com.rtech.threadly.constants.SharedPreferencesKeys;
@@ -45,7 +44,7 @@ import com.rtech.threadly.fragments.profileFragments.UsernameEditFragment;
 import com.rtech.threadly.fragments.homeFragment;
 import com.rtech.threadly.fragments.profileFragments.profileFragment;
 import com.rtech.threadly.fragments.profileFragments.profileUploadFinalPreview;
-import com.rtech.threadly.fragments.searchFragment;
+import com.rtech.threadly.fragments.searchFragments.searchFragment;
 import com.rtech.threadly.fragments.storiesFragment.ViewStoriesFragment;
 import com.rtech.threadly.interfaces.FragmentItemClickInterface;
 import com.rtech.threadly.interfaces.OnDestroyFragmentCallback;
@@ -209,6 +208,7 @@ int currentFragment;
 
 
             } else if (item.getItemId()==R.id.search) {
+
                 if(currentFragment!=R.id.search){
                     if(doesThisFragmentExistInStack(HomeActivityFragmentsIdEnum.SEARCH.toString())){
                       getSupportFragmentManager().popBackStack(HomeActivityFragmentsIdEnum.SEARCH.toString(),0);
@@ -340,6 +340,7 @@ int currentFragment;
             }
 
 
+
         });
 
 
@@ -368,7 +369,6 @@ int currentFragment;
         int backstackEntryCount=getSupportFragmentManager().getBackStackEntryCount();
             String entryID=getSupportFragmentManager().getBackStackEntryAt(backstackEntryCount-1).getName();
             assert entryID != null;
-
                 if(entryID.equals(HomeActivityFragmentsIdEnum.HOME.toString())){
                     binding.bottomNavigation.setSelectedItemId(R.id.home);
 
@@ -379,6 +379,7 @@ int currentFragment;
                     binding.bottomNavigation.setSelectedItemId(R.id.profile);
 
                 }else if(entryID.equals(HomeActivityFragmentsIdEnum.SEARCH.toString())){
+
                     binding.bottomNavigation.setSelectedItemId(R.id.search);
 
                 }
