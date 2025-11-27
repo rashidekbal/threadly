@@ -1,6 +1,7 @@
 package com.rtech.threadly.viewmodels;
 
 import android.app.Application;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -24,7 +25,6 @@ public class SearchViewModel extends AndroidViewModel {
     MutableLiveData<ArrayList<UsersModel>> AccountsResult=new MutableLiveData<>();
     MutableLiveData<ArrayList<Posts_Model>> postsResult=new MutableLiveData<>();
     public LiveData<ArrayList<UsersModel>> getAccountsResult() {
-
         return AccountsResult;
     }
 
@@ -35,30 +35,89 @@ public class SearchViewModel extends AndroidViewModel {
         SearchManager.Search(Query,new NetworkCallbackInterfaceJsonObject() {
             @Override
             public void onSuccess(JSONObject response) {
-                ArrayList<UsersModel> tempAccountList=new ArrayList<>();
+
                 try {
                     JSONObject data=response.getJSONObject("data");
                     JSONArray accounts=data.getJSONArray("Account");
-                    for(int i=0;i<accounts.length();i++){
-                        JSONObject account=accounts.getJSONObject(i);
-                        tempAccountList.add(new UsersModel(account.getString("uuid"),
-                                account.getString("username"),
-                                account.getString("userid"),
-                                account.getString("profilepic")));
+                    JSONArray reels=data.getJSONArray("Reels");
+                    handleAccountData(accounts);
+                    handleReelsData(reels);
 
-                    }
-                    AccountsResult.postValue(tempAccountList);
 
                 } catch (JSONException e) {
-                    AccountsResult.postValue(tempAccountList);
+                    AccountsResult.postValue(new ArrayList<>());
+                    postsResult.postValue(new ArrayList<>());
+
                 }
 
             }
-
             @Override
             public void onError(int errorCode) {
-
+                AccountsResult.postValue(new ArrayList<>());
+                postsResult.postValue(new ArrayList<>());
             }
         });
     }
+
+    private void handleReelsData(JSONArray reels) {
+        ArrayList<Posts_Model> tempReelsList=new ArrayList<>();
+        if(reels.length()==0){
+            postsResult.postValue(tempReelsList);
+            return;
+        }
+        try {
+            for(int i=0;i<reels.length();i++){
+                JSONObject postObject=reels.getJSONObject(i);
+                tempReelsList.add(new Posts_Model(0,
+                        postObject.getInt("postid"),
+                        postObject.getString("userid"),
+                        postObject.getString("username"),
+                        postObject.getString("profilepic"),
+                        postObject.getString("imageurl"),
+                        postObject.getString("caption"),
+                        postObject.getString("created_at"),
+                        postObject.getString("likedBy"),
+                        postObject.getInt("likeCount"),
+                        postObject.getInt("commentCount"),
+                        postObject.getInt("shareCount"),
+                        postObject.getInt("isLiked")
+                        ,postObject.getString("type").equals("video"),
+                        postObject.getInt("isFollowed")>0
+                ));
+
+
+            }
+            postsResult.postValue(tempReelsList);
+        } catch (JSONException e) {
+            postsResult.postValue(tempReelsList);
+        }
+
+
+    }
+
+    private void handleAccountData(JSONArray accounts) {
+
+        ArrayList<UsersModel> tempAccountList=new ArrayList<>();
+        if(accounts.length()==0){
+            AccountsResult.postValue(tempAccountList);
+            return;
+        }
+       try {
+           for (int i = 0; i < accounts.length(); i++) {
+               JSONObject account = accounts.getJSONObject(i);
+               tempAccountList.add(new UsersModel(account.getString("uuid"),
+                       account.getString("username"),
+                       account.getString("userid"),
+                       account.getString("profilepic")));
+
+           }
+           AccountsResult.postValue(tempAccountList);
+       }
+       catch (JSONException e){
+           AccountsResult.postValue(tempAccountList);
+       }
+
+
+    }
+
 }

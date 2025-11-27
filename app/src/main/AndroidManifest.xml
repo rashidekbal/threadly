@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <uses-feature android:name="android.hardware.camera.any" />
 
@@ -33,13 +33,15 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.GPGram"
-        tools:targetApi="29"
-        >
+        tools:targetApi="29">
+        <activity
+            android:name=".activities.CustomFeedActivity.CustomFeedActivity"
+            android:exported="false" />
         <activity
             android:name=".activities.Messenger.MessengerMainMessagePageActivity"
             android:exported="false"
-            android:windowSoftInputMode="adjustResize"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".activities.NotificationActivity"
             android:exported="false" />
