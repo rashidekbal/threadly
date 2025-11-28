@@ -73,6 +73,7 @@
                     android:inputType="textMultiLine"
                     android:textColor="@color/black"
                     android:textColorHint="@color/DarkGreyText"
+                    android:maxLength="250"
                     android:hint="@string/add_a_caption"/>
                 <RelativeLayout
                     android:layout_width="match_parent"
