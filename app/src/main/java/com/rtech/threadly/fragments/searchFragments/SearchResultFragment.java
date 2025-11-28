@@ -65,6 +65,7 @@ public class SearchResultFragment extends Fragment {
         ReUsableFunctions.hideKeyboard((AppCompatActivity) requireActivity());
         String query=mainXml.searchEditText.getText().toString().trim();
        if(query.length()>1){
+           searchViewModel.setSearching();
            searchViewModel.search(query);
            mainXml.searchEditText.setText("");
            mainXml.dataHolderLayout.setVisibility(View.VISIBLE);

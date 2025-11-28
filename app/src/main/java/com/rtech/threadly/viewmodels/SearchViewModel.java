@@ -119,5 +119,9 @@ public class SearchViewModel extends AndroidViewModel {
 
 
     }
+    public void setSearching(){
+        AccountsResult.postValue(null);
+        postsResult.postValue(null);
+    }
 
 }
