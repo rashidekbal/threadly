@@ -16,9 +16,11 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.bumptech.glide.Glide;
+import com.rtech.threadly.R;
 import com.rtech.threadly.core.Core;
 import com.rtech.threadly.databinding.FragmentUploadStoryFinalBinding;
 import com.rtech.threadly.utils.ExoplayerUtil;
+import com.rtech.threadly.utils.PreferenceUtil;
 import com.rtech.threadly.utils.ReUsableFunctions;
 import com.rtech.threadly.workers.UploadStoriesWorker;
 
@@ -48,8 +50,13 @@ public class UploadStoryFinalFragment extends Fragment {
         mainXml=FragmentUploadStoryFinalBinding.inflate(inflater,container,false);
         getData();
         setOnclickListeners();
+        setUiData();
 
         return mainXml.getRoot();
+    }
+
+    private void setUiData() {
+        Glide.with(requireActivity()).load(PreferenceUtil.getUserProfilePic()).circleCrop().placeholder(R.drawable.blank_profile).into(mainXml.profile);
     }
 
     private void setOnclickListeners() {

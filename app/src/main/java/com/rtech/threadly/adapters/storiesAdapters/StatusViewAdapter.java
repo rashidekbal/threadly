@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.content.res.AppCompatResources;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -68,7 +69,7 @@ public class StatusViewAdapter extends RecyclerView.Adapter<StatusViewAdapter.vi
     public static class viewHolder extends RecyclerView.ViewHolder {
         TextView userid;
         ImageView profileImg;
-        FrameLayout dpBorder;
+        CardView dpBorder;
         LinearLayout storyLayout;
         public viewHolder(@NonNull View itemView) {
             super(itemView);

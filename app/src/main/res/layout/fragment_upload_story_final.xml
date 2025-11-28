@@ -45,12 +45,17 @@
             android:paddingHorizontal="@dimen/dp_20"
             android:paddingVertical="@dimen/dp_10"
             android:gravity="center_vertical">
-            <ImageView
+            <androidx.cardview.widget.CardView
                 android:layout_width="@dimen/dp_30"
                 android:layout_height="@dimen/dp_30"
-                android:background="@drawable/circle"
-                android:src="@drawable/blank_profile"
-                android:clipToOutline="true"/>
+                app:cardCornerRadius="@dimen/dp_30"
+          >
+                <ImageView
+                    android:id="@+id/profile"
+                    android:layout_width="@dimen/dp_30"
+                    android:layout_height="@dimen/dp_30"
+                    tools:src="@drawable/blank_profile" />
+            </androidx.cardview.widget.CardView>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

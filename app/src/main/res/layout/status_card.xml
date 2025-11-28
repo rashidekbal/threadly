@@ -1,6 +1,6 @@
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/storyLayout"
     android:layout_width="wrap_content"
     android:layout_height="@dimen/dp_132"
@@ -11,11 +11,12 @@
         android:layout_width="@dimen/dp_96"
         android:layout_height="@dimen/dp_96"
         android:gravity="center">
-        <FrameLayout
+        <androidx.cardview.widget.CardView
             android:id="@+id/StoryOuterBorder_color"
             android:layout_width="@dimen/dp_90"
             android:layout_height="@dimen/dp_90"
             android:layout_marginBottom="@dimen/dp_4"
+            app:cardCornerRadius="@dimen/dp_80"
             >
 
             <ImageView
@@ -23,12 +24,10 @@
                 android:layout_width="@dimen/dp_80"
                 android:layout_height="@dimen/dp_80"
                 android:layout_gravity="center"
-                android:background="@drawable/circle"
-                android:clipToOutline="true"
                 android:scaleType="centerCrop"
-                android:src="@drawable/image_test"
+                tools:src="@drawable/test_profile"
                 />
-        </FrameLayout>
+        </androidx.cardview.widget.CardView>
 
 
     </RelativeLayout>
