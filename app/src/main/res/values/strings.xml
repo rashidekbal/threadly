@@ -186,4 +186,5 @@
     <string name="userid_page">UserId</string>
     <string name="reel_icon">reel_icon</string>
     <string name="follow_request_accepted_text">" accepted your follow requested"</string>
+    <string name="togglebtn">toggleBtn</string>
 </resources>

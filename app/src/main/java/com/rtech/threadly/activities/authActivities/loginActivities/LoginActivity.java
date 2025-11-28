@@ -5,8 +5,10 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.text.InputType;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -41,6 +43,8 @@ SharedPreferences.Editor preferenceEditor;
 ProgressBar progressBar;
 TextView forgetPassword_btn;
 AuthManager authManager;
+ImageView toggleBtn;
+boolean isTypePassword=true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -220,8 +224,28 @@ AuthManager authManager;
         loginInfo= Core.getPreference();
         preferenceEditor=loginInfo.edit();
         forgetPassword_btn=findViewById(R.id.forgetPassword_btn);
+        toggleBtn=findViewById(R.id.password_toggle);
         authManager=new AuthManager();
         ExoplayerUtil.init(Threadly.getGlobalContext());
+        setPasswordFieldType();
+        toggleBtn.setOnClickListener(v->togglePasswordEdittext());
+
+    }
+
+    private void togglePasswordEdittext() {
+        isTypePassword=!isTypePassword;
+        setPasswordFieldType();
+    }
+
+    private void setPasswordFieldType() {
+        ReUsableFunctions.ShowToast(Integer.toString(password_filed.getInputType()));
+        if(isTypePassword){
+            password_filed.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+            toggleBtn.setImageResource(R.drawable.show_icon);
+            return;
+        }
+        password_filed.setInputType(InputType.TYPE_CLASS_TEXT);
+        toggleBtn.setImageResource(R.drawable.hide_icon);
 
     }
 

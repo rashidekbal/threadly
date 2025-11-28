@@ -22,8 +22,6 @@
         android:layout_centerInParent="true"
         android:layout_marginHorizontal="@dimen/dp_24"
         android:orientation="vertical"
-
-
         >
         <EditText
             android:id="@+id/userid_field"
@@ -40,20 +38,38 @@
             android:textColor="@color/black"
             android:textColorHint="@color/DarkGreyText"
             android:autofillHints="username"/>
-        <EditText
-            android:id="@+id/password_field"
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_62"
-            android:hint="@string/password_field_hint"
-            android:autofillHints="password"
-            android:textColor="@color/black"
-            android:textColorHint="@color/DarkGreyText"
-            android:inputType="textPassword"
-            android:paddingVertical="@dimen/dp_20"
-            android:paddingHorizontal="@dimen/dp_14"
-            android:textSize="@dimen/sp_15"
             android:background="@drawable/edit_text_style"
-            tools:ignore="RtlSymmetry" />
+            android:paddingHorizontal="@dimen/dp_10">
+            <EditText
+                android:id="@+id/password_field"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_55"
+                android:layout_marginStart="2dp"
+                android:hint="@string/password_field_hint"
+                android:autofillHints="password"
+                android:textColor="@color/black"
+                android:textColorHint="@color/DarkGreyText"
+                android:background="@color/white"
+                android:inputType="textPassword"
+                android:paddingVertical="@dimen/dp_8"
+                android:paddingHorizontal="@dimen/dp_5"
+                android:textSize="@dimen/sp_15"
+                tools:ignore="RtlSymmetry"
+                android:layout_centerVertical="true"/>
+            <ImageView
+                android:id="@+id/password_toggle"
+                android:layout_width="@dimen/dp_20"
+                android:layout_height="@dimen/dp_20"
+                android:src="@drawable/show_icon"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="10dp"
+                android:contentDescription="@string/togglebtn"/>
+        </RelativeLayout>
+
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
