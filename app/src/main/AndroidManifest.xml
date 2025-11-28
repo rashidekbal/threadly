@@ -67,15 +67,15 @@
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".activities.forgetPassword.ResetPasswordActivity"
+            android:name=".activities.authActivities.forgetPassword.ResetPasswordActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".activities.forgetPassword.VerifyOtp_forgetPassword_Activity"
+            android:name=".activities.authActivities.forgetPassword.VerifyOtp_forgetPassword_Activity"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".activities.forgetPassword.ForgetPasswordActivity"
+            android:name=".activities.authActivities.forgetPassword.ForgetPasswordActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
@@ -87,7 +87,7 @@
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".activities.NameEnterActivity"
+            android:name=".activities.authActivities.registerActivities.NameEnterActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
@@ -95,23 +95,23 @@
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".activities.VerifyMobileOtpActivity"
+            android:name=".activities.authActivities.registerActivities.VerifyMobileOtpActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".activities.VerifyEmailOtpActivity"
+            android:name=".activities.authActivities.registerActivities.VerifyEmailOtpActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".activities.CreatePasswordActivity"
+            android:name=".activities.authActivities.registerActivities.CreatePasswordActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".activities.SignUpEmailActivity"
+            android:name=".activities.authActivities.registerActivities.SignUpEmailActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".activities.SignUpMobileActivity"
+            android:name=".activities.authActivities.registerActivities.SignUpMobileActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
@@ -119,7 +119,7 @@
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".activities.LoginActivity"
+            android:name=".activities.authActivities.loginActivities.LoginActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity

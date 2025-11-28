@@ -1,4 +1,4 @@
-package com.rtech.threadly.activities;
+package com.rtech.threadly.activities.authActivities.loginActivities;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
@@ -20,7 +20,9 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.rtech.threadly.R;
 import com.rtech.threadly.Threadly;
-import com.rtech.threadly.activities.forgetPassword.ForgetPasswordActivity;
+import com.rtech.threadly.activities.HomeActivity;
+import com.rtech.threadly.activities.authActivities.forgetPassword.ForgetPasswordActivity;
+import com.rtech.threadly.activities.authActivities.registerActivities.SignUpMobileActivity;
 import com.rtech.threadly.constants.SharedPreferencesKeys;
 import com.rtech.threadly.core.Core;
 import com.rtech.threadly.interfaces.NetworkCallbackInterfaceWithJsonObjectDelivery;
@@ -84,7 +86,7 @@ AuthManager authManager;
                                 preferenceEditor.putBoolean(SharedPreferencesKeys.IS_PRIVATE,isPrivate==1);
                                 preferenceEditor.apply();
                                 LoginSequenceUtil.onLoggedInSuccess();
-                                Intent homePage=new Intent(LoginActivity.this,HomeActivity.class);
+                                Intent homePage=new Intent(LoginActivity.this, HomeActivity.class);
                                 homePage.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                 startActivity(homePage);
                                 finish();
@@ -206,7 +208,7 @@ AuthManager authManager;
 
 
         });
-        signup_btn.setOnClickListener(v -> startActivity(new Intent(LoginActivity.this,SignUpMobileActivity.class)));
+        signup_btn.setOnClickListener(v -> startActivity(new Intent(LoginActivity.this, SignUpMobileActivity.class)));
         forgetPassword_btn.setOnClickListener(v -> startActivity(new Intent(LoginActivity.this, ForgetPasswordActivity.class)));
     }
     protected  void init(){

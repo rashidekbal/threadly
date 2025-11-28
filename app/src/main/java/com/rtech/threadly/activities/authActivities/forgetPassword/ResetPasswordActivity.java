@@ -1,4 +1,4 @@
-package com.rtech.threadly.activities.forgetPassword;
+package com.rtech.threadly.activities.authActivities.forgetPassword;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -12,7 +12,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.rtech.threadly.R;
-import com.rtech.threadly.activities.LoginActivity;
+import com.rtech.threadly.activities.authActivities.loginActivities.LoginActivity;
 import com.rtech.threadly.databinding.ActivityResetPasswordBinding;
 import com.rtech.threadly.interfaces.NetworkCallbackInterface;
 import com.rtech.threadly.network_managers.AuthManager;

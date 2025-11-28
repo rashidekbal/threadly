@@ -1,4 +1,4 @@
-package com.rtech.threadly.activities;
+package com.rtech.threadly.activities.authActivities.registerActivities;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -21,6 +21,7 @@ import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.JSONObjectRequestListener;
 import com.rtech.threadly.R;
+import com.rtech.threadly.activities.HomeActivity;
 import com.rtech.threadly.constants.SharedPreferencesKeys;
 import com.rtech.threadly.core.Core;
 import com.rtech.threadly.utils.ReUsableFunctions;
@@ -89,7 +90,7 @@ SharedPreferences.Editor preferenceEditor;
                                 preferenceEditor.putString(SharedPreferencesKeys.UUID,response.getString("uuid"));
                                 preferenceEditor.apply();
                                 Toast.makeText(NameEnterActivity.this, "Account created", Toast.LENGTH_SHORT).show();
-                                Intent homePage=new Intent(NameEnterActivity.this,HomeActivity.class);
+                                Intent homePage=new Intent(NameEnterActivity.this, HomeActivity.class);
                                 homePage.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                 startActivity(homePage);
                                 Core.startSocketEvents();

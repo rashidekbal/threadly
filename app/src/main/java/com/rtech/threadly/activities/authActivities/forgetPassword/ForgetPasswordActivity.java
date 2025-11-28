@@ -1,4 +1,4 @@
-package com.rtech.threadly.activities.forgetPassword;
+package com.rtech.threadly.activities.authActivities.forgetPassword;
 
 import android.content.Intent;
 import android.os.Bundle;

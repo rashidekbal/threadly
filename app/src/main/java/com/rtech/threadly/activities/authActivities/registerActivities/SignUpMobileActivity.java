@@ -1,4 +1,4 @@
-package com.rtech.threadly.activities;
+package com.rtech.threadly.activities.authActivities.registerActivities;
 
 import android.content.Intent;
 import android.graphics.Color;

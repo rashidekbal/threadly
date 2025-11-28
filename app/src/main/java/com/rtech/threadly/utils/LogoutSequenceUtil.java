@@ -8,7 +8,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.rtech.threadly.RoomDb.DataBase;
 import com.rtech.threadly.SocketIo.SocketManager;
-import com.rtech.threadly.activities.LoginActivity;
+import com.rtech.threadly.activities.authActivities.loginActivities.LoginActivity;
 import com.rtech.threadly.core.Core;
 import com.rtech.threadly.interfaces.NetworkCallbackInterface;
 import com.rtech.threadly.network_managers.AuthManager;

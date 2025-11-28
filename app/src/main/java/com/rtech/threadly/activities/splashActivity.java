@@ -14,6 +14,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.rtech.threadly.R;
+import com.rtech.threadly.activities.authActivities.loginActivities.LoginActivity;
 import com.rtech.threadly.constants.SharedPreferencesKeys;
 import com.rtech.threadly.core.Core;
 
@@ -35,7 +36,7 @@ SharedPreferences loginInfo;
         boolean isLoggedIn=loginInfo.getBoolean(SharedPreferencesKeys.IS_LOGGED_IN,false);
     new Handler().postDelayed(() -> {
         if(!isLoggedIn){
-            startActivity(new Intent(splashActivity.this,LoginActivity.class));
+            startActivity(new Intent(splashActivity.this, LoginActivity.class));
             finish();
         }else{
             startActivity(new Intent(splashActivity.this,HomeActivity.class));

@@ -14,6 +14,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.rtech.threadly.R;
+import com.rtech.threadly.activities.authActivities.registerActivities.NameEnterActivity;
 
 import java.util.Calendar;
 
@@ -64,7 +65,7 @@ next_btn.setOnClickListener(v -> {
         String token=getDataIntent.getStringExtra("token");
         String password=getDataIntent.getStringExtra("password");
         next_btn.setEnabled(true);
-        Intent intent=new Intent(EnterDobActivity.this,NameEnterActivity.class);
+        Intent intent=new Intent(EnterDobActivity.this, NameEnterActivity.class);
         intent.putExtra("token",token);
         intent.putExtra("password",password);
         intent.putExtra("dob",dob);

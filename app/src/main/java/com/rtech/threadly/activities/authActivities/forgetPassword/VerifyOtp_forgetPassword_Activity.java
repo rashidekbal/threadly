@@ -1,4 +1,4 @@
-package com.rtech.threadly.activities.forgetPassword;
+package com.rtech.threadly.activities.authActivities.forgetPassword;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -15,7 +15,6 @@ import com.rtech.threadly.R;
 import com.rtech.threadly.databinding.ActivityVerifyOtpForgetPasswordBinding;
 import com.rtech.threadly.interfaces.NetworkCallbackInterfaceWithJsonObjectDelivery;
 import com.rtech.threadly.network_managers.OtpManager;
-import com.rtech.threadly.utils.ReUsableFunctions;
 
 import org.json.JSONException;
 import org.json.JSONObject;

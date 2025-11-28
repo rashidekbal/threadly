@@ -22,7 +22,7 @@ import com.rtech.threadly.RoomDb.schemas.MessageSchema;
 import com.rtech.threadly.RoomDb.schemas.NotificationSchema;
 import com.rtech.threadly.SocketIo.SocketManager;
 import com.rtech.threadly.Threadly;
-import com.rtech.threadly.activities.LoginActivity;
+import com.rtech.threadly.activities.authActivities.loginActivities.LoginActivity;
 import com.rtech.threadly.activities.UserProfileActivity;
 import com.rtech.threadly.constants.SharedPreferencesKeys;
 import com.rtech.threadly.constants.TypeConstants;

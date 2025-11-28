@@ -1,4 +1,4 @@
-package com.rtech.threadly.activities;
+package com.rtech.threadly.activities.authActivities.registerActivities;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -64,7 +64,7 @@ OtpManager otpManager;
                             next_btn.setText(R.string.next);
                             progressBar.setVisibility(View.GONE);
                             email_edittext.setText("");
-                            Intent intent=new Intent(SignUpEmailActivity.this,VerifyEmailOtpActivity.class);
+                            Intent intent=new Intent(SignUpEmailActivity.this, VerifyEmailOtpActivity.class);
                             intent.putExtra("email",email);
                             startActivity(intent);
 
