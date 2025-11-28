@@ -88,38 +88,8 @@ public class NotificationAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             holder.userId_text.setText(dataSource.get(position).getUsername()+" started following you");
             holder.User_profile.setOnClickListener(v-> ReUsableFunctions.openProfile(context,dataSource.get(position).getUserId()));
             holder.userId_text.setOnClickListener(v->ReUsableFunctions.openProfile(context,dataSource.get(position).getUserId()));
-            if(!dataSource.get(position).isFollowed()){
-                holder.followBtn.setVisibility(View.VISIBLE);
-                holder.followBtn.setEnabled(true);
-                holder.followBtn.setOnClickListener(v->{
-                    holder.followBtn.setEnabled(false);
-                    holder.followBtn.setVisibility(View.GONE);
-                    followManager.follow(dataSource.get(position).getUserId(), new NetworkCallbackInterface() {
+            holder.followBtn.setVisibility(View.GONE);
 
-                        @Override
-                        public void onSuccess() {
-                            holder.followBtn.setEnabled(true);
-                            Executors.newSingleThreadExecutor().execute(() -> DataBase.getInstance().notificationDao().markedFollowState(1,dataSource.get(position).getNotificationId()));
-                            notifyItemChanged(position);
-                            
-
-                        }
-
-                        @Override
-                        public void onError(String err) {
-                            Executors.newSingleThreadExecutor().execute(() -> DataBase.getInstance().notificationDao().markedFollowState(0,dataSource.get(position).getNotificationId()));
-                            holder.followBtn.setEnabled(true);
-                            holder.followBtn.setVisibility(View.VISIBLE);
-                            notifyItemChanged(position);
-
-                        }
-
-                    });
-                });
-
-            }else{
-                holder.followBtn.setVisibility(View.GONE);
-            }
 
 
         }
