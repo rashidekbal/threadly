@@ -7,6 +7,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -81,11 +82,19 @@ public class ExploreFragment extends Fragment {
         mainXml.postsRecyclerView.setAdapter(adapter);
         viewModel=new ViewModelProvider(requireActivity()).get(ExplorePostsViewModel.class);
         loadPosts();
+        mainXml.swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                mainXml.swipeRefresh.setRefreshing(true);
+                viewModel.loadExploreFeed();
+            }
+        });
     }
 
     private void loadPosts() {
         viewModel.getExploreFeed().observe(requireActivity(),posts -> {
-            mainXml.progressBar.setVisibility(View.GONE);
+            mainXml.swipeRefresh.setRefreshing(false);
+            mainXml.shimmer.setVisibility(View.GONE);
           if(posts.isEmpty()){
               handleNoPosts();
               return;
