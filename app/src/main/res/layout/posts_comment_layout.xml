@@ -85,6 +85,7 @@
                 android:layout_height="wrap_content"
                 android:textAlignment="center"
                 android:textSize="@dimen/sp_16"
+                android:textColor="@color/light_grey_text"
                 android:text="Start the conversation."/>
         </LinearLayout>
 
