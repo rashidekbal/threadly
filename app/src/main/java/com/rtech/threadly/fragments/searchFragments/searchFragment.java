@@ -11,8 +11,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.android.datatransport.runtime.dagger.Reusable;
 import com.rtech.threadly.constants.HomeActivityFragmentsIdEnum;
 import com.rtech.threadly.databinding.FragmentSearchBinding;
+import com.rtech.threadly.utils.ReUsableFunctions;
 
 public class searchFragment extends Fragment {
 FragmentSearchBinding mainXml;
@@ -51,7 +53,6 @@ FragmentSearchBinding mainXml;
     private void setSearchActionHandler() {
         mainXml.searchEditText.setOnFocusChangeListener((v,focus)->{
             if(focus){
-
                 changeFragment(new SearchResultFragment(),HomeActivityFragmentsIdEnum.SEARCH_RESULT_FRAGMENT.toString());
             }
         });
@@ -63,9 +64,12 @@ FragmentSearchBinding mainXml;
 
     private void init() {
         //just loading for keeping data alive even when child fragment is killed or sent background or anything else
-        changeFragment(new ExploreFragment(), HomeActivityFragmentsIdEnum.EXPLORE_FRAGMENT.toString());
+        int currentChildFragments=getChildFragmentManager().getBackStackEntryCount();
+        if(currentChildFragments==0){
+            changeFragment(new ExploreFragment(), HomeActivityFragmentsIdEnum.EXPLORE_FRAGMENT.toString());
+        }
         getChildFragmentManager().addOnBackStackChangedListener(() -> {
-            if(getCurrentEntryCount()==1){
+            if(getChildFragmentManager().getBackStackEntryCount()==1){
                 mainXml.searchContainer.setVisibility(View.VISIBLE);
                 return ;
             }
@@ -80,6 +84,7 @@ FragmentSearchBinding mainXml;
     private int getCurrentEntryCount() {
          return getChildFragmentManager().getBackStackEntryCount();
     }
+
 
 
 }
