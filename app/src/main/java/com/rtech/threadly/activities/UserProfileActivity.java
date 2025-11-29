@@ -38,6 +38,7 @@ import com.rtech.threadly.network_managers.PostsManager;
 import com.rtech.threadly.network_managers.ProfileManager;
 import com.rtech.threadly.models.Profile_Model;
 import com.rtech.threadly.utils.PreferenceUtil;
+import com.rtech.threadly.utils.ReUsableFunctions;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -140,7 +141,7 @@ public class UserProfileActivity extends AppCompatActivity {
                 data.putParcelableArrayList("postList",postArrayList);
                 data.putInt("position",position);
                 customPostFeedFragment.setArguments(data);
-                getSupportFragmentManager().beginTransaction().replace(mainXml.postsFrameLayout.getId(),customPostFeedFragment).commit();
+                getSupportFragmentManager().beginTransaction().replace(mainXml.postsFrameLayout.getId(),customPostFeedFragment).addToBackStack(null).commit();
 
 
 
@@ -159,6 +160,7 @@ public class UserProfileActivity extends AppCompatActivity {
 
 
     }
+
 
     private void getProfileData(){
         profileManager.GetProfile(intentData.getStringExtra("userid"), new NetworkCallbackInterfaceJsonObject() {
