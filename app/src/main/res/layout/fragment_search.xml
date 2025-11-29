@@ -7,11 +7,7 @@
     tools:context=".fragments.searchFragments.searchFragment"
     android:background="@color/white"
     android:orientation="vertical">
-    <androidx.cardview.widget.CardView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:cardUseCompatPadding="true"
-        android:elevation="@dimen/dp_2">
+
         <RelativeLayout
             android:id="@+id/searchContainer"
             android:layout_width="match_parent"
@@ -43,7 +39,6 @@
                 android:layout_marginEnd="@dimen/dp_30"/>
 
         </RelativeLayout>
-    </androidx.cardview.widget.CardView>
 
 
  <FrameLayout

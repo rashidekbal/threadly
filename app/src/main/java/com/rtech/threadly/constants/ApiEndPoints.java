@@ -49,6 +49,7 @@ public class ApiEndPoints {
     //otp mobile
     public static final String SEND_MOBILE_OTP = baseUrl + "/otp/generateOtpMobile/";
     public static final String RESEND_MOBILE_OTP = baseUrl + "/otp/resendOtpMobile/";
+    public static final String RESEND_EMAIL_OTP = baseUrl + "/otp/resendOtpEmail/";
     public static final String FORGET_PASSWORD_MOBILE_OTP = baseUrl + "/otp/ForgetPasswordGenerateOtpMobile";
     public static final String FORGET_PASSWORD_EMAIL_OTP = baseUrl + "/otp/ForgetPasswordGenerateOtpEmail/";
     public static final String VERIFY_MOBILE_OTP = baseUrl + "/otp/verifyOtpMobile/";

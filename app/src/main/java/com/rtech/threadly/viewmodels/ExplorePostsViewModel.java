@@ -62,7 +62,8 @@ public class ExplorePostsViewModel extends AndroidViewModel {
                     }
                     posts.postValue(temp);
                 } catch (JSONException e) {
-                    throw new RuntimeException(e);
+                    posts.postValue(new ArrayList<>());
+
                 }
 
 
@@ -70,7 +71,7 @@ public class ExplorePostsViewModel extends AndroidViewModel {
 
             @Override
             public void onError(String err) {
-                posts.postValue(temp);
+                posts.postValue(new ArrayList<>());
 
             }
         });

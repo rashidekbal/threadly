@@ -24,6 +24,6 @@ public class PreferenceUtil {
         return Core.getPreference().getBoolean(SharedPreferencesKeys.IS_PRIVATE,false);
     }
     public static void setPrivate(boolean isPrivate){
-        Core.getPreference().edit().putBoolean(SharedPreferencesKeys.IS_PRIVATE,isPrivate);
+        Core.getPreference().edit().putBoolean(SharedPreferencesKeys.IS_PRIVATE,isPrivate).apply();
     }
 }

@@ -1,6 +1,5 @@
 package com.rtech.threadly.utils;
 
-
 import static com.rtech.threadly.RoomDb.DataBase.getInstance;
 
 import android.content.ContentResolver;
@@ -45,35 +44,38 @@ import java.util.UUID;
 import java.util.concurrent.Executors;
 
 public class ReUsableFunctions {
-    public static void  openProfile(Context c, String userid){
-        Intent intent =new Intent(c, UserProfileActivity.class);
-        intent.putExtra("userid",userid);
+    public static void openProfile(Context c, String userid) {
+        Intent intent = new Intent(c, UserProfileActivity.class);
+        intent.putExtra("userid", userid);
         c.startActivity(intent);
     }
-    public static boolean isEmail(String input){
-        return  input.matches("^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$");
+
+    public static boolean isEmail(String input) {
+        return input.matches("^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$");
     }
+
     public static boolean isPhone(String input) {
         return input.length() == 10 && input.matches("\\d+");
     }
+
     public static void ShowToast(Context c, String message) {
         android.widget.Toast.makeText(c, message, android.widget.Toast.LENGTH_SHORT).show();
     }
-    public static void ShowToast( String message) {
+
+    public static void ShowToast(String message) {
         android.widget.Toast.makeText(Threadly.getGlobalContext(), message, android.widget.Toast.LENGTH_SHORT).show();
     }
 
-    public static void logoutWithoutActivity(){
-                SharedPreferences loginInfo= Core.getPreference();
-                SharedPreferences.Editor editor=loginInfo.edit();
-                editor.clear();
-                editor.apply();
-                SocketManager.getInstance().disconnect();
-                Executors.newSingleThreadExecutor().execute(() -> DataBase.getInstance().clearAllTables());
-                Intent intent=new Intent(Threadly.getGlobalContext(),LoginActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                Threadly.getGlobalContext().startActivity(intent);
-
+    public static void logoutWithoutActivity() {
+        SharedPreferences loginInfo = Core.getPreference();
+        SharedPreferences.Editor editor = loginInfo.edit();
+        editor.clear();
+        editor.apply();
+        SocketManager.getInstance().disconnect();
+        Executors.newSingleThreadExecutor().execute(() -> DataBase.getInstance().clearAllTables());
+        Intent intent = new Intent(Threadly.getGlobalContext(), LoginActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        Threadly.getGlobalContext().startActivity(intent);
 
     }
 
@@ -99,7 +101,8 @@ public class ReUsableFunctions {
         int len;
         while (true) {
             assert inputStream != null;
-            if ((len = inputStream.read(buffer)) == -1) break;
+            if ((len = inputStream.read(buffer)) == -1)
+                break;
             outputStream.write(buffer, 0, len);
         }
 
@@ -109,21 +112,21 @@ public class ReUsableFunctions {
         return file;
     }
 
-    public static void updateFcmTokenToServer(){
+    public static void updateFcmTokenToServer() {
 
         FirebaseMessaging.getInstance().getToken().addOnCompleteListener(task -> {
-            String token=task.getResult();
-            if(token!=null){
+            String token = task.getResult();
+            if (token != null) {
                 FcmManager.UpdateFcmToken(token, new NetworkCallbackInterface() {
                     @Override
                     public void onSuccess() {
 
-                        Core.getPreference().edit().putBoolean(SharedPreferencesKeys.IS_FCM_TOKEN_UPLOADED,true).apply();
+                        Core.getPreference().edit().putBoolean(SharedPreferencesKeys.IS_FCM_TOKEN_UPLOADED, true)
+                                .apply();
                     }
 
                     @Override
                     public void onError(String err) {
-
 
                     }
                 });
@@ -131,61 +134,67 @@ public class ReUsableFunctions {
             }
         });
 
+    }
 
+    public static String GenerateUUid() {
+        return (UUID.randomUUID().toString());
 
     }
-    public static String GenerateUUid(){
-        return ( UUID.randomUUID().toString());
 
-    }
-    public static String getTimestamp(){
+    public static String getTimestamp() {
 
         Date now = new Date();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
         return sdf.format(now);
 
-
     }
-    public static void updateMessageStatus(String MsgUid,int status){
-        Executors.newSingleThreadExecutor().execute(() -> getInstance().MessageDao().updateDeliveryStatus(MsgUid,status));
-        Executors.newSingleThreadExecutor().execute(()->{
-            MessageSchema messageSchema=DataBase.getInstance().MessageDao().getMessageWithUid(MsgUid);
-            Log.d("check", "updateMessageStatus: "+messageSchema.getMediaUploadState());
+
+    public static void updateMessageStatus(String MsgUid, int status) {
+        Executors.newSingleThreadExecutor()
+                .execute(() -> getInstance().MessageDao().updateDeliveryStatus(MsgUid, status));
+        Executors.newSingleThreadExecutor().execute(() -> {
+            MessageSchema messageSchema = DataBase.getInstance().MessageDao().getMessageWithUid(MsgUid);
+            Log.d("check", "updateMessageStatus: " + messageSchema.getMediaUploadState());
         });
     }
-    public static void DeleteMessage(String messageUid){
-        Executors.newSingleThreadExecutor().execute(()-> DataBase.getInstance().MessageDao().deleteMessage(messageUid));
+
+    public static void DeleteMessage(String messageUid) {
+        Executors.newSingleThreadExecutor()
+                .execute(() -> DataBase.getInstance().MessageDao().deleteMessage(messageUid));
     }
-    //TODO consider media type message with grace and all factors
-    public static void resendPendingMessages(){
+
+    // TODO consider media type message with grace and all factors
+    public static void resendPendingMessages() {
         Executors.newSingleThreadExecutor().execute(() -> {
-            List<MessageSchema> pendingToSendMessagesList=DataBase.getInstance().MessageDao().getPendingToSendMessages();
-            if(pendingToSendMessagesList.isEmpty()){return ;}
+            List<MessageSchema> pendingToSendMessagesList = DataBase.getInstance().MessageDao()
+                    .getPendingToSendMessages();
+            if (pendingToSendMessagesList.isEmpty()) {
+                return;
+            }
 
-                for(MessageSchema msg:pendingToSendMessagesList){
-                    if(msg.getType().equals(TypeConstants.IMAGE)||msg.getType().equals(TypeConstants.VIDEO)){
-                        if(msg.getPostLink()==null){
-                            continue ;
-                        }
+            for (MessageSchema msg : pendingToSendMessagesList) {
+                if (msg.getType().equals(TypeConstants.IMAGE) || msg.getType().equals(TypeConstants.VIDEO)) {
+                    if (msg.getPostLink() == null) {
+                        continue;
                     }
-                        try {
-                            Core.sendCtoS(msg);
-                        } catch (JSONException e) {
-                            throw new RuntimeException(e);
-                        }
-
-
+                }
+                try {
+                    Core.sendCtoS(msg);
+                } catch (JSONException e) {
+                    throw new RuntimeException(e);
                 }
 
+            }
+
         });
     }
+
     // Helper method to convert dp to pixels
     public static int dpToPx(Context context, int dp) {
         return (int) TypedValue.applyDimension(
                 TypedValue.COMPLEX_UNIT_DIP,
                 dp,
-                context.getResources().getDisplayMetrics()
-        );
+                context.getResources().getDisplayMetrics());
     }
 
     public static String toIso8601Utc(String mysqlTimestamp) {
@@ -208,24 +217,24 @@ public class ReUsableFunctions {
         }
     }
 
-public static void addNotification(NotificationSchema schema){
-    Log.d("addingNotification", "addNotification: going to add ");
-        Executors.newSingleThreadExecutor().execute(() -> DataBase.getInstance().notificationDao().addNotification(schema));
+    public static void addNotification(NotificationSchema schema) {
+        Log.d("addingNotification", "addNotification: going to add ");
+        Executors.newSingleThreadExecutor()
+                .execute(() -> DataBase.getInstance().notificationDao().addNotification(schema));
+    }
+
+    public static void MarkAllNotificationRead() {
+        Executors.newSingleThreadExecutor()
+                .execute(() -> DataBase.getInstance().notificationDao().markAllNotificationsAsViewed());
+    }
+
+    public static void hideKeyboard(AppCompatActivity activity) {
+        InputMethodManager imm = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(activity.getWindow().getDecorView().getWindowToken(), 0);
+    }
+
+    public static boolean isLoggedIn() {
+        return Core.getPreference().getBoolean(SharedPreferencesKeys.IS_LOGGED_IN, false);
+    }
+
 }
-public static void MarkAllNotificationRead(){
-    Executors.newSingleThreadExecutor().execute(() -> DataBase.getInstance().notificationDao().markAllNotificationsAsViewed());
-}
-
-public static void hideKeyboard(AppCompatActivity activity){
-    InputMethodManager imm=(InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
-    imm.hideSoftInputFromWindow(activity.getWindow().getDecorView().getWindowToken(),0);
-}
-public static boolean isLoggedIn(){
-        return Core.getPreference().getBoolean(SharedPreferencesKeys.IS_LOGGED_IN,false);
-}
-
-
-
-
-}
-

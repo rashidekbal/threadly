@@ -88,6 +88,7 @@ SharedPreferences.Editor preferenceEditor;
                                 preferenceEditor.putString("userid",userid);
                                 preferenceEditor.putString("profileUrl",profileUrl);
                                 preferenceEditor.putString(SharedPreferencesKeys.UUID,response.getString("uuid"));
+                                preferenceEditor.putBoolean(SharedPreferencesKeys.IS_PRIVATE,false);
                                 preferenceEditor.apply();
                                 Toast.makeText(NameEnterActivity.this, "Account created", Toast.LENGTH_SHORT).show();
                                 Intent homePage=new Intent(NameEnterActivity.this, HomeActivity.class);

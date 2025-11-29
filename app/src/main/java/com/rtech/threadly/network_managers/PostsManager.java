@@ -160,7 +160,8 @@ public class PostsManager {
                         callback.onError(anError.getErrorDetail());
                     }
                 });
-    }public void getVideoFeed(NetworkCallbackInterfaceWithJsonObjectDelivery callback){
+    }
+    public void getVideoFeed(NetworkCallbackInterfaceWithJsonObjectDelivery callback){
 
         if(BuildConfig.DEBUG){
             Log.d("ApiData", "loading started");

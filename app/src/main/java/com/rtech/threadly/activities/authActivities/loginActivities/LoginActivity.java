@@ -238,7 +238,6 @@ boolean isTypePassword=true;
     }
 
     private void setPasswordFieldType() {
-        ReUsableFunctions.ShowToast(Integer.toString(password_filed.getInputType()));
         if(isTypePassword){
             password_filed.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
             toggleBtn.setImageResource(R.drawable.show_icon);

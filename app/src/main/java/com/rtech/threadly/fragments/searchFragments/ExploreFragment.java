@@ -20,6 +20,7 @@ import com.rtech.threadly.interfaces.Post_fragmentSetCallback;
 import com.rtech.threadly.models.ExtendedPostModel;
 import com.rtech.threadly.models.Posts_Model;
 import com.rtech.threadly.viewmodels.ExplorePostsViewModel;
+import com.rtech.threadly.viewmodels.VideoPostsFeedViewModel;
 
 import java.util.ArrayList;
 
@@ -27,6 +28,8 @@ import java.util.ArrayList;
 public class ExploreFragment extends Fragment {
     FragmentExploreBinding mainXml;
     ExplorePostsViewModel viewModel;
+    //temporary patch must use explore viewmodel
+    VideoPostsFeedViewModel VideoViewModel;
     ArrayList<Posts_Model> postsModels;
     GridPostAdapter adapter;
     private final Post_fragmentSetCallback callback =new Post_fragmentSetCallback() {
@@ -81,18 +84,21 @@ public class ExploreFragment extends Fragment {
         mainXml.postsRecyclerView.setLayoutManager(new GridLayoutManager(requireActivity(),3));
         mainXml.postsRecyclerView.setAdapter(adapter);
         viewModel=new ViewModelProvider(requireActivity()).get(ExplorePostsViewModel.class);
+        VideoViewModel =new ViewModelProvider(requireActivity()).get(VideoPostsFeedViewModel.class);
         loadPosts();
         mainXml.swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 mainXml.swipeRefresh.setRefreshing(true);
-                viewModel.loadExploreFeed();
+                //temporary patch must use explore viewmodel
+                VideoViewModel.loadVideoPostFeed();
             }
         });
     }
 
     private void loadPosts() {
-        viewModel.getExploreFeed().observe(requireActivity(),posts -> {
+        //temporary patch must use explore viewmodel
+        VideoViewModel.getLiveVideoPostsFeed().observe(requireActivity(),posts -> {
             mainXml.swipeRefresh.setRefreshing(false);
             mainXml.shimmer.setVisibility(View.GONE);
           if(posts.isEmpty()){

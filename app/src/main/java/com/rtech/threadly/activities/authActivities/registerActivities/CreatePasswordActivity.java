@@ -15,7 +15,6 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.rtech.threadly.R;
-import com.rtech.threadly.activities.EnterDobActivity;
 
 public class CreatePasswordActivity extends AppCompatActivity {
 AppCompatButton next_btn;

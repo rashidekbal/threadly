@@ -92,19 +92,19 @@ public class MessengerMainMessagePageActivity extends AppCompatActivity {
     MessagesViewModel messagesViewModel;
     List<MessageSchema> msgList;
     MessageAdapter messageAdapter;
-    String sendType=TypeConstants.TEXT;
+    String sendType = TypeConstants.TEXT;
     String selectedMediaType;
-    ArrayList<String> pendingMessageUids=new ArrayList<>();
+    ArrayList<String> pendingMessageUids = new ArrayList<>();
     File currentMedia;
-    ExecutorService executor= Executors.newSingleThreadExecutor();
-    final Queue<Map<String ,String >> messageSendQueue=new LinkedList<>();
-    boolean isMessageQueueRunning=false;
-    OnCapturedMediaFinalizedCallback onCapturedMediaFinalizedCallback=new OnCapturedMediaFinalizedCallback() {
+    ExecutorService executor = Executors.newSingleThreadExecutor();
+    final Queue<Map<String, String>> messageSendQueue = new LinkedList<>();
+    boolean isMessageQueueRunning = false;
+    OnCapturedMediaFinalizedCallback onCapturedMediaFinalizedCallback = new OnCapturedMediaFinalizedCallback() {
         @Override
         public void OnFinalized(String filePath, String mediaType) {
-            getSupportFragmentManager().popBackStack("Id_camera_page",FragmentManager.POP_BACK_STACK_INCLUSIVE);
-            currentMedia=new File(filePath);
-            setupMediaForSending(currentMedia,mediaType);
+            getSupportFragmentManager().popBackStack("Id_camera_page", FragmentManager.POP_BACK_STACK_INCLUSIVE);
+            currentMedia = new File(filePath);
+            setupMediaForSending(currentMedia, mediaType);
 
         }
 
@@ -113,13 +113,14 @@ public class MessengerMainMessagePageActivity extends AppCompatActivity {
             getSupportFragmentManager().popBackStack();
         }
     };
-    CameraFragmentInterface cameraFragmentInterface= (filePath, mediaType) -> {
-        Media_Capture_finalizer_fragment fragment=new Media_Capture_finalizer_fragment(onCapturedMediaFinalizedCallback);
-        Bundle bundle=new Bundle();
-        bundle.putString("filePath",filePath);
-        bundle.putString("mediaType",mediaType);
+    CameraFragmentInterface cameraFragmentInterface = (filePath, mediaType) -> {
+        Media_Capture_finalizer_fragment fragment = new Media_Capture_finalizer_fragment(
+                onCapturedMediaFinalizedCallback);
+        Bundle bundle = new Bundle();
+        bundle.putString("filePath", filePath);
+        bundle.putString("mediaType", mediaType);
         fragment.setArguments(bundle);
-        changeFragment(fragment,"Id_mediaFinalizer_page");
+        changeFragment(fragment, "Id_mediaFinalizer_page");
 
     };
 
@@ -127,7 +128,7 @@ public class MessengerMainMessagePageActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        mainXml=ActivityMessangerMainMessagePageBinding.inflate(getLayoutInflater());
+        mainXml = ActivityMessangerMainMessagePageBinding.inflate(getLayoutInflater());
         setContentView(mainXml.getRoot());
         // ** THIS IS THE UPDATED LISTENER **
         ViewCompat.setOnApplyWindowInsetsListener(mainXml.main, (v, insets) -> {
@@ -150,93 +151,96 @@ public class MessengerMainMessagePageActivity extends AppCompatActivity {
 
         init();
         getSupportFragmentManager().addOnBackStackChangedListener(() -> {
-            if(getSupportFragmentManager().getBackStackEntryCount()==0){
+            if (getSupportFragmentManager().getBackStackEntryCount() == 0) {
                 mainXml.fragmentContainer.setVisibility(View.GONE);
             }
         });
 
     }
 
-    private void init(){
+    private void init() {
         mainXml.mediaSendLayout.setVisibility(View.GONE);
         mainXml.fragmentContainer.setVisibility(View.GONE);
-        msgList=new ArrayList<>();
-        userdata=getIntent().getExtras();
-        messagesViewModel=new ViewModelProvider(this).get(MessagesViewModel.class);
-        if(userdata==null){
+        msgList = new ArrayList<>();
+        userdata = getIntent().getExtras();
+        messagesViewModel = new ViewModelProvider(this).get(MessagesViewModel.class);
+        if (userdata == null) {
             ReUsableFunctions.ShowToast("something went wrong...");
             finish();
         }
-        uuid=userdata.getString("uuid");
-        conversationId=uuid+ Core.getPreference().getString(SharedPreferencesKeys.UUID,null);
+        uuid = userdata.getString("uuid");
+        conversationId = uuid + Core.getPreference().getString(SharedPreferencesKeys.UUID, null);
         setUpRecyclerView();
         setUserData();
 
     }
-    private void setUserData(){
+
+    private void setUserData() {
         mainXml.username.setText(userdata.getString("username"));
         mainXml.userId.setText(userdata.getString("userid"));
-        Glide.with(this).load(userdata.getString("profilePic")).placeholder(R.drawable.blank_profile).circleCrop().into(mainXml.profile);
+        Glide.with(this).load(userdata.getString("profilePic")).placeholder(R.drawable.blank_profile).circleCrop()
+                .into(mainXml.profile);
         messagesViewModel.getMessages(conversationId).observe(this, messageSchemas -> {
-            if(!messageSchemas.isEmpty()){
+            if (!messageSchemas.isEmpty()) {
                 msgList.clear();
                 msgList.addAll(messageSchemas);
                 messageAdapter.notifyDataSetChanged();
-                messageAdapter.notifyItemChanged(messageSchemas.size()-1);
-                if(msgList.size()>1){
-                    messageAdapter.notifyItemChanged(messageSchemas.size()-2);
+                messageAdapter.notifyItemChanged(messageSchemas.size() - 1);
+                if (msgList.size() > 1) {
+                    messageAdapter.notifyItemChanged(messageSchemas.size() - 2);
                 }
-                mainXml.RecyclerView.scrollToPosition(messageSchemas.size()-1);
+                mainXml.RecyclerView.scrollToPosition(messageSchemas.size() - 1);
             }
 
-
         });
-        messagesViewModel.getConversationUnreadMsg_count(conversationId,Core.getPreference().getString(SharedPreferencesKeys.UUID,"null")).observe(this, integer -> {
-            if(integer>0){
-                if(ConnectivityUtil.IsInternetConnected(this)){
-                    //new unread message arrived or already exists
-                    // update local db as seen and send message to global db to set as seen
+        messagesViewModel.getConversationUnreadMsg_count(conversationId,
+                Core.getPreference().getString(SharedPreferencesKeys.UUID, "null")).observe(this, integer -> {
+                    if (integer > 0) {
+                        if (ConnectivityUtil.IsInternetConnected(this)) {
+                            // new unread message arrived or already exists
+                            // update local db as seen and send message to global db to set as seen
 
-                        Executors.newSingleThreadExecutor().execute(()->{
-                            //get the message uids to send
-                           List <String> unNotifiedUids= DataBase.getInstance().MessageDao().getUnreadMessageUids(conversationId);
-                            Executors.newSingleThreadExecutor().execute(() -> DataBase.getInstance().MessageDao().updateMessagesSeen(conversationId, PreferenceUtil.getUUID()));
+                            Executors.newSingleThreadExecutor().execute(() -> {
+                                // get the message uids to send
+                                List<String> unNotifiedUids = DataBase.getInstance().MessageDao()
+                                        .getUnreadMessageUids(conversationId);
+                                Executors.newSingleThreadExecutor().execute(() -> DataBase.getInstance().MessageDao()
+                                        .updateMessagesSeen(conversationId, PreferenceUtil.getUUID()));
 
-                           try {
+                                try {
 
-                                   if(SocketManager.getInstance().getSocket().connected()){
-                                       SocketEmitterEvents.UpdateSeenMsg_status(unNotifiedUids,uuid,PreferenceUtil.getUserId());
-                                   }
-                                   else{
-                                       MessageManager.setSeenMessage(unNotifiedUids,uuid, PreferenceUtil.getUUID(), new NetworkCallbackInterface() {
-                                           @Override
-                                           public void onSuccess() {
-                                               Executors.newSingleThreadExecutor().execute(() -> DataBase.getInstance().MessageDao().updateMessagesSeen(conversationId, PreferenceUtil.getUUID()));
-                                           }
+                                    if (SocketManager.getInstance().getSocket().connected()) {
+                                        SocketEmitterEvents.UpdateSeenMsg_status(unNotifiedUids, uuid,
+                                                PreferenceUtil.getUserId());
+                                    } else {
+                                        MessageManager.setSeenMessage(unNotifiedUids, uuid, PreferenceUtil.getUUID(),
+                                                new NetworkCallbackInterface() {
+                                                    @Override
+                                                    public void onSuccess() {
+                                                        Executors.newSingleThreadExecutor()
+                                                                .execute(() -> DataBase.getInstance().MessageDao()
+                                                                        .updateMessagesSeen(conversationId,
+                                                                                PreferenceUtil.getUUID()));
+                                                    }
 
-                                           @Override
-                                           public void onError(String err) {
+                                                    @Override
+                                                    public void onError(String err) {
 
-                                           }
-                                       });
-                                   }
+                                                    }
+                                                });
+                                    }
 
-                            } catch (JSONException e) {
-                                throw new RuntimeException(e);
-                            }
+                                } catch (JSONException e) {
+                                    throw new RuntimeException(e);
+                                }
 
-                        });
+                            });
 
+                        }
+                    }
+                });
 
-
-
-                }
-                }
-        });
-
-
-
-        mainXml.backBtn.setOnClickListener(v-> {
+        mainXml.backBtn.setOnClickListener(v -> {
             if (Objects.equals(userdata.getString("src"), "notification")) {
                 startActivity(new Intent(Threadly.getGlobalContext(), HomeActivity.class));
 
@@ -252,13 +256,12 @@ public class MessengerMainMessagePageActivity extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if(s.length()>0){
+                if (s.length() > 0) {
                     mainXml.cameraBtn.setVisibility(View.GONE);
                     mainXml.addonsSection.setVisibility(View.GONE);
                     mainXml.sendBtn.setVisibility(View.VISIBLE);
 
-
-                }else{
+                } else {
                     mainXml.sendBtn.setVisibility(TextView.GONE);
                     mainXml.addonsSection.setVisibility(View.VISIBLE);
                     mainXml.cameraBtn.setVisibility(View.VISIBLE);
@@ -271,55 +274,51 @@ public class MessengerMainMessagePageActivity extends AppCompatActivity {
 
             }
         });
-        mainXml.sendBtn.setOnClickListener(v->{
-            if(sendType.equals(TypeConstants.TEXT)){
-                String msg=mainXml.msgEditText.getText().toString().trim();
-                if(!msg.isEmpty()){
+        mainXml.sendBtn.setOnClickListener(v -> {
+            if (sendType.equals(TypeConstants.TEXT)) {
+                String msg = mainXml.msgEditText.getText().toString().trim();
+                if (!msg.isEmpty()) {
                     try {
-                        Core.sendCtoS(uuid,msg,"text","null",-1,msg);
+                        Core.sendCtoS(uuid, msg, "text", "null", -1, msg);
                     } catch (JSONException e) {
                         throw new RuntimeException(e);
                     }
                     mainXml.msgEditText.setText("");
                 }
-            }
-            else if(sendType.equals(TypeConstants.MEDIA)){
-                String msg=mainXml.msgEditText.getText().toString().trim();
-                sendType="text";
+            } else if (sendType.equals(TypeConstants.MEDIA)) {
+                String msg = mainXml.msgEditText.getText().toString().trim();
+                sendType = "text";
                 mainXml.msgEditText.setText("");
                 mainXml.mediaSendLayout.setVisibility(View.GONE);
-                startMediaAsMessageSendingProcess(!msg.isEmpty()?msg:"",selectedMediaType,currentMedia);
-
-
-
+                startMediaAsMessageSendingProcess(!msg.isEmpty() ? msg : "", selectedMediaType, currentMedia);
 
             }
         });
-
-
-
 
         mainXml.cameraBtn.setOnClickListener(v -> {
             ReUsableFunctions.hideKeyboard(this);
 
-            if( ActivityCompat.shouldShowRequestPermissionRationale(MessengerMainMessagePageActivity.this,Manifest.permission.CAMERA)){
+            if (ActivityCompat.shouldShowRequestPermissionRationale(MessengerMainMessagePageActivity.this,
+                    Manifest.permission.CAMERA)) {
                 ReUsableFunctions.ShowToast("please provide camera permission in settings");
-                return ;
+                return;
 
             }
-            if(PermissionManagementUtil.isAllPermissionGranted(MessengerMainMessagePageActivity.this,new String[]{Manifest.permission.CAMERA})){
+            if (PermissionManagementUtil.isAllPermissionGranted(MessengerMainMessagePageActivity.this,
+                    new String[] { Manifest.permission.CAMERA })) {
                 mainXml.fragmentContainer.setVisibility(View.VISIBLE);
-                changeFragment(new PostAddCameraFragment(cameraFragmentInterface),"Id_camera_page");
-            }else{
-                PermissionManagementUtil.requestPermission(MessengerMainMessagePageActivity.this,new String[]{Manifest.permission.CAMERA},205);
+                changeFragment(new PostAddCameraFragment(cameraFragmentInterface), "Id_camera_page");
+            } else {
+                PermissionManagementUtil.requestPermission(MessengerMainMessagePageActivity.this,
+                        new String[] { Manifest.permission.CAMERA }, 205);
 
             }
 
         });
-        mainXml.mediaBtn.setOnClickListener(v->checkPermissionsAndStartMediaSelection());
-        mainXml.discardBtn.setOnClickListener(v->{
+        mainXml.mediaBtn.setOnClickListener(v -> checkPermissionsAndStartMediaSelection());
+        mainXml.discardBtn.setOnClickListener(v -> {
             mainXml.mediaSendLayout.setVisibility(View.GONE);
-            sendType=TypeConstants.TEXT;
+            sendType = TypeConstants.TEXT;
             mainXml.cameraBtn.setVisibility(View.VISIBLE);
             mainXml.addonsSection.setVisibility(View.VISIBLE);
             mainXml.sendBtn.setVisibility(View.GONE);
@@ -329,111 +328,113 @@ public class MessengerMainMessagePageActivity extends AppCompatActivity {
 
     }
 
-//    private void startMediaAsMessageSendingProcess(String message, String selectedMediaType, File currentMedia) {
-//        String messageUid=ReUsableFunctions.GenerateUUid();
-//        executor.execute(()->{
-//            DataBase.getInstance().MessageDao().insertMessage(new MessageSchema(
-//                    messageUid,
-//                    MessengerUtils.getConversationId(PreferenceUtil.getUUID(),uuid),
-//                    null,
-//                    PreferenceUtil.getUUID(),
-//                    uuid,
-//                    message,
-//                    selectedMediaType,
-//                    -1,
-//                    null,
-//                    ReUsableFunctions.getTimestamp(),
-//                    0,
-//                    false,
-//                    currentMedia.getPath(),
-//                    MessageStateEnum.UPLOADING.toString(),
-//                    0,
-//                    0
-//            ));
-//            pendingMessageUids.add(messageUid);
-//            //if queue is empty then start uploading
-//
-//            if(!isMessageQueueRunning){
-//                map.clear();
-//                map.put(messageUid,currentMedia.getAbsolutePath());
-//                messageSendQueue.add(map);
-//                startUploading();
-//                return;
-//            }
-//            //if it is running then just enque new message
-//            map.clear();
-//            map.put(messageUid,currentMedia.getAbsolutePath());
-//            messageSendQueue.add(map);
-//        });
-//    }
+    // private void startMediaAsMessageSendingProcess(String message, String
+    // selectedMediaType, File currentMedia) {
+    // String messageUid=ReUsableFunctions.GenerateUUid();
+    // executor.execute(()->{
+    // DataBase.getInstance().MessageDao().insertMessage(new MessageSchema(
+    // messageUid,
+    // MessengerUtils.getConversationId(PreferenceUtil.getUUID(),uuid),
+    // null,
+    // PreferenceUtil.getUUID(),
+    // uuid,
+    // message,
+    // selectedMediaType,
+    // -1,
+    // null,
+    // ReUsableFunctions.getTimestamp(),
+    // 0,
+    // false,
+    // currentMedia.getPath(),
+    // MessageStateEnum.UPLOADING.toString(),
+    // 0,
+    // 0
+    // ));
+    // pendingMessageUids.add(messageUid);
+    // //if queue is empty then start uploading
+    //
+    // if(!isMessageQueueRunning){
+    // map.clear();
+    // map.put(messageUid,currentMedia.getAbsolutePath());
+    // messageSendQueue.add(map);
+    // startUploading();
+    // return;
+    // }
+    // //if it is running then just enque new message
+    // map.clear();
+    // map.put(messageUid,currentMedia.getAbsolutePath());
+    // messageSendQueue.add(map);
+    // });
+    // }
 
-//    private void startUploading() {
-//        isMessageQueueRunning=true;
-//        Map<String,String> localMap;
-//        while(!messageSendQueue.isEmpty()){
-//            localMap=messageSendQueue.peek();
-//            assert localMap != null;
-//            String messageUid=localMap.keySet().iterator().next();
-//            File Media=new File(Objects.requireNonNull(localMap.get(messageUid)));
-//           if(!Media.exists()){
-//               localMap.remove(messageUid);
-//               executor.execute(()->{
-//                   DataBase.getInstance().MessageDao().updatePostLinkWithState(messageUid,null,MessageStateEnum.FAILED.toString());
-//               });
-//               pendingMessageUids.remove(messageUid);
-//               messageSendQueue.remove();
-//               continue;
-//           }
-//           MessageManager.UploadMsgMedia(Media, messageUid, new NetworkCallbackInterfaceWithProgressTracking() {
-//                   @Override
-//                   public void onSuccess(JSONObject response) {
-//                       String link=response.optJSONObject("data").optString("link");
-//
-//                       executor.execute(()->{
-//                           DataBase.getInstance().MessageDao().updatePostLinkWithState(messageUid,link,MessageStateEnum.SUCCESS.toString());
-//                           pendingMessageUids.remove(messageUid);
-//                           try {
-//                               //actual message sending logic is here
-//                               MessageSchema schema=DataBase.getInstance().MessageDao().getMessageWithUid(messageUid);
-//                               schema.setPostLink(link);
-//                               Core.sendCtoS(schema);
-//                           } catch (JSONException e) {
-//                               ReUsableFunctions.ShowToast(e.getMessage());
-//                           }
-//                       });
-//                       messageSendQueue.remove();
-//
-//
-//                   }
-//
-//                   @Override
-//                   public void onError(String err) {
-//                       executor.execute(()->{
-//                           DataBase.getInstance().MessageDao().updatePostLinkWithState(messageUid,null,MessageStateEnum.FAILED.toString());
-//                       });
-//                       pendingMessageUids.remove(messageUid);
-//                       messageSendQueue.remove();
-//
-//                   }
-//
-//                   @Override
-//                   public void progress(long bytesUploaded, long totalBytes) {
-//                       executor.execute(()->{
-//                           DataBase.getInstance().MessageDao().updateUploadProgress(messageUid,totalBytes,bytesUploaded);
-//                       });
-//
-//
-//                   }
-//               });
-//
-//
-//        }
-//
-//    }
-
+    // private void startUploading() {
+    // isMessageQueueRunning=true;
+    // Map<String,String> localMap;
+    // while(!messageSendQueue.isEmpty()){
+    // localMap=messageSendQueue.peek();
+    // assert localMap != null;
+    // String messageUid=localMap.keySet().iterator().next();
+    // File Media=new File(Objects.requireNonNull(localMap.get(messageUid)));
+    // if(!Media.exists()){
+    // localMap.remove(messageUid);
+    // executor.execute(()->{
+    // DataBase.getInstance().MessageDao().updatePostLinkWithState(messageUid,null,MessageStateEnum.FAILED.toString());
+    // });
+    // pendingMessageUids.remove(messageUid);
+    // messageSendQueue.remove();
+    // continue;
+    // }
+    // MessageManager.UploadMsgMedia(Media, messageUid, new
+    // NetworkCallbackInterfaceWithProgressTracking() {
+    // @Override
+    // public void onSuccess(JSONObject response) {
+    // String link=response.optJSONObject("data").optString("link");
+    //
+    // executor.execute(()->{
+    // DataBase.getInstance().MessageDao().updatePostLinkWithState(messageUid,link,MessageStateEnum.SUCCESS.toString());
+    // pendingMessageUids.remove(messageUid);
+    // try {
+    // //actual message sending logic is here
+    // MessageSchema
+    // schema=DataBase.getInstance().MessageDao().getMessageWithUid(messageUid);
+    // schema.setPostLink(link);
+    // Core.sendCtoS(schema);
+    // } catch (JSONException e) {
+    // ReUsableFunctions.ShowToast(e.getMessage());
+    // }
+    // });
+    // messageSendQueue.remove();
+    //
+    //
+    // }
+    //
+    // @Override
+    // public void onError(String err) {
+    // executor.execute(()->{
+    // DataBase.getInstance().MessageDao().updatePostLinkWithState(messageUid,null,MessageStateEnum.FAILED.toString());
+    // });
+    // pendingMessageUids.remove(messageUid);
+    // messageSendQueue.remove();
+    //
+    // }
+    //
+    // @Override
+    // public void progress(long bytesUploaded, long totalBytes) {
+    // executor.execute(()->{
+    // DataBase.getInstance().MessageDao().updateUploadProgress(messageUid,totalBytes,bytesUploaded);
+    // });
+    //
+    //
+    // }
+    // });
+    //
+    //
+    // }
+    //
+    // }
 
     // in your class: remove the field 'map' if you only used it for queuing
-// private Map<String,String> map = new HashMap<>(); <-- remove this field
+    // private Map<String,String> map = new HashMap<>(); <-- remove this field
 
     private void startMediaAsMessageSendingProcess(String message, String selectedMediaType, File currentMedia) {
         final String messageUid = ReUsableFunctions.GenerateUUid();
@@ -454,8 +455,7 @@ public class MessengerMainMessagePageActivity extends AppCompatActivity {
                     currentMedia.getPath(),
                     MessageStateEnum.UPLOADING.toString(),
                     0,
-                    0
-            ));
+                    0));
             pendingMessageUids.add(messageUid);
 
             // create a fresh map for each queued item
@@ -481,7 +481,8 @@ public class MessengerMainMessagePageActivity extends AppCompatActivity {
                 synchronized (messageSendQueue) {
                     localMap = messageSendQueue.poll(); // REMOVE the head atomically
                 }
-                if (localMap == null) break; // queue empty -> exit
+                if (localMap == null)
+                    break; // queue empty -> exit
 
                 // extract uid and path
                 final String messageUid = localMap.keySet().iterator().next();
@@ -489,7 +490,8 @@ public class MessengerMainMessagePageActivity extends AppCompatActivity {
 
                 if (!Media.exists()) {
                     // mark failed and continue
-                    DataBase.getInstance().MessageDao().updatePostLinkWithState(messageUid, null, MessageStateEnum.FAILED.toString());
+                    DataBase.getInstance().MessageDao().updatePostLinkWithState(messageUid, null,
+                            MessageStateEnum.FAILED.toString());
                     pendingMessageUids.remove(messageUid);
                     continue;
                 }
@@ -501,12 +503,15 @@ public class MessengerMainMessagePageActivity extends AppCompatActivity {
                     @Override
                     public void onSuccess(JSONObject response) {
                         String link = response.optJSONObject("data").optString("link");
-                        // use executor thread for DB ops (you're already on executor but callbacks may be on a different thread)
+                        // use executor thread for DB ops (you're already on executor but callbacks may
+                        // be on a different thread)
                         executor.execute(() -> {
-                            DataBase.getInstance().MessageDao().updatePostLinkWithState(messageUid, link, MessageStateEnum.SUCCESS.toString());
+                            DataBase.getInstance().MessageDao().updatePostLinkWithState(messageUid, link,
+                                    MessageStateEnum.SUCCESS.toString());
                             pendingMessageUids.remove(messageUid);
                             try {
-                                MessageSchema schema = DataBase.getInstance().MessageDao().getMessageWithUid(messageUid);
+                                MessageSchema schema = DataBase.getInstance().MessageDao()
+                                        .getMessageWithUid(messageUid);
                                 schema.setPostLink(link);
                                 Core.sendCtoS(schema);
                             } catch (JSONException e) {
@@ -518,14 +523,16 @@ public class MessengerMainMessagePageActivity extends AppCompatActivity {
 
                     @Override
                     public void onError(String err) {
-                        executor.execute(() -> DataBase.getInstance().MessageDao().updatePostLinkWithState(messageUid, null, MessageStateEnum.FAILED.toString()));
+                        executor.execute(() -> DataBase.getInstance().MessageDao().updatePostLinkWithState(messageUid,
+                                null, MessageStateEnum.FAILED.toString()));
                         pendingMessageUids.remove(messageUid);
                         latch.countDown();
                     }
 
                     @Override
                     public void progress(long bytesUploaded, long totalBytes) {
-                        executor.execute(() -> DataBase.getInstance().MessageDao().updateUploadProgress(messageUid, totalBytes, bytesUploaded));
+                        executor.execute(() -> DataBase.getInstance().MessageDao().updateUploadProgress(messageUid,
+                                totalBytes, bytesUploaded));
                     }
                 });
 
@@ -535,7 +542,8 @@ public class MessengerMainMessagePageActivity extends AppCompatActivity {
                 } catch (InterruptedException e) {
                     // restore interrupt and mark this message failed so we don't stall forever
                     Thread.currentThread().interrupt();
-                    executor.execute(() -> DataBase.getInstance().MessageDao().updatePostLinkWithState(messageUid, null, MessageStateEnum.FAILED.toString()));
+                    executor.execute(() -> DataBase.getInstance().MessageDao().updatePostLinkWithState(messageUid, null,
+                            MessageStateEnum.FAILED.toString()));
                     pendingMessageUids.remove(messageUid);
                 }
             }
@@ -545,85 +553,83 @@ public class MessengerMainMessagePageActivity extends AppCompatActivity {
         }
     }
 
-
     @Override
     protected void onStop() {
         super.onStop();
-        if(!pendingMessageUids.isEmpty()){
-            //close all requests
-            for(String uid :pendingMessageUids){
+        if (!pendingMessageUids.isEmpty()) {
+            // close all requests
+            for (String uid : pendingMessageUids) {
                 MessageManager.CancelMessageMediaUploadRequest(uid);
             }
-            String[] ids=new String[pendingMessageUids.size()];
-            for(int i=0;i<pendingMessageUids.size();i++){
-                ids[i]=pendingMessageUids.get(i);
+            String[] ids = new String[pendingMessageUids.size()];
+            for (int i = 0; i < pendingMessageUids.size(); i++) {
+                ids[i] = pendingMessageUids.get(i);
             }
-            Data pendingUids=new Data.Builder().putStringArray("pendingUids",ids).build();
+            Data pendingUids = new Data.Builder().putStringArray("pendingUids", ids).build();
             pendingMessageUids.clear();
-            Core.getWorkManager().enqueue(new OneTimeWorkRequest.Builder(MessageUploadCheckBrokerWorker.class).setInputData(pendingUids).build());
+            Core.getWorkManager().enqueue(new OneTimeWorkRequest.Builder(MessageUploadCheckBrokerWorker.class)
+                    .setInputData(pendingUids).build());
 
         }
     }
 
-    private void setUpRecyclerView(){
-        messageAdapter=new MessageAdapter(this, msgList, userdata.getString("profilePic"),
+    private void setUpRecyclerView() {
+        messageAdapter = new MessageAdapter(this, msgList, userdata.getString("profilePic"),
                 (messageSchema, type) -> {
                     // when message item is clicked mainLy for media opening
-                   int position=msgList.indexOf(messageSchema);
-                    if(type.equals(TypeConstants.IMAGE)){
-                        //when media is an image
-                        Bundle data=new Bundle();
-                        data.putString("username",userdata.getString("username"));
-                        data.putString("userid",userdata.getString("userid"));
-                        data.putString("profileUrl",userdata.getString("profilePic"));
-                        data.putString("mediaUrl",messageSchema.getPostLink());
-                        data.putString("messageUid",messageSchema.getMessageUid());
-                        ImageViewFragment fragment=new ImageViewFragment();
+                    int position = msgList.indexOf(messageSchema);
+                    if (type.equals(TypeConstants.IMAGE)) {
+                        // when media is an image
+                        Bundle data = new Bundle();
+                        data.putString("username", userdata.getString("username"));
+                        data.putString("userid", userdata.getString("userid"));
+                        data.putString("profileUrl", userdata.getString("profilePic"));
+                        data.putString("mediaUrl", messageSchema.getPostLink());
+                        data.putString("messageUid", messageSchema.getMessageUid());
+                        ImageViewFragment fragment = new ImageViewFragment();
                         fragment.setArguments(data);
-                        changeFragment(fragment,"Id_image_view_page");
+                        changeFragment(fragment, "Id_image_view_page");
 
                     } else {
-                        //when media is a video
-                        Bundle data=new Bundle();
-                        data.putString("username",userdata.getString("username"));
-                        data.putString("userid",userdata.getString("userid"));
-                        data.putString("profileUrl",userdata.getString("profilePic"));
-                        data.putString("mediaUrl",messageSchema.getPostLink());
-                        data.putString("messageUid",messageSchema.getMessageUid());
-                        VideoViewFragment fragment=new VideoViewFragment();
+                        // when media is a video
+                        Bundle data = new Bundle();
+                        data.putString("username", userdata.getString("username"));
+                        data.putString("userid", userdata.getString("userid"));
+                        data.putString("profileUrl", userdata.getString("profilePic"));
+                        data.putString("mediaUrl", messageSchema.getPostLink());
+                        data.putString("messageUid", messageSchema.getMessageUid());
+                        VideoViewFragment fragment = new VideoViewFragment();
                         fragment.setArguments(data);
-                        changeFragment(fragment,"Id_video_view_page");
+                        changeFragment(fragment, "Id_video_view_page");
 
                     }
 
-
                 });
-        mainXml.RecyclerView.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false));
+        mainXml.RecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         mainXml.RecyclerView.setAdapter(messageAdapter);
     }
 
-    private void showMediaSelector(){
-        BottomSheetDialog bottomSheetDialog=new BottomSheetDialog(this,R.style.TransparentBottomSheet);
+    private void showMediaSelector() {
+        BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this, R.style.TransparentBottomSheet);
         bottomSheetDialog.setCancelable(true);
         bottomSheetDialog.setContentView(R.layout.media_selector_recycler_for_message_page);
-        RecyclerView mediaRecyclerView=bottomSheetDialog.findViewById(R.id.RecyclerView);
-        GridLayoutManager layoutManager=new GridLayoutManager(this,4);
+        RecyclerView mediaRecyclerView = bottomSheetDialog.findViewById(R.id.RecyclerView);
+        GridLayoutManager layoutManager = new GridLayoutManager(this, 4);
         assert mediaRecyclerView != null;
         mediaRecyclerView.setLayoutManager(layoutManager);
 
-
-        FrameLayout frameLayout=bottomSheetDialog.findViewById(com.google.android.material.R.id.design_bottom_sheet);
-        if(frameLayout!=null){
-            BottomSheetBehavior<FrameLayout> bottomSheetBehavior=BottomSheetBehavior.from(frameLayout);
+        FrameLayout frameLayout = bottomSheetDialog.findViewById(com.google.android.material.R.id.design_bottom_sheet);
+        if (frameLayout != null) {
+            BottomSheetBehavior<FrameLayout> bottomSheetBehavior = BottomSheetBehavior.from(frameLayout);
             bottomSheetBehavior.setState(STATE_EXPANDED);
             bottomSheetBehavior.setFitToContents(true);
             bottomSheetBehavior.setDraggable(false);
         }
-        ArrayList<MediaModel> mediaList=getInternalImage_video();
+        ArrayList<MediaModel> mediaList = getInternalImage_video();
         mediaRecyclerView.setAdapter(new Media_selector_adapter(this, mediaList, mediaModel -> {
             try {
-                currentMedia=ReUsableFunctions.getFileFromUri(MessengerMainMessagePageActivity.this,mediaModel.uri);
-                setupMediaForSending(currentMedia,mediaModel.isVideo?TypeConstants.VIDEO:TypeConstants.IMAGE);
+                currentMedia = ReUsableFunctions.getFileFromUri(MessengerMainMessagePageActivity.this, mediaModel.uri);
+                setupMediaForSending(currentMedia, mediaModel.isVideo ? TypeConstants.VIDEO : TypeConstants.IMAGE);
             } catch (IOException e) {
                 e.printStackTrace();
                 bottomSheetDialog.dismiss();
@@ -631,14 +637,10 @@ public class MessengerMainMessagePageActivity extends AppCompatActivity {
             bottomSheetDialog.dismiss();
         }));
 
-
-
-
         bottomSheetDialog.show();
     }
 
-
-    private ArrayList<MediaModel>  getInternalImage_video() {
+    private ArrayList<MediaModel> getInternalImage_video() {
         ArrayList<MediaModel> MediaList = new ArrayList<>();
 
         Uri collection = MediaStore.Files.getContentUri("external");
@@ -648,7 +650,8 @@ public class MessengerMainMessagePageActivity extends AppCompatActivity {
                 MediaStore.Files.FileColumns.DURATION,
                 MediaStore.Files.FileColumns.DATE_ADDED
         };
-        String selection = MediaStore.Files.FileColumns.MEDIA_TYPE + "=" + MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE + " OR " +
+        String selection = MediaStore.Files.FileColumns.MEDIA_TYPE + "=" + MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE
+                + " OR " +
                 MediaStore.Files.FileColumns.MEDIA_TYPE + "=" +
                 MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO;
         String SortOrder = MediaStore.Files.FileColumns.DATE_ADDED + " DESC";
@@ -661,60 +664,65 @@ public class MessengerMainMessagePageActivity extends AppCompatActivity {
             while (cursor.moveToNext()) {
                 long id = cursor.getLong(idColumn);
                 int mediaType = cursor.getInt(mediaTypeColumn);
-                int durationVideo = Math.round((mediaType == MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO ? cursor.getFloat(duration) : 0) / 1000);
-                Uri uri = (mediaType == MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE) ?
-                        ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id)
+                int durationVideo = Math.round(
+                        (mediaType == MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO ? cursor.getFloat(duration) : 0)
+                                / 1000);
+                Uri uri = (mediaType == MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE)
+                        ? ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id)
                         : ContentUris.withAppendedId(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, id);
-                MediaList.add(new MediaModel(uri, mediaType == MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO, mediaType == MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO ? durationVideo : 0, false));
+                MediaList.add(new MediaModel(uri, mediaType == MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO,
+                        mediaType == MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO ? durationVideo : 0, false));
             }
 
-
             cursor.close();
-
 
         }
         return MediaList;
     }
 
-
-
-
-    private void changeFragment(Fragment frag,String fragmentId){
+    private void changeFragment(Fragment frag, String fragmentId) {
         mainXml.fragmentContainer.setVisibility(View.VISIBLE);
-        getSupportFragmentManager().beginTransaction().replace(mainXml.fragmentContainer.getId(),frag)
+        getSupportFragmentManager().beginTransaction().replace(mainXml.fragmentContainer.getId(), frag)
                 .addToBackStack(fragmentId)
                 .commit();
     }
 
-    private void checkPermissionsAndStartMediaSelection(){
-        if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.TIRAMISU){
-            if(!PermissionManagementUtil.isAllPermissionGranted(MessengerMainMessagePageActivity.this, Permissions.AddPostPermissionsApi33AndAbove)){
-                PermissionManagementUtil.requestPermission(MessengerMainMessagePageActivity.this, Permissions.AddPostPermissionsApi33AndAbove,101);
-            }else{
-               showMediaSelector();
+    private void checkPermissionsAndStartMediaSelection() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (!PermissionManagementUtil.isAllPermissionGranted(MessengerMainMessagePageActivity.this,
+                    Permissions.AddPostPermissionsApi33AndAbove)) {
+                PermissionManagementUtil.requestPermission(MessengerMainMessagePageActivity.this,
+                        Permissions.AddPostPermissionsApi33AndAbove, 101);
+            } else {
+                showMediaSelector();
             }
 
-        }else{
-            if (!PermissionManagementUtil.isAllPermissionGranted(MessengerMainMessagePageActivity.this,Permissions.AddPostPermissionsApiBelow33)){
-                PermissionManagementUtil.requestPermission(MessengerMainMessagePageActivity.this,Permissions.AddPostPermissionsApiBelow33,101);
-            }else{
-               showMediaSelector();
+        } else {
+            if (!PermissionManagementUtil.isAllPermissionGranted(MessengerMainMessagePageActivity.this,
+                    Permissions.AddPostPermissionsApiBelow33)) {
+                PermissionManagementUtil.requestPermission(MessengerMainMessagePageActivity.this,
+                        Permissions.AddPostPermissionsApiBelow33, 101);
+            } else {
+                showMediaSelector();
             }
 
         }
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+            @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if(requestCode==101&&grantResults.length>0){
-            if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.TIRAMISU){
-                if(PermissionManagementUtil.isAllPermissionGranted(MessengerMainMessagePageActivity.this,Permissions.AddPostPermissionsApi33AndAbove)){
+        if (requestCode == 101 && grantResults.length > 0) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                if (PermissionManagementUtil.isAllPermissionGranted(MessengerMainMessagePageActivity.this,
+                        Permissions.AddPostPermissionsApi33AndAbove)) {
                     showMediaSelector();
-                }else{
-                    AlertDialog.Builder builder=new AlertDialog.Builder(MessengerMainMessagePageActivity.this);
+                } else {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(MessengerMainMessagePageActivity.this);
                     builder.setTitle(R.string.permission_required);
-                    builder.setMessage("CAMERA AND FILES Permissions are required to add post, please allow the permissions in settings.");
+                    builder.setMessage(
+                            "CAMERA AND FILES Permissions are required to add post, please allow the permissions in settings.");
                     builder.setPositiveButton("Go to Settings ", (dialog, which) -> {
                         Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
                         Uri uri = Uri.fromParts("package", getPackageName(), null);
@@ -725,14 +733,15 @@ public class MessengerMainMessagePageActivity extends AppCompatActivity {
                     builder.show();
 
                 }
-            }
-            else{
-                if(PermissionManagementUtil.isAllPermissionGranted(MessengerMainMessagePageActivity.this,Permissions.AddPostPermissionsApiBelow33)){
+            } else {
+                if (PermissionManagementUtil.isAllPermissionGranted(MessengerMainMessagePageActivity.this,
+                        Permissions.AddPostPermissionsApiBelow33)) {
                     showMediaSelector();
-                }else{
-                    AlertDialog.Builder builder=new AlertDialog.Builder(MessengerMainMessagePageActivity.this);
+                } else {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(MessengerMainMessagePageActivity.this);
                     builder.setTitle(R.string.permission_required);
-                    builder.setMessage("CAMERA AND FILES Permissions are required to add post, please allow the permissions in settings.");
+                    builder.setMessage(
+                            "CAMERA AND FILES Permissions are required to add post, please allow the permissions in settings.");
                     builder.setPositiveButton("Go to Settings ", (dialog, which) -> {
                         Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
                         Uri uri = Uri.fromParts("package", getPackageName(), null);
@@ -744,24 +753,21 @@ public class MessengerMainMessagePageActivity extends AppCompatActivity {
                 }
 
             }
-
-
 
         }
 
     }
 
-
-    private void setupMediaForSending(File mediaPath,String mediaType){
-        sendType=TypeConstants.MEDIA;
-        selectedMediaType=mediaType;
+    private void setupMediaForSending(File mediaPath, String mediaType) {
+        sendType = TypeConstants.MEDIA;
+        selectedMediaType = mediaType;
         mainXml.mediaSendLayout.setVisibility(View.VISIBLE);
-        Glide.with(MessengerMainMessagePageActivity.this).load(mediaPath).placeholder(R.drawable.post_placeholder).into(mainXml.MediaPreviewImage);
+        Glide.with(MessengerMainMessagePageActivity.this).load(mediaPath).placeholder(R.drawable.post_placeholder)
+                .into(mainXml.MediaPreviewImage);
         mainXml.cameraBtn.setVisibility(View.GONE);
         mainXml.addonsSection.setVisibility(View.GONE);
         mainXml.sendBtn.setVisibility(View.VISIBLE);
         mainXml.discardBtn.setVisibility(View.VISIBLE);
     }
-
 
 }
