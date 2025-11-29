@@ -24,6 +24,7 @@ import com.rtech.threadly.R;
 import com.rtech.threadly.Threadly;
 import com.rtech.threadly.activities.HomeActivity;
 import com.rtech.threadly.activities.authActivities.forgetPassword.ForgetPasswordActivity;
+import com.rtech.threadly.activities.authActivities.registerActivities.SignUpEmailActivity;
 import com.rtech.threadly.activities.authActivities.registerActivities.SignUpMobileActivity;
 import com.rtech.threadly.constants.SharedPreferencesKeys;
 import com.rtech.threadly.core.Core;
@@ -212,7 +213,7 @@ boolean isTypePassword=true;
 
 
         });
-        signup_btn.setOnClickListener(v -> startActivity(new Intent(LoginActivity.this, SignUpMobileActivity.class)));
+        signup_btn.setOnClickListener(v -> startActivity(new Intent(LoginActivity.this, SignUpEmailActivity.class)));
         forgetPassword_btn.setOnClickListener(v -> startActivity(new Intent(LoginActivity.this, ForgetPasswordActivity.class)));
     }
     protected  void init(){

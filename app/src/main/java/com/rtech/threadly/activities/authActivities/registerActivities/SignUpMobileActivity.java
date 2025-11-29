@@ -3,6 +3,7 @@ package com.rtech.threadly.activities.authActivities.registerActivities;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ProgressBar;
@@ -21,6 +22,7 @@ import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.JSONObjectRequestListener;
 import com.rtech.threadly.R;
 import com.rtech.threadly.constants.ApiEndPoints;
+import com.rtech.threadly.utils.ReUsableFunctions;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -43,97 +45,104 @@ TextView msgTextView;
         init(); // initialize all the ids
         AndroidNetworking.initialize(getApplicationContext());//initialize networking
         // navigate to next sign up with email page
-        Signup_withEmail.setOnClickListener(v -> startActivity(new Intent(SignUpMobileActivity.this, SignUpEmailActivity.class)));
+        Signup_withEmail.setOnClickListener(v -> {
+            {
+                finish();
+//                startActivity(new Intent(SignUpMobileActivity.this, SignUpEmailActivity.class));
+            }
+        });
         
         next_btn.setOnClickListener(v -> {
-            next_btn.setEnabled(false);
-            next_btn.setText("");
-            progressBar.setVisibility(View.VISIBLE);
-            String phone =phone_field.getText().toString().trim();
-
-            if(phone.isEmpty()||phone.length()<10){
-                if(phone.length()<10){
-                    msgTextView.setText(R.string.number_lessthan_10_err);
-                    msgTextView.setTextColor(Color.parseColor("#D00707"));
-                    phone_field.setText("");
-                }
-               if(phone.isEmpty()){
-                   msgTextView.setText(R.string.empty_number);
-                   msgTextView.setTextColor(Color.parseColor("#D00707"));
-
-
-               }
-
-                progressBar.setVisibility(View.GONE);
-                next_btn.setText("Next");
-                next_btn.setEnabled(true);
-
-            }else {
-                msgTextView.setText(R.string.phone_number_info_phrase);
-                msgTextView.setTextColor(Color.parseColor("#716F6F"));
-                JSONObject body=new JSONObject();
-                try {
-                    body.put("phone",phone);
-                } catch (JSONException e) {
-                    throw new RuntimeException(e);
-                }
-                AndroidNetworking.post(ApiEndPoints.SEND_MOBILE_OTP)
-                        .addApplicationJsonBody(body).setPriority(Priority.HIGH)
-                        .build()
-                        .getAsJSONObject(new JSONObjectRequestListener() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        try {
-                            int statusCode=response.getInt("statuscode");
-                            if(statusCode==200){
-                                progressBar.setVisibility(View.GONE);
-                                next_btn.setText("Next");
-                                next_btn.setEnabled(true);
-                                Intent intent =new Intent(getApplicationContext(), VerifyMobileOtpActivity.class);
-                                intent.putExtra("phone",phone);
-                                startActivity(intent);
-
-                            }else{
-                                msgTextView.setText("Enter a valid whatsapp number");
-                                msgTextView.setTextColor(Color.parseColor("#D00707"));
-                                progressBar.setVisibility(View.GONE);
-                                next_btn.setText("Next");
-                                next_btn.setEnabled(true);
-
-                            }
-                        } catch (JSONException e) {
-                            throw new RuntimeException(e);
-                        }
-
-
-
-                    }
-
-                    @Override
-                    public void onError(ANError anError) {
-                        int errorcode=anError.getErrorCode();
-
-                        if(errorcode==500){
-                            msgTextView.setText("Something went wrong");
-                            msgTextView.setTextColor(Color.parseColor("#D00707"));
-
-                        }
-                        if (errorcode==409){
-                            msgTextView.setText("User Already exists");
-                            msgTextView.setTextColor(Color.parseColor("#D00707"));
-                        }
-                        if(errorcode==400){
-                            msgTextView.setText("Something went wrong");
-                            msgTextView.setTextColor(Color.parseColor("#D00707"));
-                        }
-                        progressBar.setVisibility(View.GONE);
-                        next_btn.setText("Next");
-                        next_btn.setEnabled(true);
-
-                    }
-                });
-            }
-
+            ReUsableFunctions.ShowToast("please register with email");
+//            next_btn.setEnabled(false);
+//            next_btn.setText("");
+//            progressBar.setVisibility(View.VISIBLE);
+//            String phone =phone_field.getText().toString().trim();
+//
+//            if(phone.isEmpty()||phone.length()<10){
+//                if(phone.length()<10){
+//                    msgTextView.setText(R.string.number_lessthan_10_err);
+//                    msgTextView.setTextColor(Color.parseColor("#D00707"));
+//                    phone_field.setText("");
+//                }
+//               if(phone.isEmpty()){
+//                   msgTextView.setText(R.string.empty_number);
+//                   msgTextView.setTextColor(Color.parseColor("#D00707"));
+//
+//
+//               }
+//
+//                progressBar.setVisibility(View.GONE);
+//                next_btn.setText("Next");
+//                next_btn.setEnabled(true);
+//
+//            }else {
+//                msgTextView.setText(R.string.phone_number_info_phrase);
+//                msgTextView.setTextColor(Color.parseColor("#716F6F"));
+//                JSONObject body=new JSONObject();
+//                try {
+//                    body.put("phone",phone);
+//                } catch (JSONException e) {
+//                    throw new RuntimeException(e);
+//                }
+//                AndroidNetworking.post(ApiEndPoints.SEND_MOBILE_OTP)
+//                        .addApplicationJsonBody(body).setPriority(Priority.HIGH)
+//                        .build()
+//                        .getAsJSONObject(new JSONObjectRequestListener() {
+//                    @Override
+//                    public void onResponse(JSONObject response) {
+//                        try {
+//                            Log.d("optResponse", "onResponse: "+response);
+//                            int statusCode=response.getInt("status");
+//                            if(statusCode==200){
+//                                progressBar.setVisibility(View.GONE);
+//                                next_btn.setText("Next");
+//                                next_btn.setEnabled(true);
+//                                Intent intent =new Intent(getApplicationContext(), VerifyMobileOtpActivity.class);
+//                                intent.putExtra("phone",phone);
+//                                startActivity(intent);
+//
+//                            }else{
+//                                msgTextView.setText("Enter a valid whatsapp number");
+//                                msgTextView.setTextColor(Color.parseColor("#D00707"));
+//                                progressBar.setVisibility(View.GONE);
+//                                next_btn.setText("Next");
+//                                next_btn.setEnabled(true);
+//
+//                            }
+//                        } catch (JSONException e) {
+//                            throw new RuntimeException(e);
+//                        }
+//
+//
+//
+//                    }
+//
+//                    @Override
+//                    public void onError(ANError anError) {
+//                        int errorcode=anError.getErrorCode();
+//
+//                        if(errorcode==500){
+//                            msgTextView.setText("Something went wrong");
+//                            msgTextView.setTextColor(Color.parseColor("#D00707"));
+//
+//                        }
+//                        if (errorcode==409){
+//                            msgTextView.setText("User Already exists");
+//                            msgTextView.setTextColor(Color.parseColor("#D00707"));
+//                        }
+//                        if(errorcode==400){
+//                            msgTextView.setText("Something went wrong");
+//                            msgTextView.setTextColor(Color.parseColor("#D00707"));
+//                        }
+//                        progressBar.setVisibility(View.GONE);
+//                        next_btn.setText("Next");
+//                        next_btn.setEnabled(true);
+//
+//                    }
+//                });
+//            }
+//
 
         });
     }

@@ -38,7 +38,10 @@ OtpManager otpManager;
             return insets;
         });
         init();
-        signUp_with_mobile_btn.setOnClickListener(v -> finish());
+        signUp_with_mobile_btn.setOnClickListener(v -> {
+            startActivity(new Intent(this,SignUpMobileActivity.class));
+//            finish();
+        });
         next_btn.setOnClickListener(new View.OnClickListener() {
             @SuppressLint("SetTextI18n")
             @Override
