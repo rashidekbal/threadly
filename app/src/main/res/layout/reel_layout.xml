@@ -42,9 +42,9 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:layout_alignParentBottom="true"
-            android:layout_marginBottom="@dimen/dp_28"
             android:gravity="center_vertical"
-            android:layout_marginLeft="@dimen/dp_10">
+            android:layout_marginBottom="@dimen/dp_10"
+            android:paddingHorizontal="@dimen/dp_10">
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -121,7 +121,7 @@
             android:orientation="vertical"
             android:layout_alignParentRight="true"
             android:layout_alignParentBottom="true"
-            android:paddingHorizontal="@dimen/dp_10"
+            android:paddingHorizontal="@dimen/dp_16"
             android:paddingVertical="@dimen/dp_10"
             android:layout_marginBottom="@dimen/dp_50">
 
@@ -134,8 +134,8 @@
                 android:layout_marginBottom="@dimen/dp_30">
                 <ImageView
                     android:id="@+id/like_btn_image"
-                    android:layout_width="@dimen/dp_32"
-                    android:layout_height="@dimen/dp_26"
+                    android:layout_width="@dimen/dp_36"
+                    android:layout_height="@dimen/dp_30"
                     android:src="@drawable/heart_inactive_icon_white"/>
                 <TextView
                     android:id="@+id/likes_count_text"
@@ -155,8 +155,8 @@
                 android:layout_marginBottom="@dimen/dp_30">
                 <ImageView
                     android:id="@+id/comment_btn_image"
-                    android:layout_width="@dimen/dp_32"
-                    android:layout_height="@dimen/dp_26"
+                    android:layout_width="@dimen/dp_36"
+                    android:layout_height="@dimen/dp_30"
                     android:src="@drawable/comment_icon_white"/>
                 <TextView
                     android:id="@+id/comments_count_text"
@@ -175,8 +175,8 @@
                 android:layout_marginBottom="@dimen/dp_30">
                 <ImageView
                     android:id="@+id/share_icon_white"
-                    android:layout_width="@dimen/dp_32"
-                    android:layout_height="@dimen/dp_26"
+                    android:layout_width="@dimen/dp_36"
+                    android:layout_height="@dimen/dp_30"
                     android:src="@drawable/share_icon_white"/>
                 <TextView
                     android:id="@+id/shares_count_text"
