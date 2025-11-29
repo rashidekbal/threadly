@@ -87,7 +87,7 @@ public class UsernameEditFragment extends Fragment {
                     mainXml.errorMessageText.setText(R.string.usernameTooLongError);
                     mainXml.cancelButton.setEnabled(true);
                     mainXml.saveButton.setEnabled(true);
-                } else if (!userid.matches("[a-zA-Z0-9_]+")) {
+                } else if (!userid.matches("^[A-Za-z0-9_]+(?:\\.[A-Za-z0-9_]+)*$")) {
                     mainXml.errorMessageText.setVisibility(View.VISIBLE);
                     mainXml.errorMessageText.setText(R.string.usernameContaminationError);
                     mainXml.cancelButton.setEnabled(true);
