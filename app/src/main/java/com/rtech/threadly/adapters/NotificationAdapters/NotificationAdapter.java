@@ -97,7 +97,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             //post like viewHolder
             PostLikeViewHolder holder=(PostLikeViewHolder) viewholder;
             Glide.with(context).load(dataSource.get(position).getProfilePic()).placeholder(R.drawable.blank_profile).circleCrop().into(holder.User_profile);
-            holder.userId_text.setText(dataSource.get(position).getUsername()+" like your post ");
+            holder.userId_text.setText(dataSource.get(position).getUsername()+" liked your post ");
             Glide.with(context).load(dataSource.get(position).getPostLink()).placeholder(R.drawable.post_placeholder).into(holder.postPreviewImg);
             holder.User_profile.setOnClickListener(v-> ReUsableFunctions.openProfile(context,dataSource.get(position).getUserId()));
             holder.userId_text.setOnClickListener(v-> ReUsableFunctions.openProfile(context,dataSource.get(position).getUserId()));
