@@ -187,4 +187,5 @@
     <string name="reel_icon">reel_icon</string>
     <string name="follow_request_accepted_text">" accepted your follow requested"</string>
     <string name="togglebtn">toggleBtn</string>
+    <string name="send_message">Send message</string>
 </resources>
