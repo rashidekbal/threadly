@@ -113,7 +113,6 @@ public class UserProfileActivity extends AppCompatActivity {
         layoutManager=new StaggeredGridLayoutManager(3,StaggeredGridLayoutManager.VERTICAL);
         postAdapter=new GridPostAdapter(UserProfileActivity.this, postsArray, new Post_fragmentSetCallback() {
 
-
             @Override
             public void openPostFragment(ArrayList<Posts_Model> postsArray, int position) {
                 /// add fragment system to open  all posts of a given profile
@@ -152,6 +151,7 @@ public class UserProfileActivity extends AppCompatActivity {
 
             }
         });
+        postAdapter.setHasStableIds(true);
         mainXml.postsRecyclerView.setLayoutManager(layoutManager);
         mainXml.postsRecyclerView.setAdapter(postAdapter);
 
@@ -372,6 +372,7 @@ if(data.userid.equals(PreferenceUtil.getUserId())){
                 mainXml.postsRecyclerView.setVisibility(View.VISIBLE);
                 try {
                     JSONArray array=response.getJSONArray("data");
+                    postsArray.clear();
                     for(int i=0;i<array.length();i++){
                         JSONObject object=array.getJSONObject(i);
                         postsArray.add(new Posts_Model(0,

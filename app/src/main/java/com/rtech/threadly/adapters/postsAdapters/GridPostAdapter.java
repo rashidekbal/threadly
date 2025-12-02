@@ -32,6 +32,15 @@ public class GridPostAdapter extends RecyclerView.Adapter<GridPostAdapter.ViewHo
 
     }
 
+    @Override
+    public void setHasStableIds(boolean hasStableIds) {
+        super.setHasStableIds(true);
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return dataList.get(position).getPostId();
+    }
 
     @NonNull
     @Override
