@@ -75,8 +75,6 @@ public class ImagePostsFeedViewModel extends AndroidViewModel {
                         int size=tempArrayList.size();
                         insertSuggestionAtRandom(size,tempArrayList);
                     } catch (JSONException e) {
-//                        Log.d("dataloadException", "onSuccess: "+e.
-//                                toString());
                         postsLiveData.postValue(new ArrayList<>());
                         throw new RuntimeException(e);
                     }
