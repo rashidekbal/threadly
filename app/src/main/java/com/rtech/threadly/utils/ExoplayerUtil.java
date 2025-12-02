@@ -23,16 +23,35 @@ public class ExoplayerUtil {
     private static Context cont;
     private static ExoPlayer exoplayer;
     private static PlayerView currentPlayerView;
+    private static ExoPlayer preLoader;
+
     public static void init(Context context){
         if(exoplayer==null){
             exoplayer=new ExoPlayer.Builder(context).build();
             exoplayer.setRepeatMode(ExoPlayer.REPEAT_MODE_ONE);
         }
 
-cont=context;
+        cont=context;
     }
     public static ExoPlayer getExoplayer(){
         return exoplayer;
+    }
+
+    @OptIn(markerClass = UnstableApi.class)
+    public static void preloadReel(Uri uri){
+        if(preLoader!=null){
+            preLoader.release();
+        }
+        preLoader=new ExoPlayer.Builder(cont).build();
+        MediaItem mediaItem=MediaItem.fromUri(uri);
+
+        MediaSource mediaSource = new ProgressiveMediaSource.Factory(
+                CacheDataSourceUtil.getCacheDataSourceFactory(cont)
+        ).createMediaSource(mediaItem);
+        preLoader.setMediaSource(mediaSource);
+        preLoader.prepare();
+        preLoader.setPlayWhenReady(false);
+
     }
 
     @UnstableApi

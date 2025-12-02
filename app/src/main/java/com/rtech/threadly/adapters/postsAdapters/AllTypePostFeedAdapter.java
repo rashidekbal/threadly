@@ -94,9 +94,20 @@ public class AllTypePostFeedAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         }
         else {
         //video feed binding
+            if(hasNextVideo(position)){
+                ExoplayerUtil.preloadReel(Uri.parse(postModels.get(position+1).getPostUrl()));
+            }
             BindVideoFeed((AllTypePostFeedAdapter.VideoPostViewHolder) viewHolder, CurrentPosition);
         }
 
+
+    }
+
+    private boolean hasNextVideo(int position) {
+        if(postModels.size()-1>position){
+            return postModels.get(position+1).isVideo();
+        }
+        return false;
 
     }
 

@@ -104,8 +104,11 @@ public class ReelsAdapter extends RecyclerView.Adapter<ReelsAdapter.viewHolder> 
 
     @UnstableApi
     @Override
-    public void onBindViewHolder(@NonNull viewHolder holder, @SuppressLint("RecyclerView") int position) {
-
+    public void onBindViewHolder(@NonNull viewHolder holder, @SuppressLint("RecyclerView") int rawPosition) {
+       int position=holder.getLayoutPosition();
+        if(isHavingNext(position)){
+            ExoplayerUtil.preloadReel(Uri.parse(dataList.get(position).getPostUrl()));
+        }
         holder.videoPlayer_view.setPlayer(null);
         holder.videoPlayer_view.setOnClickListener(v->{
             if(holder.isPlaying[0]){
@@ -303,6 +306,10 @@ public class ReelsAdapter extends RecyclerView.Adapter<ReelsAdapter.viewHolder> 
 
 
 
+    }
+
+    private boolean isHavingNext(int position) {
+        return dataList.size()-1>position;
     }
 
     private boolean isLikeByMe(int position) {
