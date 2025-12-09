@@ -192,11 +192,12 @@ public class PostsManager {
                 });
     }
 
-    public void getLoggedInUserPost(NetworkCallbackInterfaceWithJsonObjectDelivery callbackInterface)
+    public void getLoggedInUserPost(int page,NetworkCallbackInterfaceWithJsonObjectDelivery callbackInterface)
     {
         String url=ApiEndPoints.GET_USER_POSTS.concat(loginInfo.getString(SharedPreferencesKeys.USER_ID,"null"));
         AndroidNetworking.get(url)
                 .setPriority(Priority.HIGH)
+                .addQueryParameter("page",Integer.toString(page))
                 .addHeaders("Authorization","Bearer "+getToken())
                 .build()
                 .getAsJSONObject(new JSONObjectRequestListener() {

@@ -1,6 +1,7 @@
 package com.rtech.threadly.viewmodels;
 
 import android.app.Application;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -24,6 +25,9 @@ public class ProfileViewModel extends AndroidViewModel {
     // ViewModel for managing profile-related data and operations
     ProfileManager profileManager;
     PostsManager postsManager;
+    boolean isPostLoading=false;
+    boolean isLastPage=false;
+    int pageNumber=1;
     public ProfileViewModel(@NonNull Application application) {
         super(application);
         this.profileManager=new ProfileManager();
@@ -83,12 +87,13 @@ public class ProfileViewModel extends AndroidViewModel {
 
     public LiveData<ArrayList<Posts_Model>> getUserPostsLiveData() {
         if (UserPostsLiveData.getValue() == null || UserPostsLiveData.getValue().isEmpty()) {
+            pageNumber=1;
             loadLoggedInUserPosts();
         }
         return UserPostsLiveData ;    }
 
     public void loadLoggedInUserPosts() {
-        postsManager.getLoggedInUserPost(new NetworkCallbackInterfaceWithJsonObjectDelivery() {
+        postsManager.getLoggedInUserPost(1,new NetworkCallbackInterfaceWithJsonObjectDelivery() {
             @Override
             public void onSuccess(JSONObject response) {
                 ArrayList<Posts_Model> tempArrayList=new ArrayList<>();
@@ -128,6 +133,58 @@ public class ProfileViewModel extends AndroidViewModel {
 
             }
         });
+    }
+    public void loadMorePosts(){
+        Log.d("morePostLoading", "loadMorePosts:");
+        if(!isPostLoading&&!isLastPage){
+            pageNumber++;
+            isPostLoading=true;
+            postsManager.getLoggedInUserPost(pageNumber,new NetworkCallbackInterfaceWithJsonObjectDelivery() {
+                @Override
+                public void onSuccess(JSONObject response) {
+                    ArrayList<Posts_Model> tempArrayList=UserPostsLiveData.getValue();
+                    try {
+                        JSONArray data=response.getJSONArray("data");
+                        if(data.length()==0){
+                            isPostLoading=false;
+                            isLastPage=true;
+                            return;
+                        }
+                        for(int i=0;i<data.length();i++){
+                            JSONObject object= data.getJSONObject(i);
+                            tempArrayList.add(new Posts_Model(0,
+                                    object.getInt("postid"),
+                                    object.getString("userid"),
+                                    object.getString("username"),
+                                    object.getString("profilepic"),
+                                    object.getString("imageurl"),
+                                    object.getString("caption"),
+                                    object.getString("created_at"),
+                                    object.getString("likedBy"),
+                                    object.getInt("likeCount"),
+                                    object.getInt("commentCount"),
+                                    object.getInt("shareCount"),
+                                    object.getInt("isLiked")
+                                    ,object.getString("type").equals("video"),
+                                    object.getInt("isFollowed")>0
+                            ));
+                        }
+                        UserPostsLiveData.postValue(tempArrayList);
+                        isPostLoading=false;
+                    } catch (JSONException e) {
+                        isPostLoading=false;
+                        throw new RuntimeException(e);
+                    }
+
+
+                }
+
+                @Override
+                public void onError(String err) {
+                    isPostLoading=false;
+                }
+            });
+        }
     }
 
 }

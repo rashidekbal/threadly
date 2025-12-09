@@ -5,12 +5,14 @@ import static android.content.Context.MODE_PRIVATE;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,6 +39,7 @@ ArrayList<Posts_Model> postsArray =new ArrayList<>();
     GridPostAdapter adapter;
     Post_fragmentSetCallback callback;
     ProfileViewModel profileViewModel;
+    private final int threshold =12;
 
     public Posts_of_profile(Post_fragmentSetCallback callback) {
    this.callback=callback;
@@ -106,9 +109,23 @@ ArrayList<Posts_Model> postsArray =new ArrayList<>();
         loginInfo=v.getContext().getSharedPreferences("loginInfo",MODE_PRIVATE);
         NoPost_text=v.findViewById(R.id.NoPost_text);
         profileViewModel=new ViewModelProvider(requireActivity()).get(ProfileViewModel.class);
+        posts_all_recycler_view.setOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                if(dy>0){
+                    int visibleItemCount=layoutManager.getChildCount();
+                    int totalItemCount=layoutManager.getItemCount();
+                    int FirstVisible=layoutManager.findFirstVisibleItemPosition();
+                    if(visibleItemCount+FirstVisible>=totalItemCount-threshold){
+                        profileViewModel.loadMorePosts();
+                    }
+                }
 
 
 
+            }
+        });
 
     }
 
