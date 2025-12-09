@@ -12,6 +12,7 @@ import com.rtech.threadly.constants.SharedPreferencesKeys;
 import com.rtech.threadly.core.Core;
 import com.rtech.threadly.interfaces.NetworkCallbackInterface;
 import com.rtech.threadly.interfaces.NetworkCallbackInterfaceWithJsonObjectDelivery;
+import com.rtech.threadly.interfaces.NetworkCallbackInterfaceWithProgressTracking;
 
 import org.json.JSONObject;
 
@@ -23,7 +24,7 @@ public class StoriesManager {
         this.loginInfo= Core.getPreference();
     }
 
-    public void AddStory(File media,String Type, NetworkCallbackInterface callbackInterface){
+    public void AddStory(File media,String Type, NetworkCallbackInterfaceWithProgressTracking callbackInterface){
         String Url= ApiEndPoints.ADD_STORY;
         AndroidNetworking.upload(Url)
                 .addHeaders("Authorization","Bearer "+loginInfo.getString(SharedPreferencesKeys.JWT_TOKEN,"null"))
@@ -33,12 +34,13 @@ public class StoriesManager {
                 .setUploadProgressListener(new UploadProgressListener() {
                     @Override
                     public void onProgress(long bytesUploaded, long totalBytes) {
+                        callbackInterface.progress(bytesUploaded,totalBytes);
 
                     }
                 }).getAsJSONObject(new JSONObjectRequestListener() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        callbackInterface.onSuccess();
+                        callbackInterface.onSuccess(response);
                     }
 
                     @Override
@@ -46,6 +48,7 @@ public class StoriesManager {
                     callbackInterface.onError(anError.getMessage());
                     }
                 });
+
     }
     public void getStories(NetworkCallbackInterfaceWithJsonObjectDelivery callbackInterfaceWithJsonObjectDelivery){
         String Url=ApiEndPoints.GET_STORIES;
