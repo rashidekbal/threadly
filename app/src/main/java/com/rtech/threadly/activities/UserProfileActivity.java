@@ -12,12 +12,15 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.bumptech.glide.Glide;
@@ -53,10 +56,14 @@ public class UserProfileActivity extends AppCompatActivity {
     Profile_Model profileData;
     GridPostAdapter postAdapter;
     ArrayList<Posts_Model> postsArray=new ArrayList<>();
-    StaggeredGridLayoutManager layoutManager;
+    GridLayoutManager layoutManager;
     PostsManager postsManager;
     FollowManager followManager;
     SharedPreferences loginInfo;
+    boolean isLoading=false;
+    boolean isLastPage=false;
+    private final int threshold=20;
+    int page=1;
 
 
 
@@ -110,7 +117,7 @@ public class UserProfileActivity extends AppCompatActivity {
 
         loginInfo= Core.getPreference();
 
-        layoutManager=new StaggeredGridLayoutManager(3,StaggeredGridLayoutManager.VERTICAL);
+        layoutManager=new GridLayoutManager(this,3);
         postAdapter=new GridPostAdapter(UserProfileActivity.this, postsArray, new Post_fragmentSetCallback() {
 
             @Override
@@ -154,6 +161,20 @@ public class UserProfileActivity extends AppCompatActivity {
         postAdapter.setHasStableIds(true);
         mainXml.postsRecyclerView.setLayoutManager(layoutManager);
         mainXml.postsRecyclerView.setAdapter(postAdapter);
+        mainXml.postsRecyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                if(dy>0){
+                    int currentVisibleCount=layoutManager.getChildCount();
+                    int FirstVisibleCount=layoutManager.findFirstVisibleItemPosition();
+                    int totalCount=layoutManager.getItemCount();
+                    if(currentVisibleCount+FirstVisibleCount>=totalCount-threshold){
+                        loadMore();
+                    }
+                }
+            }
+        });
 
 
 
@@ -235,6 +256,7 @@ if(data.userid.equals(PreferenceUtil.getUserId())){
     if(data.isFollowedByMe){
         if(data.isFollowRequestApproved()){mainXml.unfollowBtn.setVisibility(View.VISIBLE);
             // get user posts
+
             getPosts(intentData.getStringExtra("userid"));
         }
         else{
@@ -363,16 +385,20 @@ if(data.userid.equals(PreferenceUtil.getUserId())){
         }
 
     }
+
     private void getPosts(String userId){
-        postsManager.getUserPosts(userId, new NetworkCallbackInterfaceJsonObject() {
+page=1;
+        isLoading=true;
+        postsManager.getUserPosts(page,userId, new NetworkCallbackInterfaceJsonObject() {
             @SuppressLint("NotifyDataSetChanged")
             @Override
             public void onSuccess(JSONObject response) {
                 mainXml.postsShimmer.setVisibility(View.GONE);
                 mainXml.postsRecyclerView.setVisibility(View.VISIBLE);
                 try {
-                    JSONArray array=response.getJSONArray("data");
                     postsArray.clear();
+                    JSONArray array=response.getJSONArray("data");
+                    if(array.length()==0){isLastPage=true;isLoading=false;return;}
                     for(int i=0;i<array.length();i++){
                         JSONObject object=array.getJSONObject(i);
                         postsArray.add(new Posts_Model(0,
@@ -393,8 +419,10 @@ if(data.userid.equals(PreferenceUtil.getUserId())){
                         ));
 
                     }
+                    isLoading=false;
                     postAdapter.notifyDataSetChanged();
                 } catch (JSONException e) {
+                    isLoading=false;
                     throw new RuntimeException(e);
                 }
 
@@ -402,11 +430,69 @@ if(data.userid.equals(PreferenceUtil.getUserId())){
 
             @Override
             public void onError(int errorCode) {
+                isLoading=false;
                 Log.d("PostLoadingErr",Integer.toString(errorCode));
 
             }
         });
 
+    }
+    private void getMorePosts(int PageNo,String userId){
+        isLoading=true;
+        postsManager.getUserPosts(PageNo,userId, new NetworkCallbackInterfaceJsonObject() {
+            @SuppressLint("NotifyDataSetChanged")
+            @Override
+            public void onSuccess(JSONObject response) {
+                mainXml.postsShimmer.setVisibility(View.GONE);
+                mainXml.postsRecyclerView.setVisibility(View.VISIBLE);
+                try {
+                    JSONArray array=response.getJSONArray("data");
+                    if(array.length()==0){isLastPage=true;
+                        isLoading=false;
+                        return;}
+                    for(int i=0;i<array.length();i++){
+                        JSONObject object=array.getJSONObject(i);
+                        postsArray.add(new Posts_Model(0,
+                                object.getInt("postid"),
+                                object.getString("userid"),
+                                object.getString("username"),
+                                object.getString("profilepic"),
+                                object.getString("imageurl"),
+                                object.getString("caption"),
+                                object.getString("created_at"),
+                                object.getString("likedBy"),
+                                object.getInt("likeCount"),
+                                object.getInt("commentCount"),
+                                object.getInt("shareCount"),
+                                object.getInt("isLiked")
+                                ,object.getString("type").equals("video"),
+                                object.getInt("isFollowed")>0
+                        ));
+
+                    }
+                    isLoading=false;
+                    postAdapter.notifyDataSetChanged();
+                } catch (JSONException e) {
+                    isLoading=false;
+                    throw new RuntimeException(e);
+                }
+
+            }
+
+            @Override
+            public void onError(int errorCode) {
+                isLoading=false;
+                Log.d("PostLoadingErr",Integer.toString(errorCode));
+
+            }
+        });
+
+    }
+    private void loadMore(){
+        if(!isLoading&&!isLastPage){
+            isLoading=true;
+            getMorePosts(++page,intentData.getStringExtra("userid"));
+        }
     }
 
 

@@ -39,7 +39,7 @@ ArrayList<Posts_Model> postsArray =new ArrayList<>();
     GridPostAdapter adapter;
     Post_fragmentSetCallback callback;
     ProfileViewModel profileViewModel;
-    private final int threshold =12;
+    private final int threshold =20;
 
     public Posts_of_profile(Post_fragmentSetCallback callback) {
    this.callback=callback;
