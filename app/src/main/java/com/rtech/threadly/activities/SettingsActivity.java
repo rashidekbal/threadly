@@ -1,12 +1,12 @@
 package com.rtech.threadly.activities;
 
+import android.app.AlertDialog;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
 
 import androidx.activity.EdgeToEdge;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -17,12 +17,10 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.rtech.threadly.R;
 import com.rtech.threadly.databinding.ActivitySettingsBinding;
+import com.rtech.threadly.fragments.settingFragments.ControlCenterFragment;
 import com.rtech.threadly.fragments.settingFragments.PrivacySetting_fragment;
-import com.rtech.threadly.fragments.settingFragments.Setting_main_fragments;
-import com.rtech.threadly.interfaces.FragmentItemClickInterface;
+import com.rtech.threadly.utils.LogoutSequenceUtil;
 import com.rtech.threadly.viewmodels.ProfileViewModel;
-
-import java.security.Provider;
 
 public class SettingsActivity extends AppCompatActivity {
     ActivitySettingsBinding mainXml;
@@ -43,42 +41,49 @@ public class SettingsActivity extends AppCompatActivity {
         window.getDecorView().setSystemUiVisibility(0); // clear light status flag
         window.setStatusBarColor(Color.BLACK); // or any dark color you're using
         profileViewModel= new ViewModelProvider(this).get(ProfileViewModel.class);
-        profileViewModel.loadProfile();
+        profileViewModel.getProfileLiveData().observe(this,profileModel -> {
+            if(profileModel!=null){
+                mainXml.progressBar.setVisibility(View.GONE);
+                mainXml.optionsList.setVisibility(View.VISIBLE);
 
-        openMain();
+
+            }
+        });
+        setFragmentChangeListener();
+        setPageOpenerHandler();
+
+    }
+    private void setPageOpenerHandler(){
+        mainXml.accountCenter.setOnClickListener(v->{changeFragment(new ControlCenterFragment());});
+        mainXml.openPrivacySettingBtn.setOnClickListener(v->changeFragment(new PrivacySetting_fragment()));
+        mainXml.logoutBtn.setOnClickListener(v->{handleLogout();});
+
+    }
+    private void setFragmentChangeListener(){
         getSupportFragmentManager().addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
             @Override
             public void onBackStackChanged() {
                 if(getSupportFragmentManager().getBackStackEntryCount()==0){
-                    finish();}
+                    mainXml.settingPageContainer.setVisibility(View.GONE);
+                    return ;
+                }
+                mainXml.settingPageContainer.setVisibility(View.VISIBLE);
+
             }
         });
-
-
-
-    }
-
-    private void openMain() {
-        changeFragment(new Setting_main_fragments(new FragmentItemClickInterface() {
-            @Override
-            public void onItemClick(@Nullable View v) {
-                assert v != null;
-                if(v.getId()==R.id.openPrivacySettingBtn) {
-                    // privacy setting
-                    changeFragment(new PrivacySetting_fragment());
-
-                }
-
-            }
-
-            @Override
-            public void onFragmentDestroy() {
-
-            }
-        }));
-
     }
     private void changeFragment(Fragment fragment){
-        getSupportFragmentManager().beginTransaction().replace(mainXml.settingContainer.getId(),fragment).addToBackStack(null).commit();
+
+        getSupportFragmentManager().beginTransaction().replace(mainXml.settingPageContainer.getId(),fragment).addToBackStack(null).commit();
+    }
+    private void handleLogout(){
+        new AlertDialog.Builder(this).setTitle("Logout").setMessage("Do you want to logout ?")
+                .setPositiveButton("yes", (dialog, which) -> {
+                    dialog.dismiss();
+                    LogoutSequenceUtil.Logout(this);
+                }).setNegativeButton("no", (dialog, which) -> {
+                    mainXml.logoutBtn.setEnabled(true);
+                    dialog.dismiss();
+                }).show();
     }
 }
