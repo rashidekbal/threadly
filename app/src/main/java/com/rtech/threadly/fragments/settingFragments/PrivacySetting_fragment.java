@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 
 import com.rtech.threadly.databinding.FragmentPrivacySettingBinding;
 import com.rtech.threadly.interfaces.NetworkCallbackInterface;
+import com.rtech.threadly.models.Profile_Model;
 import com.rtech.threadly.network_managers.PrivacyManager;
 import com.rtech.threadly.utils.NotificationPageManagerUtil;
 import com.rtech.threadly.utils.PreferenceUtil;
@@ -21,6 +22,7 @@ import com.rtech.threadly.viewmodels.ProfileViewModel;
 public class PrivacySetting_fragment extends Fragment {
      FragmentPrivacySettingBinding mainXml;
      ProfileViewModel profileViewModel;
+     Profile_Model profileData;
     public PrivacySetting_fragment() {
         // Required empty public constructor
     }
@@ -46,6 +48,7 @@ public class PrivacySetting_fragment extends Fragment {
                 requireActivity().getSupportFragmentManager().popBackStackImmediate();
                 return;
             }
+            profileData=profileModel;
             if (profileModel.isPrivate()) {
                 mainXml.privacySwitch.setChecked(true);
                 return;
@@ -57,6 +60,18 @@ public class PrivacySetting_fragment extends Fragment {
         mainXml.backBtn.setOnClickListener(v-> requireActivity().getSupportFragmentManager().popBackStack());
 
        mainXml.privacySwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+           if(profileData.isPrivate()){
+               if(isChecked) {
+                   mainXml.doneBtn.setVisibility(View.GONE);
+                   return;
+               }
+           }
+           if(!profileData.isPrivate()){
+               if(!isChecked) {
+                   mainXml.doneBtn.setVisibility(View.GONE);
+                   return;
+               }
+           }
            mainXml.doneBtn.setVisibility(View.VISIBLE);
            mainXml.doneBtn.setEnabled(true);
        });
