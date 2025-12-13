@@ -19,10 +19,12 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class MessengerUtils {
     //TODO consider special care for message with media which is sent
+   private final  ExecutorService executor=Executors.newSingleThreadExecutor();
     public  void LoadAllChatsForLoginAction(){
         MessageManager.GetAllChatsAssociatedWithUser(new NetworkCallbackInterfaceWithJsonObjectDelivery() {
             @Override
@@ -41,7 +43,7 @@ public class MessengerUtils {
         });
 
     }
-    private static void OrganizeChats(JSONArray chats){
+    private  void OrganizeChats(JSONArray chats){
         String conversationId="";
         List<MessageSchema> messagesList=new ArrayList<>();
         for(int i=0;i<chats.length();i++){
@@ -173,7 +175,7 @@ public class MessengerUtils {
 
     }
 
-    public static void addMessageToDb(JSONObject object,String s_r_type){
+    public  void addMessageToDb(JSONObject object,String s_r_type){
 
         String ConversationId=object.optString(s_r_type.equals("s")?"receiverUuid":"senderUuid")+ Core.getPreference().getString(SharedPreferencesKeys.UUID, "null");
         String senderUuid=object.optString("senderUuid");
@@ -186,7 +188,7 @@ public class MessengerUtils {
         boolean isDeleted=object.optBoolean("isDeleted");
         int postId=object.optInt("postId");
         String postLink=object.optString("postLink");
-        Executors.newSingleThreadExecutor().execute(() -> getInstance().MessageDao().insertMessage(new MessageSchema(
+       executor.execute(() -> getInstance().MessageDao().insertMessage(new MessageSchema(
                 MessageUid,
                 ConversationId,
                 ReplyTOMessageUid,
@@ -203,11 +205,11 @@ public class MessengerUtils {
 
     }
 
-    public static void AddNewConversationHistory(String OtherPartyUuid) {
+    public  void AddNewConversationHistory(String OtherPartyUuid) {
 
         String ConversationId = OtherPartyUuid + Core.getPreference().getString(SharedPreferencesKeys.UUID, "null");
         final HistorySchema[] history = {null};
-Executors.newSingleThreadExecutor().execute(()->{
+executor.execute(()->{
     history[0] = DataBase.getInstance().historyOperator().getHistory(ConversationId);
 });
 
@@ -222,7 +224,7 @@ Executors.newSingleThreadExecutor().execute(()->{
                         String username = object.optString("username");
                         String userid = object.optString("userid");
                         String profile = object.optString("profilepic");
-                        Executors.newSingleThreadExecutor().execute(new Runnable() {
+                        executor.execute(new Runnable() {
                             @Override
                             public void run() {
                                 DataBase.getInstance().historyOperator().insertHistory(new HistorySchema(OtherPartyUuid + Core.getPreference().getString(SharedPreferencesKeys.UUID, "null")
@@ -244,7 +246,7 @@ Executors.newSingleThreadExecutor().execute(()->{
             });
         } else {
             //if history found update time stamp
-            Executors.newSingleThreadExecutor().execute(()->{
+            executor.execute(()->{
                 String timeStamp=ReUsableFunctions.getTimestamp();
                 DataBase.getInstance().historyOperator().updateTimeStamp(OtherPartyUuid +Core.getPreference().getString(SharedPreferencesKeys.UUID,"null"),timeStamp);
             });
@@ -265,13 +267,13 @@ Executors.newSingleThreadExecutor().execute(()->{
 
         }
     }
-    public static void insertMultiMessage(List<MessageSchema> messages){
-        Executors.newSingleThreadExecutor().execute(()->{
+    public  void insertMultiMessage(List<MessageSchema> messages){
+        executor.execute(()->{
             DataBase.getInstance().MessageDao().insertMessage(messages);
         });
     }
-    public static void deleteMsg(String messageUid){
-        Executors.newSingleThreadExecutor().execute(()->{
+    public void deleteMsg(String messageUid){
+       executor.execute(()->{
             DataBase.getInstance().MessageDao().deleteMessage(messageUid);
         });
     }

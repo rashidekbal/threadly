@@ -1,6 +1,6 @@
 package com.rtech.threadly.network_managers;
 
-import static com.rtech.threadly.utils.MessengerUtils.AddNewConversationHistory;
+
 
 import android.util.Log;
 
@@ -19,6 +19,7 @@ import com.rtech.threadly.interfaces.NetworkCallbackInterface;
 import com.rtech.threadly.interfaces.NetworkCallbackInterfaceWithJsonObjectDelivery;
 import com.rtech.threadly.interfaces.NetworkCallbackInterfaceWithProgressTracking;
 import com.rtech.threadly.utils.LoggerUtil;
+import com.rtech.threadly.utils.MessengerUtils;
 import com.rtech.threadly.utils.PreferenceUtil;
 import com.rtech.threadly.utils.ReUsableFunctions;
 
@@ -73,7 +74,7 @@ public class MessageManager {
                             assert data != null;
                             if(data.length()>0){
 
-                                        AddNewConversationHistory(senderUUid);
+                                        new MessengerUtils().AddNewConversationHistory(senderUUid);
 
                                  for(int i=0;i<data.length();i++){
                                     JSONObject object1=data.optJSONObject(i);

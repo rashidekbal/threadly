@@ -1,6 +1,6 @@
 package com.rtech.threadly.services;
 
-import static com.rtech.threadly.utils.MessengerUtils.AddNewConversationHistory;
+
 
 import android.app.Notification;
 import android.app.PendingIntent;
@@ -34,9 +34,10 @@ import java.util.concurrent.Executors;
 
 @SuppressWarnings("deprecation")
 public class FcmService extends FirebaseMessagingService {
-
+    MessengerUtils messengerUtils=new MessengerUtils();
     @Override
     public void onNewToken(@NonNull String token) {
+
         super.onNewToken(token);
         FcmManager.UpdateFcmToken(token, new NetworkCallbackInterface() {
             @Override
@@ -235,9 +236,9 @@ public class FcmService extends FirebaseMessagingService {
             object.put("isDeleted", Boolean.parseBoolean(message.getData().get("isDeleted")));
             object.put("postId", Integer.parseInt(Objects.requireNonNull(message.getData().get("postId"))));
             object.put("postLink", message.getData().get("link"));
-            MessengerUtils.addMessageToDb(object, "r");
+            messengerUtils.addMessageToDb(object, "r");
             // here the sender uuid is always the other party
-            AddNewConversationHistory(message.getData().get("senderUuid"));
+            messengerUtils.AddNewConversationHistory(message.getData().get("senderUuid"));
             notifyReceivedToSender(message.getData().get("senderUuid"), message.getData().get("MsgUid"));
 
         } catch (JSONException e) {

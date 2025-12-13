@@ -64,6 +64,7 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     List<MessageSchema> list;
     String profile;
     MessageClickCallBack messageClickCallBack;
+    MessengerUtils messengerUtils;
     ExecutorService executorService=Executors.newSingleThreadExecutor();
     int TYPE_TEXT=1;
     int TYPE_IMAGE=2;
@@ -78,6 +79,7 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         this.list = list;
         this.profile=profile;
         this.messageClickCallBack=callback;
+        this.messengerUtils=new MessengerUtils();
     }
 
     @Override
@@ -669,7 +671,7 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 //delete for me action
                 if(!ConnectivityUtil.IsInternetConnected(context)){
                     if(list.get(position).getDeliveryStatus()==0){
-                        MessengerUtils.deleteMsg(list.get(position).getMessageUid());
+                        messengerUtils.deleteMsg(list.get(position).getMessageUid());
                     }else{
                         showNetworkUnavailable();
                     }
@@ -681,7 +683,7 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 // unSend action
                 if(!ConnectivityUtil.IsInternetConnected(context)){
                     if(list.get(position).getDeliveryStatus()==0){
-                        MessengerUtils.deleteMsg(list.get(position).getMessageUid());
+                        messengerUtils.deleteMsg(list.get(position).getMessageUid());
 
                     }else{
                         showNetworkUnavailable();
@@ -715,7 +717,7 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             }else if(itemId==R.id.DeleteForYouBtn){
                 //delete for me action
                 if(!ConnectivityUtil.IsInternetConnected(context)){
-                    MessengerUtils.deleteMsg(list.get(position).getMessageUid());
+                    messengerUtils.deleteMsg(list.get(position).getMessageUid());
                     return  true;
                 }
                 deleteForMe(list.get(position));
@@ -730,7 +732,7 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         actionMenu.show();
     }
     private void deleteForMe(MessageSchema messageSchema) {
-        MessengerUtils.deleteMsg(messageSchema.getMessageUid());
+        messengerUtils.deleteMsg(messageSchema.getMessageUid());
         String Role=messageSchema.getSenderId().equals(PreferenceUtil.getUUID())?"sender":"receiver";
         MessageManager.DeleteMessageForLoggedInUser(messageSchema.getMessageUid(), Role, new NetworkCallbackInterface() {
             @Override
@@ -747,7 +749,7 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     }
     private void unSendMessage(MessageSchema messageSchema){
-        MessengerUtils.deleteMsg(messageSchema.getMessageUid());
+        messengerUtils.deleteMsg(messageSchema.getMessageUid());
         MessageManager.unSendMessage(messageSchema.getMessageUid(), messageSchema.getReceiverId(), new NetworkCallbackInterface() {
             @Override
             public void onSuccess() {

@@ -39,6 +39,7 @@ public class Core {
     private static SharedPreferences preferences;
     private static WorkManager workManager;
     private static NotificationManager notificationManager;
+    private final static MessengerUtils messengerUtils=new MessengerUtils();
 
     public static void init(Context context) {
         ExoplayerUtil.init(context);
@@ -200,7 +201,7 @@ public class Core {
         } else {
             SocketManager.getInstance().getSocket().emit("CToS", object);
         }
-        MessengerUtils.AddNewConversationHistory(uuid);
+        messengerUtils.AddNewConversationHistory(uuid);
         Executors.newSingleThreadExecutor().execute(new Runnable() {
             @Override
             public void run() {
@@ -242,7 +243,7 @@ public class Core {
         object.put("type", messageSchema.getType());
         object.put("link", messageSchema.getPostLink());
         object.put("postId", messageSchema.getPostId());
-        MessengerUtils.AddNewConversationHistory(messageSchema.getReceiverId());
+        messengerUtils.AddNewConversationHistory(messageSchema.getReceiverId());
         if (!SocketManager.getInstance().getSocket().connected()) {
             Log.d(Constants.NETWORK_ERROR_TAG.toString(), "sendCtoS: socket not connected adding fall back");
             MessageManager.sendMessage(object);
