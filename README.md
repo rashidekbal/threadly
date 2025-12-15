@@ -83,7 +83,7 @@ com.rtech.threadly
 
 ## 📸 Screenshots
 <div align="center">
- <img src="screenshots/1.jpg" alt="Screenshot 1" width="100vw"/>
+ <img src="screenshots/1.jpg" alt="Screenshot 1" width="500px"/>
 </div>
 
 <p align="center">
