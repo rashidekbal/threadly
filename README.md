@@ -82,9 +82,11 @@ com.rtech.threadly
 ---
 
 ## 📸 Screenshots
+<div align="center">
+ <img src="screenshots/1.jpg" alt="Screenshot 1" width="500"/>
+</div>
 
 <p align="center">
-  <img src="screenshots/1.jpg" alt="Screenshot 1" width="250"/>
   <img src="screenshots/2.jpg" alt="Screenshot 2" width="250"/>
   <img src="screenshots/3.jpg" alt="Screenshot 3" width="250"/>
 </p>
