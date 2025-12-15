@@ -12,7 +12,6 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.rtech.threadly.R;
@@ -54,23 +53,20 @@ public class SettingsActivity extends AppCompatActivity {
 
     }
     private void setPageOpenerHandler(){
-        mainXml.accountCenter.setOnClickListener(v->{changeFragment(new ControlCenterFragment());});
+        mainXml.accountCenter.setOnClickListener(v-> changeFragment(new ControlCenterFragment()));
         mainXml.openPrivacySettingBtn.setOnClickListener(v->changeFragment(new PrivacySetting_fragment()));
-        mainXml.logoutBtn.setOnClickListener(v->{handleLogout();});
+        mainXml.logoutBtn.setOnClickListener(v-> handleLogout());
         mainXml.backBtn.setOnClickListener(v->super.onBackPressed());
 
     }
     private void setFragmentChangeListener(){
-        getSupportFragmentManager().addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
-            @Override
-            public void onBackStackChanged() {
-                if(getSupportFragmentManager().getBackStackEntryCount()==0){
-                    mainXml.settingPageContainer.setVisibility(View.GONE);
-                    return ;
-                }
-                mainXml.settingPageContainer.setVisibility(View.VISIBLE);
-
+        getSupportFragmentManager().addOnBackStackChangedListener(() -> {
+            if(getSupportFragmentManager().getBackStackEntryCount()==0){
+                mainXml.settingPageContainer.setVisibility(View.GONE);
+                return ;
             }
+            mainXml.settingPageContainer.setVisibility(View.VISIBLE);
+
         });
     }
     private void changeFragment(Fragment fragment){

@@ -18,7 +18,7 @@
             android:layout_height="match_parent"
             app:resize_mode="fit"
             android:background="@color/allBlack"
-            app:show_buffering="never"
+            app:show_buffering="when_playing"
             app:use_controller="false"
             android:visibility="visible"/>
         <ImageView

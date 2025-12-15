@@ -114,18 +114,26 @@
      android:layout_width="match_parent"
      android:layout_height="wrap_content"
      android:orientation="vertical">
+
      <LinearLayout
          android:id="@+id/replyToSection"
          android:layout_width="match_parent"
          android:layout_height="wrap_content"
-         android:paddingHorizontal="@dimen/dp_10"
          android:orientation="vertical"
          android:visibility="gone"
+         android:background="@color/white"
          >
+         <View
+             android:layout_width="match_parent"
+             android:layout_height="2dp"
+             android:background="@color/light_grey_text"
+             />
+
          <RelativeLayout
              android:layout_width="match_parent"
              android:layout_height="wrap_content"
-             android:paddingVertical="@dimen/dp_10">
+             android:paddingVertical="@dimen/dp_10"
+             android:paddingHorizontal="@dimen/dp_10">
              <ImageView
                  android:id="@+id/replyToUserProfile"
                  android:layout_width="@dimen/dp_30"
@@ -142,6 +150,7 @@
                  android:text="@string/replying_to"
                  android:layout_toEndOf="@id/replyToUserProfile"
                  android:layout_centerVertical="true"
+                 android:textColor="@color/light_grey_text"
                  android:layout_marginStart="@dimen/dp_10"
                  />
              <TextView
@@ -152,6 +161,7 @@
                  android:layout_toEndOf="@id/placeholderForReplyToId"
                  android:maxLength="20"
                  android:layout_centerVertical="true"
+                 android:textColor="@color/light_grey_text"
                  android:layout_marginStart="@dimen/dp_4"
                  />
  <ImageView
@@ -170,23 +180,22 @@
              android:text="@string/comment_reply_guide"
              android:textAlignment="center"
              android:paddingVertical="@dimen/sp_10"
+             android:textColor="@color/light_grey_text"
+             android:layout_marginBottom="@dimen/dp_10"
              />
      </LinearLayout>
      <View
          android:layout_width="match_parent"
-         android:layout_height="1dp"
+         android:layout_height="2dp"
          android:background="@color/light_grey_text"
-         android:layout_marginVertical="2dp"/>
+         />
      <RelativeLayout
          android:id="@+id/comment_add_main_body"
          android:layout_width="match_parent"
          android:layout_height="wrap_content"
          android:paddingHorizontal="@dimen/dp_10"
          android:paddingVertical="@dimen/dp_10"
-         android:background="@color/white"
-
-
-         >
+         android:background="@color/white">
          <ImageView
              android:id="@+id/user_profile"
              android:layout_width="@dimen/dp_45"
