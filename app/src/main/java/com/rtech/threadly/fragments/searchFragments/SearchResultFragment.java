@@ -64,7 +64,7 @@ public class SearchResultFragment extends Fragment {
     private void handleSearch(View v) {
         ReUsableFunctions.hideKeyboard((AppCompatActivity) requireActivity());
         String query=mainXml.searchEditText.getText().toString().trim();
-       if(query.length()>1){
+       if(!query.isEmpty()){
            searchViewModel.setSearching();
            searchViewModel.search(query);
            mainXml.searchEditText.setText("");

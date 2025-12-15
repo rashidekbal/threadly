@@ -32,7 +32,7 @@ import com.rtech.threadly.BuildConfig;
 import com.rtech.threadly.R;
 import com.rtech.threadly.activities.AddPostActivity;
 import com.rtech.threadly.activities.FollowerFollowingList;
-import com.rtech.threadly.activities.SettingsActivity;
+import com.rtech.threadly.activities.settings.SettingsActivity;
 import com.rtech.threadly.constants.SharedPreferencesKeys;
 import com.rtech.threadly.core.Core;
 import com.rtech.threadly.interfaces.Post_fragmentSetCallback;

@@ -189,4 +189,9 @@
     <string name="togglebtn">toggleBtn</string>
     <string name="send_message">Send message</string>
     <string name="account_center">Account center</string>
+    <string name="account_center_tag_line">Manage your account setting across the threaldy ecosystem</string>
+    <string name="your_activities">Your activities</string>
+    <string name="your_activities_header">One place to manage your Activities</string>
+    <string name="your_activities_page_header">view and manage your interactions,\n content and account activity.</string>
+    <string name="comment_reply_guide">Welcome to the conversation. When commenting, please treat other people with respect.</string>
 </resources>

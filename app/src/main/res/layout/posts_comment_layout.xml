@@ -167,7 +167,7 @@
              android:id="@+id/CommentGuideline"
              android:layout_width="match_parent"
              android:layout_height="wrap_content"
-             android:text="Welcome to the conversation. When commenting, please treat other people with respect."
+             android:text="@string/comment_reply_guide"
              android:textAlignment="center"
              android:paddingVertical="@dimen/sp_10"
              />
@@ -175,7 +175,7 @@
      <View
          android:layout_width="match_parent"
          android:layout_height="1dp"
-         android:background="@drawable/bar_appearence"
+         android:background="@color/light_grey_text"
          android:layout_marginVertical="2dp"/>
      <RelativeLayout
          android:id="@+id/comment_add_main_body"

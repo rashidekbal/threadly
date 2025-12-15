@@ -17,4 +17,7 @@
     <color name="sent_msg_bg_color">#405DDB</color>
     <color name="transparentColor">#00000000</color>
     <color name="suggestionBackgroundColor">#ECE8E8</color>
+    <color name="control_panelBg">@color/AllWhite</color>
+    <color name="control_panel_borderBg">@color/allBlack</color>
+
     </resources>

@@ -1,4 +1,4 @@
-package com.rtech.threadly.activities;
+package com.rtech.threadly.activities.settings;
 
 import android.app.AlertDialog;
 import android.graphics.Color;
@@ -57,6 +57,7 @@ public class SettingsActivity extends AppCompatActivity {
         mainXml.accountCenter.setOnClickListener(v->{changeFragment(new ControlCenterFragment());});
         mainXml.openPrivacySettingBtn.setOnClickListener(v->changeFragment(new PrivacySetting_fragment()));
         mainXml.logoutBtn.setOnClickListener(v->{handleLogout();});
+        mainXml.backBtn.setOnClickListener(v->super.onBackPressed());
 
     }
     private void setFragmentChangeListener(){

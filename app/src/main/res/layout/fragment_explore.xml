@@ -31,7 +31,7 @@
                             android:layout_height="@dimen/dp_220"
                             android:background="@drawable/edged_grey_box"
                             android:layout_weight="1"
-                            android:layout_marginLeft="2dp"
+                            android:layout_marginStart="2dp"
                             android:adjustViewBounds="true"/>
                         <ImageView
                             android:layout_width="match_parent"
@@ -46,20 +46,21 @@
                             android:background="@drawable/edged_grey_box"
                             android:layout_weight="1"
                             android:adjustViewBounds="true"
-                            android:layout_marginRight="2dp"/>
+                            android:layout_marginEnd="2dp"/>
 
 
                     </LinearLayout>
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal">
+                        android:orientation="horizontal"
+                        android:layout_marginBottom="5dp">
                         <ImageView
                             android:layout_width="match_parent"
                             android:layout_height="@dimen/dp_220"
                             android:background="@drawable/edged_grey_box"
                             android:layout_weight="1"
-                            android:layout_marginLeft="2dp"
+                            android:layout_marginStart="2dp"
                             android:adjustViewBounds="true"/>
                         <ImageView
                             android:layout_width="match_parent"
@@ -74,7 +75,7 @@
                             android:background="@drawable/edged_grey_box"
                             android:layout_weight="1"
                             android:adjustViewBounds="true"
-                            android:layout_marginRight="2dp"/>
+                            android:layout_marginEnd="2dp"/>
 
 
                     </LinearLayout>
@@ -88,7 +89,7 @@
                             android:layout_height="@dimen/dp_220"
                             android:background="@drawable/edged_grey_box"
                             android:layout_weight="1"
-                            android:layout_marginLeft="2dp"
+                            android:layout_marginStart="2dp"
                             android:adjustViewBounds="true"/>
                         <ImageView
                             android:layout_width="match_parent"
@@ -103,7 +104,7 @@
                             android:background="@drawable/edged_grey_box"
                             android:layout_weight="1"
                             android:adjustViewBounds="true"
-                            android:layout_marginRight="2dp"/>
+                            android:layout_marginEnd="2dp"/>
 
 
                     </LinearLayout>
@@ -116,7 +117,7 @@
                             android:layout_height="@dimen/dp_220"
                             android:background="@drawable/edged_grey_box"
                             android:layout_weight="1"
-                            android:layout_marginLeft="2dp"
+                            android:layout_marginStart="2dp"
                             android:adjustViewBounds="true"/>
                         <ImageView
                             android:layout_width="match_parent"
@@ -131,7 +132,7 @@
                             android:background="@drawable/edged_grey_box"
                             android:layout_weight="1"
                             android:adjustViewBounds="true"
-                            android:layout_marginRight="2dp"/>
+                            android:layout_marginEnd="2dp"/>
 
 
                     </LinearLayout>
