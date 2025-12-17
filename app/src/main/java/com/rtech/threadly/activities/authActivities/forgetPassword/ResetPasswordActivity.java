@@ -48,7 +48,7 @@ public class ResetPasswordActivity extends AppCompatActivity {
                 mainXml.resetPasswordBtn.setEnabled(false);
                 mainXml.resetPasswordBtn.setText("");
                 if(type.equals("mobile")){
-                    authManager.ResetPasswordWithMobile(password, token, new NetworkCallbackInterface() {
+                    authManager.ForgetPasswordWithMobile(password, token, new NetworkCallbackInterface() {
                         @SuppressLint("SetTextI18n")
                         @Override
                         public void onSuccess() {
@@ -73,7 +73,7 @@ public class ResetPasswordActivity extends AppCompatActivity {
                     });
                 }
                 else if (type.equals("email")) {
-                    authManager.ResetPasswordWithEmail(password, token, new NetworkCallbackInterface() {
+                    authManager.ForgetPasswordWithEmail(password, token, new NetworkCallbackInterface() {
                         @SuppressLint("SetTextI18n")
                         @Override
                         public void onSuccess() {

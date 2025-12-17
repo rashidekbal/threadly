@@ -52,7 +52,7 @@ public class AndroidNetworkingLayer {
     public static void post(String Url,  JSONObject object,NetworkCallbackInterfaceJsonObject callbackInterfaceJsonObject){
 
         AndroidNetworking.post(Url).setPriority(Priority.HIGH).addHeaders("Authorization","Bearer "+ PreferenceUtil.getJWT())
-                .addJSONObjectBody(object)
+                .addApplicationJsonBody(object)
                 .build()
                 .getAsJSONObject(new JSONObjectRequestListener() {
                     @Override

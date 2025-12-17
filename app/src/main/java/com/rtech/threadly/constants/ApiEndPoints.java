@@ -59,8 +59,9 @@ public class ApiEndPoints {
     public static final String VERIFY_EMAIL_OTP=baseUrl+"/otp/verifyOtpEmail/";
 
     // Reset Password
-    public static final String RESET_PASSWORD_MOBILE = baseUrl + "/resetPassword/Mobile/";
-    public static final String RESET_PASSWORD_EMAIL = baseUrl + "/resetPassword/Email/";
+    public static final String FORGET_PASSWORD_MOBILE = baseUrl + "/ForgetPassword/Mobile/";
+    public static final String FORGET_PASSWORD_EMAIL = baseUrl + "/ForgetPassword/Email/";
+    public static final String RESET_PASSWORD_SETTING= baseUrl+"/auth/resetPassword/";
 
     // register route
     public static final String REGISTER_MOBILE = baseUrl + "/auth/register/mobile/";

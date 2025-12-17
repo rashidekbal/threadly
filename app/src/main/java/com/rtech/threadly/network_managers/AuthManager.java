@@ -8,6 +8,7 @@ import com.androidnetworking.interfaces.JSONObjectRequestListener;
 import com.rtech.threadly.BuildConfig;
 import com.rtech.threadly.constants.ApiEndPoints;
 import com.rtech.threadly.core.Core;
+import com.rtech.threadly.interfaces.NetworkCallBacks.NetworkCallbackInterfaceJsonObject;
 import com.rtech.threadly.interfaces.NetworkCallbackInterfaceWithJsonObjectDelivery;
 import com.rtech.threadly.interfaces.NetworkCallbackInterface;
 import com.rtech.threadly.utils.PreferenceUtil;
@@ -52,9 +53,9 @@ public class AuthManager {
         }
 
     }
-    public void ResetPasswordWithMobile(String password,String token, NetworkCallbackInterface callback) {
+    public void ForgetPasswordWithMobile(String password, String token, NetworkCallbackInterface callback) {
 
-        String url= ApiEndPoints.RESET_PASSWORD_MOBILE;
+        String url= ApiEndPoints.FORGET_PASSWORD_MOBILE;
         JSONObject data = new JSONObject();
         try {
             data.put("password", password);
@@ -84,10 +85,9 @@ public class AuthManager {
 
 
     }
-
-    public void ResetPasswordWithEmail(String password,String token, NetworkCallbackInterface callback) {
+    public void ForgetPasswordWithEmail(String password, String token, NetworkCallbackInterface callback) {
         Log.d("feddhit", "getLoggedInUserProfile: ");
-        String url= ApiEndPoints.RESET_PASSWORD_EMAIL;
+        String url= ApiEndPoints.FORGET_PASSWORD_EMAIL;
         JSONObject data = new JSONObject();
         try {
             data.put("password", password);
@@ -149,7 +149,6 @@ public class AuthManager {
         }
 
     }
-
     public void LoginUserId(String email,String password,NetworkCallbackInterfaceWithJsonObjectDelivery callback){
         Log.d("feddhit", "getLoggedInUserProfile: ");
         String url=ApiEndPoints.LOGIN_USERID;
@@ -198,6 +197,14 @@ public class AuthManager {
 
                     }
                 });
+    }
+    public void ResetPassword(String oldPassword, String newPassword, NetworkCallbackInterfaceJsonObject callback)throws JSONException{
+        String Url=ApiEndPoints.RESET_PASSWORD_SETTING;
+        JSONObject packet=new JSONObject();
+            packet.put("oldPassword",oldPassword);
+            packet.put("newPassword",newPassword);
+            AndroidNetworkingLayer.post(Url,packet,callback);
+
     }
 
 }
