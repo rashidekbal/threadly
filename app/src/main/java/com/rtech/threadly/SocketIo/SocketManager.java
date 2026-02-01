@@ -10,6 +10,8 @@ import io.socket.client.Socket;
 public class SocketManager {
     private static SocketManager instance;
     private final Socket msocket;
+//    private final String SOCKET_URL= BuildConfig.SOCKET_URL;
+
 
     private SocketManager() {
         try {

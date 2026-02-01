@@ -68,7 +68,6 @@ SharedPreferences loginInfo;
 OnDestroyFragmentCallback onDestroyStoriesFragmentCallback;
     ProfileViewModel profileViewModel;
     ExplorePostsViewModel explorePostsViewModel;
-boolean isFirstLaunch=true;
 
 int currentFragment;
     @Override
@@ -77,12 +76,6 @@ int currentFragment;
         EdgeToEdge.enable(this);
         binding=ActivityHomeBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, 0);
-            return insets;
-        });
-
         if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.TIRAMISU)ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.POST_NOTIFICATIONS},115);
 
         Window window = getWindow();
