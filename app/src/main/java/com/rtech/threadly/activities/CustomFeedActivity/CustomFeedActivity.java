@@ -114,6 +114,7 @@ public class CustomFeedActivity extends AppCompatActivity {
         if(!isFirstLaunch){
             RecyclerView.ViewHolder viewHolder= ((RecyclerView)mainXml.viewPager.getChildAt(0)).findViewHolderForAdapterPosition(currentPosition);
             if(viewHolder instanceof AllTypePostFeedAdapter.VideoPostViewHolder){
+                ((AllTypePostFeedAdapter.VideoPostViewHolder) viewHolder).play_btn.setVisibility(View.GONE);
                 ExoplayerUtil.play(
                         Uri.parse(postsArray.get(currentPosition).postUrl),
                         ((AllTypePostFeedAdapter.VideoPostViewHolder) viewHolder).videoPlayer_view);
