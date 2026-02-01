@@ -17,7 +17,7 @@ public interface operator {
     @Insert
     void insertMessage(List<MessageSchema> messages);
 
-    @Query("select * from messages where conversationId=:conversationId and isDeleted=0  order by timestamp asc")
+    @Query("select * from messages where conversationId=:conversationId and isDeleted=0 group by messageUid  order by timestamp asc")
     LiveData<List<MessageSchema>> getMessagesCid(String conversationId);
 
     @Query("update messages set deliveryStatus=:deliveryStatus  where messageUid=:msgUid and isDeleted=0")
