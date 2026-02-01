@@ -534,7 +534,7 @@ public class ImagePostsFeedAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             if(!selectedUsers.isEmpty()){
                 for(UsersModel model:selectedUsers){
                     try {
-                        ReUsableFunctions.ShowToast(" "+postid);
+
                        Core.sendCtoS(model.getUuid(),"", TypeConstants.POST,post.postUrl,postid,"sent a reel by "+post.username);
 
                     } catch (JSONException e) {
@@ -546,6 +546,7 @@ public class ImagePostsFeedAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                 actionButtons_rl.setVisibility(View.VISIBLE);
 
             }
+            ReUsableFunctions.ShowToast("sent");
             shareBottomSheet.dismiss();
         });
 
