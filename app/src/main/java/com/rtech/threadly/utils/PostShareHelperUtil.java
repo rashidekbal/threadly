@@ -87,26 +87,28 @@ public class PostShareHelperUtil {
         //send btn action
         assert sendBtn != null;
         sendBtn.setOnClickListener(v->{
-            int postid=post.postId;
-            if(!selectedUsers.isEmpty()){
-                for(UsersModel model:selectedUsers){
-                    try {
-                        Core.sendCtoS(model.getUuid(),"", TypeConstants.POST,post.postUrl,postid,"sent a reel by "+post.username);
-
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-                selectedUsers.clear();
-                sendBtn.setVisibility(View.GONE);
-                assert actionButtons_rl != null;
-                actionButtons_rl.setVisibility(View.VISIBLE);
-
-            }
-            shareBottomSheet.dismiss();
+           sendPost(post,selectedUsers,sendBtn,actionButtons_rl,shareBottomSheet);
         });
 
         shareBottomSheet.show();
 
+    }
+    private static void sendPost(Posts_Model post,ArrayList<UsersModel> selectedUsers,AppCompatButton sendBtn,RelativeLayout actionButtons_rl,BottomSheetDialog shareBottomSheet){
+        int postid=post.postId;
+        if(selectedUsers.isEmpty()){return;}
+            for(UsersModel model:selectedUsers){
+                try {
+                    Core.sendCtoS(model.getUuid(),"", TypeConstants.POST,post.postUrl,postid,"sent a reel by "+post.username);
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+            selectedUsers.clear();
+            sendBtn.setVisibility(View.GONE);
+            assert actionButtons_rl != null;
+            actionButtons_rl.setVisibility(View.VISIBLE);
+            ReUsableFunctions.ShowToast("sent");
+        shareBottomSheet.dismiss();
     }
 }

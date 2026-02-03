@@ -22,10 +22,15 @@
             app:use_controller="false"
             android:visibility="visible"/>
         <ImageView
-            android:id="@+id/previewImageView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:id="@+id/heartIconBig"
+            android:layout_width="@dimen/dp_70"
+            android:layout_height="@dimen/dp_70"
+            android:layout_centerInParent="true"
             android:scaleType="fitCenter"
+            android:src="@drawable/red_heart_active_icon"
+            android:contentDescription="heart icon"
+            android:visibility="gone"
+            android:elevation="10dp"
             />
         <ImageView
             android:contentDescription="@string/playbtn"

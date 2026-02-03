@@ -91,7 +91,7 @@ public class CustomFeedActivity extends AppCompatActivity {
                                 ((AllTypePostFeedAdapter.VideoPostViewHolder) viewHolder).play_btn.setVisibility(View.GONE);
                                 ExoplayerUtil.play(
                                         Uri.parse(postModels.get(position).postUrl),
-                                        ((AllTypePostFeedAdapter.VideoPostViewHolder) viewHolder).videoPlayer_view,((AllTypePostFeedAdapter.VideoPostViewHolder) viewHolder).previewImageView
+                                        ((AllTypePostFeedAdapter.VideoPostViewHolder) viewHolder).videoPlayer_view
                                 );
                             }
                         }
@@ -114,6 +114,7 @@ public class CustomFeedActivity extends AppCompatActivity {
         if(!isFirstLaunch){
             RecyclerView.ViewHolder viewHolder= ((RecyclerView)mainXml.viewPager.getChildAt(0)).findViewHolderForAdapterPosition(currentPosition);
             if(viewHolder instanceof AllTypePostFeedAdapter.VideoPostViewHolder){
+                ((AllTypePostFeedAdapter.VideoPostViewHolder) viewHolder).play_btn.setVisibility(View.GONE);
                 ExoplayerUtil.play(
                         Uri.parse(postsArray.get(currentPosition).postUrl),
                         ((AllTypePostFeedAdapter.VideoPostViewHolder) viewHolder).videoPlayer_view);

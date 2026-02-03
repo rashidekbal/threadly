@@ -17,9 +17,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -63,12 +60,12 @@ import java.util.concurrent.Executors;
 
 public class HomeActivity extends AppCompatActivity {
     ActivityHomeBinding binding;
+
 SharedPreferences loginInfo;
     StoryOpenCallback storyOpenCallback;
 OnDestroyFragmentCallback onDestroyStoriesFragmentCallback;
     ProfileViewModel profileViewModel;
     ExplorePostsViewModel explorePostsViewModel;
-boolean isFirstLaunch=true;
 
 int currentFragment;
     @Override
@@ -77,12 +74,6 @@ int currentFragment;
         EdgeToEdge.enable(this);
         binding=ActivityHomeBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, 0);
-            return insets;
-        });
-
         if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.TIRAMISU)ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.POST_NOTIFICATIONS},115);
 
         Window window = getWindow();

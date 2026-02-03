@@ -77,7 +77,7 @@ public class ReelsFragment extends Fragment {
                     viewHolder.play_btn.setVisibility(View.GONE);
                     ExoplayerUtil.play(
                             Uri.parse(reelsList.get(position).postUrl),
-                            viewHolder.videoPlayer_view,viewHolder.previewImageView
+                            viewHolder.videoPlayer_view
                     );
                 }
                 currentPosition=position;
@@ -102,6 +102,7 @@ public class ReelsFragment extends Fragment {
         if(!isFirstLaunch){
             ReelsAdapter.viewHolder viewHolder=(ReelsAdapter.viewHolder) ((RecyclerView)mainXml.reelsViewpager.getChildAt(0)).findViewHolderForAdapterPosition(currentPosition);
             if(viewHolder!=null){
+                viewHolder.play_btn.setVisibility(View.GONE);
                 ExoplayerUtil.play(
                         Uri.parse(reelsList.get(currentPosition).postUrl),
                         viewHolder.videoPlayer_view
