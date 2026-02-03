@@ -91,7 +91,7 @@ public class CustomFeedActivity extends AppCompatActivity {
                                 ((AllTypePostFeedAdapter.VideoPostViewHolder) viewHolder).play_btn.setVisibility(View.GONE);
                                 ExoplayerUtil.play(
                                         Uri.parse(postModels.get(position).postUrl),
-                                        ((AllTypePostFeedAdapter.VideoPostViewHolder) viewHolder).videoPlayer_view,((AllTypePostFeedAdapter.VideoPostViewHolder) viewHolder).previewImageView
+                                        ((AllTypePostFeedAdapter.VideoPostViewHolder) viewHolder).videoPlayer_view
                                 );
                             }
                         }

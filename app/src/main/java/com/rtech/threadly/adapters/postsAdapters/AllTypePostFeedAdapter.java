@@ -4,8 +4,11 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.net.Uri;
+import android.os.Handler;
 import android.util.Log;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -16,6 +19,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.OptIn;
 import androidx.appcompat.widget.AppCompatButton;
+import androidx.core.view.GestureDetectorCompat;
 import androidx.media3.common.util.UnstableApi;
 import androidx.media3.ui.PlayerView;
 import androidx.recyclerview.widget.RecyclerView;
@@ -51,6 +55,9 @@ public class AllTypePostFeedAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     LikeManager likeManager;
     int position;
     PostCommentsViewerUtil postCommentsViewerUtil;
+    GestureDetectorCompat gestureDetector;
+    GestureDetector.SimpleOnGestureListener videoFeedGestureListener;
+    GestureDetector.SimpleOnGestureListener imageFeedGestureListener;
 
     public AllTypePostFeedAdapter(Context context, List<ExtendedPostModel> postModels, int position) {
         this.postModels = postModels;
@@ -118,24 +125,55 @@ public class AllTypePostFeedAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     }
     /// -----------------------   Video Feed Binder -----------------------------///
     private void BindVideoFeed(@NonNull AllTypePostFeedAdapter.VideoPostViewHolder holder, int position) {
-
+        boolean[]isLongPress={false};
         boolean[] isPlaying = {true};
         holder.videoPlayer_view.setPlayer(null);
-
-
-        //video player onclick listeners
-        holder.videoPlayer_view.setOnClickListener(v -> {
-            if (isPlaying[0]) {
-                ExoplayerUtil.pause();
-                isPlaying[0] = false;
-                holder.play_btn.setVisibility(View.VISIBLE);
-            } else {
-                ExoplayerUtil.resume();
-                isPlaying[0] = true;
-                holder.play_btn.setVisibility(View.GONE);
-
+//gesture listener
+        videoFeedGestureListener =new GestureDetector.SimpleOnGestureListener(){
+            @Override
+            public boolean onDoubleTap(@NonNull MotionEvent e) {
+                handleGestureLike(holder,position);
+                return super.onDoubleTap(e);
             }
+
+            @Override
+            public void onLongPress(@NonNull MotionEvent e) {
+                isLongPress[0]=true;
+                if (isPlaying[0]) {
+                    ExoplayerUtil.pause();
+                    isPlaying[0] = false;
+                } else {
+                    ExoplayerUtil.resume();
+                    isPlaying[0] = true;
+
+                }
+                super.onLongPress(e);
+            }
+
+
+
+        };
+        //gesture detector
+        gestureDetector=new GestureDetectorCompat(context,videoFeedGestureListener);
+        //video player onclick listeners
+        holder.videoPlayer_view.setOnTouchListener((v,event)->{
+            gestureDetector.onTouchEvent(event);
+            if(event.getAction()==MotionEvent.ACTION_UP||event.getAction()==MotionEvent.ACTION_CANCEL){
+                if(isLongPress[0]){
+                    if (isPlaying[0]) {
+                        ExoplayerUtil.pause();
+                        isPlaying[0] = false;
+                    } else {
+                        ExoplayerUtil.resume();
+                        isPlaying[0] = true;
+
+                    }
+                    isLongPress[0]=false;
+                }
+            }
+         return true;
         });
+
 
         //follow button visibility and functionality
         if (shouldShowFollowBtn(position)) {
@@ -388,57 +426,8 @@ public class AllTypePostFeedAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 
         // Like/unlike post on like button click
         holder.like_btn_image.setOnClickListener(v -> {
-            // Like the post if not already liked
-            if (!postModels.get(position).isliked) {
-                holder.like_btn_image.setImageResource(R.drawable.red_heart_active_icon);
+            handleLike(holder,position);
 
-                setLikeCount(postModels.get(position).getLikeCount() + 1.0, holder);
-                postModels.get(position).isliked = true;
-                holder.like_btn_image.setEnabled(false);
-                likeManager.likePost(postModels.get(position).postId, new NetworkCallbackInterface() {
-                    @Override
-                    public void onSuccess() {
-                        holder.like_btn_image.setEnabled(true);
-
-                    }
-
-                    @Override
-                    public void onError(String err) {
-                        holder.like_btn_image.setImageResource(R.drawable.heart_inactive);
-
-                        setLikeCount(postModels.get(position).getLikeCount() - 1.0, holder);
-                        postModels.get(position).setIsliked(false);
-                        holder.like_btn_image.setEnabled(true);
-
-                    }
-                });
-
-                // Unlike the post if already liked
-            } else {
-                holder.like_btn_image.setImageResource(R.drawable.heart_inactive);
-
-                setLikeCount(postModels.get(position).getLikeCount() - 1.0, holder);
-                postModels.get(position).setIsliked(false);
-                holder.like_btn_image.setEnabled(false);
-                // Send unlike request to server
-                likeManager.UnlikePost(postModels.get(position).postId, new NetworkCallbackInterface() {
-                    @Override
-                    public void onSuccess() {
-                        holder.like_btn_image.setEnabled(true);
-
-                    }
-
-                    @Override
-                    public void onError(String err) {
-                        Log.d("errorUnlike", "onError: ".concat(err));
-                        holder.like_btn_image.setImageResource(R.drawable.red_heart_active_icon);
-                        setLikeCount(postModels.get(position).getLikeCount() + 1.0, holder);
-                        postModels.get(position).setIsliked(true);
-                        holder.like_btn_image.setEnabled(true);
-
-                    }
-                });
-            }
         });
 
         // open userProfile by clicking userProfilePic
@@ -451,6 +440,178 @@ public class AllTypePostFeedAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 
 
     }
+
+    private void handleLike(VideoPostViewHolder holder, int position) {
+        if (!postModels.get(position).isliked) {
+            holder.like_btn_image.setImageResource(R.drawable.red_heart_active_icon);
+
+            setLikeCount(postModels.get(position).getLikeCount() + 1.0, holder);
+            postModels.get(position).isliked = true;
+            holder.like_btn_image.setEnabled(false);
+            likeManager.likePost(postModels.get(position).postId, new NetworkCallbackInterface() {
+                @Override
+                public void onSuccess() {
+                    holder.like_btn_image.setEnabled(true);
+
+                }
+
+                @Override
+                public void onError(String err) {
+                    holder.like_btn_image.setImageResource(R.drawable.heart_inactive);
+
+                    setLikeCount(postModels.get(position).getLikeCount() - 1.0, holder);
+                    postModels.get(position).setIsliked(false);
+                    holder.like_btn_image.setEnabled(true);
+
+                }
+            });
+
+            // Unlike the post if already liked
+        } else {
+            holder.like_btn_image.setImageResource(R.drawable.heart_inactive);
+
+            setLikeCount(postModels.get(position).getLikeCount() - 1.0, holder);
+            postModels.get(position).setIsliked(false);
+            holder.like_btn_image.setEnabled(false);
+            // Send unlike request to server
+            likeManager.UnlikePost(postModels.get(position).postId, new NetworkCallbackInterface() {
+                @Override
+                public void onSuccess() {
+                    holder.like_btn_image.setEnabled(true);
+
+                }
+
+                @Override
+                public void onError(String err) {
+                    Log.d("errorUnlike", "onError: ".concat(err));
+                    holder.like_btn_image.setImageResource(R.drawable.red_heart_active_icon);
+                    setLikeCount(postModels.get(position).getLikeCount() + 1.0, holder);
+                    postModels.get(position).setIsliked(true);
+                    holder.like_btn_image.setEnabled(true);
+
+                }
+            });
+        }
+    }
+    private void handleLike(ImagePostViewHolder holder, int position) {
+        // Like the post if not already liked
+        if (!postModels.get(position).isliked) {
+            holder.like_btn_image.setImageResource(R.drawable.red_heart_active_icon);
+
+            setLikeCount(postModels.get(position).getLikeCount() + 1.0, holder);
+            postModels.get(position).isliked = true;
+            holder.like_btn_image.setEnabled(false);
+            likeManager.likePost(postModels.get(position).postId, new NetworkCallbackInterface() {
+                @Override
+                public void onSuccess() {
+                    holder.like_btn_image.setEnabled(true);
+
+                }
+
+                @Override
+                public void onError(String err) {
+                    holder.like_btn_image.setImageResource(R.drawable.heart_inactive);
+
+                    setLikeCount(postModels.get(position).getLikeCount() - 1.0, holder);
+                    postModels.get(position).setIsliked(false);
+                    holder.like_btn_image.setEnabled(true);
+
+                }
+            });
+
+            // Unlike the post if already liked
+        } else {
+            holder.like_btn_image.setImageResource(R.drawable.heart_inactive);
+
+            setLikeCount(postModels.get(position).getLikeCount() - 1.0, holder);
+            postModels.get(position).setIsliked(false);
+            holder.like_btn_image.setEnabled(false);
+            // Send unlike request to server
+            likeManager.UnlikePost(postModels.get(position).postId, new NetworkCallbackInterface() {
+                @Override
+                public void onSuccess() {
+                    holder.like_btn_image.setEnabled(true);
+
+                }
+
+                @Override
+                public void onError(String err) {
+                    Log.d("errorUnlike", "onError: ".concat(err));
+                    holder.like_btn_image.setImageResource(R.drawable.red_heart_active_icon);
+                    setLikeCount(postModels.get(position).getLikeCount() + 1.0, holder);
+                    postModels.get(position).setIsliked(true);
+                    holder.like_btn_image.setEnabled(true);
+
+                }
+            });
+        }
+    }
+    private void handleGestureLike(VideoPostViewHolder holder, int position) {
+        holder.heartIconBig.setVisibility(View.VISIBLE);
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                holder.heartIconBig.setVisibility(View.GONE);
+            }
+        },700);
+        if (!postModels.get(position).isliked) {
+
+            holder.like_btn_image.setImageResource(R.drawable.red_heart_active_icon);
+
+            setLikeCount(postModels.get(position).getLikeCount() + 1.0, holder);
+            postModels.get(position).isliked = true;
+            holder.like_btn_image.setEnabled(false);
+            likeManager.likePost(postModels.get(position).postId, new NetworkCallbackInterface() {
+                @Override
+                public void onSuccess() {
+                    holder.like_btn_image.setEnabled(true);
+
+                }
+
+                @Override
+                public void onError(String err) {
+                    holder.like_btn_image.setImageResource(R.drawable.heart_inactive);
+
+                    setLikeCount(postModels.get(position).getLikeCount() - 1.0, holder);
+                    postModels.get(position).setIsliked(false);
+                    holder.like_btn_image.setEnabled(true);
+
+                }
+            });
+
+            // Unlike the post if already liked
+        }
+    }
+    private void handleGestureLike(ImagePostViewHolder holder, int position) {
+        // Like the post if not already liked
+        if (!postModels.get(position).isliked) {
+            holder.like_btn_image.setImageResource(R.drawable.red_heart_active_icon);
+
+            setLikeCount(postModels.get(position).getLikeCount() + 1.0, holder);
+            postModels.get(position).isliked = true;
+            holder.like_btn_image.setEnabled(false);
+            likeManager.likePost(postModels.get(position).postId, new NetworkCallbackInterface() {
+                @Override
+                public void onSuccess() {
+                    holder.like_btn_image.setEnabled(true);
+
+                }
+
+                @Override
+                public void onError(String err) {
+                    holder.like_btn_image.setImageResource(R.drawable.heart_inactive);
+
+                    setLikeCount(postModels.get(position).getLikeCount() - 1.0, holder);
+                    postModels.get(position).setIsliked(false);
+                    holder.like_btn_image.setEnabled(true);
+
+                }
+            });
+
+            // Unlike the post if already liked
+        }
+    }
+
     private void setUpOnclickListeners(@NonNull ImagePostViewHolder holder, int position) {
 
         // Show comments dialog on comment button click
@@ -473,57 +634,7 @@ public class AllTypePostFeedAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 
         // Like/unlike post on like button click
         holder.like_btn_image.setOnClickListener(v -> {
-            // Like the post if not already liked
-            if (!postModels.get(position).isliked) {
-                holder.like_btn_image.setImageResource(R.drawable.red_heart_active_icon);
-
-                setLikeCount(postModels.get(position).getLikeCount() + 1.0, holder);
-                postModels.get(position).isliked = true;
-                holder.like_btn_image.setEnabled(false);
-                likeManager.likePost(postModels.get(position).postId, new NetworkCallbackInterface() {
-                    @Override
-                    public void onSuccess() {
-                        holder.like_btn_image.setEnabled(true);
-
-                    }
-
-                    @Override
-                    public void onError(String err) {
-                        holder.like_btn_image.setImageResource(R.drawable.heart_inactive);
-
-                        setLikeCount(postModels.get(position).getLikeCount() - 1.0, holder);
-                        postModels.get(position).setIsliked(false);
-                        holder.like_btn_image.setEnabled(true);
-
-                    }
-                });
-
-                // Unlike the post if already liked
-            } else {
-                holder.like_btn_image.setImageResource(R.drawable.heart_inactive);
-
-                setLikeCount(postModels.get(position).getLikeCount() - 1.0, holder);
-                postModels.get(position).setIsliked(false);
-                holder.like_btn_image.setEnabled(false);
-                // Send unlike request to server
-                likeManager.UnlikePost(postModels.get(position).postId, new NetworkCallbackInterface() {
-                    @Override
-                    public void onSuccess() {
-                        holder.like_btn_image.setEnabled(true);
-
-                    }
-
-                    @Override
-                    public void onError(String err) {
-                        Log.d("errorUnlike", "onError: ".concat(err));
-                        holder.like_btn_image.setImageResource(R.drawable.red_heart_active_icon);
-                        setLikeCount(postModels.get(position).getLikeCount() + 1.0, holder);
-                        postModels.get(position).setIsliked(true);
-                        holder.like_btn_image.setEnabled(true);
-
-                    }
-                });
-            }
+            handleLike(holder,position);
         });
 
         // open userProfile by clicking userProfilePic
@@ -720,7 +831,7 @@ public class AllTypePostFeedAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     }
     public static  class VideoPostViewHolder extends RecyclerView.ViewHolder{
         public PlayerView videoPlayer_view;
-       public ImageView play_btn,profile_img,like_btn_image,comment_btn_image,share_icon_white,optionDots_white,previewImageView;
+       public ImageView play_btn,profile_img,like_btn_image,comment_btn_image,share_icon_white,optionDots_white,heartIconBig;
         TextView username_text,caption_text,likes_count_text,comments_count_text,shares_count_text;
         AppCompatButton followBtn;
 
@@ -739,7 +850,7 @@ public class AllTypePostFeedAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             shares_count_text=itemView.findViewById(R.id.shares_count_text);
             optionDots_white=itemView.findViewById(R.id.optionDots_white);
             followBtn=itemView.findViewById(R.id.FollowBtn);
-            previewImageView=itemView.findViewById(R.id.previewImageView);
+            heartIconBig=itemView.findViewById(R.id.heartIconBig);
         }
     }
 

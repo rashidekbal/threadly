@@ -77,7 +77,7 @@ public class ReelsFragment extends Fragment {
                     viewHolder.play_btn.setVisibility(View.GONE);
                     ExoplayerUtil.play(
                             Uri.parse(reelsList.get(position).postUrl),
-                            viewHolder.videoPlayer_view,viewHolder.previewImageView
+                            viewHolder.videoPlayer_view
                     );
                 }
                 currentPosition=position;

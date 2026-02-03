@@ -6,50 +6,32 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.Uri;
-import android.os.Build;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.media3.common.util.UnstableApi;
 import androidx.media3.ui.PlayerView;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.rtech.threadly.R;
-import com.rtech.threadly.adapters.commentsAdapter.PostCommentsAdapter;
-import com.rtech.threadly.adapters.messanger.UsersShareSheetGridAdapter;
 import com.rtech.threadly.constants.SharedPreferencesKeys;
-import com.rtech.threadly.constants.TypeConstants;
 import com.rtech.threadly.core.Core;
-import com.rtech.threadly.interfaces.Messanger.OnUserSelectedListener;
 import com.rtech.threadly.interfaces.NetworkCallbackInterface;
-import com.rtech.threadly.interfaces.NetworkCallbackInterfaceWithJsonObjectDelivery;
-import com.rtech.threadly.models.UsersModel;
 import com.rtech.threadly.network_managers.CommentsManager;
 import com.rtech.threadly.network_managers.FollowManager;
 import com.rtech.threadly.network_managers.LikeManager;
-import com.rtech.threadly.models.Posts_Comments_Model;
 import com.rtech.threadly.models.Posts_Model;
 import com.rtech.threadly.utils.DownloadManagerUtil;
 import com.rtech.threadly.utils.ExoplayerUtil;
@@ -57,15 +39,8 @@ import com.rtech.threadly.utils.LoggerUtil;
 import com.rtech.threadly.utils.PostCommentsViewerUtil;
 import com.rtech.threadly.utils.PostShareHelperUtil;
 import com.rtech.threadly.utils.ReUsableFunctions;
-import com.rtech.threadly.viewmodels.MessageAbleUsersViewModel;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.Objects;
 
 public class ReelsAdapter extends RecyclerView.Adapter<ReelsAdapter.viewHolder> {
       ArrayList<Posts_Model> dataList;
@@ -397,7 +372,7 @@ public class ReelsAdapter extends RecyclerView.Adapter<ReelsAdapter.viewHolder> 
 
     public class viewHolder extends RecyclerView.ViewHolder{
        public PlayerView videoPlayer_view;
-        public ImageView previewImageView, play_btn,profile_img,like_btn_image,comment_btn_image,share_icon_white,optionDots_white;
+        public ImageView heartIconBig, play_btn,profile_img,like_btn_image,comment_btn_image,share_icon_white,optionDots_white;
         TextView username_text,caption_text,likes_count_text,comments_count_text,shares_count_text;
         boolean is_liked;
         Double likes;
@@ -419,7 +394,7 @@ public class ReelsAdapter extends RecyclerView.Adapter<ReelsAdapter.viewHolder> 
             shares_count_text=itemView.findViewById(R.id.shares_count_text);
             optionDots_white=itemView.findViewById(R.id.optionDots_white);
             followBtn=itemView.findViewById(R.id.FollowBtn);
-            previewImageView=itemView.findViewById(R.id.previewImageView);
+            heartIconBig =itemView.findViewById(R.id.heartIconBig);
 
 
             loginInfo= Core.getPreference();
