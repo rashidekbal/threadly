@@ -55,9 +55,10 @@ public class AllTypePostFeedAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     LikeManager likeManager;
     int position;
     PostCommentsViewerUtil postCommentsViewerUtil;
-    GestureDetectorCompat gestureDetector;
+
     GestureDetector.SimpleOnGestureListener videoFeedGestureListener;
     GestureDetector.SimpleOnGestureListener imageFeedGestureListener;
+    final int gestureLikeDuration=900;
 
     public AllTypePostFeedAdapter(Context context, List<ExtendedPostModel> postModels, int position) {
         this.postModels = postModels;
@@ -73,6 +74,7 @@ public class AllTypePostFeedAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     public int getItemViewType(int position) {
         return postModels.get(position).isVideo() ? 1 : TYPE_IMAGE;
     }
+
 
     @NonNull
     @Override
@@ -154,7 +156,7 @@ public class AllTypePostFeedAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 
         };
         //gesture detector
-        gestureDetector=new GestureDetectorCompat(context,videoFeedGestureListener);
+        GestureDetectorCompat gestureDetector=new GestureDetectorCompat(context,videoFeedGestureListener);
         //video player onclick listeners
         holder.videoPlayer_view.setOnTouchListener((v,event)->{
             gestureDetector.onTouchEvent(event);
@@ -245,12 +247,28 @@ public class AllTypePostFeedAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     /// -----------------------   Image Feed Binder ----------------------------///
     private void BindImageFeed(@NonNull ImagePostViewHolder holder, int position){
         //load post owner details
+        imageFeedGestureListener=new GestureDetector.SimpleOnGestureListener(){
+            @Override
+            public boolean onDoubleTap(@NonNull MotionEvent e) {
+
+                handleGestureLike(holder,position);
+                return super.onDoubleTap(e);
+            }
+        };
+       GestureDetectorCompat gestureDetector=new GestureDetectorCompat(context,imageFeedGestureListener);
+        holder.post_image_view.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                gestureDetector.onTouchEvent(event);
+                return true;
+            }
+        });
         Glide.with(context).load(Uri.parse(postModels.get(position).userDpUrl)).circleCrop().placeholder(R.drawable.blank_profile).into(holder.profile_img);
         holder.username_text.setText(postModels.get(position).userId);
         holder.username_text.setText(postModels.get(position).username);
 
         // load post image
-        CoilUtil.loadImage(holder.post_image_view, postModels.get(position).getPostUrl());
+        Glide.with(context).load(postModels.get(position).getPostUrl()).thumbnail(0.1f).into(holder.post_image_view) ;
 
         //setup captions
         if (shouldShowCaption(position)) {
@@ -553,7 +571,7 @@ public class AllTypePostFeedAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             public void run() {
                 holder.heartIconBig.setVisibility(View.GONE);
             }
-        },700);
+        },gestureLikeDuration);
         if (!postModels.get(position).isliked) {
 
             holder.like_btn_image.setImageResource(R.drawable.red_heart_active_icon);
@@ -583,10 +601,13 @@ public class AllTypePostFeedAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         }
     }
     private void handleGestureLike(ImagePostViewHolder holder, int position) {
+        holder.heartBigIcon.setVisibility(View.VISIBLE);
+        new Handler().postDelayed(()->{
+            holder.heartBigIcon.setVisibility(View.GONE);
+        },gestureLikeDuration);
         // Like the post if not already liked
         if (!postModels.get(position).isliked) {
             holder.like_btn_image.setImageResource(R.drawable.red_heart_active_icon);
-
             setLikeCount(postModels.get(position).getLikeCount() + 1.0, holder);
             postModels.get(position).isliked = true;
             holder.like_btn_image.setEnabled(false);
@@ -808,7 +829,7 @@ public class AllTypePostFeedAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     }
     public static class  ImagePostViewHolder extends RecyclerView.ViewHolder{
         ImageView post_image_view;
-        ImageView profile_img,like_btn_image,comment_btn_image,share_icon_white,optionDots_white;
+        ImageView profile_img,like_btn_image,comment_btn_image,share_icon_white,optionDots_white,heartBigIcon;
         TextView username_text,caption_text,likes_count_text,comments_count_text,shares_count_text;
 
         AppCompatButton followBtn;
@@ -826,6 +847,7 @@ public class AllTypePostFeedAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             shares_count_text=itemView.findViewById(R.id.shares_count_text);
             optionDots_white=itemView.findViewById(R.id.optionDots_white);
             followBtn=itemView.findViewById(R.id.FollowBtn);
+            heartBigIcon=itemView.findViewById(R.id.heartIconBig);
         }
 
     }
