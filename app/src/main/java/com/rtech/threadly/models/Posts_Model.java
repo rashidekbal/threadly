@@ -21,39 +21,39 @@ public class Posts_Model {
    public Boolean isliked;
    public boolean isVideo,isFollowed;
    private boolean isViewed;
-    public Posts_Model
-            (int CONTENT_TYPE,
-             int postId,
-             String userId,
-             String username,
-             String userDpUrl,
-             String postUrl,
-             String caption,
-             String createdAt,
-             String likedBy,
-             int likeCount,
-             int commentCount,
-             int shareCount ,
-             int isLiked,
-            boolean isVideo,
-            boolean isFollowed){
-        this.CONTENT_TYPE=CONTENT_TYPE;
-        this.postId=postId;
-        this.userId=userId;
-        this.username=username;
-        this.userDpUrl=userDpUrl;
-        this.postUrl=postUrl;
-        this.caption=caption;
-        this.createdAt=createdAt;
-        this.likeCount=likeCount;
-        this.commentCount=commentCount;
-        this.shareCount=shareCount;
-        this.isliked= isLiked>0;
-        this.likedBy=likedBy;
-        this.isVideo=isVideo;
-        this.isFollowed=isFollowed;
-
-    }
+//    public Posts_Model
+//            (int CONTENT_TYPE,
+//             int postId,
+//             String userId,
+//             String username,
+//             String userDpUrl,
+//             String postUrl,
+//             String caption,
+//             String createdAt,
+//             String likedBy,
+//             int likeCount,
+//             int commentCount,
+//             int shareCount ,
+//             int isLiked,
+//            boolean isVideo,
+//            boolean isFollowed){
+//        this.CONTENT_TYPE=CONTENT_TYPE;
+//        this.postId=postId;
+//        this.userId=userId;
+//        this.username=username;
+//        this.userDpUrl=userDpUrl;
+//        this.postUrl=postUrl;
+//        this.caption=caption;
+//        this.createdAt=createdAt;
+//        this.likeCount=likeCount;
+//        this.commentCount=commentCount;
+//        this.shareCount=shareCount;
+//        this.isliked= isLiked>0;
+//        this.likedBy=likedBy;
+//        this.isVideo=isVideo;
+//        this.isFollowed=isFollowed;
+//
+//    }
     public Posts_Model
             (int CONTENT_TYPE,
              int postId,
@@ -209,5 +209,11 @@ public class Posts_Model {
 
     public void setVideo(boolean video) {
         isVideo = video;
+    }
+    public boolean isViewed(){
+        return isViewed;
+    }
+    public void setViewed(boolean flag){
+        this.isViewed=flag;
     }
 }

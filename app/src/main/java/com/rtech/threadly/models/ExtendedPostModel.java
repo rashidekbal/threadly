@@ -8,9 +8,9 @@ public class ExtendedPostModel extends Posts_Model implements Parcelable {
     public ExtendedPostModel(int CONTENT_TYPE, int postId, String userId, String username, String userDpUrl,
                              String postUrl, String caption, String createdAt, String likedBy,
                              int likeCount, int commentCount, int shareCount,
-                             int isLiked, boolean isVideo, boolean isFollowed) {
+                             int isLiked, boolean isVideo, boolean isFollowed,boolean isViewed) {
         super(CONTENT_TYPE, postId, userId, username, userDpUrl, postUrl, caption, createdAt,
-                likedBy, likeCount, commentCount, shareCount, isLiked, isVideo, isFollowed);
+                likedBy, likeCount, commentCount, shareCount, isLiked, isVideo, isFollowed,isViewed);
     }
 
     // 🧩 Constructor used when recreating object from Parcel
@@ -30,7 +30,8 @@ public class ExtendedPostModel extends Posts_Model implements Parcelable {
                 in.readInt(),              // shareCount
                 in.readInt(),              // isLiked
                 in.readByte() != 0,        // isVideo
-                in.readByte() != 0         // isFollowed
+                in.readByte() != 0,         // isFollowed
+                in.readByte() != 0          //isViewed
         );
     }
 
