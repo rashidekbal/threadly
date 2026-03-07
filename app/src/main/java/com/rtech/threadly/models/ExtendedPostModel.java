@@ -53,6 +53,7 @@ public class ExtendedPostModel extends Posts_Model implements Parcelable {
         dest.writeInt(getIsLiked()?1:0);
         dest.writeByte((byte) (isVideo() ? 1 : 0));
         dest.writeByte((byte) (isFollowed() ? 1 : 0));
+        dest.writeByte((byte) (isViewed() ?1:0));
     }
 
     private boolean getIsLiked() {
