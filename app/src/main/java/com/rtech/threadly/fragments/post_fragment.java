@@ -129,6 +129,7 @@ private final boolean[] isPlaying={true};
                 int isLiked = object.optInt("isLiked");
                 boolean isVideo=object.optString("type").equals("video");
                 boolean isFollowed=object.optInt("isFollowed")>0;
+                int viewCount=object.optInt("viewCount");
 
 
                 postData= new Posts_Model(0,
@@ -144,7 +145,7 @@ private final boolean[] isPlaying={true};
                         commentCount,
                         shareCount,
                         isLiked,
-                        isVideo,isFollowed,false);
+                        isVideo,isFollowed,false,viewCount);
              setData(postData);
 
 

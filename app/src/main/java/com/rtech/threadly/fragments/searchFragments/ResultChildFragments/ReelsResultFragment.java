@@ -71,7 +71,8 @@ FragmentReelsResultBinding mainXml;
                             model.getShareCount(),
                             model.getIsliked()?1:0,
                             model.isVideo(),
-                            model.isFollowed(),model.isViewed()));
+                            model.isFollowed(),model.isViewed(),
+                            model.getViewCount()));
                 }
                 Intent openReelsIntent=new Intent(requireActivity(), CustomFeedActivity.class);
                 openReelsIntent.putExtra("postList",postArrayList);

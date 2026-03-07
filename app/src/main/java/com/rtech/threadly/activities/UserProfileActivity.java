@@ -140,7 +140,8 @@ public class UserProfileActivity extends AppCompatActivity {
                             model.getShareCount(),
                             model.getIsliked()?1:0,
                             model.isVideo(),
-                            model.isFollowed(),model.isViewed()));
+                            model.isFollowed(),model.isViewed(),
+                            model.getViewCount()));
                 }
                 CustomPostFeedFragment customPostFeedFragment=new CustomPostFeedFragment();
                 Bundle data=new Bundle();
@@ -416,7 +417,8 @@ page=1;
                                 object.getInt("isLiked")
                                 ,object.getString("type").equals("video"),
                                 object.getInt("isFollowed")>0,
-                                false
+                                false,
+                                object.getInt("viewCount")
                         ));
 
                     }
@@ -467,7 +469,8 @@ page=1;
                                 object.getInt("shareCount"),
                                 object.getInt("isLiked")
                                 ,object.getString("type").equals("video"),
-                                object.getInt("isFollowed")>0,false
+                                object.getInt("isFollowed")>0,false,
+                                object.optInt("viewCount")
                         ));
 
                     }

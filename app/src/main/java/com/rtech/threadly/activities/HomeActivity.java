@@ -255,7 +255,8 @@ int currentFragment;
                                             model.getIsliked()?1:0,
                                             model.isVideo(),
                                             model.isFollowed(),
-                                            model.isViewed()));
+                                            model.isViewed(),
+                                            model.getViewCount()));
                                 }
                                 CustomPostFeedFragment customPostFeedFragment=new CustomPostFeedFragment();
                                 Bundle data=new Bundle();

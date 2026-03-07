@@ -21,6 +21,7 @@ public class Posts_Model {
    public Boolean isliked;
    public boolean isVideo,isFollowed;
    private boolean isViewed;
+   private int viewCount;
 //    public Posts_Model
 //            (int CONTENT_TYPE,
 //             int postId,
@@ -70,7 +71,8 @@ public class Posts_Model {
              int isLiked,
              boolean isVideo,
              boolean isFollowed,
-             boolean isViewed){
+             boolean isViewed,
+             int viewCount){
         this.CONTENT_TYPE=CONTENT_TYPE;
         this.postId=postId;
         this.userId=userId;
@@ -87,6 +89,7 @@ public class Posts_Model {
         this.isVideo=isVideo;
         this.isFollowed=isFollowed;
         this.isViewed=isViewed;
+        this.viewCount=viewCount;
 
     }
 
@@ -215,5 +218,8 @@ public class Posts_Model {
     }
     public void setViewed(boolean flag){
         this.isViewed=flag;
+    }
+    public int getViewCount(){
+        return this.viewCount;
     }
 }

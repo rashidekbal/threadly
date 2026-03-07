@@ -146,6 +146,7 @@ public class PostActivity extends AppCompatActivity {
                 int isLiked = object.optInt("isLiked");
                 boolean isVideo=object.optString("type").equals("video");
                 boolean isFollowed=object.optInt("isFollowed")>0;
+                int viewCount=object.optInt("viewCount");
 
 
                 postData= new Posts_Model(0,
@@ -161,7 +162,7 @@ public class PostActivity extends AppCompatActivity {
                         commentCount,
                         shareCount,
                         isLiked,
-                        isVideo,isFollowed,false);
+                        isVideo,isFollowed,false,viewCount);
                 setData(postData);
 
 

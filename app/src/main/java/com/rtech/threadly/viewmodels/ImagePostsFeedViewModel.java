@@ -68,7 +68,8 @@ public class ImagePostsFeedViewModel extends AndroidViewModel {
                                     postObject.getInt("isLiked")
                                     ,postObject.getString("type").equals("video")
                                     ,postObject.optInt("isFollowed")>0,
-                                    false
+                                    false,
+                                    postObject.optInt("viewCount")
                             ));
 
 
@@ -101,7 +102,7 @@ public class ImagePostsFeedViewModel extends AndroidViewModel {
             }
 
             Log.d("suggestionInsertedAt", "insertSuggestionAtRandom: "+ randomPosition);
-            postsModels.add(randomPosition,new Posts_Model(1,0,"","","","","","","",0,0,0,0,false,false,false));
+            postsModels.add(randomPosition,new Posts_Model(1,0,"","","","","","","",0,0,0,0,false,false,false,0));
 
         }
         postsLiveData.postValue(postsModels);
