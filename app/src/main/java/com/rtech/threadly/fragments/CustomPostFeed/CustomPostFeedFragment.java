@@ -17,6 +17,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.rtech.threadly.SocketIo.SocketEmitterEvents;
 import com.rtech.threadly.adapters.postsAdapters.AllTypePostFeedAdapter;
 import com.rtech.threadly.databinding.FragmentCustomPostFeedBinding;
 import com.rtech.threadly.models.ExtendedPostModel;
@@ -93,6 +94,10 @@ int position;
                                 );
                             }
                         }
+                        if(!postsArray.get(position).isViewed()){
+                            SocketEmitterEvents.emitPostViewed(postsArray.get(position).getPostId());
+                            postsArray.get(position).setViewed(true);
+                        }
                         currentPosition=position;
                     }
                 });
@@ -116,6 +121,7 @@ int position;
                 ExoplayerUtil.play(
                         Uri.parse(postsArray.get(currentPosition).postUrl),
                         ((AllTypePostFeedAdapter.VideoPostViewHolder) viewHolder).videoPlayer_view);
+
 
             }
         }

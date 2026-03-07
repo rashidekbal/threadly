@@ -12,10 +12,12 @@ import androidx.media3.common.util.UnstableApi;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.rtech.threadly.SocketIo.SocketEmitterEvents;
 import com.rtech.threadly.adapters.postsAdapters.ReelsAdapter;
 import com.rtech.threadly.databinding.FragmentReelsBinding;
 import com.rtech.threadly.models.Posts_Model;
@@ -79,6 +81,11 @@ public class ReelsFragment extends Fragment {
                             Uri.parse(reelsList.get(position).postUrl),
                             viewHolder.videoPlayer_view
                     );
+                    Log.d("postViewed", "emiting i+from reels fragment");
+                    if(!reelsList.get(position).isViewed()){
+                        SocketEmitterEvents.emitPostViewed(reelsList.get(position).getPostId());
+                        reelsList.get(position).setViewed(true);
+                    }
                 }
                 currentPosition=position;
             }

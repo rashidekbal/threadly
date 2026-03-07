@@ -1,5 +1,6 @@
 package com.rtech.threadly.SocketIo;
 
+import com.rtech.threadly.BuildConfig;
 import com.rtech.threadly.constants.ApiEndPoints;
 
 import java.net.URISyntaxException;
@@ -10,12 +11,11 @@ import io.socket.client.Socket;
 public class SocketManager {
     private static SocketManager instance;
     private final Socket msocket;
-//    private final String SOCKET_URL= BuildConfig.SOCKET_URL;
-
+private final String socketIo= BuildConfig.SOCKET_URL;
 
     private SocketManager() {
         try {
-            msocket = IO.socket(ApiEndPoints.SOCKET_ID);
+            msocket = IO.socket(socketIo);
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);
         }
