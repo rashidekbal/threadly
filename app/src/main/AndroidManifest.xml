@@ -36,13 +36,16 @@
         tools:targetApi="29">
         <activity
             android:name=".activities.settings.PasswordChangeActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".activities.settings.UserActivitiesPageActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".activities.CustomFeedActivity.CustomFeedActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".activities.Messenger.MessengerMainMessagePageActivity"
             android:exported="false"
@@ -50,7 +53,8 @@
             android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".activities.NotificationActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".activities.Messenger.MessengerActivity"
             android:exported="false"
