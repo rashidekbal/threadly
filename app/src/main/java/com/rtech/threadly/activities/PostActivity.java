@@ -161,7 +161,7 @@ public class PostActivity extends AppCompatActivity {
                         commentCount,
                         shareCount,
                         isLiked,
-                        isVideo,isFollowed);
+                        isVideo,isFollowed,false);
                 setData(postData);
 
 

@@ -144,7 +144,7 @@ private final boolean[] isPlaying={true};
                         commentCount,
                         shareCount,
                         isLiked,
-                        isVideo,isFollowed);
+                        isVideo,isFollowed,false);
              setData(postData);
 
 

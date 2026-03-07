@@ -53,7 +53,8 @@ public class VideoPostsFeedViewModel extends AndroidViewModel {
                                 postObject.getInt("shareCount"),
                                 postObject.getInt("isLiked")
                                 ,postObject.getString("type").equals("video"),
-                                postObject.getInt("isFollowed")>0
+                                postObject.getInt("isFollowed")>0,
+                                false
                         ));
 
 

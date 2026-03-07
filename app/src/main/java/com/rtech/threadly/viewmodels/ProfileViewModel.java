@@ -115,7 +115,8 @@ public class ProfileViewModel extends AndroidViewModel {
                                 object.getInt("shareCount"),
                                 object.getInt("isLiked")
                                 ,object.getString("type").equals("video"),
-                                object.getInt("isFollowed")>0
+                                object.getInt("isFollowed")>0,
+                                false
                         ));
                     }
                     UserPostsLiveData.postValue(tempArrayList);
@@ -166,7 +167,8 @@ public class ProfileViewModel extends AndroidViewModel {
                                     object.getInt("shareCount"),
                                     object.getInt("isLiked")
                                     ,object.getString("type").equals("video"),
-                                    object.getInt("isFollowed")>0
+                                    object.getInt("isFollowed")>0,
+                                    false
                             ));
                         }
                         UserPostsLiveData.postValue(tempArrayList);

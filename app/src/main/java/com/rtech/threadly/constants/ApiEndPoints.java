@@ -37,6 +37,7 @@ public class ApiEndPoints {
     public static final String GET_VIDEO_FEED = baseUrl+"/posts/getVideoPostsFeed/";
     public static final String ADD_IMAGE_POST = baseUrl+"/posts/addImagePost/";
     public static final String ADD_VIDEO_POST = baseUrl+"/posts/addVideoPost/";
+    public static final String POST_VIEWED= baseUrl+"/posts/postViewed/";
 
    // Profile
     public static final String GET_PROFILE = baseUrl + "/users/getUser/";
@@ -90,7 +91,7 @@ public class ApiEndPoints {
 
 
     //socket address
-    public static final String SOCKET_ID = "https://threadlyserver.onrender.com";
+//    public static final String SOCKET_ID = "https://threadlyserver.onrender.com";
 
     //FCM apis
     public static final String FCM_TOKEN_UPDATE= baseUrl+"/fcm/updateToken/";

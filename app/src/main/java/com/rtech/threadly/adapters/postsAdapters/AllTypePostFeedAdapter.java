@@ -55,7 +55,6 @@ public class AllTypePostFeedAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     LikeManager likeManager;
     int position;
     PostCommentsViewerUtil postCommentsViewerUtil;
-
     GestureDetector.SimpleOnGestureListener videoFeedGestureListener;
     GestureDetector.SimpleOnGestureListener imageFeedGestureListener;
     final int gestureLikeDuration=900;
