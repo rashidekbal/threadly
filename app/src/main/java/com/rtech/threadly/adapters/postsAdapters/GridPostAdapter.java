@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -53,8 +54,10 @@ public class GridPostAdapter extends RecyclerView.Adapter<GridPostAdapter.ViewHo
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, @SuppressLint("RecyclerView") int position) {
         String previewUrl=dataList.get(position).postUrl.replace(".mp4",".jpg");
-                CoilUtil.loadImage(holder.imageView,previewUrl);
+        Glide.with(context).load(previewUrl).thumbnail(0.1f).placeholder(R.drawable.post_placeholder).into(holder.imageView);
         holder.imageView.setOnClickListener(v -> post_fragmentSetCallback.openPostFragment(dataList,position));
+        holder.viewCount.setText(String.valueOf(dataList.get(position).getViewCount()));
+
 
     }
 
@@ -65,9 +68,11 @@ public class GridPostAdapter extends RecyclerView.Adapter<GridPostAdapter.ViewHo
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         ImageView imageView;
+        TextView viewCount;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             imageView=itemView.findViewById(R.id.image_view);
+            viewCount=itemView.findViewById(R.id.viewsCount);
 
         }
     }
