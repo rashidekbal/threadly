@@ -2,6 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="@dimen/dp_200"
+    xmlns:tools="http://schemas.android.com/tools"
     android:background="@color/allBlack"
     android:layout_marginHorizontal="1dp"
     android:layout_marginVertical="1dp"
@@ -15,18 +16,36 @@
         android:minWidth="@dimen/dp_150"
         android:scaleType="fitCenter"
         />
-    <TextView
-        android:id="@+id/viewsCount"
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="11k"
-        android:textColor="@color/AllWhite"
+        android:orientation="horizontal"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginEnd="@dimen/dp_5"
+        android:layout_marginEnd="@dimen/dp_8"
         android:layout_marginBottom="@dimen/dp_5"
-android:visibility="visible"
-        />
+        android:gravity="center_vertical">
+
+        <ImageView
+            android:layout_width="@dimen/dp_16"
+            android:layout_height="@dimen/dp_16"
+            android:src="@drawable/eye_icon"
+            android:layout_marginEnd="@dimen/dp_5"
+            />
+
+        <TextView
+            android:id="@+id/viewsCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="11k"
+            android:textColor="@color/AllWhite"
+            android:visibility="visible"
+            android:textSize="@dimen/sp_11"
+
+            />
+
+    </LinearLayout>
+
 
 
 
