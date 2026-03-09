@@ -16,4 +16,36 @@ public class MediaModel {
 
 
     }
+
+    public boolean isCameraIntent() {
+        return isCameraIntent;
+    }
+
+    public void setCameraIntent(boolean cameraIntent) {
+        isCameraIntent = cameraIntent;
+    }
+
+    public int getDuration() {
+        return duration;
+    }
+
+    public void setDuration(int duration) {
+        this.duration = duration;
+    }
+
+    public boolean isVideo() {
+        return isVideo;
+    }
+
+    public void setVideo(boolean video) {
+        isVideo = video;
+    }
+
+    public Uri getUri() {
+        return uri;
+    }
+
+    public void setUri(Uri uri) {
+        this.uri = uri;
+    }
 }

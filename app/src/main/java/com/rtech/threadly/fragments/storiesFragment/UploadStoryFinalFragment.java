@@ -119,7 +119,12 @@ public class UploadStoryFinalFragment extends Fragment {
         }else{
             mainXml.imageView.setVisibility(View.VISIBLE);
             mainXml.videoPlayerView.setVisibility(View.GONE);
-            Glide.with(requireContext()).load(file).into(mainXml.imageView);
+            if(from.equals("camera")){
+                Glide.with(requireContext()).load(file).into(mainXml.imageView);
+            }else{
+                Glide.with(requireContext()).load(filePath).into(mainXml.imageView);
+            }
+
 
         }
     }

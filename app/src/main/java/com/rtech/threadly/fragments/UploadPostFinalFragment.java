@@ -57,10 +57,17 @@ public class UploadPostFinalFragment extends Fragment {
             mainXml.imagePlaceHolder.setVisibility(View.GONE);
             mainXml.imageLoadProgressBar.setVisibility(View.GONE);
             mainXml.imageView.setVisibility(View.VISIBLE);
-            Glide.with(requireContext())
-                .load(file)
-                .into(mainXml.imageView);
-            setOnclickListeners();
+            if(from.equals("camera")){
+                Glide.with(requireContext())
+                        .load(file)
+                        .into(mainXml.imageView);
+                setOnclickListeners();
+            }else{
+                Glide.with(requireContext())
+                        .load(filePath)
+                        .into(mainXml.imageView);
+                setOnclickListeners();
+            }
 
 
         return mainXml.getRoot();

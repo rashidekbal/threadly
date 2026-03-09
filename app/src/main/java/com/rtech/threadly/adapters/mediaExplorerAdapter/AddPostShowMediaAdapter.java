@@ -15,6 +15,7 @@ import com.bumptech.glide.Glide;
 import com.rtech.threadly.R;
 import com.rtech.threadly.interfaces.AddPostMainFragmentOptionsClickInterface;
 import com.rtech.threadly.models.MediaModel;
+import com.rtech.threadly.utils.ReUsableFunctions;
 
 import java.util.ArrayList;
 
@@ -60,7 +61,22 @@ public class AddPostShowMediaAdapter extends RecyclerView.Adapter<AddPostShowMed
         }
 
 
-        holder.imageView.setOnClickListener(v -> callback.itemPicked(mediaModel.uri.toString(),mediaModel.isVideo ? "video" : "image"));
+        holder.imageView.setOnClickListener(v ->{
+            //when selected media is an image
+            if(!mediaModel.isVideo()){
+                    callback.itemPicked(mediaModel.uri.toString(), "image");
+                return;}
+//            when selected media is an video but in range of 1 min
+            if(mediaModel.getDuration()<=60){
+                callback.itemPicked(mediaModel.uri.toString(), "video");
+                return;
+            }
+//            if selected media dosen't comply with rules
+                    ReUsableFunctions.ShowToast("please select a video less than 1 minute");
+
+
+                }
+                );
 
     }}
 
