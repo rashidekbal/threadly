@@ -130,6 +130,9 @@ public class AllTypePostFeedAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         boolean[] isPlaying = {true};
         holder.videoPlayer_view.setPlayer(null);
 //gesture listener
+        if(isHavingNext(position)){
+            ExoplayerUtil.preloadReel(Uri.parse(postModels.get(position).getPostUrl()));
+        }
         videoFeedGestureListener =new GestureDetector.SimpleOnGestureListener(){
             @Override
             public boolean onDoubleTap(@NonNull MotionEvent e) {
@@ -474,7 +477,7 @@ public class AllTypePostFeedAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 
                 @Override
                 public void onError(String err) {
-                    holder.like_btn_image.setImageResource(R.drawable.heart_inactive);
+                    holder.like_btn_image.setImageResource(R.drawable.heart_inactive_icon_white);
 
                     setLikeCount(postModels.get(position).getLikeCount() - 1.0, holder);
                     postModels.get(position).setIsliked(false);
@@ -485,7 +488,7 @@ public class AllTypePostFeedAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 
             // Unlike the post if already liked
         } else {
-            holder.like_btn_image.setImageResource(R.drawable.heart_inactive);
+            holder.like_btn_image.setImageResource(R.drawable.heart_inactive_icon_white);
 
             setLikeCount(postModels.get(position).getLikeCount() - 1.0, holder);
             postModels.get(position).setIsliked(false);
@@ -527,7 +530,7 @@ public class AllTypePostFeedAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 
                 @Override
                 public void onError(String err) {
-                    holder.like_btn_image.setImageResource(R.drawable.heart_inactive);
+                    holder.like_btn_image.setImageResource(R.drawable.heart_inactive_icon_white);
 
                     setLikeCount(postModels.get(position).getLikeCount() - 1.0, holder);
                     postModels.get(position).setIsliked(false);
@@ -538,7 +541,7 @@ public class AllTypePostFeedAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 
             // Unlike the post if already liked
         } else {
-            holder.like_btn_image.setImageResource(R.drawable.heart_inactive);
+            holder.like_btn_image.setImageResource(R.drawable.heart_inactive_icon_white);
 
             setLikeCount(postModels.get(position).getLikeCount() - 1.0, holder);
             postModels.get(position).setIsliked(false);
@@ -587,7 +590,7 @@ public class AllTypePostFeedAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 
                 @Override
                 public void onError(String err) {
-                    holder.like_btn_image.setImageResource(R.drawable.heart_inactive);
+                    holder.like_btn_image.setImageResource(R.drawable.heart_inactive_icon_white);
 
                     setLikeCount(postModels.get(position).getLikeCount() - 1.0, holder);
                     postModels.get(position).setIsliked(false);
@@ -619,7 +622,7 @@ public class AllTypePostFeedAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 
                 @Override
                 public void onError(String err) {
-                    holder.like_btn_image.setImageResource(R.drawable.heart_inactive);
+                    holder.like_btn_image.setImageResource(R.drawable.heart_inactive_icon_white);
 
                     setLikeCount(postModels.get(position).getLikeCount() - 1.0, holder);
                     postModels.get(position).setIsliked(false);
@@ -894,6 +897,9 @@ public class AllTypePostFeedAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         }else{
             holder.likes_count_text.setText(Integer.toString(likes.intValue()));
         }
+    }
+    private boolean isHavingNext(int position) {
+        return postModels.size()-1>position;
     }
 
 
