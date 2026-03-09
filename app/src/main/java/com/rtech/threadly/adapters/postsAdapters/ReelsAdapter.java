@@ -6,8 +6,11 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.os.Handler;
 import android.util.Log;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -18,6 +21,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.AppCompatButton;
+import androidx.core.view.GestureDetectorCompat;
 import androidx.media3.common.util.UnstableApi;
 import androidx.media3.ui.PlayerView;
 import androidx.recyclerview.widget.RecyclerView;
@@ -50,7 +54,8 @@ public class ReelsAdapter extends RecyclerView.Adapter<ReelsAdapter.viewHolder> 
       SharedPreferences loginInfo;
       CommentsManager commentsManager;
       FollowManager followManager;
-
+    GestureDetector.SimpleOnGestureListener videoFeedGestureListener;
+    final int gestureLikeDuration=900;
 
     public ReelsAdapter(Context context, ArrayList<Posts_Model> reelsList) {
         this.dataList=reelsList;
@@ -80,23 +85,56 @@ public class ReelsAdapter extends RecyclerView.Adapter<ReelsAdapter.viewHolder> 
     @UnstableApi
     @Override
     public void onBindViewHolder(@NonNull viewHolder holder, @SuppressLint("RecyclerView") int rawPosition) {
-       int position=holder.getLayoutPosition();
+        boolean[]isLongPress={false};
+        boolean[] isPlaying = {true};
+        int position=holder.getLayoutPosition();
         if(isHavingNext(position)){
             ExoplayerUtil.preloadReel(Uri.parse(dataList.get(position).getPostUrl()));
         }
         holder.videoPlayer_view.setPlayer(null);
-        holder.videoPlayer_view.setOnClickListener(v->{
-            if(holder.isPlaying[0]){
-                ExoplayerUtil.pause();
-                holder.isPlaying[0]=false;
-                holder.play_btn.setVisibility(View.VISIBLE);
-            }else {
-                ExoplayerUtil.resume();
-                holder.isPlaying[0]=true;
-                holder.play_btn.setVisibility(View.GONE);
-
+        videoFeedGestureListener =new GestureDetector.SimpleOnGestureListener(){
+            @Override
+            public boolean onDoubleTap(@NonNull MotionEvent e) {
+                handleGestureLike(holder,position);
+                return super.onDoubleTap(e);
             }
+
+            @Override
+            public void onLongPress(@NonNull MotionEvent e) {
+                isLongPress[0]=true;
+                if (isPlaying[0]) {
+                    ExoplayerUtil.pause();
+                    isPlaying[0] = false;
+                } else {
+                    ExoplayerUtil.resume();
+                    isPlaying[0] = true;
+
+                }
+                super.onLongPress(e);
+            }
+
+
+
+        };
+        GestureDetectorCompat gestureDetector=new GestureDetectorCompat(context,videoFeedGestureListener);
+        holder.videoPlayer_view.setOnTouchListener((v,event)->{
+            gestureDetector.onTouchEvent(event);
+            if(event.getAction()==MotionEvent.ACTION_UP||event.getAction()==MotionEvent.ACTION_CANCEL){
+                if(isLongPress[0]){
+                    if (isPlaying[0]) {
+                        ExoplayerUtil.pause();
+                        isPlaying[0] = false;
+                    } else {
+                        ExoplayerUtil.resume();
+                        isPlaying[0] = true;
+
+                    }
+                    isLongPress[0]=false;
+                }
+            }
+            return true;
         });
+
 
         if(dataList.get(position).isFollowed||dataList.get(position).userId.equals(loginInfo.getString(SharedPreferencesKeys.USER_ID,"null"))){
             holder.followBtn.setVisibility(View.GONE);
@@ -220,7 +258,7 @@ public class ReelsAdapter extends RecyclerView.Adapter<ReelsAdapter.viewHolder> 
 
                     @Override
                     public void onError(String err) {
-                        holder.like_btn_image.setImageResource(R.drawable.heart_inactive);
+                        holder.like_btn_image.setImageResource(R.drawable.heart_inactive_icon_white);
                         holder.likes-=1.0;
                         setLikeCount(holder.likes,holder);
                         holder.is_liked=false;
@@ -233,7 +271,7 @@ public class ReelsAdapter extends RecyclerView.Adapter<ReelsAdapter.viewHolder> 
                 // Unlike the post if already liked
             }
             else {
-                holder.like_btn_image.setImageResource(R.drawable.heart_inactive);
+                holder.like_btn_image.setImageResource(R.drawable.heart_inactive_icon_white);
                 holder.likes-=1.0;
                 setLikeCount(holder.likes,holder);
                 holder.is_liked=false;
@@ -424,6 +462,42 @@ public class ReelsAdapter extends RecyclerView.Adapter<ReelsAdapter.viewHolder> 
             holder.likes_count_text.setText(Integer.toString(likes.intValue()).concat("k"));
         }else{
             holder.likes_count_text.setText(Integer.toString(likes.intValue()));
+        }
+    }
+    private void handleGestureLike(viewHolder holder, int position) {
+        holder.heartIconBig.setVisibility(View.VISIBLE);
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                holder.heartIconBig.setVisibility(View.GONE);
+            }
+        },gestureLikeDuration);
+        if (!dataList.get(position).isliked) {
+
+            holder.like_btn_image.setImageResource(R.drawable.red_heart_active_icon);
+
+            setLikeCount(dataList.get(position).getLikeCount() + 1.0, holder);
+            dataList.get(position).isliked = true;
+            holder.like_btn_image.setEnabled(false);
+            likeManager.likePost(dataList.get(position).postId, new NetworkCallbackInterface() {
+                @Override
+                public void onSuccess() {
+                    holder.like_btn_image.setEnabled(true);
+
+                }
+
+                @Override
+                public void onError(String err) {
+                    holder.like_btn_image.setImageResource(R.drawable.heart_inactive);
+
+                    setLikeCount(dataList.get(position).getLikeCount() - 1.0, holder);
+                    dataList.get(position).setIsliked(false);
+                    holder.like_btn_image.setEnabled(true);
+
+                }
+            });
+
+            // Unlike the post if already liked
         }
     }
 

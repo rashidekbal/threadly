@@ -246,7 +246,8 @@ public class PostCommentsViewerUtil {
                 commentsManager.addComment(postId, commentText, new NetworkCallbackInterfaceWithJsonObjectDelivery() {
                     @Override
                     public void onSuccess(JSONObject response) {
-
+                        noCommentsLayout.setVisibility(View.GONE);
+                        comments_recyclerView.setVisibility(View.VISIBLE);
                         posting_progressbar.setVisibility(View.GONE);
                         sendCommentBtn.setVisibility(View.VISIBLE);
                         sendCommentBtn.setClickable(true);
@@ -287,6 +288,7 @@ public class PostCommentsViewerUtil {
                         }catch(JSONException jsonError){
                             // Handle JSON error
                         }
+
 
                     }
 
