@@ -124,7 +124,7 @@ public class MessengerUtils {
                             //only one chat
 
                             AddNewConversationHistory(otherParty);
-                            insertMultiMessage(messagesList);
+                            insertMultiMessage(new ArrayList<>(messagesList));
 
                         }
                     }
@@ -135,7 +135,7 @@ public class MessengerUtils {
                     //add existing data and clear the list
 
                     AddNewConversationHistory(otherParty);
-                    insertMultiMessage(messagesList);
+                    insertMultiMessage(new ArrayList<>(messagesList));
                     messagesList.clear();
 
                    //start fresh
@@ -165,7 +165,7 @@ public class MessengerUtils {
             if(i==chats.length()-1){
                 //for the last chat
                 AddNewConversationHistory(otherParty);
-                insertMultiMessage(messagesList);
+                insertMultiMessage(new ArrayList<>(messagesList));
             }
 
         }
@@ -210,48 +210,50 @@ public class MessengerUtils {
         String ConversationId = OtherPartyUuid + Core.getPreference().getString(SharedPreferencesKeys.UUID, "null");
         final HistorySchema[] history = {null};
 executor.execute(()->{
+
     history[0] = DataBase.getInstance().historyOperator().getHistory(ConversationId);
+
+    if (history[0] == null) {
+        new ProfileManager().GetProfileByUuid(OtherPartyUuid, new NetworkCallbackInterfaceWithJsonObjectDelivery() {
+            @Override
+            public void onSuccess(JSONObject response) {
+                JSONArray Array = response.optJSONArray("data");
+                assert Array != null;
+                if (Array.length() > 0) {
+                    JSONObject object = Array.optJSONObject(0);
+                    String username = object.optString("username");
+                    String userid = object.optString("userid");
+                    String profile = object.optString("profilepic");
+                    executor.execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            DataBase.getInstance().historyOperator().insertHistory(new HistorySchema(OtherPartyUuid + Core.getPreference().getString(SharedPreferencesKeys.UUID, "null")
+                                    , username, userid, profile, OtherPartyUuid, "null",ReUsableFunctions.getTimestamp()));
+                            Log.d("notfound", "data inserted ");
+                        }
+                    });
+
+
+                }
+
+            }
+
+            @Override
+            public void onError(String err) {
+                Log.d("errorFetching", err);
+
+            }
+        });
+    } else {
+        //if history found update time stamp
+        executor.execute(()->{
+            String timeStamp=ReUsableFunctions.getTimestamp();
+            DataBase.getInstance().historyOperator().updateTimeStamp(OtherPartyUuid +Core.getPreference().getString(SharedPreferencesKeys.UUID,"null"),timeStamp);
+        });
+
+    }
 });
 
-        if (history[0] == null) {
-            new ProfileManager().GetProfileByUuid(OtherPartyUuid, new NetworkCallbackInterfaceWithJsonObjectDelivery() {
-                @Override
-                public void onSuccess(JSONObject response) {
-                    JSONArray Array = response.optJSONArray("data");
-                    assert Array != null;
-                    if (Array.length() > 0) {
-                        JSONObject object = Array.optJSONObject(0);
-                        String username = object.optString("username");
-                        String userid = object.optString("userid");
-                        String profile = object.optString("profilepic");
-                        executor.execute(new Runnable() {
-                            @Override
-                            public void run() {
-                                DataBase.getInstance().historyOperator().insertHistory(new HistorySchema(OtherPartyUuid + Core.getPreference().getString(SharedPreferencesKeys.UUID, "null")
-                                        , username, userid, profile, OtherPartyUuid, "null",ReUsableFunctions.getTimestamp()));
-                                Log.d("notfound", "data inserted ");
-                            }
-                        });
-
-
-                    }
-
-                }
-
-                @Override
-                public void onError(String err) {
-                    Log.d("errorFetching", err);
-
-                }
-            });
-        } else {
-            //if history found update time stamp
-            executor.execute(()->{
-                String timeStamp=ReUsableFunctions.getTimestamp();
-                DataBase.getInstance().historyOperator().updateTimeStamp(OtherPartyUuid +Core.getPreference().getString(SharedPreferencesKeys.UUID,"null"),timeStamp);
-            });
-
-        }
 
 
     }
@@ -269,7 +271,9 @@ executor.execute(()->{
     }
     public  void insertMultiMessage(List<MessageSchema> messages){
         executor.execute(()->{
-            DataBase.getInstance().MessageDao().insertMessage(messages);
+            if(!messages.isEmpty()){
+                DataBase.getInstance().MessageDao().insertMessage(messages);
+            }
         });
     }
     public void deleteMsg(String messageUid){
