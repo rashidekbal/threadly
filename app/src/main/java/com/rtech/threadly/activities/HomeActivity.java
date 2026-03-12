@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.Window;
 
 import androidx.activity.EdgeToEdge;
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -164,10 +165,19 @@ int currentFragment;
                                 });
 
         binding.bottomNavigation.setOnItemSelectedListener(item -> {
-            if(item.getItemId()==R.id.home){
-                getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-                addFragment(
-                        new homeFragment(
+            final int home=R.id.home;
+            final int search=R.id.search;
+            final int addPost=R.id.add_post;
+            final int reels=R.id.reels;
+            final int profile=R.id.profile;
+            int menuId=item.getItemId();
+            if(currentFragment==menuId)return  true;
+
+
+            if(menuId==home){
+                if(getSupportFragmentManager().getBackStackEntryCount()<1){
+                    addFragment(
+                            new homeFragment(
 //                                    (userid,profilePic) -> {
 //                        ViewStoriesFragment fragment=new ViewStoriesFragment(() -> {
 //                            binding.bottomNavigation.setVisibility(View.VISIBLE);
@@ -191,9 +201,14 @@ int currentFragment;
 //                        binding.bottomNavigation.setVisibility(View.INVISIBLE);
 //                        binding.cardView.setBackgroundColor(Color.BLACK);
 //                    }
-                                storyOpenCallback
-                        ), HomeActivityFragmentsIdEnum.HOME.toString());
-                currentFragment=item.getItemId();
+                                    storyOpenCallback
+                            ), HomeActivityFragmentsIdEnum.HOME.toString());
+                    currentFragment=menuId;
+                    return true;
+                }
+                getSupportFragmentManager().popBackStack(HomeActivityFragmentsIdEnum.HOME.toString(),0);
+                currentFragment=menuId;
+
 
 
 
@@ -211,7 +226,7 @@ int currentFragment;
                     }
 
                 }
-                currentFragment=item.getItemId();
+                currentFragment=search;
 
 
             } else if (item.getItemId()==R.id.add_post) {
@@ -226,8 +241,9 @@ int currentFragment;
                     }else{
                         addFragment(new ReelsFragment(),HomeActivityFragmentsIdEnum.REELS.toString());
                     }
-                    currentFragment=item.getItemId();
+
                }
+                currentFragment=item.getItemId();
 
             }else if (item.getItemId()==R.id.profile){
                 if(currentFragment!=R.id.profile){
@@ -331,14 +347,39 @@ int currentFragment;
         getSupportFragmentManager().addOnBackStackChangedListener(() -> {
             int backstackEntryCount=getSupportFragmentManager().getBackStackEntryCount();
             if(backstackEntryCount==0) {
-             HomeActivity.super.onBackPressed();
+             HomeActivity.super.getOnBackPressedDispatcher().onBackPressed();
             }
 
 
 
         });
 
+getOnBackPressedDispatcher().addCallback(this,new OnBackPressedCallback(true) {
+    @Override
+    public void handleOnBackPressed() {
+        int backstackEntryCount=getSupportFragmentManager().getBackStackEntryCount();
+        String entryID=getSupportFragmentManager().getBackStackEntryAt(backstackEntryCount-2).getName();
+        getSupportFragmentManager().popBackStack();
+        assert entryID != null;
+        if(entryID.equals(HomeActivityFragmentsIdEnum.HOME.toString())){
+            binding.bottomNavigation.setSelectedItemId(R.id.home);
 
+        }else if(entryID.equals(HomeActivityFragmentsIdEnum.REELS.toString())){
+            binding.bottomNavigation.setSelectedItemId(R.id.reels);
+
+        }else if(entryID.equals(HomeActivityFragmentsIdEnum.PROFILE.toString())){
+            binding.bottomNavigation.setSelectedItemId(R.id.profile);
+
+        }else if(entryID.equals(HomeActivityFragmentsIdEnum.SEARCH.toString())){
+
+            binding.bottomNavigation.setSelectedItemId(R.id.search);
+
+        }
+
+
+
+    }
+});
 
 
 
@@ -357,32 +398,15 @@ int currentFragment;
         return false;
 
     }
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        int backstackEntryCount=getSupportFragmentManager().getBackStackEntryCount();
-            String entryID=getSupportFragmentManager().getBackStackEntryAt(backstackEntryCount-1).getName();
-            assert entryID != null;
-                if(entryID.equals(HomeActivityFragmentsIdEnum.HOME.toString())){
-                    binding.bottomNavigation.setSelectedItemId(R.id.home);
-
-                }else if(entryID.equals(HomeActivityFragmentsIdEnum.REELS.toString())){
-                    binding.bottomNavigation.setSelectedItemId(R.id.reels);
-
-                }else if(entryID.equals(HomeActivityFragmentsIdEnum.PROFILE.toString())){
-                    binding.bottomNavigation.setSelectedItemId(R.id.profile);
-
-                }else if(entryID.equals(HomeActivityFragmentsIdEnum.SEARCH.toString())){
-
-                    binding.bottomNavigation.setSelectedItemId(R.id.search);
-
-                }
-
-
-
-
-    }
+//
+//
+//    @Override
+//    public void onBackPressed() {
+//        super.onBackPressed();
+//
+//
+//
+//    }
 
     protected void init(){
         loginInfo= Core.getPreference();
@@ -398,7 +422,7 @@ int currentFragment;
     private void addFragment(Fragment fragment,String fragmentId ){
         FragmentManager manager=getSupportFragmentManager();
         FragmentTransaction transaction=manager.beginTransaction();
-        transaction.replace(R.id.fragmentHolder,fragment);
+        transaction.add(R.id.fragmentHolder,fragment);
         transaction.addToBackStack(fragmentId);
         transaction.commit();
 
@@ -406,7 +430,7 @@ int currentFragment;
     private void addFragmentNoBackStack(Fragment fragment ){
         FragmentManager manager=getSupportFragmentManager();
         FragmentTransaction transaction=manager.beginTransaction();
-        transaction.replace(R.id.fragmentHolder,fragment);
+        transaction.add(R.id.fragmentHolder,fragment);
         transaction.commit();
 
     }
@@ -417,7 +441,7 @@ int currentFragment;
         bundle.putString("url",url);
         bundle.putInt("postid",postid);
         fragment.setArguments(bundle);
-        transaction.replace(R.id.fragmentHolder, fragment);
+        transaction.add(R.id.fragmentHolder, fragment);
         transaction.addToBackStack(null);
         transaction.commit();
 

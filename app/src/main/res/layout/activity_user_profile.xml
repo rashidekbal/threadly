@@ -7,15 +7,63 @@
     android:layout_height="match_parent"
     tools:context=".activities.UserProfileActivity"
     android:background="@color/white">
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/topBar"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_35"
+        android:layout_marginVertical="@dimen/dp_10"
+        >
+        <ImageView
+            android:id="@+id/backBtn"
+            android:layout_width="@dimen/dp_30"
+            android:layout_height="@dimen/dp_20"
+            android:src="@drawable/back_arrow"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+           android:layout_marginStart="@dimen/dp_5"
+            app:layout_constraintBottom_toBottomOf="parent"
+            />
+        <ImageView
+            android:id="@+id/lockIcon"
+            android:layout_width="@dimen/dp_25"
+            android:layout_height="@dimen/dp_25"
+            android:src="@drawable/lock_icon"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/userid_text"
+            android:layout_marginEnd="@dimen/dp_10"
+            android:visibility="gone"
+
+
+            />
+        <TextView
+            android:id="@+id/userid_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            tools:text="miaisback"
+            android:textAlignment="center"
+            android:textSize="@dimen/sp_25"
+            android:textColor="@color/black"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 <!--   general profile things-->
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipeRefresh"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_below="@+id/topBar"
+        >
         <androidx.core.widget.NestedScrollView
             android:id="@+id/nestedScrollView"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_10">
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -42,41 +90,6 @@
                     android:orientation="vertical"
                     android:visibility="gone"
                     android:id="@+id/profile_layout">
-                    <androidx.constraintlayout.widget.ConstraintLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/dp_35"
-                        android:layout_marginTop="@dimen/dp_10"
-                        >
-                        <ImageView
-                            android:id="@+id/lockIcon"
-                            android:layout_width="@dimen/dp_25"
-                            android:layout_height="@dimen/dp_25"
-                            android:src="@drawable/lock_icon"
-                            app:layout_constraintTop_toTopOf="parent"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toStartOf="@+id/userid_text"
-                            android:layout_marginEnd="@dimen/dp_10"
-                            android:visibility="gone"
-
-
-                            />
-                        <TextView
-                            android:id="@+id/userid_text"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textStyle="bold"
-                            tools:text="miaisback"
-                            android:textAlignment="center"
-                            android:textSize="@dimen/sp_25"
-                            android:textColor="@color/black"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            />
-
-                    </androidx.constraintlayout.widget.ConstraintLayout>
-
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"

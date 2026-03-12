@@ -1,4 +1,5 @@
 [versions]
+activityVersion = "1.13.0"
 agp = "8.13.2"
 androidNetworking = "1.0.4"
 
@@ -32,6 +33,7 @@ coreKtx = "1.15.0"
 
 [libraries]
 android-networking = { module = "com.github.amitshekhariitbhu.Fast-Android-Networking:android-networking", version.ref = "androidNetworking" }
+androidx-activity-v1130 = { module = "androidx.activity:activity", version.ref = "activityVersion" }
 androidx-camera-core = { module = "androidx.camera:camera-core", version.ref = "cameraCore" }
 androidx-camera-extensions = { module = "androidx.camera:camera-extensions", version.ref = "cameraCamera2" }
 androidx-camera-video = { module = "androidx.camera:camera-video", version.ref = "cameraCamera2" }

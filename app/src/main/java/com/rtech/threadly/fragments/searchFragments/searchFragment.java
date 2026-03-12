@@ -24,16 +24,15 @@ FragmentSearchBinding mainXml;
     OnBackPressedCallback backPressedCallback=new OnBackPressedCallback(true) {
         @Override
         public void handleOnBackPressed() {
-            if(getCurrentEntryCount()==0){
-                requireActivity().getSupportFragmentManager().popBackStackImmediate();
-                return ;
-            }
-            if(getCurrentEntryCount()==1){
-                requireActivity().getSupportFragmentManager().popBackStackImmediate();
-                return ;
-            }
+           if(getCurrentEntryCount()>1) {
+               getChildFragmentManager().popBackStackImmediate();
+               return;
 
-            getChildFragmentManager().popBackStack();
+
+           }
+           setEnabled(false);
+           requireActivity().getOnBackPressedDispatcher().onBackPressed();
+
 
 
         }
@@ -59,7 +58,7 @@ FragmentSearchBinding mainXml;
     }
 
     private void setBackPressBehaviour() {
-        requireActivity().getOnBackPressedDispatcher().addCallback(backPressedCallback);
+        requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(),backPressedCallback);
     }
 
     private void init() {

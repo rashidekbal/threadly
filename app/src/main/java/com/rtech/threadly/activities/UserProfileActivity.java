@@ -103,6 +103,7 @@ public class UserProfileActivity extends AppCompatActivity {
                 mainXml.postsFrameLayout.setVisibility(View.GONE);
             }
         });
+        mainXml.backBtn.setOnClickListener(v->{super.getOnBackPressedDispatcher().onBackPressed();});
 
 
 
