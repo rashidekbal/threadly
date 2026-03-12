@@ -115,6 +115,7 @@ public class ReUsableFunctions {
     public static void updateFcmTokenToServer() {
 
         FirebaseMessaging.getInstance().getToken().addOnCompleteListener(task -> {
+
             String token = task.getResult();
             if (token != null) {
                 FcmManager.UpdateFcmToken(token, new NetworkCallbackInterface() {
@@ -127,7 +128,7 @@ public class ReUsableFunctions {
 
                     @Override
                     public void onError(String err) {
-
+                        Log.d("tokenError", "onError: "+err);
                     }
                 });
 
