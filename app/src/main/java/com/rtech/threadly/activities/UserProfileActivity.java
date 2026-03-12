@@ -175,25 +175,6 @@ public class UserProfileActivity extends AppCompatActivity {
 
             }
         });
-//        mainXml.postsRecyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
-//            @Override
-//            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
-//                super.onScrolled(recyclerView, dx, dy);
-//                if(dy>0){
-//                    int currentVisibleCount=layoutManager.getChildCount();
-//                    int FirstVisibleCount=layoutManager.findFirstVisibleItemPosition();
-//                    int totalCount=layoutManager.getItemCount();
-//                    if(currentVisibleCount+FirstVisibleCount>=totalCount-threshold){
-//                        loadMore();
-//                    }
-//                }
-//            }
-//        });
-
-
-
-
-
     }
 
 
@@ -454,11 +435,13 @@ page=1;
 
     }
     private void getMorePosts(int PageNo,String userId){
+        mainXml.postLoadingPorgressBar.setVisibility(View.VISIBLE);
         isLoading=true;
         postsManager.getUserPosts(PageNo,userId, new NetworkCallbackInterfaceJsonObject() {
             @SuppressLint("NotifyDataSetChanged")
             @Override
             public void onSuccess(JSONObject response) {
+                mainXml.postLoadingPorgressBar.setVisibility(View.GONE);
                 mainXml.postsShimmer.setVisibility(View.GONE);
                 mainXml.postsRecyclerView.setVisibility(View.VISIBLE);
                 try {
@@ -499,6 +482,7 @@ page=1;
             @Override
             public void onError(int errorCode) {
                 isLoading=false;
+                mainXml.postLoadingPorgressBar.setVisibility(View.GONE);
                 Log.d("PostLoadingErr",Integer.toString(errorCode));
 
             }

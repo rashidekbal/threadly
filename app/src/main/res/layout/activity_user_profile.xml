@@ -364,6 +364,14 @@
                     android:layout_marginTop="@dimen/dp_25"
                     android:visibility="gone"
                     />
+                <ProgressBar
+                    android:id="@+id/postLoadingPorgressBar"
+                    android:layout_width="@dimen/dp_40"
+                    android:layout_height="@dimen/dp_40"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginVertical="@dimen/dp_10"
+                    android:visibility="gone"
+                    />
 
 
 
