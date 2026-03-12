@@ -162,20 +162,33 @@ public class UserProfileActivity extends AppCompatActivity {
         postAdapter.setHasStableIds(true);
         mainXml.postsRecyclerView.setLayoutManager(layoutManager);
         mainXml.postsRecyclerView.setAdapter(postAdapter);
-        mainXml.postsRecyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
+        mainXml.nestedScrollView.setNestedScrollingEnabled(true);
+        mainXml.nestedScrollView.setOnScrollChangeListener(new View.OnScrollChangeListener() {
             @Override
-            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                if(dy>0){
-                    int currentVisibleCount=layoutManager.getChildCount();
-                    int FirstVisibleCount=layoutManager.findFirstVisibleItemPosition();
-                    int totalCount=layoutManager.getItemCount();
-                    if(currentVisibleCount+FirstVisibleCount>=totalCount-threshold){
-                        loadMore();
-                    }
+            public void onScrollChange(View v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
+                int totalHeight=mainXml.nestedScrollView.getChildAt(0).getHeight();
+                final int triggerPoint=((totalHeight/100)*70);
+                if(scrollY<oldScrollY)return;
+                if(scrollY>triggerPoint){
+                  loadMore();
                 }
+
             }
         });
+//        mainXml.postsRecyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
+//            @Override
+//            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+//                super.onScrolled(recyclerView, dx, dy);
+//                if(dy>0){
+//                    int currentVisibleCount=layoutManager.getChildCount();
+//                    int FirstVisibleCount=layoutManager.findFirstVisibleItemPosition();
+//                    int totalCount=layoutManager.getItemCount();
+//                    if(currentVisibleCount+FirstVisibleCount>=totalCount-threshold){
+//                        loadMore();
+//                    }
+//                }
+//            }
+//        });
 
 
 

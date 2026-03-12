@@ -3,7 +3,6 @@ package com.rtech.threadly.utils;
 import static com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_EXPANDED;
 
 import android.content.Context;
-import android.media.Image;
 import android.os.Build;
 import android.util.Log;
 import android.view.View;
@@ -35,7 +34,6 @@ import com.rtech.threadly.network_managers.CommentsManager;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -80,8 +78,7 @@ public class PostCommentsViewerUtil {
 
         }
         //discard action
-        discardReplyToBtn.setOnClickListener(v->{runReplyToCleanUp();
-        });
+        discardReplyToBtn.setOnClickListener(v-> runReplyToCleanUp());
 
 
 
