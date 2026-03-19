@@ -33,6 +33,7 @@ public class ReelsFragment extends Fragment {
     ReelsAdapter adapter;
      boolean isFirstLaunch=true;
      int currentPosition;
+     final int LOAD_MORE_TRIGGER_POINT=6;
 
     public ReelsFragment() {
         // Required empty public constructor
@@ -54,9 +55,15 @@ public class ReelsFragment extends Fragment {
         //observe reels feed
         ReelsViewModel.getLiveVideoPostsFeed().observe(getViewLifecycleOwner(), postsModels -> {
             if(postsModels!=null){
-                reelsList.clear();
-                reelsList.addAll(postsModels);
-                adapter.notifyDataSetChanged();
+                if(reelsList.isEmpty()){
+                    reelsList.addAll(postsModels);
+                    adapter.notifyDataSetChanged();
+                }else{
+
+                    reelsList.addAll(postsModels);
+                    adapter.notifyItemRangeInserted(reelsList.size()-postsModels.size(),postsModels.size());
+                    Log.d("newRange", "new data came: ");
+                }
                 mainXml.shimmer.setVisibility(View.GONE);
                 mainXml.reelsViewpager.setVisibility(View.VISIBLE);
             }
@@ -81,13 +88,15 @@ public class ReelsFragment extends Fragment {
                             Uri.parse(reelsList.get(position).postUrl),
                             viewHolder.videoPlayer_view
                     );
-                    Log.d("postViewed", "emiting i+from reels fragment");
                     if(!reelsList.get(position).isViewed()){
                         SocketEmitterEvents.emitPostViewed(reelsList.get(position).getPostId());
                         reelsList.get(position).setViewed(true);
                     }
                 }
                 currentPosition=position;
+                if(currentPosition>=reelsList.size()-LOAD_MORE_TRIGGER_POINT){
+                    ReelsViewModel.loadMoreVideoPosts();
+                }
             }
         });
 

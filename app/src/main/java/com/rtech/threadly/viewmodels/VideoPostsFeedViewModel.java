@@ -18,6 +18,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 public class VideoPostsFeedViewModel extends AndroidViewModel {
+    boolean loading=true;
     PostsManager postsManager=new PostsManager();
     public VideoPostsFeedViewModel(@NonNull Application application) {
         super(application);
@@ -31,9 +32,11 @@ public class VideoPostsFeedViewModel extends AndroidViewModel {
     }
 // TODO: ADD pagination feature
     public  void loadVideoPostFeed() {
+        loading=true;
         postsManager.getVideoFeed(new NetworkCallbackInterfaceWithJsonObjectDelivery() {
             @Override
             public void onSuccess(JSONObject response) {
+                loading=false;
                 ArrayList<Posts_Model> tempArrayList = new ArrayList<>();
                 try {
                     JSONArray data=response.getJSONArray("data");
@@ -63,6 +66,7 @@ public class VideoPostsFeedViewModel extends AndroidViewModel {
 
                     MutableLiveVideoPostData.postValue(tempArrayList);
                 } catch (JSONException e) {
+                    loading=false;
                     throw new RuntimeException(e);
                 }
 
@@ -76,5 +80,11 @@ public class VideoPostsFeedViewModel extends AndroidViewModel {
         });
 
     }
+    public void loadMoreVideoPosts(){
+        if(loading)return;
+        loadVideoPostFeed();
+
+    }
+
 
 }
