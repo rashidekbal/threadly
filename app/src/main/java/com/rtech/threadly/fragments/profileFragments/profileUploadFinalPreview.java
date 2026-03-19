@@ -61,7 +61,7 @@ public class profileUploadFinalPreview extends Fragment {
         mainXml.close.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                activity.onBackPressed();
+                activity.getOnBackPressedDispatcher().onBackPressed();
             }
         });
         mainXml.uploadBtn.setOnClickListener(new View.OnClickListener() {
@@ -78,7 +78,7 @@ public class profileUploadFinalPreview extends Fragment {
                             profileEditorManager.updateUserProfile(url);
                             profileViewModel.loadProfile();
                             new File(ImagePath).delete();
-                            activity.onBackPressed();
+                            activity.getOnBackPressedDispatcher().onBackPressed();
                         } catch (JSONException e) {
                             throw new RuntimeException(e);
                         }
@@ -91,7 +91,7 @@ public class profileUploadFinalPreview extends Fragment {
                         mainXml.uploadBtn.setEnabled(true);
                         mainXml.progressBar.setVisibility(View.GONE);
                         ReUsableFunctions.ShowToast("upload failed");
-                        activity.onBackPressed();
+                        activity.getOnBackPressedDispatcher().onBackPressed();
 
 
                     }

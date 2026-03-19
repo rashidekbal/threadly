@@ -38,6 +38,7 @@ android {
 
         }
         release {
+            buildConfigField "String", "SOCKET_URL",  "\"https://threadlyserver.onrender.com/\""
             buildConfigField "String", "BASE_URL",   "\"https://threadlyserver.onrender.com/api\""
 
 
@@ -100,6 +101,9 @@ dependencies {
 //coil dependencies
     implementation(libs.coil) // Use the latest version
     implementation(libs.coil.network.okhttp) // For network requests
+
+
+    implementation libs.androidx.activity.v1130
 
 
 

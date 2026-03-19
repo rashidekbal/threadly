@@ -9,7 +9,6 @@ import android.view.View;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.OptIn;
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -56,13 +55,13 @@ public class CustomFeedActivity extends AppCompatActivity {
         data=getIntent();
         if(data==null){
             ReUsableFunctions.ShowToast("error occurred");
-            super.onBackPressed();
+            super.getOnBackPressedDispatcher().onBackPressed();
             return;
         }
         postsArray=data.getParcelableArrayListExtra("postList");
         if(postsArray==null){
             ReUsableFunctions.ShowToast("error occurred");
-            super.onBackPressed();
+            super.getOnBackPressedDispatcher().onBackPressed();
             return;
         }
         position=data.getIntExtra("position",0);
