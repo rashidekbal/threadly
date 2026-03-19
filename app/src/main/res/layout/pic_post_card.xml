@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
 
     android:orientation="vertical"
     android:layout_marginBottom="@dimen/dp_15"
@@ -168,14 +169,13 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center_vertical"
-            android:visibility="gone"
+            android:visibility="visible"
             >
             <ImageView
                 android:layout_width="@dimen/dp_34"
                 android:layout_height="@dimen/dp_34"
                 android:src="@drawable/test_profile"
                 android:background="@drawable/circle"
-                android:layout_marginLeft="@dimen/dp_10"
                 android:scaleType="centerCrop"
                 android:clipToOutline="true"
                 android:layout_centerVertical="true"
@@ -184,7 +184,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_10"
+
                 android:text="Liked by"
                 android:textColor="@color/black"
                 />
@@ -194,6 +194,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="3dp"
                 android:textStyle="bold"
+                tools:text="gandu ji"
                 android:textColor="@color/black"/>
             <TextView
                 android:layout_width="wrap_content"
@@ -221,6 +222,7 @@
             android:layout_height="wrap_content"
             android:textColor="@color/black"
             android:id="@+id/caption_text"
+            tools:text="caption"
             />
         <TextView
             android:id="@+id/post_creationDate"
