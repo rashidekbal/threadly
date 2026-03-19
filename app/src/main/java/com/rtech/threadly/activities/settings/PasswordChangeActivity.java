@@ -35,8 +35,9 @@ public class PasswordChangeActivity extends AppCompatActivity {
     }
 
     private void setClickHandlers(){
-        mainXml.backBtn.setOnClickListener(v->{super.onBackPressed();});
-        mainXml.changePassword.setOnClickListener(v->{changeFragment(new Password_change_fragment(),null);});
+        mainXml.backBtn.setOnClickListener(v-> super.getOnBackPressedDispatcher().onBackPressed());
+        mainXml.changePassword.setOnClickListener(v-> changeFragment(new Password_change_fragment(),"PASSWORD_CHANGE_FRAGMENT"));
+
 
     }
     private void init(){

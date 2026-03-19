@@ -9,7 +9,6 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
@@ -68,16 +67,13 @@ public class NotificationActivity extends AppCompatActivity {
 
         //---------------------------
         //backBtn function setting
-        mainXml.backBtn.setOnClickListener(v-> super.onBackPressed());
-        getSupportFragmentManager().addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
-            @Override
-            public void onBackStackChanged() {
-                if(getSupportFragmentManager().getBackStackEntryCount()==0){
-                    mainXml.frameLayout.setVisibility(View.GONE);
-                    return;
-                }
-                mainXml.frameLayout.setVisibility(View.VISIBLE);
+        mainXml.backBtn.setOnClickListener(v-> super.getOnBackPressedDispatcher().onBackPressed());
+        getSupportFragmentManager().addOnBackStackChangedListener(() -> {
+            if(getSupportFragmentManager().getBackStackEntryCount()==0){
+                mainXml.frameLayout.setVisibility(View.GONE);
+                return;
             }
+            mainXml.frameLayout.setVisibility(View.VISIBLE);
         });
     }
 
@@ -86,9 +82,7 @@ public class NotificationActivity extends AppCompatActivity {
         if(PreferenceUtil.isPrivate()){
             mainXml.followRequestsLayout.setVisibility(View.VISIBLE);
 
-            mainXml.followRequestsLayout.setOnClickListener(v->{
-                addFragment(new FollowRequestsFragment());
-            });
+            mainXml.followRequestsLayout.setOnClickListener(v-> addFragment(new FollowRequestsFragment()));
 
 
 

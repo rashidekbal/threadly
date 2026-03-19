@@ -76,7 +76,7 @@ public class UploadPostFinalFragment extends Fragment {
 
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
-            activity.onBackPressed();
+            activity.getOnBackPressedDispatcher().onBackPressed();
             return true;
         }
         return false;
@@ -129,7 +129,7 @@ public class UploadPostFinalFragment extends Fragment {
 
             }else {
                 ReUsableFunctions.ShowToast(activity,"no image found err");
-                requireActivity().onBackPressed();
+                requireActivity().getOnBackPressedDispatcher().onBackPressed();
             }
         });
     }

@@ -71,42 +71,19 @@ ProfileViewModel profileViewModel;
             }
         });
 
-        mainXml.changeProfileBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showUploadOptions();
-
-            }
-        });
+        mainXml.changeProfileBtn.setOnClickListener(v -> showUploadOptions());
 
 
-        mainXml.nameLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                callback.onItemClick(v);
-
-            }
-        });
-        mainXml.usernameLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                callback.onItemClick(v);
-
-            }
-        });
-        mainXml.bioLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                callback.onItemClick(v);
-            }
-        });
+        mainXml.nameLayout.setOnClickListener(v -> callback.onItemClick(v));
+        mainXml.usernameLayout.setOnClickListener(v -> callback.onItemClick(v));
+        mainXml.bioLayout.setOnClickListener(v -> callback.onItemClick(v));
 
 
         return mainXml.getRoot();
     }
   public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
-            activity.onBackPressed();
+            activity.getOnBackPressedDispatcher().onBackPressed();
             return true;
         }
         return false;

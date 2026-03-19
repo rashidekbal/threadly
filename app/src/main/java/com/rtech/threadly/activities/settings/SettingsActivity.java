@@ -56,7 +56,7 @@ public class SettingsActivity extends AppCompatActivity {
         mainXml.accountCenter.setOnClickListener(v-> changeFragment(new ControlCenterFragment()));
         mainXml.openPrivacySettingBtn.setOnClickListener(v->changeFragment(new PrivacySetting_fragment()));
         mainXml.logoutBtn.setOnClickListener(v-> handleLogout());
-        mainXml.backBtn.setOnClickListener(v->super.onBackPressed());
+        mainXml.backBtn.setOnClickListener(v->super.getOnBackPressedDispatcher().onBackPressed());
 
     }
     private void setFragmentChangeListener(){

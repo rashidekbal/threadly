@@ -41,7 +41,7 @@ public class Password_change_fragment extends Fragment {
     }
 
     private void setClickHandlers() {
-        mainXml.backBtn.setOnClickListener(v->requireActivity().onBackPressed());
+        mainXml.backBtn.setOnClickListener(v->requireActivity().getOnBackPressedDispatcher().onBackPressed());
         mainXml.resetPasswordBtn.setOnClickListener(v->handlePasswordChange());
     }
     private void handlePasswordChange(){
