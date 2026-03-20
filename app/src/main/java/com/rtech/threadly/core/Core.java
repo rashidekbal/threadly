@@ -22,6 +22,7 @@ import com.rtech.threadly.Threadly;
 import com.rtech.threadly.constants.Constants;
 import com.rtech.threadly.constants.SharedPreferencesKeys;
 import com.rtech.threadly.network_managers.MessageManager;
+import com.rtech.threadly.services.FcmService;
 import com.rtech.threadly.utils.ExoplayerUtil;
 import com.rtech.threadly.utils.MessengerUtils;
 import com.rtech.threadly.utils.ReUsableFunctions;
@@ -122,6 +123,11 @@ public class Core {
                         -1,
                         false));
             });
+            try {
+                FcmService.notifyReceivedToSender(senderUuid,MessageUid);
+            } catch (JSONException e) {
+                Log.d("error", "call: "+e.toString());
+            }
         }
     };
     public static Emitter.Listener MsgStatusUpdate = new Emitter.Listener() {

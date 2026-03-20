@@ -420,11 +420,13 @@ getOnBackPressedDispatcher().addCallback(this,new OnBackPressedCallback(true) {
     }
 
     private void addFragment(Fragment fragment,String fragmentId ){
+
         FragmentManager manager=getSupportFragmentManager();
         FragmentTransaction transaction=manager.beginTransaction();
-        transaction.add(R.id.fragmentHolder,fragment);
+        transaction.replace(R.id.fragmentHolder,fragment);
         transaction.addToBackStack(fragmentId);
         transaction.commit();
+
 
     }
     private void addFragmentNoBackStack(Fragment fragment ){
@@ -441,7 +443,7 @@ getOnBackPressedDispatcher().addCallback(this,new OnBackPressedCallback(true) {
         bundle.putString("url",url);
         bundle.putInt("postid",postid);
         fragment.setArguments(bundle);
-        transaction.add(R.id.fragmentHolder, fragment);
+        transaction.replace(R.id.fragmentHolder, fragment);
         transaction.addToBackStack(null);
         transaction.commit();
 

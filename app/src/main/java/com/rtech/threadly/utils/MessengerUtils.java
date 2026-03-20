@@ -43,7 +43,7 @@ public class MessengerUtils {
         });
 
     }
-    private  void OrganizeChats(JSONArray chats){
+    public  void OrganizeChats(JSONArray chats){
         String conversationId="";
         List<MessageSchema> messagesList=new ArrayList<>();
         for(int i=0;i<chats.length();i++){

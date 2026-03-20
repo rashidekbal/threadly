@@ -27,9 +27,11 @@ import com.rtech.threadly.constants.SharedPreferencesKeys;
 import com.rtech.threadly.constants.TypeConstants;
 import com.rtech.threadly.core.Core;
 import com.rtech.threadly.interfaces.NetworkCallbackInterface;
+import com.rtech.threadly.interfaces.NetworkCallbackInterfaceWithJsonObjectDelivery;
 import com.rtech.threadly.network_managers.FcmManager;
 
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -72,10 +74,13 @@ public class ReUsableFunctions {
         editor.clear();
         editor.apply();
         SocketManager.getInstance().disconnect();
-        Executors.newSingleThreadExecutor().execute(() -> DataBase.getInstance().clearAllTables());
-        Intent intent = new Intent(Threadly.getGlobalContext(), LoginActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        Threadly.getGlobalContext().startActivity(intent);
+        Executors.newSingleThreadExecutor().execute(() -> {
+            DataBase.getInstance().clearAllTables();
+            Intent intent = new Intent(Threadly.getGlobalContext(), LoginActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            Threadly.getGlobalContext().startActivity(intent);
+        });
+
 
     }
 
@@ -118,17 +123,18 @@ public class ReUsableFunctions {
 
             String token = task.getResult();
             if (token != null) {
-                FcmManager.UpdateFcmToken(token, new NetworkCallbackInterface() {
-                    @Override
-                    public void onSuccess() {
 
+                FcmManager.UpdateFcmToken(token, new NetworkCallbackInterfaceWithJsonObjectDelivery() {
+                    @Override
+                    public void onSuccess(JSONObject response) {
+                        Log.d("fcmToken", "onSuccess: "+response.toString());
                         Core.getPreference().edit().putBoolean(SharedPreferencesKeys.IS_FCM_TOKEN_UPLOADED, true)
                                 .apply();
                     }
 
                     @Override
                     public void onError(String err) {
-                        Log.d("tokenError", "onError: "+err);
+
                     }
                 });
 

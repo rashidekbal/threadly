@@ -60,7 +60,7 @@ boolean isTypePassword=true;
         init();
         login_btn.setOnClickListener(v -> {
 
-            //TODO: add feature to show if user is banned from the platform and for how long
+            //TODO: add feature to show if user is banned from the platform and for how long and why
             login_btn.setEnabled(false);
             String userid=userid_field.getText().toString().trim();
             String password=password_filed.getText().toString().trim();

@@ -2,9 +2,12 @@ package com.rtech.threadly;
 
 import android.app.Application;
 import android.content.Context;
+import android.util.Log;
 
 import com.rtech.threadly.constants.SharedPreferencesKeys;
 import com.rtech.threadly.core.Core;
+import com.rtech.threadly.network_managers.MessageManager;
+import com.rtech.threadly.utils.MessengerUtils;
 import com.rtech.threadly.utils.ReUsableFunctions;
 
 public class Threadly extends Application {
@@ -17,9 +20,13 @@ public class Threadly extends Application {
         Core.init(instance.getApplicationContext());
         if (Core.getPreference().getBoolean(SharedPreferencesKeys.IS_LOGGED_IN, false)
                 && !Core.getPreference().getBoolean(SharedPreferencesKeys.IS_FCM_TOKEN_UPLOADED, false)) {
+            Log.d("fcmcheck", "onCreate: fcm token not uploaded ");
             ReUsableFunctions.updateFcmTokenToServer();
+            MessageManager.checkAndGetPendingMessages();
+            return;
 
         }
+
 
     }
 

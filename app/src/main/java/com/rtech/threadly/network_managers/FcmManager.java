@@ -10,13 +10,14 @@ import com.rtech.threadly.constants.ApiEndPoints;
 import com.rtech.threadly.constants.SharedPreferencesKeys;
 import com.rtech.threadly.core.Core;
 import com.rtech.threadly.interfaces.NetworkCallbackInterface;
+import com.rtech.threadly.interfaces.NetworkCallbackInterfaceWithJsonObjectDelivery;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 public class FcmManager {
 
-    public static void UpdateFcmToken(String token, NetworkCallbackInterface callbackInterface){
+    public static void UpdateFcmToken(String token, NetworkCallbackInterfaceWithJsonObjectDelivery callbackInterface){
         String url= ApiEndPoints.FCM_TOKEN_UPDATE;
         JSONObject object=new JSONObject();
         try {
@@ -26,7 +27,7 @@ public class FcmManager {
                     .addApplicationJsonBody(object).build().getAsJSONObject(new JSONObjectRequestListener() {
                         @Override
                         public void onResponse(JSONObject response) {
-                            callbackInterface.onSuccess();
+                            callbackInterface.onSuccess(response);
 
                         }
 

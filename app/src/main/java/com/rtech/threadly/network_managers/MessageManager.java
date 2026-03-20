@@ -73,34 +73,10 @@ public class MessageManager {
                             JSONArray data=response.optJSONArray("data");
                             assert data != null;
                             if(data.length()>0){
-
-                                        new MessengerUtils().AddNewConversationHistory(senderUUid);
-
-                                 for(int i=0;i<data.length();i++){
-                                    JSONObject object1=data.optJSONObject(i);
-
-                                    String MsgUid=object1.optString("messageUid");
-                                    String replyToMsgUid=object1.optString("replyToMessageId");
-                                    String senderUuid=object1.optString("senderUUId");
-                                    String receiverUuid=object1.optString("recieverUUId");
-                                    String type=object1.optString("type");
-                                    String message=object1.optString("message");
-                                    String timeStamp=ReUsableFunctions.toIso8601Utc(object1.optString("creationTime"));
-                                    int deliveryStatus=object1.optInt("deliveryStatus");
-                                    boolean isDeleted=object1.optInt("isDeleted")==1;
-                                    String conversationUid=senderUUid+Core.getPreference().getString(SharedPreferencesKeys.UUID,"null");
-                                    Executors.newSingleThreadExecutor().execute(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                           // TODO consider all type of messages
-                                            DataBase.getInstance().MessageDao().insertMessage(new MessageSchema(
-                                                    MsgUid,conversationUid,replyToMsgUid,
-                                                    senderUuid,receiverUuid,message,type,-1,"null",timeStamp,-1,isDeleted
-                                            ));
-                                        }
-                                    });
-
-
+                                try{
+                                    new MessengerUtils().OrganizeChats(data);
+                                } catch (Exception e) {
+                                    Log.d(TAG, "exception: "+e.toString());
                                 }
                             }
                         }

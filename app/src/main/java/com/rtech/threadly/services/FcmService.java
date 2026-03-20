@@ -22,6 +22,7 @@ import com.rtech.threadly.constants.Constants;
 import com.rtech.threadly.constants.SharedPreferencesKeys;
 import com.rtech.threadly.core.Core;
 import com.rtech.threadly.interfaces.NetworkCallbackInterface;
+import com.rtech.threadly.interfaces.NetworkCallbackInterfaceWithJsonObjectDelivery;
 import com.rtech.threadly.network_managers.FcmManager;
 import com.rtech.threadly.utils.MessengerUtils;
 import com.rtech.threadly.utils.PreferenceUtil;
@@ -39,10 +40,10 @@ public class FcmService extends FirebaseMessagingService {
     public void onNewToken(@NonNull String token) {
 
         super.onNewToken(token);
-        FcmManager.UpdateFcmToken(token, new NetworkCallbackInterface() {
+        FcmManager.UpdateFcmToken(token, new NetworkCallbackInterfaceWithJsonObjectDelivery() {
             @Override
-            public void onSuccess() {
-
+            public void onSuccess(JSONObject response) {
+                Log.d("fcmToken", "onSuccess: "+response.toString());
                 Core.getPreference().edit().putBoolean(SharedPreferencesKeys.IS_FCM_TOKEN_UPLOADED, true).apply();
 
             }
@@ -250,7 +251,7 @@ public class FcmService extends FirebaseMessagingService {
 
     }
 
-    private void notifyReceivedToSender(String SenderUUid, String msgUid) throws JSONException {
+    public static void notifyReceivedToSender(String SenderUUid, String msgUid) throws JSONException {
         JSONObject dataObject = new JSONObject();
         dataObject.put("senderUUid", SenderUUid);
         dataObject.put("msgUid", msgUid);
@@ -322,8 +323,8 @@ public class FcmService extends FirebaseMessagingService {
                 .getString(SharedPreferencesKeys.USER_ID, "null").equals(message.getData().get("userId"))) {
             ReUsableFunctions.logoutWithoutActivity();
             Notification.Builder notification = new Notification.Builder(Threadly.getGlobalContext())
-                    .setContentTitle("new Device login detected")
-                    .setContentText("you have been logged out... ").setChannelId(Constants.MISC_CHANNEL.toString())
+                    .setContentTitle("You have been logged out ")
+                    .setContentText(message.getData().get("logoutMessage")).setChannelId(Constants.MISC_CHANNEL.toString())
                     .setSmallIcon(R.drawable.splash);
             Core.getNotificationManager().notify(1, notification.build());
         }

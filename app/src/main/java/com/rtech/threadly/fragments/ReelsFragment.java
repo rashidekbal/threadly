@@ -130,6 +130,23 @@ public class ReelsFragment extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
+
         ExoplayerUtil.stop();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+
+        ExoplayerUtil.stop();
+    }
+
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        Log.d("fragmentReel", "onHide change: "+hidden);
+        if(hidden){
+            ExoplayerUtil.stop();
+        }
     }
 }

@@ -26,6 +26,7 @@ import com.rtech.threadly.Threadly;
 import com.rtech.threadly.databinding.FragmentEditProfileMainBinding;
 import com.rtech.threadly.interfaces.FragmentItemClickInterface;
 import com.rtech.threadly.models.Profile_Model;
+import com.rtech.threadly.utils.ExoplayerUtil;
 import com.rtech.threadly.viewmodels.ProfileViewModel;
 
 public class EditProfileMainFragment extends Fragment {
@@ -61,6 +62,7 @@ ProfileViewModel profileViewModel;
         Glide.with(Threadly.getGlobalContext()).load(R.drawable.blank_profile).circleCrop().into(mainXml.profileImage);
         setHasOptionsMenu(true);
         profileViewModel=new ViewModelProvider(activity).get(ProfileViewModel.class);
+
 
 
         profileViewModel.getProfileLiveData().observe(getViewLifecycleOwner(), new Observer<Profile_Model>() {
