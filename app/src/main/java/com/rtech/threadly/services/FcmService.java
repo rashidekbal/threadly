@@ -21,6 +21,7 @@ import com.rtech.threadly.activities.Messenger.MessengerMainMessagePageActivity;
 import com.rtech.threadly.constants.Constants;
 import com.rtech.threadly.constants.SharedPreferencesKeys;
 import com.rtech.threadly.core.Core;
+import com.rtech.threadly.interfaces.NetworkCallBacks.NetworkCallbackInterfaceJsonObject;
 import com.rtech.threadly.interfaces.NetworkCallbackInterface;
 import com.rtech.threadly.interfaces.NetworkCallbackInterfaceWithJsonObjectDelivery;
 import com.rtech.threadly.network_managers.FcmManager;
@@ -40,7 +41,7 @@ public class FcmService extends FirebaseMessagingService {
     public void onNewToken(@NonNull String token) {
 
         super.onNewToken(token);
-        FcmManager.UpdateFcmToken(token, new NetworkCallbackInterfaceWithJsonObjectDelivery() {
+        FcmManager.UpdateFcmToken(token, new NetworkCallbackInterfaceJsonObject() {
             @Override
             public void onSuccess(JSONObject response) {
                 Log.d("fcmToken", "onSuccess: "+response.toString());
@@ -49,7 +50,7 @@ public class FcmService extends FirebaseMessagingService {
             }
 
             @Override
-            public void onError(String err) {
+            public void onError(int err) {
 
             }
         });
