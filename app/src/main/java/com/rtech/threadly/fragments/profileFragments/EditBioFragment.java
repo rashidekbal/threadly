@@ -24,6 +24,8 @@ import com.rtech.threadly.models.Profile_Model;
 import com.rtech.threadly.utils.ReUsableFunctions;
 import com.rtech.threadly.viewmodels.ProfileViewModel;
 
+import org.json.JSONObject;
+
 
 public class EditBioFragment extends Fragment {
     FragmentEditBioBinding mainXml;
@@ -100,7 +102,7 @@ public class EditBioFragment extends Fragment {
 
                     profileEditorManager.UpdateUserBio(bio, new NetworkCallbackInterfaceJsonObject() {
                         @Override
-                        public void onSuccess() {
+                        public void onSuccess(JSONObject response) {
                             mainXml.progressBar.setVisibility(View.GONE);
                             mainXml.cancelButton.setEnabled(true);
                             mainXml.saveButton.setEnabled(true);
