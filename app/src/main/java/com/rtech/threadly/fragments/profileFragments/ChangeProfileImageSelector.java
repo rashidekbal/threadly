@@ -21,7 +21,9 @@ import android.view.ViewGroup;
 import com.rtech.threadly.Threadly;
 import com.rtech.threadly.adapters.mediaExplorerAdapter.uploadProfileAdapter;
 import com.rtech.threadly.databinding.FragmentChangeProfileImageSelectorBinding;
+import com.rtech.threadly.interfaces.NetworkCallBacks.NetworkCallbackInterfaceJsonObject;
 import com.rtech.threadly.interfaces.NetworkCallbackInterfaceWithJsonObjectDelivery;
+import com.rtech.threadly.interfaces.NetworkCallbackInterfaceWithProgressTracking;
 import com.rtech.threadly.network_managers.ProfileEditorManager;
 import com.rtech.threadly.utils.PermissionManagementUtil;
 import com.rtech.threadly.utils.ReUsableFunctions;
@@ -120,7 +122,7 @@ public class ChangeProfileImageSelector extends Fragment {
               // upload logic
               try {
                   File photo=ReUsableFunctions.getFileFromUri(Threadly.getGlobalContext(),pickedUri);
-                  profileEditorManager.ChangeUserProfile(photo, new NetworkCallbackInterfaceWithJsonObjectDelivery() {
+                  profileEditorManager.ChangeUserProfile(photo, new NetworkCallbackInterfaceWithProgressTracking() {
                       @Override
                       public void onSuccess(JSONObject response) {
                           JSONObject data;
@@ -149,8 +151,14 @@ public class ChangeProfileImageSelector extends Fragment {
                           ReUsableFunctions.ShowToast("error uploading profile pic");
                           mainXml.nextBtn.setEnabled(true);
                           mainXml.progressbar.setVisibility(View.GONE);
+                      }
+
+                      @Override
+                      public void progress(long bytesUploaded, long totalBytes) {
 
                       }
+
+
                   });
               } catch (IOException e) {
                   ReUsableFunctions.ShowToast("error uploading profile pic");

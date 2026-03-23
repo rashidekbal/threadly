@@ -17,6 +17,7 @@ import android.view.inputmethod.InputMethodManager;
 
 import com.rtech.threadly.R;
 import com.rtech.threadly.databinding.FragmentEditBioBinding;
+import com.rtech.threadly.interfaces.NetworkCallBacks.NetworkCallbackInterfaceJsonObject;
 import com.rtech.threadly.interfaces.NetworkCallbackInterface;
 import com.rtech.threadly.network_managers.ProfileEditorManager;
 import com.rtech.threadly.models.Profile_Model;
@@ -97,7 +98,7 @@ public class EditBioFragment extends Fragment {
                 }else{
                     mainXml.progressBar.setVisibility(View.VISIBLE);
 
-                    profileEditorManager.UpdateUserBio(bio, new NetworkCallbackInterface() {
+                    profileEditorManager.UpdateUserBio(bio, new NetworkCallbackInterfaceJsonObject() {
                         @Override
                         public void onSuccess() {
                             mainXml.progressBar.setVisibility(View.GONE);
@@ -109,7 +110,7 @@ public class EditBioFragment extends Fragment {
                         }
 
                         @Override
-                        public void onError(String err) {
+                        public void onError(int err) {
                             mainXml.progressBar.setVisibility(View.GONE);
                             mainXml.cancelButton.setEnabled(true);
                             mainXml.saveButton.setEnabled(true);

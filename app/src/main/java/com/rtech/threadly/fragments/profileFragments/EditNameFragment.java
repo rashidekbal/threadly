@@ -17,6 +17,7 @@ import android.view.inputmethod.InputMethodManager;
 import com.rtech.threadly.BuildConfig;
 import com.rtech.threadly.R;
 import com.rtech.threadly.databinding.FragmentEditNameBinding;
+import com.rtech.threadly.interfaces.NetworkCallBacks.NetworkCallbackInterfaceJsonObject;
 import com.rtech.threadly.interfaces.NetworkCallbackInterfaceWithJsonObjectDelivery;
 import com.rtech.threadly.network_managers.ProfileEditorManager;
 import com.rtech.threadly.models.Profile_Model;
@@ -91,7 +92,7 @@ public class EditNameFragment extends Fragment {
 
             }else{
                 mainXml.progressBar.setVisibility(View.VISIBLE);
-                profileEditorManager.UpdateName(name, new NetworkCallbackInterfaceWithJsonObjectDelivery() {
+                profileEditorManager.UpdateName(name, new NetworkCallbackInterfaceJsonObject() {
                     @Override
                     public void onSuccess(JSONObject response) {
                         mainXml.progressBar.setVisibility(View.GONE);
@@ -119,7 +120,7 @@ public class EditNameFragment extends Fragment {
                     }
 
                     @Override
-                    public void onError(String err) {
+                    public void onError(int errCode) {
                         mainXml.progressBar.setVisibility(View.GONE);
                         mainXml.cancelButton.setEnabled(true);
                         mainXml.saveButton.setEnabled(true);
