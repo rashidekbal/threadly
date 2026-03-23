@@ -199,7 +199,7 @@ public class StoriesViewpagerAdapter extends RecyclerView.Adapter<StoriesViewpag
                     .setPositiveButton("yes", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            storiesManager.RemoveStory(story.getStoryId(), new NetworkCallbackInterface() {
+                            storiesManager.RemoveStory(story.getStoryId(), new NetworkCallbackInterfaceJsonObject() {
                                 @Override
                                 public void onSuccess() {
                                     dialog.dismiss();
@@ -210,7 +210,7 @@ public class StoriesViewpagerAdapter extends RecyclerView.Adapter<StoriesViewpag
                                 }
 
                                 @Override
-                                public void onError(String err) {
+                                public void onError(int err) {
                                     delete_btn.setEnabled(true);
                                     optionsDialog.hide();
                                     dialog.dismiss();

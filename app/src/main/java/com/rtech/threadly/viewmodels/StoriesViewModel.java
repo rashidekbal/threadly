@@ -7,6 +7,7 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.rtech.threadly.interfaces.NetworkCallBacks.NetworkCallbackInterfaceJsonObject;
 import com.rtech.threadly.interfaces.NetworkCallbackInterfaceWithJsonObjectDelivery;
 import com.rtech.threadly.network_managers.StoriesManager;
 import com.rtech.threadly.models.StoriesModel;
@@ -36,7 +37,7 @@ public class StoriesViewModel extends AndroidViewModel {
 
     public void loadStories() {
         ArrayList<StoriesModel> arrayList=new ArrayList<>();
-        storiesManager.getStories(new NetworkCallbackInterfaceWithJsonObjectDelivery() {
+        storiesManager.getStories(new NetworkCallbackInterfaceJsonObject() {
             @Override
             public void onSuccess(JSONObject response) {
                 try {
@@ -57,7 +58,7 @@ public class StoriesViewModel extends AndroidViewModel {
             }
 
             @Override
-            public void onError(String err) {
+            public void onError(int err) {
                 mutableLiveData.postValue(new ArrayList<>());
 
             }
@@ -77,7 +78,7 @@ public class StoriesViewModel extends AndroidViewModel {
     }
     public void loadMyStories(){
         ArrayList<StoryMediaModel> arrayList=new ArrayList<>();
-        storiesManager.getMyStories( new NetworkCallbackInterfaceWithJsonObjectDelivery() {
+        storiesManager.getMyStories( new NetworkCallbackInterfaceJsonObject() {
             @Override
             public void onSuccess(JSONObject response) {
                 try {
@@ -104,7 +105,7 @@ public class StoriesViewModel extends AndroidViewModel {
             }
 
             @Override
-            public void onError(String err) {
+            public void onError(int err) {
                 mutableStoryMediaModelData.postValue(new ArrayList<>());
 
             }
