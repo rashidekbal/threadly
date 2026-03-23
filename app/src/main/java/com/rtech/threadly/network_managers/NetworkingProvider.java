@@ -17,6 +17,7 @@ import java.io.File;
 public class NetworkingProvider {
     public static void get(String Url,String token ,NetworkCallbackInterfaceJsonObject callbackInterfaceJsonObject){
 
+
             AndroidNetworking.get(Url).setPriority(Priority.HIGH).addHeaders("Authorization","Bearer "+token)
                     .build()
                     .getAsJSONObject(new JSONObjectRequestListener() {
