@@ -8,7 +8,6 @@ import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.JSONObjectRequestListener;
 import com.androidnetworking.interfaces.UploadProgressListener;
-import com.google.android.gms.common.util.SharedPreferencesUtils;
 import com.rtech.threadly.BuildConfig;
 import com.rtech.threadly.constants.SharedPreferencesKeys;
 import com.rtech.threadly.core.Core;
@@ -17,10 +16,8 @@ import com.rtech.threadly.interfaces.NetworkCallbackInterface;
 import com.rtech.threadly.interfaces.NetworkCallbackInterfaceWithJsonObjectDelivery;
 import com.rtech.threadly.constants.ApiEndPoints;
 import com.rtech.threadly.interfaces.NetworkCallbackInterfaceWithProgressTracking;
-import com.rtech.threadly.utils.PreferenceUtil;
 import com.rtech.threadly.utils.ReUsableFunctions;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 import java.io.File;
 
@@ -245,7 +242,7 @@ public class PostsManager {
     public static void markPostViewed(int postId,JSONObject object,NetworkCallbackInterfaceJsonObject callbackInterface){
         String Url=ApiEndPoints.POST_VIEWED+postId;
 
-            AndroidNetworkingLayer.post(Url,object,callbackInterface);
+            NetworkingProvider.post(Url,object,callbackInterface);
 
 
 

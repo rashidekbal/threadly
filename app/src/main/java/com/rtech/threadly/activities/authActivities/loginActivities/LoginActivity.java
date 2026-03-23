@@ -28,6 +28,7 @@ import com.rtech.threadly.activities.authActivities.registerActivities.SignUpEma
 import com.rtech.threadly.activities.authActivities.registerActivities.SignUpMobileActivity;
 import com.rtech.threadly.constants.SharedPreferencesKeys;
 import com.rtech.threadly.core.Core;
+import com.rtech.threadly.interfaces.NetworkCallBacks.NetworkCallbackInterfaceJsonObject;
 import com.rtech.threadly.interfaces.NetworkCallbackInterfaceWithJsonObjectDelivery;
 import com.rtech.threadly.network_managers.AuthManager;
 import com.rtech.threadly.utils.ExoplayerUtil;
@@ -162,7 +163,7 @@ boolean isTypePassword=true;
                 }
                 else{
 
-                    authManager.LoginUserId(userid, password, new NetworkCallbackInterfaceWithJsonObjectDelivery() {
+                    authManager.LoginUserId(userid, password, new NetworkCallbackInterfaceJsonObject() {
                         @Override
                         public void onSuccess(JSONObject response) {
                             String username;
@@ -194,7 +195,7 @@ boolean isTypePassword=true;
 
                         @SuppressLint("SetTextI18n")
                         @Override
-                        public void onError(String err) {
+                        public void onError(int errCode) {
 
                             login_btn.setEnabled(true);
                             login_btn.setText("Log in");

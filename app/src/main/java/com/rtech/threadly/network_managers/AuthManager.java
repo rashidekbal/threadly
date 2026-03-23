@@ -7,10 +7,12 @@ import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.JSONObjectRequestListener;
 import com.rtech.threadly.BuildConfig;
 import com.rtech.threadly.constants.ApiEndPoints;
+import com.rtech.threadly.constants.LogTags;
 import com.rtech.threadly.core.Core;
 import com.rtech.threadly.interfaces.NetworkCallBacks.NetworkCallbackInterfaceJsonObject;
 import com.rtech.threadly.interfaces.NetworkCallbackInterfaceWithJsonObjectDelivery;
 import com.rtech.threadly.interfaces.NetworkCallbackInterface;
+import com.rtech.threadly.utils.LoggerUtil;
 import com.rtech.threadly.utils.PreferenceUtil;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -27,26 +29,20 @@ public class AuthManager {
         try {
             packet.put("userid",mobile);
             packet.put("password",password);
+            NetworkingProvider.post(url ,packet, new NetworkCallbackInterfaceJsonObject() {
+                @Override
+                public void onSuccess(JSONObject response) {
+                    callback.onSuccess(response);
+                }
 
-            AndroidNetworking.post(url)
-                    .setPriority(Priority.HIGH)
-                    .addApplicationJsonBody(packet)
-                    .build()
-                    .getAsJSONObject(new JSONObjectRequestListener() {
-                        @Override
-                        public void onResponse(JSONObject response) {
-                            callback.onSuccess(response);
-                        }
+                @Override
+                public void onError(int errorCode) {
+                    callback.onError(Integer.toString(errorCode));
+                    LoggerUtil.log(LogTags.NETWORK_LOG.toString(),"api error login mobile with code : "+(errorCode));
+                }
+            });
 
-                        @Override
-                        public void onError(ANError anError) {
-                            if(BuildConfig.DEBUG){
-                                Log.d("ApiError", "Error"+anError.getMessage());
 
-                            }
-                            callback.onError(Integer.toString(anError.getErrorCode()));
-                        }
-                    });
         } catch (JSONException e) {
 
             throw new RuntimeException(e);
@@ -59,26 +55,18 @@ public class AuthManager {
         JSONObject data = new JSONObject();
         try {
             data.put("password", password);
-            AndroidNetworking.post(url)
-                    .setPriority(com.androidnetworking.common.Priority.HIGH)
-                    .addApplicationJsonBody(data)
-                    .addHeaders("Authorization", "Bearer " + token)
-                    .build()
-                    .getAsJSONObject(new com.androidnetworking.interfaces.JSONObjectRequestListener() {
-                        @Override
-                        public void onResponse(JSONObject response) {
-                            callback.onSuccess();
-                        }
+            NetworkingProvider.patch(url,token,data,new NetworkCallbackInterfaceJsonObject() {
+                @Override
+                public void onSuccess(JSONObject response) {
+                    callback.onSuccess();
+                }
 
-                        @Override
-                        public void onError(com.androidnetworking.error.ANError anError) {
-                            if(BuildConfig.DEBUG){
-                                Log.d("ApiError", "Error"+anError.getMessage());
-
-                            }
-                            callback.onError(anError.getMessage());
-                        }
-                    });
+                @Override
+                public void onError(int errorCode) {
+                    callback.onError(Integer.toString(errorCode));
+                    LoggerUtil.log(LogTags.NETWORK_LOG.toString(),"api error ForgetPasswordWithMobile  with code : "+(errorCode));
+                }
+            });
         } catch (Exception e) {
             callback.onError(e.getMessage());
         }
@@ -86,31 +74,23 @@ public class AuthManager {
 
     }
     public void ForgetPasswordWithEmail(String password, String token, NetworkCallbackInterface callback) {
-        Log.d("feddhit", "getLoggedInUserProfile: ");
         String url= ApiEndPoints.FORGET_PASSWORD_EMAIL;
         JSONObject data = new JSONObject();
         try {
             data.put("password", password);
-            AndroidNetworking.post(url)
-                    .setPriority(com.androidnetworking.common.Priority.HIGH)
-                    .addApplicationJsonBody(data)
-                    .addHeaders("Authorization", "Bearer " + token)
-                    .build()
-                    .getAsJSONObject(new com.androidnetworking.interfaces.JSONObjectRequestListener() {
-                        @Override
-                        public void onResponse(JSONObject response) {
-                            callback.onSuccess();
-                        }
+            NetworkingProvider.post(url, token, data, new NetworkCallbackInterfaceJsonObject() {
+                @Override
+                public void onSuccess(JSONObject response) {
+                    callback.onSuccess();
+                }
 
-                        @Override
-                        public void onError(com.androidnetworking.error.ANError anError) {
-                            if(BuildConfig.DEBUG){
-                                Log.d("ApiError", "Error"+ anError.getMessage());
+                @Override
+                public void onError(int errorCode) {
+                    callback.onError(Integer.toString(errorCode));
+                    LoggerUtil.log(LogTags.NETWORK_LOG.toString(),"api error ForgetPasswordWithEmail  with code : "+(errorCode));
 
-                            }
-                            callback.onError(anError.getMessage());
-                        }
-                    });
+                }
+            });
         } catch (Exception e) {
             callback.onError(e.getMessage());
         }
@@ -124,58 +104,46 @@ public class AuthManager {
         try {
             packet.put("userid",email);
             packet.put("password",password);
+            NetworkingProvider.post(url, packet, new NetworkCallbackInterfaceJsonObject() {
+                @Override
+                public void onSuccess(JSONObject response) {
+                    callback.onSuccess(response);
+                }
 
-            AndroidNetworking.post(url)
-                    .setPriority(Priority.HIGH)
-                    .addApplicationJsonBody(packet)
-                    .build()
-                    .getAsJSONObject(new JSONObjectRequestListener() {
-                        @Override
-                        public void onResponse(JSONObject response) {
-                            callback.onSuccess(response);
-                        }
+                @Override
+                public void onError(int errorCode) {
+                    callback.onError(Integer.toString(errorCode));
+                    LoggerUtil.log(LogTags.NETWORK_LOG.toString(),"api error LoginEmail  with code : "+(errorCode));
 
-                        @Override
-                        public void onError(ANError anError) {
-                            if(BuildConfig.DEBUG){
-                                Log.d("ApiError", "Error"+ anError.getMessage());
 
-                            }
-                           callback.onError(Integer.toString(anError.getErrorCode()));
-                        }
-                    });
+                }
+            });
         } catch (JSONException e) {
             throw new RuntimeException(e);
         }
 
     }
-    public void LoginUserId(String email,String password,NetworkCallbackInterfaceWithJsonObjectDelivery callback){
+    public void LoginUserId(String email,String password,NetworkCallbackInterfaceJsonObject callback){
         Log.d("feddhit", "getLoggedInUserProfile: ");
         String url=ApiEndPoints.LOGIN_USERID;
         JSONObject packet=new JSONObject();
         try {
             packet.put("userid",email);
             packet.put("password",password);
+            NetworkingProvider.post(url, packet, new NetworkCallbackInterfaceJsonObject() {
+                @Override
+                public void onSuccess(JSONObject response) {
+                    callback.onSuccess(response);
+                }
 
-            AndroidNetworking.post(url)
-                    .setPriority(Priority.HIGH)
-                    .addApplicationJsonBody(packet)
-                    .build()
-                    .getAsJSONObject(new JSONObjectRequestListener() {
-                        @Override
-                        public void onResponse(JSONObject response) {
-                            callback.onSuccess(response);
-                        }
+                @Override
+                public void onError(int errorCode) {
+                    callback.onError(errorCode);
+                    LoggerUtil.log(LogTags.NETWORK_LOG.toString(),"api error LoginUserId  with code : "+(errorCode));
 
-                        @Override
-                        public void onError(ANError anError) {
-                            if(BuildConfig.DEBUG){
-                                Log.d("ApiError", "Error"+ anError.getMessage());
+                }
+            });
 
-                            }
-                            callback.onError(Integer.toString(anError.getErrorCode()));
-                        }
-                    });
         } catch (JSONException e) {
             throw new RuntimeException(e);
         }
@@ -183,27 +151,27 @@ public class AuthManager {
     }
     public  void logout(NetworkCallbackInterface callbackInterface){
         String url=ApiEndPoints.LOGOUT;
-        AndroidNetworking.get(url).setPriority(Priority.HIGH)
-                .addHeaders("Authorization","Bearer "+ PreferenceUtil.getJWT())
-                .build().getAsJSONObject(new JSONObjectRequestListener() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                       callbackInterface.onSuccess();
-                    }
+        NetworkingProvider.get(url, PreferenceUtil.getJWT(), new NetworkCallbackInterfaceJsonObject() {
+            @Override
+            public void onSuccess(JSONObject response) {
+                callbackInterface.onSuccess();
+            }
 
-                    @Override
-                    public void onError(ANError anError) {
-                        callbackInterface.onError(anError.getErrorDetail());
+            @Override
+            public void onError(int errorCode) {
+                callbackInterface.onError(Integer.toString(errorCode));
+                LoggerUtil.log(LogTags.NETWORK_LOG.toString(),"api error logout  with code : "+(errorCode));
 
-                    }
-                });
+
+            }
+        });
     }
     public void ResetPassword(String oldPassword, String newPassword, NetworkCallbackInterfaceJsonObject callback)throws JSONException{
         String Url=ApiEndPoints.RESET_PASSWORD_SETTING;
         JSONObject packet=new JSONObject();
             packet.put("oldPassword",oldPassword);
             packet.put("newPassword",newPassword);
-            AndroidNetworkingLayer.post(Url,packet,callback);
+            NetworkingProvider.post(Url,packet,callback);
 
     }
 
