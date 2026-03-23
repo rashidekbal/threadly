@@ -13,6 +13,7 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.rtech.threadly.R;
 import com.rtech.threadly.databinding.ActivityVerifyOtpForgetPasswordBinding;
+import com.rtech.threadly.interfaces.NetworkCallBacks.NetworkCallbackInterfaceJsonObject;
 import com.rtech.threadly.interfaces.NetworkCallbackInterfaceWithJsonObjectDelivery;
 import com.rtech.threadly.network_managers.OtpManager;
 
@@ -59,7 +60,7 @@ public class VerifyOtp_forgetPassword_Activity extends AppCompatActivity {
                 mainXml.verifyOtpBtn.setText("");
                 // Proceed with OTP verification
            if(type.equals("mobile")){
-                   otpManager.VerifyOtpMobile(userid, otp, new NetworkCallbackInterfaceWithJsonObjectDelivery() {
+                   otpManager.VerifyOtpMobile(userid, otp, new NetworkCallbackInterfaceJsonObject() {
                        @Override
                        public void onSuccess(JSONObject response) {
                             mainXml.progressBar.setVisibility(View.GONE);
@@ -79,8 +80,8 @@ public class VerifyOtp_forgetPassword_Activity extends AppCompatActivity {
                        }
 
                        @Override
-                       public void onError(String err) {
-                            mainXml.otpField.setError(err);
+                       public void onError(int err) {
+                            mainXml.otpField.setError("invalid otp");
                            mainXml.progressBar.setVisibility(View.GONE);
                            mainXml.verifyOtpBtn.setEnabled(true);
                            mainXml.verifyOtpBtn.setText(R.string.verify_otp);
@@ -88,7 +89,7 @@ public class VerifyOtp_forgetPassword_Activity extends AppCompatActivity {
                        }
                    });
                 }else if(type.equals("email")){
-               otpManager.VerifyOtpEmail(userid, otp, new NetworkCallbackInterfaceWithJsonObjectDelivery() {
+               otpManager.VerifyOtpEmail(userid, otp, new NetworkCallbackInterfaceJsonObject() {
                    @Override
                    public void onSuccess(JSONObject response) {
                        mainXml.progressBar.setVisibility(View.GONE);
@@ -108,8 +109,8 @@ public class VerifyOtp_forgetPassword_Activity extends AppCompatActivity {
                    }
 
                    @Override
-                   public void onError(String err) {
-                       mainXml.otpField.setError(err);
+                   public void onError(int err) {
+                       mainXml.otpField.setError("invalid otp");
                        mainXml.progressBar.setVisibility(View.GONE);
                        mainXml.verifyOtpBtn.setEnabled(true);
                        mainXml.verifyOtpBtn.setText(R.string.verify_otp);
