@@ -4,11 +4,9 @@ import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.JSONObjectRequestListener;
-import com.androidnetworking.interfaces.UploadProgressListener;
-import com.rtech.threadly.constants.SharedPreferencesKeys;
-import com.rtech.threadly.core.Core;
 import com.rtech.threadly.interfaces.NetworkCallBacks.NetworkCallbackInterfaceJsonObject;
 import com.rtech.threadly.interfaces.NetworkCallbackInterfaceWithProgressTracking;
+import com.rtech.threadly.utils.CentralApiErrorHandler;
 import com.rtech.threadly.utils.PreferenceUtil;
 
 import org.json.JSONArray;
@@ -30,6 +28,7 @@ public class NetworkingProvider {
 
                         @Override
                         public void onError(ANError anError) {
+                            CentralApiErrorHandler.handleErrorCode(anError.getErrorCode());
                             callbackInterfaceJsonObject.onError(anError.getErrorCode());
 
                         }
@@ -48,6 +47,7 @@ public class NetworkingProvider {
 
                     @Override
                     public void onError(ANError anError) {
+                        CentralApiErrorHandler.handleErrorCode(anError.getErrorCode());
                         callbackInterfaceJsonObject.onError(anError.getErrorCode());
 
                     }
@@ -67,6 +67,7 @@ public class NetworkingProvider {
 
                     @Override
                     public void onError(ANError anError) {
+                        CentralApiErrorHandler.handleErrorCode(anError.getErrorCode());
                         callbackInterfaceJsonObject.onError(anError.getErrorCode());
 
                     }
@@ -87,6 +88,7 @@ public class NetworkingProvider {
 
                     @Override
                     public void onError(ANError anError) {
+                        CentralApiErrorHandler.handleErrorCode(anError.getErrorCode());
                         callbackInterfaceJsonObject.onError(anError.getErrorCode());
 
                     }
@@ -107,6 +109,7 @@ public class NetworkingProvider {
 
                     @Override
                     public void onError(ANError anError) {
+                        CentralApiErrorHandler.handleErrorCode(anError.getErrorCode());
                         callbackInterfaceJsonObject.onError(anError.getErrorCode());
 
                     }
@@ -125,6 +128,7 @@ public class NetworkingProvider {
 
                     @Override
                     public void onError(ANError anError) {
+                        CentralApiErrorHandler.handleErrorCode(anError.getErrorCode());
                         callbackInterfaceJsonObject.onError(anError.getErrorCode());
 
                     }
@@ -145,6 +149,7 @@ public class NetworkingProvider {
 
                     @Override
                     public void onError(ANError anError) {
+                        CentralApiErrorHandler.handleErrorCode(anError.getErrorCode());
                         callbackInterfaceJsonObject.onError(anError.getErrorCode());
 
                     }
@@ -164,6 +169,7 @@ public class NetworkingProvider {
 
                     @Override
                     public void onError(ANError anError) {
+                        CentralApiErrorHandler.handleErrorCode(anError.getErrorCode());
                         callbackInterfaceJsonObject.onError(anError.getErrorCode());
 
                     }
@@ -182,6 +188,7 @@ public class NetworkingProvider {
 
                     @Override
                     public void onError(ANError anError) {
+                        CentralApiErrorHandler.handleErrorCode(anError.getErrorCode());
                         callBack.onError(anError.getErrorCode());
                     }
                 });
@@ -200,6 +207,7 @@ public class NetworkingProvider {
 
                     @Override
                     public void onError(ANError anError) {
+                        CentralApiErrorHandler.handleErrorCode(anError.getErrorCode());
                         callBack.onError(anError.getErrorCode());
                     }
                 });
@@ -210,21 +218,17 @@ public class NetworkingProvider {
                 .addHeaders("Authorization","Bearer "+ token)
                 .setTag(Tag)
                 .addMultipartFile(key,filepath).build()
-                .setUploadProgressListener(new UploadProgressListener() {
-                    @Override
-                    public void onProgress(long bytesUploaded, long totalBytes) {
-                        callbackInterfaceWithProgressTracking.progress(bytesUploaded,totalBytes);
-
-                    }
-                }).getAsJSONObject(new JSONObjectRequestListener() {
+                .setUploadProgressListener(callbackInterfaceWithProgressTracking::progress).getAsJSONObject(new JSONObjectRequestListener() {
                     @Override
                     public void onResponse(JSONObject response) {
+
                         callbackInterfaceWithProgressTracking.onSuccess(response);
 
                     }
 
                     @Override
                     public void onError(ANError anError) {
+                        CentralApiErrorHandler.handleErrorCode(anError.getErrorCode());
                         callbackInterfaceWithProgressTracking.onError(anError.toString());
 
                     }
@@ -237,13 +241,7 @@ public class NetworkingProvider {
                 .addMultipartFile(key,filepath)
                 .addMultipartParameter("caption",caption)
                 .build()
-                .setUploadProgressListener(new UploadProgressListener() {
-                    @Override
-                    public void onProgress(long bytesUploaded, long totalBytes) {
-                        callbackInterfaceWithProgressTracking.progress(bytesUploaded,totalBytes);
-
-                    }
-                }).getAsJSONObject(new JSONObjectRequestListener() {
+                .setUploadProgressListener(callbackInterfaceWithProgressTracking::progress).getAsJSONObject(new JSONObjectRequestListener() {
                     @Override
                     public void onResponse(JSONObject response) {
                         callbackInterfaceWithProgressTracking.onSuccess(response);
@@ -252,6 +250,7 @@ public class NetworkingProvider {
 
                     @Override
                     public void onError(ANError anError) {
+                        CentralApiErrorHandler.handleErrorCode(anError.getErrorCode());
                         callbackInterfaceWithProgressTracking.onError(anError.toString());
 
                     }
@@ -264,13 +263,7 @@ public class NetworkingProvider {
                 .addMultipartFile(key,filepath)
                 .addMultipartParameter("type",type)
                 .build()
-                .setUploadProgressListener(new UploadProgressListener() {
-                    @Override
-                    public void onProgress(long bytesUploaded, long totalBytes) {
-                        callbackInterfaceWithProgressTracking.progress(bytesUploaded,totalBytes);
-
-                    }
-                }).getAsJSONObject(new JSONObjectRequestListener() {
+                .setUploadProgressListener(callbackInterfaceWithProgressTracking::progress).getAsJSONObject(new JSONObjectRequestListener() {
                     @Override
                     public void onResponse(JSONObject response) {
                         callbackInterfaceWithProgressTracking.onSuccess(response);
@@ -279,6 +272,7 @@ public class NetworkingProvider {
 
                     @Override
                     public void onError(ANError anError) {
+                        CentralApiErrorHandler.handleErrorCode(anError.getErrorCode());
                         callbackInterfaceWithProgressTracking.onError(anError.toString());
 
                     }
