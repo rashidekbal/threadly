@@ -47,7 +47,7 @@ public class ProfileViewModel extends AndroidViewModel {
     }
     public void loadProfile() {
 //        Log.d("errorLoading", "startLoading: ");
-        profileManager.getLoggedInUserProfile(new NetworkCallbackInterfaceWithJsonObjectDelivery() {
+        profileManager.getLoggedInUserProfile(new NetworkCallbackInterfaceJsonObject() {
             @Override
             public void onSuccess(JSONObject response) {
                 Profile_Model userdata;
@@ -74,7 +74,7 @@ public class ProfileViewModel extends AndroidViewModel {
             }
 
             @Override
-            public void onError(String err) {
+            public void onError(int err) {
               profileLiveData.postValue(null);
 
             }

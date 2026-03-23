@@ -216,7 +216,7 @@ executor.execute(()->{
     history[0] = DataBase.getInstance().historyOperator().getHistory(ConversationId);
 
     if (history[0] == null) {
-        new ProfileManager().GetProfileByUuid(OtherPartyUuid, new NetworkCallbackInterfaceWithJsonObjectDelivery() {
+        new ProfileManager().GetProfileByUuid(OtherPartyUuid, new NetworkCallbackInterfaceJsonObject() {
             @Override
             public void onSuccess(JSONObject response) {
                 JSONArray Array = response.optJSONArray("data");
@@ -241,8 +241,8 @@ executor.execute(()->{
             }
 
             @Override
-            public void onError(String err) {
-                Log.d("errorFetching", err);
+            public void onError(int errCode) {
+
 
             }
         });

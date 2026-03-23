@@ -15,6 +15,7 @@ import com.rtech.threadly.constants.SharedPreferencesKeys;
 import com.rtech.threadly.core.Core;
 import com.rtech.threadly.interfaces.NetworkCallBacks.NetworkCallbackInterfaceJsonObject;
 import com.rtech.threadly.interfaces.NetworkCallbackInterfaceWithJsonObjectDelivery;
+import com.rtech.threadly.utils.PreferenceUtil;
 
 import org.json.JSONObject;
 
@@ -25,83 +26,31 @@ public class ProfileManager {
         this.loginInfo= Core.getPreference();
     }
     private String getToken(){
-       return loginInfo.getString(SharedPreferencesKeys.JWT_TOKEN,"null");
+       return PreferenceUtil.getJWT();
     }
 
     public final void GetProfile(String Userid, NetworkCallbackInterfaceJsonObject callback){
         String url= ApiEndPoints.GET_PROFILE.concat(Userid);
-        AndroidNetworking.get(url).setPriority(Priority.HIGH)
-                .addHeaders("Authorization", "Bearer "+getToken())
-                .build()
-                .getAsJSONObject(new JSONObjectRequestListener() {
-                    @Override
-                    public void onResponse(JSONObject response) {
+        NetworkingProvider.get(url,getToken(),callback);
 
-                        callback.onSuccess(response);
-                    }
-
-                    @Override
-                    public void onError(ANError anError) {
-                        if(BuildConfig.DEBUG){
-                            Log.d("ApiError", "Error"+ anError.getMessage());
-
-                        }
-                        callback.onError(anError.getErrorCode());
-
-                    }
-                });
 
 
     }
-    public final void GetProfileByUuid(String uuid, NetworkCallbackInterfaceWithJsonObjectDelivery callback){
+    public final void GetProfileByUuid(String uuid, NetworkCallbackInterfaceJsonObject callback){
         String url= ApiEndPoints.GET_PROFILE_BY_UUID.concat(uuid);
-        AndroidNetworking.get(url).setPriority(Priority.HIGH)
-                .addHeaders("Authorization", "Bearer "+getToken())
-                .build()
-                .getAsJSONObject(new JSONObjectRequestListener() {
-                    @Override
-                    public void onResponse(JSONObject response) {
+        NetworkingProvider.get(url,getToken(),callback);
 
-                        callback.onSuccess(response);
-                    }
 
-                    @Override
-                    public void onError(ANError anError) {
-                        if(BuildConfig.DEBUG){
-                            Log.d("ApiError", "Error"+ anError.getMessage());
 
-                        }
-                        callback.onError(anError.getMessage());
 
-                    }
-                });
 
 
     }
-    public final void getLoggedInUserProfile(NetworkCallbackInterfaceWithJsonObjectDelivery callback){
+    public final void getLoggedInUserProfile(NetworkCallbackInterfaceJsonObject callback){
 
         String url=ApiEndPoints.GET_LOGGED_IN_USER_PROFILE;
-        AndroidNetworking.get(url)
-                .setPriority(com.androidnetworking.common.Priority.HIGH)
-                .addHeaders("Authorization", "Bearer "+getToken())
-                .build()
-                .getAsJSONObject(new JSONObjectRequestListener(){
+        NetworkingProvider.get(url,getToken(),callback);
 
-                    @Override
-                    public void onResponse(JSONObject response) {
-
-                        callback.onSuccess(response);
-                    }
-                    @Override
-                    public void onError(ANError anError) {
-                        if(BuildConfig.DEBUG){
-                            Log.d("ApiError", "Error"+ anError.getMessage());
-
-                        }
-                        callback.onError(anError.getMessage());
-
-                    }
-                });
 
     }
 
