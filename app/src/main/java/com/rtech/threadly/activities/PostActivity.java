@@ -126,7 +126,7 @@ public class PostActivity extends AppCompatActivity {
         followManager=new FollowManager();
     }
     private void loadPost(){
-        postsManager.getPostWithId(postId, new NetworkCallbackInterfaceWithJsonObjectDelivery() {
+        postsManager.getPostWithId(postId, new NetworkCallbackInterfaceJsonObject() {
             @OptIn(markerClass = UnstableApi.class)
             @Override
             public void onSuccess(JSONObject response) {
@@ -171,7 +171,7 @@ public class PostActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onError(String err) {
+            public void onError(int err) {
                 mainXml.errorLayout.setVisibility(View.VISIBLE);
                 mainXml.postContainer.setVisibility(View.GONE);
 

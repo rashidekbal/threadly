@@ -107,7 +107,7 @@ private final boolean[] isPlaying={true};
 
 
     private void loadData(){
-        postsManager.getPostWithId(postId, new NetworkCallbackInterfaceWithJsonObjectDelivery() {
+        postsManager.getPostWithId(postId, new NetworkCallbackInterfaceJsonObject() {
             @UnstableApi
             @Override
             public void onSuccess(JSONObject response) {
@@ -154,8 +154,8 @@ private final boolean[] isPlaying={true};
             }
 
             @Override
-            public void onError(String err) {
-                Log.d("postGetError", "onError: ".concat(err));
+            public void onError(int err) {
+
 
             }
         });
@@ -395,9 +395,9 @@ private void setOptionsBehaviour(BottomSheetDialog Optionsdialog,Posts_Model dat
                                     .setPositiveButton("yes", new DialogInterface.OnClickListener() {
                                         @Override
                                         public void onClick(DialogInterface dialog, int which) {
-                                            postsManager.RemovePost(data.postId, new NetworkCallbackInterface() {
+                                            postsManager.RemovePost(data.postId, new NetworkCallbackInterfaceJsonObject() {
                                                 @Override
-                                                public void onSuccess() {
+                                                public void onSuccess(JSONObject response) {
                                                     dialog.dismiss();
                                                     delete_btn.setEnabled(true);
                                                     ReUsableFunctions.ShowToast("post remove success");
@@ -406,7 +406,7 @@ private void setOptionsBehaviour(BottomSheetDialog Optionsdialog,Posts_Model dat
                                                 }
 
                                                 @Override
-                                                public void onError(String err) {
+                                                public void onError(int err) {
                                                     delete_btn.setEnabled(true);
                                                     Optionsdialog.hide();
                                                     dialog.dismiss();

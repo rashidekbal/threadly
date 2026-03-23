@@ -230,5 +230,32 @@ public class NetworkingProvider {
                     }
                 });
     }
+    public static void upload(String url, String token , File filepath,String key ,String caption, String Tag, NetworkCallbackInterfaceWithProgressTracking callbackInterfaceWithProgressTracking){
+        AndroidNetworking.upload(url).setPriority(Priority.HIGH)
+                .addHeaders("Authorization","Bearer "+ token)
+                .setTag(Tag)
+                .addMultipartFile(key,filepath)
+                .addMultipartParameter("caption",caption)
+                .build()
+                .setUploadProgressListener(new UploadProgressListener() {
+                    @Override
+                    public void onProgress(long bytesUploaded, long totalBytes) {
+                        callbackInterfaceWithProgressTracking.progress(bytesUploaded,totalBytes);
+
+                    }
+                }).getAsJSONObject(new JSONObjectRequestListener() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        callbackInterfaceWithProgressTracking.onSuccess(response);
+
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+                        callbackInterfaceWithProgressTracking.onError(anError.toString());
+
+                    }
+                });
+    }
 
 }

@@ -8,6 +8,7 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.rtech.threadly.interfaces.NetworkCallBacks.NetworkCallbackInterfaceJsonObject;
 import com.rtech.threadly.interfaces.NetworkCallbackInterfaceWithJsonObjectDelivery;
 import com.rtech.threadly.models.Posts_Model;
 import com.rtech.threadly.network_managers.PostsManager;
@@ -93,7 +94,7 @@ public class ProfileViewModel extends AndroidViewModel {
         return UserPostsLiveData ;    }
 
     public void loadLoggedInUserPosts() {
-        postsManager.getLoggedInUserPost(1,new NetworkCallbackInterfaceWithJsonObjectDelivery() {
+        postsManager.getLoggedInUserPost(1,new NetworkCallbackInterfaceJsonObject() {
             @Override
             public void onSuccess(JSONObject response) {
                 ArrayList<Posts_Model> tempArrayList=new ArrayList<>();
@@ -130,7 +131,7 @@ public class ProfileViewModel extends AndroidViewModel {
             }
 
             @Override
-            public void onError(String err) {
+            public void onError(int err) {
                 UserPostsLiveData.postValue(new ArrayList<>());
 
             }
@@ -141,7 +142,7 @@ public class ProfileViewModel extends AndroidViewModel {
         if(!isPostLoading&&!isLastPage){
             pageNumber++;
             isPostLoading=true;
-            postsManager.getLoggedInUserPost(pageNumber,new NetworkCallbackInterfaceWithJsonObjectDelivery() {
+            postsManager.getLoggedInUserPost(pageNumber,new NetworkCallbackInterfaceJsonObject() {
                 @Override
                 public void onSuccess(JSONObject response) {
                     ArrayList<Posts_Model> tempArrayList=UserPostsLiveData.getValue();
@@ -184,7 +185,7 @@ public class ProfileViewModel extends AndroidViewModel {
                 }
 
                 @Override
-                public void onError(String err) {
+                public void onError(int err) {
                     isPostLoading=false;
                 }
             });

@@ -795,9 +795,9 @@ public class AllTypePostFeedAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             delete_btn.setEnabled(false);
             new AlertDialog.Builder(context).setTitle("Delete post").setMessage("Do you want to delete post")
                     .setCancelable(true)
-                    .setPositiveButton("yes", (dialog, which) -> new PostsManager().RemovePost(postModels.get(position).getPostId(), new NetworkCallbackInterface() {
+                    .setPositiveButton("yes", (dialog, which) -> new PostsManager().RemovePost(postModels.get(position).getPostId(), new NetworkCallbackInterfaceJsonObject() {
                         @Override
-                        public void onSuccess() {
+                        public void onSuccess(JSONObject response) {
                             dialog.dismiss();
                             delete_btn.setEnabled(true);
                             ReUsableFunctions.ShowToast("post remove success");
@@ -808,7 +808,7 @@ public class AllTypePostFeedAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                         }
 
                         @Override
-                        public void onError(String err) {
+                        public void onError(int err) {
                             delete_btn.setEnabled(true);
                             optionsDialog.hide();
                             dialog.dismiss();

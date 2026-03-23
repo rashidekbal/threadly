@@ -8,6 +8,7 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.rtech.threadly.interfaces.NetworkCallBacks.NetworkCallbackInterfaceJsonObject;
 import com.rtech.threadly.interfaces.NetworkCallbackInterfaceWithJsonObjectDelivery;
 import com.rtech.threadly.network_managers.PostsManager;
 import com.rtech.threadly.models.Posts_Model;
@@ -44,7 +45,7 @@ public class ImagePostsFeedViewModel extends AndroidViewModel {
     // method to load posts from server
     public void loadFeedPosts() {
         Log.d("dataloadException", "data Loading started: ");
-            postsManager.getImageFeed(new NetworkCallbackInterfaceWithJsonObjectDelivery() {
+            postsManager.getImageFeed(new NetworkCallbackInterfaceJsonObject() {
                 @Override
                 public void onSuccess(JSONObject response) {
 //                    Log.d("dataloadException", "data Loading sucess: "+response.toString());
@@ -84,7 +85,7 @@ public class ImagePostsFeedViewModel extends AndroidViewModel {
                 }
 
                 @Override
-                public void onError(String err) {
+                public void onError(int err) {
                     postsLiveData.postValue(new ArrayList<>());
 
 

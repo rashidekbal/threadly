@@ -16,153 +16,47 @@ import com.rtech.threadly.interfaces.NetworkCallbackInterface;
 import com.rtech.threadly.interfaces.NetworkCallbackInterfaceWithJsonObjectDelivery;
 import com.rtech.threadly.constants.ApiEndPoints;
 import com.rtech.threadly.interfaces.NetworkCallbackInterfaceWithProgressTracking;
+import com.rtech.threadly.utils.PreferenceUtil;
 import com.rtech.threadly.utils.ReUsableFunctions;
 
 import org.json.JSONObject;
 import java.io.File;
 
 public class PostsManager {
-    SharedPreferences loginInfo;
-    public PostsManager() {
-        loginInfo= Core.getPreference();
-    }
+
     private String getToken(){
-        return loginInfo.getString(SharedPreferencesKeys.JWT_TOKEN,"null");
+        return PreferenceUtil.getJWT();
     }
     public void uploadImagePost(File imagefile,String caption, NetworkCallbackInterfaceWithProgressTracking callback){
         String url=ApiEndPoints.ADD_IMAGE_POST;
-        AndroidNetworking.upload(url).setPriority(Priority.HIGH)
-                .addHeaders("Authorization","Bearer "+getToken())
-                .addMultipartFile("image",imagefile)
-                .addMultipartParameter("caption",caption)
-                .build().setUploadProgressListener(new UploadProgressListener() {
-                    @Override
-                    public void onProgress(long bytesUploaded, long totalBytes) {
-                        callback.progress(bytesUploaded,totalBytes);
-
-                    }
-                }).getAsJSONObject(new JSONObjectRequestListener() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        callback.onSuccess(response);
-                    }
-
-                    @Override
-                    public void onError(ANError anError) {
-                    callback.onError(anError.toString());
-                    }
-                });
+        NetworkingProvider.upload(url, PreferenceUtil.getJWT(),imagefile,"image",caption,"postUpload",callback);
 
     }
     public void uploadVideoPost(File videofile,String caption, NetworkCallbackInterfaceWithProgressTracking callback){
         String url=ApiEndPoints.ADD_VIDEO_POST;
-        AndroidNetworking.upload(url).setPriority(Priority.HIGH).setOkHttpClient(Core.getOkHttp())
-                .addHeaders("Authorization","Bearer "+getToken())
-                .addMultipartFile("video",videofile)
-                .addMultipartParameter("caption",caption)
-                .build().setUploadProgressListener(new UploadProgressListener() {
-                    @Override
-                    public void onProgress(long bytesUploaded, long totalBytes) {
-                        callback.progress(bytesUploaded,totalBytes);
-
-                    }
-                }).getAsJSONObject(new JSONObjectRequestListener() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        callback.onSuccess(response);
-                    }
-
-                    @Override
-                    public void onError(ANError anError) {
-                        ReUsableFunctions.ShowToast(anError.getMessage());
-                        callback.onError(anError.getMessage());
-                    }
-                });
-
+        NetworkingProvider.upload(url, PreferenceUtil.getJWT(),videofile,"video",caption,"postUpload",callback);
     }
 
-    public void getPostWithId(int postId, NetworkCallbackInterfaceWithJsonObjectDelivery callbackInterface){
+    public void getPostWithId(int postId, NetworkCallbackInterfaceJsonObject callbackInterface){
 
 
         String url= ApiEndPoints.GET_POST_BY_ID.concat(Integer.toString(postId));
-        AndroidNetworking.get(url)
-                .setPriority(com.androidnetworking.common.Priority.HIGH)
-                .addHeaders("Authorization","Bearer "+getToken())
-                .build().getAsJSONObject(new com.androidnetworking.interfaces.JSONObjectRequestListener() {
-                    @Override
-                    public void onResponse(org.json.JSONObject response) {
+        NetworkingProvider.get(url,getToken(),callbackInterface);
 
-
-                        callbackInterface.onSuccess(response);
-                    }
-
-                    @Override
-                    public void onError(com.androidnetworking.error.ANError anError) {if(BuildConfig.DEBUG){
-                        Log.d("ApiError", "Error"+ anError.getMessage());
-
-                    }
-                        callbackInterface.onError(anError.getMessage());
-                    }
-                });
     }
     public void getUserPosts(int page,String userId, NetworkCallbackInterfaceJsonObject callbackInterface)
     {
 
         String url=ApiEndPoints.GET_USER_POSTS.concat(userId);
-        AndroidNetworking.get(url)
-                .setPriority(Priority.HIGH)
-                .addQueryParameter("page",Integer.toString(page))
-                .addHeaders("Authorization","Bearer "+getToken())
-                .build()
-                .getAsJSONObject(new JSONObjectRequestListener() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        callbackInterface.onSuccess(response);
-                    }
-
-                    @Override
-                    public void onError(ANError anError) {
-                        if(BuildConfig.DEBUG){
-                            Log.d("ApiError", "Error"+ anError.getMessage());
-
-                        }
-                        callbackInterface.onError(anError.getErrorCode());
-
-                    }
-                });
-
+        NetworkingProvider.get(url,getToken(),callbackInterface);
     }
-    public void getImageFeed(NetworkCallbackInterfaceWithJsonObjectDelivery callback){
-
-        if(BuildConfig.DEBUG){
-            Log.d("ApiData", "loading started");
-
-        }
+    public void getImageFeed(NetworkCallbackInterfaceJsonObject callback){
 
         String url=ApiEndPoints.GET_IMAGE_FEED;
-        AndroidNetworking.get(url)
-                .setPriority(Priority.HIGH)
-                .addHeaders("Authorization","Bearer "+getToken())
-                .build()
-                .getAsJSONObject(new JSONObjectRequestListener() {
-                    @Override
-                    public void onResponse(JSONObject response) {
+        NetworkingProvider.get(url,getToken(),callback);
 
-                        callback.onSuccess(response);
-                    }
-
-                    @Override
-                    public void onError(ANError anError) {
-
-                        if(BuildConfig.DEBUG){
-                            Log.d("ApiError", "Error"+ anError.getMessage());
-
-                        }
-                        callback.onError(anError.getErrorDetail());
-                    }
-                });
     }
-    public void getVideoFeed(NetworkCallbackInterfaceWithJsonObjectDelivery callback){
+    public void getVideoFeed(NetworkCallbackInterfaceJsonObject callback){
 
         if(BuildConfig.DEBUG){
             Log.d("ApiData", "loading started");
@@ -170,73 +64,22 @@ public class PostsManager {
         }
 
         String url=ApiEndPoints.GET_VIDEO_FEED;
-        AndroidNetworking.get(url)
-                .setPriority(Priority.HIGH)
-                .addHeaders("Authorization","Bearer "+getToken())
-                .build()
-                .getAsJSONObject(new JSONObjectRequestListener() {
-                    @Override
-                    public void onResponse(JSONObject response) {
+        NetworkingProvider.get(url,getToken(),callback);
 
-                        callback.onSuccess(response);
-                    }
-
-                    @Override
-                    public void onError(ANError anError) {
-
-                        if(BuildConfig.DEBUG){
-                            Log.d("ApiError", "Error"+ anError.getMessage());
-
-                        }
-                        callback.onError(anError.getErrorDetail());
-                    }
-                });
     }
 
-    public void getLoggedInUserPost(int page,NetworkCallbackInterfaceWithJsonObjectDelivery callbackInterface)
+    public void getLoggedInUserPost(int page,NetworkCallbackInterfaceJsonObject callbackInterface)
     {
-        String url=ApiEndPoints.GET_USER_POSTS.concat(loginInfo.getString(SharedPreferencesKeys.USER_ID,"null"));
-        AndroidNetworking.get(url)
-                .setPriority(Priority.HIGH)
-                .addQueryParameter("page",Integer.toString(page))
-                .addHeaders("Authorization","Bearer "+getToken())
-                .build()
-                .getAsJSONObject(new JSONObjectRequestListener() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        callbackInterface.onSuccess(response);
-                    }
+        String url=ApiEndPoints.GET_USER_POSTS.concat(PreferenceUtil.getUserId());
+        NetworkingProvider.get(url,getToken(),callbackInterface);
 
-                    @Override
-                    public void onError(ANError anError) {
-                        if(BuildConfig.DEBUG){
-                            Log.d("ApiError", "Error"+ anError.getMessage());
-
-                        }
-                        callbackInterface.onError(anError.getErrorDetail());
-
-
-                    }
-                });
 
     }
-    public void RemovePost(int postId, NetworkCallbackInterface callbackInterface){
+    public void RemovePost(int postId, NetworkCallbackInterfaceJsonObject callbackInterface){
         String URL=ApiEndPoints.DELETE_POST+Integer.toString(postId);
+        NetworkingProvider.delete(URL,getToken(),callbackInterface);
 
-        AndroidNetworking.delete(URL).addHeaders("Authorization" ,"Bearer "+loginInfo.getString(SharedPreferencesKeys.JWT_TOKEN,null))
-                .setPriority(Priority.HIGH)
-                .build().getAsJSONObject(new JSONObjectRequestListener() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        callbackInterface.onSuccess();
-                    }
 
-                    @Override
-                    public void onError(ANError anError) {
-                        callbackInterface.onError(anError.toString());
-
-                    }
-                });
 
     }
     public static void markPostViewed(int postId,JSONObject object,NetworkCallbackInterfaceJsonObject callbackInterface){
