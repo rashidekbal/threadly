@@ -214,15 +214,15 @@ public class ImagePostsFeedAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                       holder.is_liked=true;
                       list.get(position).isliked=true;
                       holder.like_btn_image.setEnabled(false);
-                      likeManager.likePost(list.get(position).postId, new NetworkCallbackInterface() {
+                      likeManager.likePost(list.get(position).postId, new NetworkCallbackInterfaceJsonObject() {
                           @Override
-                          public void onSuccess() {
+                          public void onSuccess(JSONObject response) {
                               holder.like_btn_image.setEnabled(true);
 
                           }
 
                           @Override
-                          public void onError(String err) {
+                          public void onError(int err) {
                               holder.like_btn_image.setImageResource(R.drawable.heart_inactive);
                               holder.likes-=1.0;
                               setLikeCount(holder.likes,holder);
@@ -243,16 +243,16 @@ public class ImagePostsFeedAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                       list.get(position).isliked=false;
                       holder.like_btn_image.setEnabled(false);
                       // Send unlike request to server
-                      likeManager.UnlikePost(list.get(position).postId, new NetworkCallbackInterface() {
+                      likeManager.UnlikePost(list.get(position).postId, new NetworkCallbackInterfaceJsonObject() {
                           @Override
-                          public void onSuccess() {
+                          public void onSuccess(JSONObject response) {
                               holder.like_btn_image.setEnabled(true);
 
                           }
 
                           @Override
-                          public void onError(String err) {
-                              Log.d("errorUnlike", "onError: ".concat(err));
+                          public void onError(int err) {
+                              Log.d("errorUnlike", "onError: "+err);
                               holder.like_btn_image.setImageResource(R.drawable.red_heart_active_icon);
                               holder.likes+=1.0;
                               setLikeCount(holder.likes ,holder);

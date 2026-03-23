@@ -251,15 +251,15 @@ public class ReelsAdapter extends RecyclerView.Adapter<ReelsAdapter.viewHolder> 
                 holder.is_liked=true;
                 dataList.get(position).isliked=true;
                 holder.like_btn_image.setEnabled(false);
-                likeManager.likePost(dataList.get(position).postId, new NetworkCallbackInterface() {
+                likeManager.likePost(dataList.get(position).postId, new NetworkCallbackInterfaceJsonObject() {
                     @Override
-                    public void onSuccess() {
+                    public void onSuccess(JSONObject response) {
                         holder.like_btn_image.setEnabled(true);
 
                     }
 
                     @Override
-                    public void onError(String err) {
+                    public void onError(int err) {
                         holder.like_btn_image.setImageResource(R.drawable.heart_inactive_icon_white);
                         holder.likes-=1.0;
                         setLikeCount(holder.likes,holder);
@@ -280,16 +280,16 @@ public class ReelsAdapter extends RecyclerView.Adapter<ReelsAdapter.viewHolder> 
                 dataList.get(position).isliked=false;
                 holder.like_btn_image.setEnabled(false);
                 // Send unlike request to server
-                likeManager.UnlikePost(dataList.get(position).postId, new NetworkCallbackInterface() {
+                likeManager.UnlikePost(dataList.get(position).postId, new NetworkCallbackInterfaceJsonObject() {
                     @Override
-                    public void onSuccess() {
+                    public void onSuccess(JSONObject response) {
                         holder.like_btn_image.setEnabled(true);
 
                     }
 
                     @Override
-                    public void onError(String err) {
-                        Log.d("errorUnlike", "onError: ".concat(err));
+                    public void onError(int err) {
+                        Log.d("errorUnlike", "onError: "+err);
                         holder.like_btn_image.setImageResource(R.drawable.red_heart_active_icon);
                         holder.likes+=1.0;
                         setLikeCount(holder.likes ,holder);
@@ -482,15 +482,15 @@ public class ReelsAdapter extends RecyclerView.Adapter<ReelsAdapter.viewHolder> 
             setLikeCount(dataList.get(position).getLikeCount() + 1.0, holder);
             dataList.get(position).isliked = true;
             holder.like_btn_image.setEnabled(false);
-            likeManager.likePost(dataList.get(position).postId, new NetworkCallbackInterface() {
+            likeManager.likePost(dataList.get(position).postId, new NetworkCallbackInterfaceJsonObject() {
                 @Override
-                public void onSuccess() {
+                public void onSuccess(JSONObject response) {
                     holder.like_btn_image.setEnabled(true);
 
                 }
 
                 @Override
-                public void onError(String err) {
+                public void onError(int err) {
                     holder.like_btn_image.setImageResource(R.drawable.heart_inactive);
 
                     setLikeCount(dataList.get(position).getLikeCount() - 1.0, holder);

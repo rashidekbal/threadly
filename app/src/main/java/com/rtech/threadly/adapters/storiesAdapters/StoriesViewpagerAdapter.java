@@ -29,6 +29,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.rtech.threadly.R;
 import com.rtech.threadly.constants.SharedPreferencesKeys;
 import com.rtech.threadly.core.Core;
+import com.rtech.threadly.interfaces.NetworkCallBacks.NetworkCallbackInterfaceJsonObject;
 import com.rtech.threadly.interfaces.NetworkCallbackInterface;
 import com.rtech.threadly.interfaces.StoriesBackAndForthInterface;
 import com.rtech.threadly.network_managers.LikeManager;
@@ -36,6 +37,8 @@ import com.rtech.threadly.models.StoryMediaModel;
 import com.rtech.threadly.network_managers.StoriesManager;
 import com.rtech.threadly.utils.ExoplayerUtil;
 import com.rtech.threadly.utils.ReUsableFunctions;
+
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -296,14 +299,14 @@ public class StoriesViewpagerAdapter extends RecyclerView.Adapter<StoriesViewpag
                 storiesData.get(position).setLiked(false);
                 isLiked = false;
 
-                likeManager.UnLikeStory(storiesData.get(position).getStoryId(), new NetworkCallbackInterface() {
+                likeManager.UnLikeStory(storiesData.get(position).getStoryId(), new NetworkCallbackInterfaceJsonObject() {
                     @Override
-                    public void onSuccess() {
+                    public void onSuccess(JSONObject response) {
                         holder.like_btn_image.setEnabled(true);
                     }
 
                     @Override
-                    public void onError(String err) {
+                    public void onError(int err) {
                         holder.like_btn_image.setEnabled(true);
                         holder.like_btn_image.setImageResource(R.drawable.red_heart_active_icon);
                         storiesData.get(position).setLiked(true);
@@ -316,14 +319,14 @@ public class StoriesViewpagerAdapter extends RecyclerView.Adapter<StoriesViewpag
                 storiesData.get(position).setLiked(true);
                 isLiked = true;
 
-                likeManager.LikeStory(storiesData.get(position).getStoryId(), new NetworkCallbackInterface() {
+                likeManager.LikeStory(storiesData.get(position).getStoryId(), new NetworkCallbackInterfaceJsonObject() {
                     @Override
-                    public void onSuccess() {
+                    public void onSuccess(JSONObject response) {
                         holder.like_btn_image.setEnabled(true);
                     }
 
                     @Override
-                    public void onError(String err) {
+                    public void onError(int err) {
                         holder.like_btn_image.setEnabled(true);
                         holder.like_btn_image.setImageResource(R.drawable.heart_inactive_icon_white);
                         storiesData.get(position).setLiked(false);

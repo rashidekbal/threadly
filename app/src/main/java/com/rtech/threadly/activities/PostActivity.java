@@ -208,15 +208,15 @@ public class PostActivity extends AppCompatActivity {
                 data.setIsliked(false);
                 data.setLikeCount(data.getLikeCount()-1);
                 mainXml.likesCountText.setText(String.valueOf(data.getLikeCount()));
-                likeManager.UnlikePost(data.getPostId(), new NetworkCallbackInterface() {
+                likeManager.UnlikePost(data.getPostId(), new NetworkCallbackInterfaceJsonObject() {
                     @Override
-                    public void onSuccess() {
+                    public void onSuccess(JSONObject response) {
 
                     }
 
                     @Override
-                    public void onError(String err) {
-                        Log.d("unlikeError", "onError: ".concat(err));
+                    public void onError(int err) {
+                        Log.d("unlikeError", "onError: "+err);
                         mainXml.likeBtnImage.setImageResource(R.drawable.red_heart_active_icon);
                         data.setIsliked(true);
                         data.setLikeCount(data.getLikeCount()+1);
@@ -232,15 +232,15 @@ public class PostActivity extends AppCompatActivity {
                 data.setIsliked(true);
                 data.setLikeCount(data.getLikeCount()+1);
                 mainXml.likesCountText.setText(String.valueOf(data.getLikeCount()));
-                likeManager.likePost(data.getPostId(), new NetworkCallbackInterface() {
+                likeManager.likePost(data.getPostId(), new NetworkCallbackInterfaceJsonObject() {
                     @Override
-                    public void onSuccess() {
+                    public void onSuccess(JSONObject response) {
 
                     }
 
                     @Override
-                    public void onError(String err) {
-                        Log.d("likeError", "onError: ".concat(err));
+                    public void onError(int err) {
+                        Log.d("likeError", "onError: "+err);
                         mainXml.likeBtnImage.setImageResource(R.drawable.heart_inactive_icon_white);
                         data.setIsliked(false);
                         data.setLikeCount(data.getLikeCount()-1);
