@@ -7,19 +7,16 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.facebook.shimmer.ShimmerFrameLayout;
-import com.rtech.threadly.BuildConfig;
 import com.rtech.threadly.R;
 import com.rtech.threadly.adapters.postsAdapters.GridPostAdapter;
 import com.rtech.threadly.models.Posts_Model;
@@ -32,8 +29,7 @@ public class Posts_of_profile extends Fragment {
 RecyclerView posts_all_recycler_view;
 ShimmerFrameLayout shimmer_posts;
 SharedPreferences loginInfo;
-String baseUrl= BuildConfig.BASE_URL;
-TextView NoPost_text;
+    TextView NoPost_text;
 ArrayList<Posts_Model> postsArray =new ArrayList<>();
     GridLayoutManager layoutManager;
     GridPostAdapter adapter;
@@ -61,24 +57,21 @@ ArrayList<Posts_Model> postsArray =new ArrayList<>();
                              Bundle savedInstanceState) {
       View v=  inflater.inflate(R.layout.fragment_posts_of_profile, container, false);
         init(v);
-        profileViewModel.getUserPostsLiveData().observe(getViewLifecycleOwner(), new Observer<ArrayList<Posts_Model>>() {
-            @Override
-            public void onChanged(ArrayList<Posts_Model> postsData) {
-                if(postsData.isEmpty()){
-                    shimmer_posts.setVisibility(View.GONE);
-                    NoPost_text.setVisibility(View.VISIBLE);
-                    posts_all_recycler_view.setVisibility(View.GONE);
-                }
-                else {
-                    postsArray.clear();
-                    postsArray.addAll(postsData);
-                    shimmer_posts.setVisibility(View.GONE);
-                    posts_all_recycler_view.setVisibility(View.VISIBLE);
-                    NoPost_text.setVisibility(View.GONE);
-                    adapter.notifyDataSetChanged();
+        profileViewModel.getUserPostsLiveData().observe(getViewLifecycleOwner(), postsData -> {
+            if(postsData.isEmpty()){
+                shimmer_posts.setVisibility(View.GONE);
+                NoPost_text.setVisibility(View.VISIBLE);
+                posts_all_recycler_view.setVisibility(View.GONE);
+            }
+            else {
+                postsArray.clear();
+                postsArray.addAll(postsData);
+                shimmer_posts.setVisibility(View.GONE);
+                posts_all_recycler_view.setVisibility(View.VISIBLE);
+                NoPost_text.setVisibility(View.GONE);
+                adapter.notifyDataSetChanged();
 
 
-                }
             }
         });
         layoutManager =new GridLayoutManager(requireActivity(),3 ,GridLayoutManager.VERTICAL,false);
@@ -114,10 +107,12 @@ ArrayList<Posts_Model> postsArray =new ArrayList<>();
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
                 if(dy>0){
+
                     int visibleItemCount=layoutManager.getChildCount();
                     int totalItemCount=layoutManager.getItemCount();
                     int FirstVisible=layoutManager.findFirstVisibleItemPosition();
                     if(visibleItemCount+FirstVisible>=totalItemCount-threshold){
+
                         profileViewModel.loadMorePosts();
                     }
                 }
