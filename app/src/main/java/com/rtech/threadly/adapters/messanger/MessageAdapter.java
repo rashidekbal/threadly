@@ -41,6 +41,7 @@ import com.rtech.threadly.constants.TypeConstants;
 import com.rtech.threadly.core.Core;
 import com.rtech.threadly.interfaces.Messanger.MessageClickCallBack;
 import com.rtech.threadly.interfaces.Messanger.OnUserSelectedListener;
+import com.rtech.threadly.interfaces.NetworkCallBacks.NetworkCallbackInterfaceJsonObject;
 import com.rtech.threadly.interfaces.NetworkCallbackInterface;
 import com.rtech.threadly.models.UsersModel;
 import com.rtech.threadly.network_managers.MessageManager;
@@ -52,6 +53,7 @@ import com.rtech.threadly.viewmodels.MessageAbleUsersViewModel;
 import com.rtech.threadly.workers.MessageMediaHandlerWorker;
 
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -734,14 +736,14 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     private void deleteForMe(MessageSchema messageSchema) {
         messengerUtils.deleteMsg(messageSchema.getMessageUid());
         String Role=messageSchema.getSenderId().equals(PreferenceUtil.getUUID())?"sender":"receiver";
-        MessageManager.DeleteMessageForLoggedInUser(messageSchema.getMessageUid(), Role, new NetworkCallbackInterface() {
+        MessageManager.DeleteMessageForLoggedInUser(messageSchema.getMessageUid(), Role, new NetworkCallbackInterfaceJsonObject() {
             @Override
-            public void onSuccess() {
+            public void onSuccess(JSONObject response) {
 
             }
 
             @Override
-            public void onError(String err) {
+            public void onError(int err) {
 
 
             }
@@ -750,14 +752,15 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     }
     private void unSendMessage(MessageSchema messageSchema){
         messengerUtils.deleteMsg(messageSchema.getMessageUid());
-        MessageManager.unSendMessage(messageSchema.getMessageUid(), messageSchema.getReceiverId(), new NetworkCallbackInterface() {
+        MessageManager.unSendMessage(messageSchema.getMessageUid(), messageSchema.getReceiverId(), new NetworkCallbackInterfaceJsonObject() {
+
             @Override
-            public void onSuccess() {
+            public void onSuccess(JSONObject response) {
 
             }
 
             @Override
-            public void onError(String err) {
+            public void onError(int errorCode) {
 
             }
         });

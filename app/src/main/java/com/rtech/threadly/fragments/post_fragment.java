@@ -40,6 +40,7 @@ import com.rtech.threadly.constants.TypeConstants;
 import com.rtech.threadly.core.Core;
 import com.rtech.threadly.databinding.FragmentPostsBinding;
 import com.rtech.threadly.interfaces.Messanger.OnUserSelectedListener;
+import com.rtech.threadly.interfaces.NetworkCallBacks.NetworkCallbackInterfaceJsonObject;
 import com.rtech.threadly.interfaces.NetworkCallbackInterfaceWithJsonObjectDelivery;
 import com.rtech.threadly.interfaces.NetworkCallbackInterface;
 import com.rtech.threadly.models.UsersModel;
@@ -106,7 +107,7 @@ private final boolean[] isPlaying={true};
 
 
     private void loadData(){
-        postsManager.getPostWithId(postId, new NetworkCallbackInterfaceWithJsonObjectDelivery() {
+        postsManager.getPostWithId(postId, new NetworkCallbackInterfaceJsonObject() {
             @UnstableApi
             @Override
             public void onSuccess(JSONObject response) {
@@ -153,8 +154,8 @@ private final boolean[] isPlaying={true};
             }
 
             @Override
-            public void onError(String err) {
-                Log.d("postGetError", "onError: ".concat(err));
+            public void onError(int err) {
+
 
             }
         });
@@ -220,15 +221,15 @@ private final boolean[] isPlaying={true};
                 data.isliked=false;
                 data.likeCount=data.likeCount-1;
                 mainXml.likesCountText.setText(String.valueOf(data.likeCount));
-                likeManager.UnlikePost(data.postId, new NetworkCallbackInterface() {
+                likeManager.UnlikePost(data.postId, new NetworkCallbackInterfaceJsonObject() {
                     @Override
-                    public void onSuccess() {
+                    public void onSuccess(JSONObject response) {
 
                     }
 
                     @Override      
-                    public void onError(String err) {
-                        Log.d("unlikeError", "onError: ".concat(err));
+                    public void onError(int err) {
+                        Log.d("unlikeError", "onError: "+err);
                         mainXml.likeBtnImage.setImageResource(R.drawable.red_heart_active_icon);
                         data.isliked=true;
                         data.likeCount=data.likeCount+1;
@@ -243,15 +244,15 @@ private final boolean[] isPlaying={true};
                 data.isliked=true;
                 data.likeCount=data.likeCount+1;
                 mainXml.likesCountText.setText(String.valueOf(data.likeCount));
-                likeManager.likePost(data.postId, new NetworkCallbackInterface() {
+                likeManager.likePost(data.postId, new NetworkCallbackInterfaceJsonObject() {
                     @Override
-                    public void onSuccess() {
+                    public void onSuccess(JSONObject response) {
 
                     }
 
                     @Override
-                    public void onError(String err) {
-                        Log.d("likeError", "onError: ".concat(err));
+                    public void onError(int err) {
+                        Log.d("likeError", "onError: "+err);
                         mainXml.likeBtnImage.setImageResource(R.drawable.heart_inactive_icon_white);
                         data.isliked=false;
                         data.likeCount=data.likeCount-1;
@@ -394,9 +395,9 @@ private void setOptionsBehaviour(BottomSheetDialog Optionsdialog,Posts_Model dat
                                     .setPositiveButton("yes", new DialogInterface.OnClickListener() {
                                         @Override
                                         public void onClick(DialogInterface dialog, int which) {
-                                            postsManager.RemovePost(data.postId, new NetworkCallbackInterface() {
+                                            postsManager.RemovePost(data.postId, new NetworkCallbackInterfaceJsonObject() {
                                                 @Override
-                                                public void onSuccess() {
+                                                public void onSuccess(JSONObject response) {
                                                     dialog.dismiss();
                                                     delete_btn.setEnabled(true);
                                                     ReUsableFunctions.ShowToast("post remove success");
@@ -405,7 +406,7 @@ private void setOptionsBehaviour(BottomSheetDialog Optionsdialog,Posts_Model dat
                                                 }
 
                                                 @Override
-                                                public void onError(String err) {
+                                                public void onError(int err) {
                                                     delete_btn.setEnabled(true);
                                                     Optionsdialog.hide();
                                                     dialog.dismiss();

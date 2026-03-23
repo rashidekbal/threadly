@@ -12,10 +12,13 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.rtech.threadly.R;
+import com.rtech.threadly.interfaces.NetworkCallBacks.NetworkCallbackInterfaceJsonObject;
 import com.rtech.threadly.interfaces.NetworkCallbackInterface;
 import com.rtech.threadly.models.Posts_Comments_Model;
 import com.rtech.threadly.network_managers.LikeManager;
 import com.rtech.threadly.utils.ReUsableFunctions;
+
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 
@@ -62,16 +65,16 @@ public class CommentRepliesAdapter extends RecyclerView.Adapter<CommentRepliesAd
                 commentsModels.get(position).setLiked(false);
                 commentsModels.get(position).setLikesCount(commentsModels.get(position).getLikesCount()-1);
                 notifyItemChanged(position);
-                likeManager.UnLikeAComment(commentsModels.get(position).getCommentId(), new NetworkCallbackInterface() {
+                likeManager.UnLikeAComment(commentsModels.get(position).getCommentId(), new NetworkCallbackInterfaceJsonObject() {
                     @Override
-                    public void onSuccess() {
+                    public void onSuccess(JSONObject response) {
                         holder.like_btn_image.setEnabled(true);
 
 
                     }
 
                     @Override
-                    public void onError(String err) {
+                    public void onError(int err) {
                         holder.like_btn_image.setImageResource(R.drawable.red_heart_active_icon);
                         commentsModels.get(position).setLiked(true);
                         commentsModels.get(position).setLikesCount(commentsModels.get(position).getLikesCount()+1);
@@ -88,14 +91,14 @@ public class CommentRepliesAdapter extends RecyclerView.Adapter<CommentRepliesAd
                 commentsModels.get(position).setLiked(true);
                 commentsModels.get(position).setLikesCount(commentsModels.get(position).getLikesCount()+1);
                 notifyItemChanged(position);
-                likeManager.LikeAComment(commentsModels.get(position).getCommentId(), new NetworkCallbackInterface() {
+                likeManager.LikeAComment(commentsModels.get(position).getCommentId(), new NetworkCallbackInterfaceJsonObject() {
                     @Override
-                    public void onSuccess() {
+                    public void onSuccess(JSONObject response) {
                         holder.like_btn_image.setEnabled(true);
                     }
 
                     @Override
-                    public void onError(String err) {
+                    public void onError(int err) {
                         holder.like_btn_image.setImageResource(R.drawable.heart_inactive_icon);
                         commentsModels.get(position).setLiked(false);
                         commentsModels.get(position).setLikesCount(commentsModels.get(position).getLikesCount()-1);

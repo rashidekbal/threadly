@@ -55,6 +55,7 @@ import com.rtech.threadly.fragments.MessageFragments.VideoViewFragment;
 import com.rtech.threadly.fragments.PostAddCameraFragment;
 import com.rtech.threadly.fragments.common_ui_pages.Media_Capture_finalizer_fragment;
 import com.rtech.threadly.interfaces.CameraFragmentInterface;
+import com.rtech.threadly.interfaces.NetworkCallBacks.NetworkCallbackInterfaceJsonObject;
 import com.rtech.threadly.interfaces.NetworkCallbackInterface;
 import com.rtech.threadly.interfaces.NetworkCallbackInterfaceWithProgressTracking;
 import com.rtech.threadly.interfaces.general_ui_callbacks.OnCapturedMediaFinalizedCallback;
@@ -214,9 +215,9 @@ public class MessengerMainMessagePageActivity extends AppCompatActivity {
                                                 PreferenceUtil.getUserId());
                                     } else {
                                         MessageManager.setSeenMessage(unNotifiedUids, uuid, PreferenceUtil.getUUID(),
-                                                new NetworkCallbackInterface() {
+                                                new NetworkCallbackInterfaceJsonObject() {
                                                     @Override
-                                                    public void onSuccess() {
+                                                    public void onSuccess(JSONObject response) {
                                                         Executors.newSingleThreadExecutor()
                                                                 .execute(() -> DataBase.getInstance().MessageDao()
                                                                         .updateMessagesSeen(conversationId,
@@ -224,7 +225,7 @@ public class MessengerMainMessagePageActivity extends AppCompatActivity {
                                                     }
 
                                                     @Override
-                                                    public void onError(String err) {
+                                                    public void onError(int err) {
 
                                                     }
                                                 });

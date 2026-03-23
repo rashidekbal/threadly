@@ -4,11 +4,17 @@ import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.JSONObjectRequestListener;
+import com.androidnetworking.interfaces.UploadProgressListener;
+import com.rtech.threadly.constants.SharedPreferencesKeys;
+import com.rtech.threadly.core.Core;
 import com.rtech.threadly.interfaces.NetworkCallBacks.NetworkCallbackInterfaceJsonObject;
+import com.rtech.threadly.interfaces.NetworkCallbackInterfaceWithProgressTracking;
 import com.rtech.threadly.utils.PreferenceUtil;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+
+import java.io.File;
 
 public class NetworkingProvider {
     public static void get(String Url,String token ,NetworkCallbackInterfaceJsonObject callbackInterfaceJsonObject){
@@ -181,9 +187,9 @@ public class NetworkingProvider {
                 });
 
     }
-    public static void delete(String url,String token,JSONArray array,NetworkCallbackInterfaceJsonObject callBack){
+
+    public static void delete(String url,String token,NetworkCallbackInterfaceJsonObject callBack){
         AndroidNetworking.delete(url).addHeaders("Authorization","Bearer "+token)
-                .addJSONArrayBody(array)
                 .setPriority(Priority.HIGH)
                 .build()
                 .getAsJSONObject(new JSONObjectRequestListener() {
@@ -198,6 +204,85 @@ public class NetworkingProvider {
                     }
                 });
 
+    }
+    public static void upload(String url, String token , File filepath,String key , String Tag, NetworkCallbackInterfaceWithProgressTracking callbackInterfaceWithProgressTracking){
+        AndroidNetworking.upload(url).setPriority(Priority.HIGH)
+                .addHeaders("Authorization","Bearer "+ token)
+                .setTag(Tag)
+                .addMultipartFile(key,filepath).build()
+                .setUploadProgressListener(new UploadProgressListener() {
+                    @Override
+                    public void onProgress(long bytesUploaded, long totalBytes) {
+                        callbackInterfaceWithProgressTracking.progress(bytesUploaded,totalBytes);
+
+                    }
+                }).getAsJSONObject(new JSONObjectRequestListener() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        callbackInterfaceWithProgressTracking.onSuccess(response);
+
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+                        callbackInterfaceWithProgressTracking.onError(anError.toString());
+
+                    }
+                });
+    }
+    public static void upload(String url, String token , File filepath,String key ,String caption, String Tag, NetworkCallbackInterfaceWithProgressTracking callbackInterfaceWithProgressTracking){
+        AndroidNetworking.upload(url).setPriority(Priority.HIGH)
+                .addHeaders("Authorization","Bearer "+ token)
+                .setTag(Tag)
+                .addMultipartFile(key,filepath)
+                .addMultipartParameter("caption",caption)
+                .build()
+                .setUploadProgressListener(new UploadProgressListener() {
+                    @Override
+                    public void onProgress(long bytesUploaded, long totalBytes) {
+                        callbackInterfaceWithProgressTracking.progress(bytesUploaded,totalBytes);
+
+                    }
+                }).getAsJSONObject(new JSONObjectRequestListener() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        callbackInterfaceWithProgressTracking.onSuccess(response);
+
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+                        callbackInterfaceWithProgressTracking.onError(anError.toString());
+
+                    }
+                });
+    }
+    public static void uploadWithType(String url, String token , File filepath,String key ,String type, String Tag, NetworkCallbackInterfaceWithProgressTracking callbackInterfaceWithProgressTracking){
+        AndroidNetworking.upload(url).setPriority(Priority.HIGH)
+                .addHeaders("Authorization","Bearer "+ token)
+                .setTag(Tag)
+                .addMultipartFile(key,filepath)
+                .addMultipartParameter("type",type)
+                .build()
+                .setUploadProgressListener(new UploadProgressListener() {
+                    @Override
+                    public void onProgress(long bytesUploaded, long totalBytes) {
+                        callbackInterfaceWithProgressTracking.progress(bytesUploaded,totalBytes);
+
+                    }
+                }).getAsJSONObject(new JSONObjectRequestListener() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        callbackInterfaceWithProgressTracking.onSuccess(response);
+
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+                        callbackInterfaceWithProgressTracking.onError(anError.toString());
+
+                    }
+                });
     }
 
 }

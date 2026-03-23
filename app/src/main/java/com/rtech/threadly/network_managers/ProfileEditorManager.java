@@ -12,9 +12,11 @@ import com.rtech.threadly.BuildConfig;
 import com.rtech.threadly.constants.ApiEndPoints;
 import com.rtech.threadly.constants.SharedPreferencesKeys;
 import com.rtech.threadly.core.Core;
+import com.rtech.threadly.interfaces.NetworkCallBacks.NetworkCallbackInterfaceJsonObject;
 import com.rtech.threadly.interfaces.NetworkCallbackInterface;
 import com.rtech.threadly.interfaces.NetworkCallbackInterfaceWithJsonObjectDelivery;
 import com.rtech.threadly.interfaces.NetworkCallbackInterfaceWithProgressTracking;
+import com.rtech.threadly.utils.PreferenceUtil;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -34,123 +36,53 @@ public class ProfileEditorManager {
 
     }
     private String getToken(){
-        return loginInfo.getString(SharedPreferencesKeys.JWT_TOKEN,"null");
+        return PreferenceUtil.getJWT();
     }
-    public void UpdateName(String name, NetworkCallbackInterfaceWithJsonObjectDelivery callbackInterface){
+    public void UpdateName(String name, NetworkCallbackInterfaceJsonObject callbackInterface){
         String url= ApiEndPoints.EDIT_USERNAME;
         JSONObject packet=new JSONObject();
 
         try {
             packet.put("name",name);
-            AndroidNetworking.patch(url)
-                    .setPriority(Priority.HIGH)
-                    .addHeaders("Authorization", "Bearer "+getToken())
-                    .addApplicationJsonBody(packet)
-                    .build()
-                    .getAsJSONObject(new JSONObjectRequestListener() {
-                        @Override
-                        public void onResponse(JSONObject response) {
-                            callbackInterface.onSuccess(response);
-                        }
+            NetworkingProvider.patch(url,getToken(),packet,callbackInterface);
 
-                        @Override
-                        public void onError(ANError anError) {
-                            if(BuildConfig.DEBUG){
-                                Log.d("ApiError", "error on updating name "+anError.toString());
-                            }
-
-                            callbackInterface.onError(anError.getMessage());
-
-                        }
-                    });
         } catch (JSONException e) {
-            throw new RuntimeException(e);
+            callbackInterface.onError(500);
         }
 
     }
-    public void UpdateUserid(String userid, NetworkCallbackInterfaceWithJsonObjectDelivery callbackInterface){
+    public void UpdateUserid(String userid, NetworkCallbackInterfaceJsonObject callbackInterface){
         String url= ApiEndPoints.EDIT_USERID;
         JSONObject packet=new JSONObject();
 
         try {
             packet.put("newUserId",userid);
-            AndroidNetworking.patch(url)
-                    .setPriority(Priority.HIGH)
-                    .addHeaders("Authorization", "Bearer "+getToken())
-                    .addApplicationJsonBody(packet)
-                    .build()
-                    .getAsJSONObject(new JSONObjectRequestListener() {
-                        @Override
-                        public void onResponse(JSONObject response) {
-                            callbackInterface.onSuccess(response);
-                        }
+            NetworkingProvider.patch(url,getToken(),packet,callbackInterface);
 
-                        @Override
-                        public void onError(ANError anError) {
-                            if(BuildConfig.DEBUG){
-                                Log.d("ApiError", "error on updating userid "+anError.toString());
-                            }
-
-                            callbackInterface.onError(Integer.toString(anError.getErrorCode()));
-
-                        }
-                    });
         } catch (JSONException e) {
-            throw new RuntimeException(e);
+            callbackInterface.onError(500);
         }
 
     }
 
 
-    public void UpdateUserBio(String BioText, NetworkCallbackInterface callbackInterface){
+    public void UpdateUserBio(String BioText, NetworkCallbackInterfaceJsonObject callbackInterface){
         String url= ApiEndPoints.EDIT_BIO;
         JSONObject packet=new JSONObject();
 
         try {
             packet.put("bioText",BioText);
-            AndroidNetworking.patch(url)
-                    .setPriority(Priority.HIGH)
-                    .addHeaders("Authorization", "Bearer "+getToken())
-                    .addApplicationJsonBody(packet)
-                    .build()
-                    .getAsJSONObject(new JSONObjectRequestListener() {
-                        @Override
-                        public void onResponse(JSONObject response) {
-                            callbackInterface.onSuccess();
-                        }
+            NetworkingProvider.patch(url,getToken(),packet,callbackInterface);
 
-                        @Override
-                        public void onError(ANError anError) {
-                            if(BuildConfig.DEBUG){
-                                Log.d("ApiError", "error on updating user bio"+anError.toString());
-                            }
-
-                            callbackInterface.onError(anError.getMessage());
-
-                        }
-                    });
         } catch (JSONException e) {
-            throw new RuntimeException(e);
+            callbackInterface.onError(500);
         }
 
     }
-    public final void ChangeUserProfile(File picture,NetworkCallbackInterfaceWithJsonObjectDelivery callback){
+    public final void ChangeUserProfile(File picture,NetworkCallbackInterfaceWithProgressTracking callback){
         String url=ApiEndPoints.EDIT_PROFILE_PICTURE;
-        AndroidNetworking.upload(url).setPriority(Priority.HIGH)
-                .addHeaders("Authorization","Bearer "+getToken())
-                .addMultipartFile("image",picture)
-                .build()
-                .getAsJSONObject(new JSONObjectRequestListener() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        callback.onSuccess(response);
-                    }
+        NetworkingProvider.upload(url,getToken(),picture,"image","uploadProfile",callback);
 
-                    @Override
-                    public void onError(ANError anError) {
-                     callback.onError(anError.toString());
-                    }
-                });
     }
 
 

@@ -15,6 +15,7 @@ import com.rtech.threadly.constants.ApiEndPoints;
 import com.rtech.threadly.constants.Constants;
 import com.rtech.threadly.constants.SharedPreferencesKeys;
 import com.rtech.threadly.core.Core;
+import com.rtech.threadly.interfaces.NetworkCallBacks.NetworkCallbackInterfaceJsonObject;
 import com.rtech.threadly.interfaces.NetworkCallbackInterface;
 import com.rtech.threadly.interfaces.NetworkCallbackInterfaceWithJsonObjectDelivery;
 import com.rtech.threadly.interfaces.NetworkCallbackInterfaceWithProgressTracking;
@@ -35,25 +36,21 @@ public class MessageManager {
     static String TAG="MessageManager";
     public static void sendMessage(JSONObject object){
         String url= ApiEndPoints.SEND_MESSAGE;
-        AndroidNetworking.post(url).setPriority(Priority.HIGH)
-                .addHeaders("Authorization","Bearer "+ Core.getPreference().getString(SharedPreferencesKeys.JWT_TOKEN,"null"))
-                .addApplicationJsonBody(object)
-                .build()
-                .getAsJSONObject(new JSONObjectRequestListener() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        JSONObject object1=response.optJSONObject("data");
-                        String MsgUid=object1.optString("MsgUid");
-                        int deliveryStatus=object1.optInt("deliveryStatus");
-                        ReUsableFunctions.updateMessageStatus(MsgUid,deliveryStatus);
-                    }
+        NetworkingProvider.post(url, PreferenceUtil.getJWT(), object, new NetworkCallbackInterfaceJsonObject() {
+            @Override
+            public void onSuccess(JSONObject response) {
+                JSONObject object1=response.optJSONObject("data");
+                String MsgUid=object1.optString("MsgUid");
+                int deliveryStatus=object1.optInt("deliveryStatus");
+                ReUsableFunctions.updateMessageStatus(MsgUid,deliveryStatus);
+            }
 
-                    @Override
-                    public void onError(ANError anError) {
-                        Log.d(Constants.NETWORK_ERROR_TAG.toString(), "Error in sending message via http request "+anError.getErrorDetail());
+            @Override
+            public void onError(int errorCode) {
+                Log.d(Constants.NETWORK_ERROR_TAG.toString(), "Error in sending message via http request with code  : "+errorCode);
+            }
+        });
 
-                    }
-                });
 
     }
     public static void getaAndUpdatePendingMessagesFromServer(String senderUUid ){
@@ -61,88 +58,77 @@ public class MessageManager {
         JSONObject object=new JSONObject();
         try {
             object.put("senderUuid",senderUUid);
-            AndroidNetworking.post(url).setPriority(Priority.HIGH)
-                    .addHeaders("Authorization","Bearer "+Core.getPreference().getString(SharedPreferencesKeys.JWT_TOKEN,"null"))
-                    .addApplicationJsonBody(object)
-                    .build().getAsJSONObject(new JSONObjectRequestListener() {
-                        @Override
-                        public void onResponse(JSONObject response) {
+            NetworkingProvider.post(url, PreferenceUtil.getJWT(), object, new NetworkCallbackInterfaceJsonObject() {
+                @Override
+                public void onSuccess(JSONObject response) {
 
-
-
-                            JSONArray data=response.optJSONArray("data");
-                            assert data != null;
-                            if(data.length()>0){
-                                try{
-                                    new MessengerUtils().OrganizeChats(data);
-                                } catch (Exception e) {
-                                    Log.d(TAG, "exception: "+e.toString());
-                                }
-                            }
+                    JSONArray data=response.optJSONArray("data");
+                    assert data != null;
+                    if(data.length()>0){
+                        try{
+                            new MessengerUtils().OrganizeChats(data);
+                        } catch (Exception e) {
+                            Log.d(TAG, "exception: "+e.toString());
                         }
+                    }
+                }
 
-                        @Override
-                        public void onError(ANError anError) {
-                            Log.d(Constants.NETWORK_ERROR_TAG.toString(), "onError from getAndUpdateRoute  "+anError.getErrorDetail());
-
-                        }
-                    });
-
-
-
+                @Override
+                public void onError(int errorCode) {
+                    Log.d(Constants.NETWORK_ERROR_TAG.toString(), "onError from getAndUpdateRoute  with code : "+errorCode);
+                }
+            });
 
         } catch (JSONException e) {
-            throw new RuntimeException(e);
+            Log.d(Constants.NETWORK_ERROR_TAG.toString(), "onError from getAndUpdateRoute : "+e.toString());
         }
 
     }
     public static void checkAndGetPendingMessages(){
 
         String url=ApiEndPoints.CHECK_PENDING_MESSAGES;
-        AndroidNetworking.get(url).setPriority(Priority.HIGH)
-                .addHeaders("Authorization","Bearer "+Core.getPreference().getString(SharedPreferencesKeys.JWT_TOKEN,"null"))
-                .build().getAsJSONObject(new JSONObjectRequestListener() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        JSONArray data= null;
-                        try {
-                            data = response.getJSONArray("data");
+        NetworkingProvider.get(url, PreferenceUtil.getJWT(), new NetworkCallbackInterfaceJsonObject() {
+            @Override
+            public void onSuccess(JSONObject response) {
+                JSONArray data= null;
+                try {
+                    data = response.getJSONArray("data");
 
-                            if(data.length()>0 ){
-                                for(int i=0;i<data.length();i++){
-                                    JSONObject object=data.optJSONObject(0);
-                                    String senderUUid=object.optString("senderUUid");
-                                    String senderUserId=object.optString("userid");
-                                    String senderUserName=object.optString("username");
-                                    String profile=object.optString("profilepic");
-                                    int PendingMessages=object.optInt("messagesPending");
-                                    Executors.newSingleThreadExecutor().execute(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            getaAndUpdatePendingMessagesFromServer(senderUUid);
-                                        }
-                                    });
-
-
+                    if(data.length()>0 ){
+                        for(int i=0;i<data.length();i++){
+                            JSONObject object=data.optJSONObject(0);
+                            String senderUUid=object.optString("senderUUid");
+                            String senderUserId=object.optString("userid");
+                            String senderUserName=object.optString("username");
+                            String profile=object.optString("profilepic");
+                            int PendingMessages=object.optInt("messagesPending");
+                            Executors.newSingleThreadExecutor().execute(new Runnable() {
+                                @Override
+                                public void run() {
+                                    getaAndUpdatePendingMessagesFromServer(senderUUid);
                                 }
+                            });
 
-                            }
-                        } catch (JSONException e) {
 
-                           e.printStackTrace();
                         }
 
-
                     }
+                } catch (JSONException e) {
 
-                    @Override
-                    public void onError(ANError anError) {
-                        LoggerUtil.log("checkPending","error: "+anError.toString());
+                    e.printStackTrace();
+                }
 
-                    }
-                });
+
+            }
+
+            @Override
+            public void onError(int errorCode) {
+                LoggerUtil.log("checkPending","error: with code :  "+errorCode);
+            }
+        });
+
     }
-    public static void setSeenMessage(List<String> MessageUids, String senderUUid, String receiverUUid, NetworkCallbackInterface  callbackInterface)throws JSONException{
+    public static void setSeenMessage(List<String> MessageUids, String senderUUid, String receiverUUid, NetworkCallbackInterfaceJsonObject  callbackInterface)throws JSONException{
      String Url=ApiEndPoints.UPDATE_MSG_SEEN_STATUS;
      JSONObject object=new JSONObject();
      JSONArray Uids=new JSONArray();
@@ -152,50 +138,13 @@ public class MessageManager {
      object.put("senderUUid",senderUUid);
      object.put("receiverUUid",receiverUUid);
      object.put("uids",Uids);
-     AndroidNetworking.post(Url).setPriority(Priority.HIGH)
-             .addHeaders("Authorization","Bearer "+Core.getPreference().getString(SharedPreferencesKeys.JWT_TOKEN,"null"))
-             .addApplicationJsonBody(object)
-             .build()
-             .getAsJSONObject(new JSONObjectRequestListener() {
-                 @Override
-                 public void onResponse(JSONObject response) {
-                     Log.d(TAG, "done");
-                     callbackInterface.onSuccess();
-                 }
+     NetworkingProvider.post(Url,PreferenceUtil.getJWT(),object,callbackInterface);
 
-                 @Override
-                 public void onError(ANError anError) {
-                     Log.d(TAG, "onError: "+anError.getErrorDetail());
-                     callbackInterface.onError(anError.getMessage());
-                 }
-             });
 
     }
     public static void UploadMsgMedia(File filepath,String Tag, NetworkCallbackInterfaceWithProgressTracking callbackInterfaceWithProgressTracking){
         String url=ApiEndPoints.UPLOAD_MEDIA_MESSAGE;
-        AndroidNetworking.upload(url).setPriority(Priority.HIGH)
-                .addHeaders("Authorization","Bearer "+Core.getPreference().getString(SharedPreferencesKeys.JWT_TOKEN,"null"))
-                .setTag(Tag)
-                .addMultipartFile("media",filepath).build()
-                .setUploadProgressListener(new UploadProgressListener() {
-                    @Override
-                    public void onProgress(long bytesUploaded, long totalBytes) {
-                        callbackInterfaceWithProgressTracking.progress(bytesUploaded,totalBytes);
-
-                    }
-                }).getAsJSONObject(new JSONObjectRequestListener() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        callbackInterfaceWithProgressTracking.onSuccess(response);
-
-                    }
-
-                    @Override
-                    public void onError(ANError anError) {
-                        callbackInterfaceWithProgressTracking.onError(anError.toString());
-
-                    }
-                });
+        NetworkingProvider.upload(url,PreferenceUtil.getJWT(),filepath,"media",Tag,callbackInterfaceWithProgressTracking);
 
 
     }
@@ -204,81 +153,35 @@ public class MessageManager {
         AndroidNetworking.cancel(Tag);
     }
 
-    public static void GetAllChatsAssociatedWithUser(NetworkCallbackInterfaceWithJsonObjectDelivery callback){
+    public static void GetAllChatsAssociatedWithUser(NetworkCallbackInterfaceJsonObject callback){
         String Url=ApiEndPoints.GET_ALL_CHATS;
-        AndroidNetworking.get(Url)
-                .setPriority(Priority.HIGH)
-                .addHeaders("Authorization" ,"Bearer "+Core.getPreference().getString(SharedPreferencesKeys.JWT_TOKEN,"null"))
-                .build()
-                .getAsJSONObject(new JSONObjectRequestListener() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        callback.onSuccess(response);
-                    }
+        NetworkingProvider.get(Url,PreferenceUtil.getJWT(),callback);
 
-                    @Override
-                    public void onError(ANError anError) {
-                        callback.onError(anError.toString());
-                    }
-                });
 
     }
-    public static void DeleteMessageForLoggedInUser(String MsgUid, String Role, NetworkCallbackInterface callbackInterface){
+    public static void DeleteMessageForLoggedInUser(String MsgUid, String Role, NetworkCallbackInterfaceJsonObject callbackInterface){
         String Url=ApiEndPoints.DELETE_MSG_WITH_ROLE;
         JSONObject packet=new JSONObject();
         try {
             packet.put("MsgUid",MsgUid);
             packet.put("Role",Role);
-
-            AndroidNetworking.patch(Url).setPriority(Priority.HIGH)
-                    .addHeaders("Authorization","Bearer "+ PreferenceUtil.getJWT())
-                    .addApplicationJsonBody(packet)
-                    .build()
-                    .getAsJSONObject(new JSONObjectRequestListener() {
-                        @Override
-                        public void onResponse(JSONObject response) {
-                            callbackInterface.onSuccess();
-                        }
-
-                        @Override
-                        public void onError(ANError anError) {
-                            callbackInterface.onError(anError.toString());
-
-                        }
-                    });
+            NetworkingProvider.patch(Url,PreferenceUtil.getJWT(),packet,callbackInterface);
 
         } catch (JSONException e) {
-            callbackInterface.onError(e.toString());
+            callbackInterface.onError(500);
         }
 
     }
-    public static  void unSendMessage(String messageUid,String receiverUUid,NetworkCallbackInterface callbackInterface){
+    public static  void unSendMessage(String messageUid,String receiverUUid,NetworkCallbackInterfaceJsonObject callbackInterface){
         String Url=ApiEndPoints.UN_SEND_MESSAGE;
         JSONObject packet=new JSONObject();
         try {
             packet.put("MsgUid",messageUid);
             packet.put("receiverUUid",receiverUUid);
+            NetworkingProvider.patch(Url,PreferenceUtil.getJWT(),packet,callbackInterface);
 
-            AndroidNetworking.patch(Url)
-                    .setPriority(Priority.HIGH)
-                    .addHeaders("Authorization","Bearer "+PreferenceUtil.getJWT())
-                    .addApplicationJsonBody(packet)
-                    .build()
-                    .getAsJSONObject(new JSONObjectRequestListener() {
-                        @Override
-                        public void onResponse(JSONObject response) {
-                            callbackInterface.onSuccess();
-
-                        }
-
-                        @Override
-                        public void onError(ANError anError) {
-                            callbackInterface.onError(anError.toString());
-
-                        }
-                    });
         } catch (JSONException e) {
-           callbackInterface.onError(e.toString());
+           callbackInterface.onError(500);
         }
 
 

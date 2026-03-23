@@ -27,8 +27,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.rtech.threadly.R;
+import com.rtech.threadly.constants.LogTags;
 import com.rtech.threadly.constants.SharedPreferencesKeys;
 import com.rtech.threadly.core.Core;
+import com.rtech.threadly.interfaces.NetworkCallBacks.NetworkCallbackInterfaceJsonObject;
 import com.rtech.threadly.interfaces.NetworkCallbackInterface;
 import com.rtech.threadly.models.ExtendedPostModel;
 import com.rtech.threadly.network_managers.CommentsManager;
@@ -43,6 +45,8 @@ import com.rtech.threadly.utils.PostCommentsViewerUtil;
 import com.rtech.threadly.utils.PostShareHelperUtil;
 import com.rtech.threadly.utils.PreferenceUtil;
 import com.rtech.threadly.utils.ReUsableFunctions;
+
+import org.json.JSONObject;
 
 import java.util.List;
 
@@ -296,9 +300,9 @@ public class AllTypePostFeedAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             holder.followBtn.setOnClickListener(v -> {
                 holder.followBtn.setEnabled(false);
                 holder.followBtn.setVisibility(View.GONE);
-                followManager.follow(postModels.get(position).userId, new NetworkCallbackInterface() {
+                followManager.follow(postModels.get(position).userId, new NetworkCallbackInterfaceJsonObject() {
                     @Override
-                    public void onSuccess() {
+                    public void onSuccess(JSONObject response) {
                         postModels.get(position).setFollowed(true);
                         holder.followBtn.setEnabled(true);
                         ReUsableFunctions.ShowToast("Following");
@@ -306,7 +310,7 @@ public class AllTypePostFeedAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                     }
 
                     @Override
-                    public void onError(String err) {
+                    public void onError(int errorCode ) {
                         holder.followBtn.setVisibility(View.VISIBLE);
                         holder.followBtn.setEnabled(true);
                         ReUsableFunctions.ShowToast("something went wrong..");
@@ -468,15 +472,15 @@ public class AllTypePostFeedAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             setLikeCount(postModels.get(position).getLikeCount() + 1.0, holder);
             postModels.get(position).isliked = true;
             holder.like_btn_image.setEnabled(false);
-            likeManager.likePost(postModels.get(position).postId, new NetworkCallbackInterface() {
+            likeManager.likePost(postModels.get(position).postId, new NetworkCallbackInterfaceJsonObject() {
                 @Override
-                public void onSuccess() {
+                public void onSuccess(JSONObject response) {
                     holder.like_btn_image.setEnabled(true);
 
                 }
 
                 @Override
-                public void onError(String err) {
+                public void onError(int err) {
                     holder.like_btn_image.setImageResource(R.drawable.heart_inactive_icon_white);
 
                     setLikeCount(postModels.get(position).getLikeCount() - 1.0, holder);
@@ -494,16 +498,16 @@ public class AllTypePostFeedAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             postModels.get(position).setIsliked(false);
             holder.like_btn_image.setEnabled(false);
             // Send unlike request to server
-            likeManager.UnlikePost(postModels.get(position).postId, new NetworkCallbackInterface() {
+            likeManager.UnlikePost(postModels.get(position).postId, new NetworkCallbackInterfaceJsonObject() {
                 @Override
-                public void onSuccess() {
+                public void onSuccess(JSONObject response) {
                     holder.like_btn_image.setEnabled(true);
 
                 }
 
                 @Override
-                public void onError(String err) {
-                    Log.d("errorUnlike", "onError: ".concat(err));
+                public void onError(int err) {
+                    Log.d("errorUnlike", "onError: "+err);
                     holder.like_btn_image.setImageResource(R.drawable.red_heart_active_icon);
                     setLikeCount(postModels.get(position).getLikeCount() + 1.0, holder);
                     postModels.get(position).setIsliked(true);
@@ -521,15 +525,15 @@ public class AllTypePostFeedAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             setLikeCount(postModels.get(position).getLikeCount() + 1.0, holder);
             postModels.get(position).isliked = true;
             holder.like_btn_image.setEnabled(false);
-            likeManager.likePost(postModels.get(position).postId, new NetworkCallbackInterface() {
+            likeManager.likePost(postModels.get(position).postId, new NetworkCallbackInterfaceJsonObject() {
                 @Override
-                public void onSuccess() {
+                public void onSuccess(JSONObject response) {
                     holder.like_btn_image.setEnabled(true);
 
                 }
 
                 @Override
-                public void onError(String err) {
+                public void onError(int err) {
                     holder.like_btn_image.setImageResource(R.drawable.heart_inactive_icon_white);
 
                     setLikeCount(postModels.get(position).getLikeCount() - 1.0, holder);
@@ -547,16 +551,16 @@ public class AllTypePostFeedAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             postModels.get(position).setIsliked(false);
             holder.like_btn_image.setEnabled(false);
             // Send unlike request to server
-            likeManager.UnlikePost(postModels.get(position).postId, new NetworkCallbackInterface() {
+            likeManager.UnlikePost(postModels.get(position).postId, new NetworkCallbackInterfaceJsonObject() {
                 @Override
-                public void onSuccess() {
+                public void onSuccess(JSONObject response) {
                     holder.like_btn_image.setEnabled(true);
 
                 }
 
                 @Override
-                public void onError(String err) {
-                    Log.d("errorUnlike", "onError: ".concat(err));
+                public void onError(int err) {
+                    Log.d("errorUnlike", "onError: "+err);
                     holder.like_btn_image.setImageResource(R.drawable.red_heart_active_icon);
                     setLikeCount(postModels.get(position).getLikeCount() + 1.0, holder);
                     postModels.get(position).setIsliked(true);
@@ -581,15 +585,15 @@ public class AllTypePostFeedAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             setLikeCount(postModels.get(position).getLikeCount() + 1.0, holder);
             postModels.get(position).isliked = true;
             holder.like_btn_image.setEnabled(false);
-            likeManager.likePost(postModels.get(position).postId, new NetworkCallbackInterface() {
+            likeManager.likePost(postModels.get(position).postId, new NetworkCallbackInterfaceJsonObject() {
                 @Override
-                public void onSuccess() {
+                public void onSuccess(JSONObject response) {
                     holder.like_btn_image.setEnabled(true);
 
                 }
 
                 @Override
-                public void onError(String err) {
+                public void onError(int err) {
                     holder.like_btn_image.setImageResource(R.drawable.heart_inactive_icon_white);
 
                     setLikeCount(postModels.get(position).getLikeCount() - 1.0, holder);
@@ -613,15 +617,15 @@ public class AllTypePostFeedAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             setLikeCount(postModels.get(position).getLikeCount() + 1.0, holder);
             postModels.get(position).isliked = true;
             holder.like_btn_image.setEnabled(false);
-            likeManager.likePost(postModels.get(position).postId, new NetworkCallbackInterface() {
+            likeManager.likePost(postModels.get(position).postId, new NetworkCallbackInterfaceJsonObject() {
                 @Override
-                public void onSuccess() {
+                public void onSuccess(JSONObject response) {
                     holder.like_btn_image.setEnabled(true);
 
                 }
 
                 @Override
-                public void onError(String err) {
+                public void onError(int err) {
                     holder.like_btn_image.setImageResource(R.drawable.heart_inactive_icon_white);
 
                     setLikeCount(postModels.get(position).getLikeCount() - 1.0, holder);
@@ -674,9 +678,9 @@ public class AllTypePostFeedAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         holder.followBtn.setOnClickListener(v -> {
             holder.followBtn.setEnabled(false);
             holder.followBtn.setVisibility(View.GONE);
-            followManager.follow(postModels.get(position).userId, new NetworkCallbackInterface() {
+            followManager.follow(postModels.get(position).userId, new NetworkCallbackInterfaceJsonObject() {
                 @Override
-                public void onSuccess() {
+                public void onSuccess(JSONObject reponse) {
                     postModels.get(position).setFollowed(true);
                     holder.followBtn.setEnabled(true);
                     ReUsableFunctions.ShowToast("Following");
@@ -684,7 +688,7 @@ public class AllTypePostFeedAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                 }
 
                 @Override
-                public void onError(String err) {
+                public void onError(int errorCode) {
                     holder.followBtn.setVisibility(View.VISIBLE);
                     holder.followBtn.setEnabled(true);
                     ReUsableFunctions.ShowToast("something went wrong..");
@@ -730,9 +734,9 @@ public class AllTypePostFeedAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         }
         followBtnLayout.setOnClickListener(v->{
             OptionsDialog.dismiss();
-            followManager.follow(postModels.get(position).userId, new NetworkCallbackInterface() {
+            followManager.follow(postModels.get(position).userId, new NetworkCallbackInterfaceJsonObject() {
                 @Override
-                public void onSuccess() {
+                public void onSuccess(JSONObject response) {
                     postModels.get(position).isFollowed=true;
                     notifyItemChanged(position);
 
@@ -740,8 +744,8 @@ public class AllTypePostFeedAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                 }
 
                 @Override
-                public void onError(String err) {
-                    LoggerUtil.LogNetworkError(err);
+                public void onError(int err) {
+                    LoggerUtil.log(LogTags.NETWORK_LOG.toString(),"error on follow : with error code :"+err);
 
                 }
             });
@@ -749,17 +753,18 @@ public class AllTypePostFeedAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         });
         unfollowBtnLayout.setOnClickListener(v->{
             OptionsDialog.dismiss();
-            followManager.unfollow(postModels.get(position).userId, new NetworkCallbackInterface() {
+            followManager.unfollow(postModels.get(position).userId, new NetworkCallbackInterfaceJsonObject() {
                 @Override
-                public void onSuccess() {
+                public void onSuccess(JSONObject reponse) {
                     postModels.get(position).isFollowed=false;
                     notifyItemChanged(position);
 
                 }
 
                 @Override
-                public void onError(String err) {
-                    LoggerUtil.LogNetworkError(err);
+                public void onError(int err) {
+                    LoggerUtil.log(LogTags.NETWORK_LOG.toString(),"error on unfollow : with error code :"+err);
+
 
                 }
             });
@@ -790,9 +795,9 @@ public class AllTypePostFeedAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             delete_btn.setEnabled(false);
             new AlertDialog.Builder(context).setTitle("Delete post").setMessage("Do you want to delete post")
                     .setCancelable(true)
-                    .setPositiveButton("yes", (dialog, which) -> new PostsManager().RemovePost(postModels.get(position).getPostId(), new NetworkCallbackInterface() {
+                    .setPositiveButton("yes", (dialog, which) -> new PostsManager().RemovePost(postModels.get(position).getPostId(), new NetworkCallbackInterfaceJsonObject() {
                         @Override
-                        public void onSuccess() {
+                        public void onSuccess(JSONObject response) {
                             dialog.dismiss();
                             delete_btn.setEnabled(true);
                             ReUsableFunctions.ShowToast("post remove success");
@@ -803,7 +808,7 @@ public class AllTypePostFeedAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                         }
 
                         @Override
-                        public void onError(String err) {
+                        public void onError(int err) {
                             delete_btn.setEnabled(true);
                             optionsDialog.hide();
                             dialog.dismiss();

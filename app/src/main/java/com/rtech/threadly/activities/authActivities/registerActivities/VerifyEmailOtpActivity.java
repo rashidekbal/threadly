@@ -18,6 +18,7 @@ import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.JSONObjectRequestListener;
 import com.rtech.threadly.constants.ApiEndPoints;
 import com.rtech.threadly.databinding.ActivityVerifyEmailOtpBinding;
+import com.rtech.threadly.interfaces.NetworkCallBacks.NetworkCallbackInterfaceJsonObject;
 import com.rtech.threadly.interfaces.NetworkCallbackInterfaceWithJsonObjectDelivery;
 import com.rtech.threadly.network_managers.OtpManager;
 
@@ -58,7 +59,7 @@ public class VerifyEmailOtpActivity extends AppCompatActivity {
             mainXMl.msgTextView.setText("Next");
 
         }else{
-            otpManager.VerifyOtpEmail(intentData.getStringExtra("email"), otp, new NetworkCallbackInterfaceWithJsonObjectDelivery() {
+            otpManager.VerifyOtpEmail(intentData.getStringExtra("email"), otp, new NetworkCallbackInterfaceJsonObject() {
                 @Override
                 public void onSuccess(JSONObject response) {
                     mainXMl.progressBar.setVisibility(View.GONE);
@@ -76,11 +77,11 @@ public class VerifyEmailOtpActivity extends AppCompatActivity {
                 }
 
                 @Override
-                public void onError(String err) {
-                    int statusCode=Integer.parseInt(err);
+                public void onError(int errCode) {
+
                     mainXMl.msgTextView.setVisibility(View.VISIBLE);
                     mainXMl.msgTextView.setTextColor(Color.parseColor("#D00707"));
-                    if(statusCode==401){
+                    if(errCode==401){
                         mainXMl.msgTextView.setText("Invalid otp");
                     }else{
                         mainXMl.msgTextView.setText("Something went wrong");

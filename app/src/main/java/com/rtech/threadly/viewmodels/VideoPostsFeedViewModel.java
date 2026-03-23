@@ -7,6 +7,7 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.rtech.threadly.interfaces.NetworkCallBacks.NetworkCallbackInterfaceJsonObject;
 import com.rtech.threadly.interfaces.NetworkCallbackInterfaceWithJsonObjectDelivery;
 import com.rtech.threadly.network_managers.PostsManager;
 import com.rtech.threadly.models.Posts_Model;
@@ -33,7 +34,7 @@ public class VideoPostsFeedViewModel extends AndroidViewModel {
 // TODO: ADD pagination feature
     public  void loadVideoPostFeed() {
         loading=true;
-        postsManager.getVideoFeed(new NetworkCallbackInterfaceWithJsonObjectDelivery() {
+        postsManager.getVideoFeed(new NetworkCallbackInterfaceJsonObject() {
             @Override
             public void onSuccess(JSONObject response) {
                 loading=false;
@@ -73,7 +74,7 @@ public class VideoPostsFeedViewModel extends AndroidViewModel {
             }
 
             @Override
-            public void onError(String err) {
+            public void onError(int err) {
                 MutableLiveVideoPostData.postValue(new ArrayList<>());
 
             }

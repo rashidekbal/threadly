@@ -12,9 +12,12 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.rtech.threadly.R;
 import com.rtech.threadly.databinding.ActivityForgetPasswordBinding;
+import com.rtech.threadly.interfaces.NetworkCallBacks.NetworkCallbackInterfaceJsonObject;
 import com.rtech.threadly.interfaces.NetworkCallbackInterface;
 import com.rtech.threadly.network_managers.OtpManager;
 import com.rtech.threadly.utils.ReUsableFunctions;
+
+import org.json.JSONObject;
 
 public class ForgetPasswordActivity extends AppCompatActivity {
     ActivityForgetPasswordBinding mainXml;
@@ -46,9 +49,9 @@ public class ForgetPasswordActivity extends AppCompatActivity {
 
                 String userid = mainXml.useridField.getText().toString().trim();
                 if(ReUsableFunctions.isEmail(userid)){
-                    otpManager.ForgetPasswordOptSendEmail(userid, new NetworkCallbackInterface() {
+                    otpManager.ForgetPasswordOptSendEmail(userid, new NetworkCallbackInterfaceJsonObject() {
                         @Override
-                        public void onSuccess() {
+                        public void onSuccess(JSONObject response) {
                             // Hide progress bar and enable button
                             mainXml.progressBar.setVisibility(View.GONE);
                             mainXml.forgetPasswordBtn.setText(R.string.forget_password);
@@ -66,8 +69,8 @@ public class ForgetPasswordActivity extends AppCompatActivity {
                         }
 
                         @Override
-                        public void onError(String err) {
-                            int errorCode=Integer.parseInt(err);
+                        public void onError(int errorCode) {
+
                             if(errorCode==404){
                                 mainXml.useridField.setError("User not found");
                             }else{
@@ -84,9 +87,9 @@ public class ForgetPasswordActivity extends AppCompatActivity {
 
                 } else if (ReUsableFunctions.isPhone(userid)) {
                     //if given userid is phone number
-                    otpManager.ForgetPasswordOptSendMobile(userid, new NetworkCallbackInterface() {
+                    otpManager.ForgetPasswordOptSendMobile(userid, new NetworkCallbackInterfaceJsonObject() {
                         @Override
-                        public void onSuccess() {
+                        public void onSuccess(JSONObject response) {
                             // Hide progress bar and enable button
                             mainXml.progressBar.setVisibility(View.GONE);
                             mainXml.forgetPasswordBtn.setText(R.string.forget_password);
@@ -104,9 +107,9 @@ public class ForgetPasswordActivity extends AppCompatActivity {
                         }
 
                         @Override
-                        public void onError(String err) {
+                        public void onError(int err) {
                             // Handle error, e.g., show a dialog or toast
-                            ReUsableFunctions.ShowToast(ForgetPasswordActivity.this, err);
+                            ReUsableFunctions.ShowToast(ForgetPasswordActivity.this, "something went wrong");
                             mainXml.progressBar.setVisibility(View.GONE);
                             mainXml.forgetPasswordBtn.setText(R.string.forget_password);
                             mainXml.forgetPasswordBtn.setEnabled(true);

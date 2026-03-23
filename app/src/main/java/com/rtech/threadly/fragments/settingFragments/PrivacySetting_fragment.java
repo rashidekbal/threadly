@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.rtech.threadly.databinding.FragmentPrivacySettingBinding;
+import com.rtech.threadly.interfaces.NetworkCallBacks.NetworkCallbackInterfaceJsonObject;
 import com.rtech.threadly.interfaces.NetworkCallbackInterface;
 import com.rtech.threadly.models.Profile_Model;
 import com.rtech.threadly.network_managers.PrivacyManager;
@@ -18,6 +19,8 @@ import com.rtech.threadly.utils.NotificationPageManagerUtil;
 import com.rtech.threadly.utils.PreferenceUtil;
 import com.rtech.threadly.utils.ReUsableFunctions;
 import com.rtech.threadly.viewmodels.ProfileViewModel;
+
+import org.json.JSONObject;
 
 public class PrivacySetting_fragment extends Fragment {
      FragmentPrivacySettingBinding mainXml;
@@ -82,16 +85,16 @@ public class PrivacySetting_fragment extends Fragment {
            if(mainXml.privacySwitch.isChecked()){
 
                //make account private
-               PrivacyManager.setPrivate(new NetworkCallbackInterface() {
+               PrivacyManager.setPrivate(new NetworkCallbackInterfaceJsonObject() {
                    @Override
-                   public void onSuccess() {
+                   public void onSuccess(JSONObject response) {
                        onSuccessCleanUp();
                        PreferenceUtil.setPrivate(true);
 
                    }
 
                    @Override
-                   public void onError(String err) {
+                   public void onError(int err) {
                        onErrorCleanUp();
                        mainXml.privacySwitch.setChecked(false);
 
@@ -100,16 +103,16 @@ public class PrivacySetting_fragment extends Fragment {
                return;
            }
            //set public
-           PrivacyManager.setPublic(new NetworkCallbackInterface() {
+           PrivacyManager.setPublic(new NetworkCallbackInterfaceJsonObject() {
                @Override
-               public void onSuccess() {
+               public void onSuccess(JSONObject response) {
                    onSuccessCleanUp();
                    PreferenceUtil.setPrivate(false);
 
                }
 
                @Override
-               public void onError(String err) {
+               public void onError(int err) {
                    onErrorCleanUp();
                    mainXml.privacySwitch.setChecked(true);
 

@@ -39,10 +39,12 @@ import com.rtech.threadly.R;
 import com.rtech.threadly.adapters.commentsAdapter.PostCommentsAdapter;
 import com.rtech.threadly.adapters.messanger.UsersShareSheetGridAdapter;
 import com.rtech.threadly.adapters.mscs.SuggestUsersAdapter;
+import com.rtech.threadly.constants.LogTags;
 import com.rtech.threadly.constants.SharedPreferencesKeys;
 import com.rtech.threadly.constants.TypeConstants;
 import com.rtech.threadly.core.Core;
 import com.rtech.threadly.interfaces.Messanger.OnUserSelectedListener;
+import com.rtech.threadly.interfaces.NetworkCallBacks.NetworkCallbackInterfaceJsonObject;
 import com.rtech.threadly.interfaces.NetworkCallbackInterfaceWithJsonObjectDelivery;
 import com.rtech.threadly.interfaces.NetworkCallbackInterface;
 import com.rtech.threadly.models.UsersModel;
@@ -212,15 +214,15 @@ public class ImagePostsFeedAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                       holder.is_liked=true;
                       list.get(position).isliked=true;
                       holder.like_btn_image.setEnabled(false);
-                      likeManager.likePost(list.get(position).postId, new NetworkCallbackInterface() {
+                      likeManager.likePost(list.get(position).postId, new NetworkCallbackInterfaceJsonObject() {
                           @Override
-                          public void onSuccess() {
+                          public void onSuccess(JSONObject response) {
                               holder.like_btn_image.setEnabled(true);
 
                           }
 
                           @Override
-                          public void onError(String err) {
+                          public void onError(int err) {
                               holder.like_btn_image.setImageResource(R.drawable.heart_inactive);
                               holder.likes-=1.0;
                               setLikeCount(holder.likes,holder);
@@ -241,16 +243,16 @@ public class ImagePostsFeedAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                       list.get(position).isliked=false;
                       holder.like_btn_image.setEnabled(false);
                       // Send unlike request to server
-                      likeManager.UnlikePost(list.get(position).postId, new NetworkCallbackInterface() {
+                      likeManager.UnlikePost(list.get(position).postId, new NetworkCallbackInterfaceJsonObject() {
                           @Override
-                          public void onSuccess() {
+                          public void onSuccess(JSONObject response) {
                               holder.like_btn_image.setEnabled(true);
 
                           }
 
                           @Override
-                          public void onError(String err) {
-                              Log.d("errorUnlike", "onError: ".concat(err));
+                          public void onError(int err) {
+                              Log.d("errorUnlike", "onError: "+err);
                               holder.like_btn_image.setImageResource(R.drawable.red_heart_active_icon);
                               holder.likes+=1.0;
                               setLikeCount(holder.likes ,holder);
@@ -342,9 +344,9 @@ public class ImagePostsFeedAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         }
         followBtnLayout.setOnClickListener(v->{
             OptionsDialog.dismiss();
-            followManager.follow(list.get(position).userId, new NetworkCallbackInterface() {
+            followManager.follow(list.get(position).userId, new NetworkCallbackInterfaceJsonObject() {
                 @Override
-                public void onSuccess() {
+                public void onSuccess(JSONObject response) {
                     list.get(position).isFollowed=true;
                     notifyItemChanged(position);
 
@@ -352,8 +354,8 @@ public class ImagePostsFeedAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                 }
 
                 @Override
-                public void onError(String err) {
-                    LoggerUtil.LogNetworkError(err);
+                public void onError(int err) {
+                    LoggerUtil.log(LogTags.NETWORK_LOG.toString(),"error in api follow  : with code :"+err);
 
                 }
             });
@@ -361,17 +363,18 @@ public class ImagePostsFeedAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         });
         unfollowBtnLayout.setOnClickListener(v->{
             OptionsDialog.dismiss();
-            followManager.unfollow(list.get(position).userId, new NetworkCallbackInterface() {
+            followManager.unfollow(list.get(position).userId, new NetworkCallbackInterfaceJsonObject() {
                 @Override
-                public void onSuccess() {
+                public void onSuccess(JSONObject response) {
                     list.get(position).isFollowed=false;
                     notifyItemChanged(position);
 
                 }
 
                 @Override
-                public void onError(String err) {
-                    LoggerUtil.LogNetworkError(err);
+                public void onError(int err) {
+                    LoggerUtil.log(LogTags.NETWORK_LOG.toString(),"error in api unfollow  : with code :"+err);
+
 
                 }
             });

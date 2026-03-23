@@ -17,9 +17,12 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.rtech.threadly.R;
+import com.rtech.threadly.interfaces.NetworkCallBacks.NetworkCallbackInterfaceJsonObject;
 import com.rtech.threadly.interfaces.NetworkCallbackInterface;
 import com.rtech.threadly.network_managers.OtpManager;
 import com.rtech.threadly.utils.ReUsableFunctions;
+
+import org.json.JSONObject;
 
 public class SignUpEmailActivity extends AppCompatActivity {
 AppCompatButton signUp_with_mobile_btn,next_btn;
@@ -59,9 +62,9 @@ OtpManager otpManager;
                     progressBar.setVisibility(View.GONE);
 
                 }else{
-                    otpManager.SendOtpEmail(email, new NetworkCallbackInterface() {
+                    otpManager.SendOtpEmail(email, new NetworkCallbackInterfaceJsonObject() {
                         @Override
-                        public void onSuccess() {
+                        public void onSuccess(JSONObject response) {
                             msg_textView.setText(R.string.email_info_phrase);
                             next_btn.setEnabled(true);
                             next_btn.setText(R.string.next);
@@ -75,9 +78,9 @@ OtpManager otpManager;
                         }
 
                         @Override
-                        public void onError(String err) {
-                            int ErrorCode=Integer.parseInt(err);
-                            switch (ErrorCode){
+                        public void onError(int err) {
+
+                            switch (err){
                                 case 400:
                                     msg_textView.setTextColor(Color.parseColor("#D00707"));
                                     msg_textView.setText("Invalid Email");

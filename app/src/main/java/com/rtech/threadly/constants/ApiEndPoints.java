@@ -20,7 +20,6 @@ public class ApiEndPoints {
     public static final String UNLIKE_STORY = baseUrl + "/like/unlikeStory/";
 
     // Follows
-    public static final String FOLLOW = baseUrl + "/follow/follow/";
     public static final String FOLLOW_V2 = baseUrl + "/follow/follow/V2/";
     public static final String UNFOLLOW = baseUrl + "/follow/unfollow/";
     public static final String GET_ALL_FOLLOW_REQUEST = baseUrl + "/follow/getAllFollowRequests/";
@@ -44,6 +43,7 @@ public class ApiEndPoints {
     public static final String GET_SUGGESTED_USERS = baseUrl + "/users/getUsers/";
     public static final String GET_PROFILE_BY_UUID = baseUrl + "/users/getUserByUUid/";
     public static final String GET_LOGGED_IN_USER_PROFILE = baseUrl + "/users/getMyData/";
+
 
     // Authentication
 

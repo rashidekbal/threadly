@@ -7,9 +7,11 @@ import android.util.Log;
 import com.rtech.threadly.RoomDb.DataBase;
 import com.rtech.threadly.RoomDb.schemas.HistorySchema;
 import com.rtech.threadly.RoomDb.schemas.MessageSchema;
+import com.rtech.threadly.constants.LogTags;
 import com.rtech.threadly.constants.MessageStateEnum;
 import com.rtech.threadly.constants.SharedPreferencesKeys;
 import com.rtech.threadly.core.Core;
+import com.rtech.threadly.interfaces.NetworkCallBacks.NetworkCallbackInterfaceJsonObject;
 import com.rtech.threadly.interfaces.NetworkCallbackInterfaceWithJsonObjectDelivery;
 import com.rtech.threadly.network_managers.MessageManager;
 import com.rtech.threadly.network_managers.ProfileManager;
@@ -26,7 +28,7 @@ public class MessengerUtils {
     //TODO consider special care for message with media which is sent
    private final  ExecutorService executor=Executors.newSingleThreadExecutor();
     public  void LoadAllChatsForLoginAction(){
-        MessageManager.GetAllChatsAssociatedWithUser(new NetworkCallbackInterfaceWithJsonObjectDelivery() {
+        MessageManager.GetAllChatsAssociatedWithUser(new NetworkCallbackInterfaceJsonObject() {
             @Override
             public void onSuccess(JSONObject response) {
                 JSONArray data=response.optJSONArray("data");
@@ -36,8 +38,8 @@ public class MessengerUtils {
 
             }
             @Override
-            public void onError(String err) {
-                LoggerUtil.log("MessageSyncError",err);
+            public void onError(int err) {
+                LoggerUtil.log(LogTags.NETWORK_LOG.toString(),"error getting all chats associate with user with error code : "+err);
 
             }
         });
@@ -214,7 +216,7 @@ executor.execute(()->{
     history[0] = DataBase.getInstance().historyOperator().getHistory(ConversationId);
 
     if (history[0] == null) {
-        new ProfileManager().GetProfileByUuid(OtherPartyUuid, new NetworkCallbackInterfaceWithJsonObjectDelivery() {
+        new ProfileManager().GetProfileByUuid(OtherPartyUuid, new NetworkCallbackInterfaceJsonObject() {
             @Override
             public void onSuccess(JSONObject response) {
                 JSONArray Array = response.optJSONArray("data");
@@ -239,8 +241,8 @@ executor.execute(()->{
             }
 
             @Override
-            public void onError(String err) {
-                Log.d("errorFetching", err);
+            public void onError(int errCode) {
+
 
             }
         });

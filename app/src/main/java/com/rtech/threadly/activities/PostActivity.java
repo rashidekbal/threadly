@@ -43,11 +43,13 @@ import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.rtech.threadly.R;
 import com.rtech.threadly.adapters.commentsAdapter.PostCommentsAdapter;
 import com.rtech.threadly.adapters.messanger.UsersShareSheetGridAdapter;
+import com.rtech.threadly.constants.LogTags;
 import com.rtech.threadly.constants.SharedPreferencesKeys;
 import com.rtech.threadly.constants.TypeConstants;
 import com.rtech.threadly.core.Core;
 import com.rtech.threadly.databinding.ActivityPostBinding;
 import com.rtech.threadly.interfaces.Messanger.OnUserSelectedListener;
+import com.rtech.threadly.interfaces.NetworkCallBacks.NetworkCallbackInterfaceJsonObject;
 import com.rtech.threadly.interfaces.NetworkCallbackInterface;
 import com.rtech.threadly.interfaces.NetworkCallbackInterfaceWithJsonObjectDelivery;
 import com.rtech.threadly.models.UsersModel;
@@ -124,7 +126,7 @@ public class PostActivity extends AppCompatActivity {
         followManager=new FollowManager();
     }
     private void loadPost(){
-        postsManager.getPostWithId(postId, new NetworkCallbackInterfaceWithJsonObjectDelivery() {
+        postsManager.getPostWithId(postId, new NetworkCallbackInterfaceJsonObject() {
             @OptIn(markerClass = UnstableApi.class)
             @Override
             public void onSuccess(JSONObject response) {
@@ -169,7 +171,7 @@ public class PostActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onError(String err) {
+            public void onError(int err) {
                 mainXml.errorLayout.setVisibility(View.VISIBLE);
                 mainXml.postContainer.setVisibility(View.GONE);
 
@@ -206,15 +208,15 @@ public class PostActivity extends AppCompatActivity {
                 data.setIsliked(false);
                 data.setLikeCount(data.getLikeCount()-1);
                 mainXml.likesCountText.setText(String.valueOf(data.getLikeCount()));
-                likeManager.UnlikePost(data.getPostId(), new NetworkCallbackInterface() {
+                likeManager.UnlikePost(data.getPostId(), new NetworkCallbackInterfaceJsonObject() {
                     @Override
-                    public void onSuccess() {
+                    public void onSuccess(JSONObject response) {
 
                     }
 
                     @Override
-                    public void onError(String err) {
-                        Log.d("unlikeError", "onError: ".concat(err));
+                    public void onError(int err) {
+                        Log.d("unlikeError", "onError: "+err);
                         mainXml.likeBtnImage.setImageResource(R.drawable.red_heart_active_icon);
                         data.setIsliked(true);
                         data.setLikeCount(data.getLikeCount()+1);
@@ -230,15 +232,15 @@ public class PostActivity extends AppCompatActivity {
                 data.setIsliked(true);
                 data.setLikeCount(data.getLikeCount()+1);
                 mainXml.likesCountText.setText(String.valueOf(data.getLikeCount()));
-                likeManager.likePost(data.getPostId(), new NetworkCallbackInterface() {
+                likeManager.likePost(data.getPostId(), new NetworkCallbackInterfaceJsonObject() {
                     @Override
-                    public void onSuccess() {
+                    public void onSuccess(JSONObject response) {
 
                     }
 
                     @Override
-                    public void onError(String err) {
-                        Log.d("likeError", "onError: ".concat(err));
+                    public void onError(int err) {
+                        Log.d("likeError", "onError: "+err);
                         mainXml.likeBtnImage.setImageResource(R.drawable.heart_inactive_icon_white);
                         data.setIsliked(false);
                         data.setLikeCount(data.getLikeCount()-1);
@@ -330,9 +332,9 @@ public class PostActivity extends AppCompatActivity {
         }
         followBtnLayout.setOnClickListener(v->{
             OptionsDialog.dismiss();
-            followManager.follow(data.getUserId(), new NetworkCallbackInterface() {
+            followManager.follow(data.getUserId(),new NetworkCallbackInterfaceJsonObject() {
                 @Override
-                public void onSuccess() {
+                public void onSuccess(JSONObject response) {
                     data.setFollowed(true);
                     unfollowBtnLayout.setVisibility(View.VISIBLE);
                     followBtnLayout.setVisibility(View.GONE);
@@ -341,8 +343,8 @@ public class PostActivity extends AppCompatActivity {
                 }
 
                 @Override
-                public void onError(String err) {
-                    LoggerUtil.LogNetworkError(err);
+                public void onError(int err) {
+                    LoggerUtil.log(LogTags.NETWORK_LOG.toString(),"error in follow request : code :"+err);
 
                 }
             });
@@ -350,9 +352,9 @@ public class PostActivity extends AppCompatActivity {
         });
         unfollowBtnLayout.setOnClickListener(v->{
             OptionsDialog.dismiss();
-            followManager.unfollow(data.getUserId(), new NetworkCallbackInterface() {
+            followManager.unfollow(data.getUserId(), new NetworkCallbackInterfaceJsonObject() {
                 @Override
-                public void onSuccess() {
+                public void onSuccess(JSONObject response) {
                     data.setFollowed(false);
                     unfollowBtnLayout.setVisibility(View.GONE);
                     followBtnLayout.setVisibility(View.VISIBLE);
@@ -360,8 +362,9 @@ public class PostActivity extends AppCompatActivity {
                 }
 
                 @Override
-                public void onError(String err) {
-                    LoggerUtil.LogNetworkError(err);
+                public void onError(int err) {
+                    LoggerUtil.log(LogTags.NETWORK_LOG.toString(),"error in unfollow request : code :"+err);
+
 
                 }
             });

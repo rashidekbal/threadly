@@ -9,6 +9,7 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.rtech.threadly.constants.SharedPreferencesKeys;
 import com.rtech.threadly.core.Core;
+import com.rtech.threadly.interfaces.NetworkCallBacks.NetworkCallbackInterfaceJsonObject;
 import com.rtech.threadly.interfaces.NetworkCallbackInterfaceWithJsonObjectDelivery;
 import com.rtech.threadly.models.UsersModel;
 import com.rtech.threadly.network_managers.FollowManager;
@@ -32,7 +33,7 @@ public class MessageAbleUsersViewModel extends AndroidViewModel {
 
     private void loadUsers() {
         FollowManager followManager=new FollowManager();
-        followManager.getFollowings(Core.getPreference().getString(SharedPreferencesKeys.USER_ID, null), new NetworkCallbackInterfaceWithJsonObjectDelivery() {
+        followManager.getFollowings(Core.getPreference().getString(SharedPreferencesKeys.USER_ID, null), new NetworkCallbackInterfaceJsonObject() {
             @Override
             public void onSuccess(JSONObject response) {
                 try {
@@ -63,7 +64,7 @@ public class MessageAbleUsersViewModel extends AndroidViewModel {
             }
 
             @Override
-            public void onError(String err) {
+            public void onError(int err) {
                 mutableLiveDataUsers.postValue(new ArrayList<>());
 
             }

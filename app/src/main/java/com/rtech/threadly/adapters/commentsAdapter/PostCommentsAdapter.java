@@ -77,16 +77,16 @@ public class PostCommentsAdapter extends RecyclerView.Adapter<PostCommentsAdapte
                 Posts_Comments_Model object = dataList.get(position);
                 dataList.set(position, new Posts_Comments_Model(object.commentId, object.postId, object.likesCount - 1, 0, object.userId, object.username, object.userDpUrl, object.comment, object.createdAt));
                 notifyItemChanged(position);
-                likeManager.UnLikeAComment(dataList.get(position).commentId, new NetworkCallbackInterface() {
+                likeManager.UnLikeAComment(dataList.get(position).commentId, new NetworkCallbackInterfaceJsonObject() {
                     @Override
-                    public void onSuccess() {
+                    public void onSuccess(JSONObject response) {
                         holder.likeBtn.setEnabled(true);
                         isLikedByMe = false;
 
                     }
 
                     @Override
-                    public void onError(String err) {
+                    public void onError(int err) {
                         holder.likeBtn.setImageResource(R.drawable.red_heart_active_icon);
                         Posts_Comments_Model object = dataList.get(position);
                         dataList.set(position, new Posts_Comments_Model(object.commentId, object.postId, object.likesCount + 1, 1, object.userId, object.username, object.userDpUrl, object.comment, object.createdAt));
@@ -103,16 +103,16 @@ public class PostCommentsAdapter extends RecyclerView.Adapter<PostCommentsAdapte
                 Posts_Comments_Model object=dataList.get(position);
                 dataList.set(position,new Posts_Comments_Model(object.commentId, object.postId,object.likesCount+1,1,object.userId,object.username,object.userDpUrl,object.comment,object.createdAt));
                 notifyItemChanged(position);
-                likeManager.LikeAComment(dataList.get(position).commentId, new NetworkCallbackInterface() {
+                likeManager.LikeAComment(dataList.get(position).commentId, new NetworkCallbackInterfaceJsonObject() {
                     @Override
-                    public void onSuccess() {
+                    public void onSuccess(JSONObject response) {
                         holder.likeBtn.setEnabled(true);
                         isLikedByMe=true;
 
                     }
 
                     @Override
-                    public void onError(String err) {
+                    public void onError(int err) {
                         holder.likeBtn.setImageResource(R.drawable.heart_inactive_icon);
                         Posts_Comments_Model object=dataList.get(position);
                         dataList.set(position,new Posts_Comments_Model(object.commentId, object.postId,object.likesCount-1,0,object.userId,object.username,object.userDpUrl,object.comment,object.createdAt));

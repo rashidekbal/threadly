@@ -16,6 +16,7 @@ import android.view.inputmethod.InputMethodManager;
 
 import com.rtech.threadly.R;
 import com.rtech.threadly.databinding.FragmentUsernameEditBinding;
+import com.rtech.threadly.interfaces.NetworkCallBacks.NetworkCallbackInterfaceJsonObject;
 import com.rtech.threadly.interfaces.NetworkCallbackInterfaceWithJsonObjectDelivery;
 import com.rtech.threadly.network_managers.ProfileEditorManager;
 import com.rtech.threadly.models.Profile_Model;
@@ -95,7 +96,7 @@ public class UsernameEditFragment extends Fragment {
 
                 }else{
                     mainXml.progressBar.setVisibility(View.VISIBLE);
-                    profileEditorManager.UpdateUserid(userid, new NetworkCallbackInterfaceWithJsonObjectDelivery() {
+                    profileEditorManager.UpdateUserid(userid, new NetworkCallbackInterfaceJsonObject() {
                         @Override
                         public void onSuccess(JSONObject response) {
                             mainXml.saveButton.setEnabled(true);
@@ -121,13 +122,13 @@ public class UsernameEditFragment extends Fragment {
                         }
 
                         @Override
-                        public void onError(String err) {
-                            int ErrorCode=Integer.parseInt(err);
+                        public void onError(int errorCode) {
+
                             mainXml.errorMessageText.setVisibility(View.VISIBLE);
                             mainXml.saveButton.setEnabled(true);
                             mainXml.progressBar.setVisibility(View.GONE);
                             mainXml.cancelButton.setEnabled(true);
-                            if(ErrorCode==409){
+                            if(errorCode==409){
 
                                 mainXml.errorMessageText.setText(R.string.usernameExists);
 

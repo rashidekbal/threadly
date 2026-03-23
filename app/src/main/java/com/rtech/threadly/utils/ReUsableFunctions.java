@@ -26,6 +26,7 @@ import com.rtech.threadly.activities.UserProfileActivity;
 import com.rtech.threadly.constants.SharedPreferencesKeys;
 import com.rtech.threadly.constants.TypeConstants;
 import com.rtech.threadly.core.Core;
+import com.rtech.threadly.interfaces.NetworkCallBacks.NetworkCallbackInterfaceJsonObject;
 import com.rtech.threadly.interfaces.NetworkCallbackInterface;
 import com.rtech.threadly.interfaces.NetworkCallbackInterfaceWithJsonObjectDelivery;
 import com.rtech.threadly.network_managers.FcmManager;
@@ -124,7 +125,7 @@ public class ReUsableFunctions {
             String token = task.getResult();
             if (token != null) {
 
-                FcmManager.UpdateFcmToken(token, new NetworkCallbackInterfaceWithJsonObjectDelivery() {
+                FcmManager.UpdateFcmToken(token, new NetworkCallbackInterfaceJsonObject() {
                     @Override
                     public void onSuccess(JSONObject response) {
                         Log.d("fcmToken", "onSuccess: "+response.toString());
@@ -133,7 +134,7 @@ public class ReUsableFunctions {
                     }
 
                     @Override
-                    public void onError(String err) {
+                    public void onError(int err) {
 
                     }
                 });
