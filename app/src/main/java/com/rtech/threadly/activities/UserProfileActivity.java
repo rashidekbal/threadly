@@ -320,16 +320,16 @@ if(data.userid.equals(PreferenceUtil.getUserId())){
         mainXml.unfollowBtn.setVisibility(View.GONE);
         mainXml.followBtn.setVisibility(View.VISIBLE);
         mainXml.unfollowBtn.setEnabled(false);
-        followManager.unfollow(data.userid, new NetworkCallbackInterface() {
+        followManager.unfollow(data.userid, new NetworkCallbackInterfaceJsonObject() {
             @Override
-            public void onSuccess() {
+            public void onSuccess(JSONObject response) {
                 mainXml.unfollowBtn.setEnabled(true);
                 getProfileData();
 
             }
 
             @Override
-            public void onError(String err) {
+            public void onError(int err) {
                 mainXml.unfollowBtn.setVisibility(View.VISIBLE);
                 mainXml.followBtn.setVisibility(View.GONE);
                 mainXml.unfollowBtn.setEnabled(true);
@@ -341,16 +341,16 @@ if(data.userid.equals(PreferenceUtil.getUserId())){
     mainXml.requestCancelBtn.setOnClickListener(v->{
         mainXml.followBtn.setVisibility(View.VISIBLE);
         mainXml.requestCancelBtn.setEnabled(false);
-        followManager.cancelFollowRequest(data.getUserid(), new NetworkCallbackInterface() {
+        followManager.cancelFollowRequest(data.getUserid(), new NetworkCallbackInterfaceJsonObject() {
             @Override
-            public void onSuccess() {
+            public void onSuccess(JSONObject response) {
              mainXml.requestCancelBtn.setVisibility(View.GONE);
              mainXml.followBtn.setVisibility(View.VISIBLE);
              mainXml.requestCancelBtn.setEnabled(true);
             }
 
             @Override
-            public void onError(String err) {
+            public void onError(int err) {
                 mainXml.requestCancelBtn.setVisibility(View.VISIBLE);
                 mainXml.followBtn.setVisibility(View.GONE);
                 mainXml.requestCancelBtn.setEnabled(true);

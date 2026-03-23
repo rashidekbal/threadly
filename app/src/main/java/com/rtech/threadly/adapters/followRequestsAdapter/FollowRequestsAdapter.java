@@ -15,10 +15,13 @@ import com.bumptech.glide.Glide;
 import com.rtech.threadly.R;
 import com.rtech.threadly.RoomDb.DataBase;
 import com.rtech.threadly.constants.Constants;
+import com.rtech.threadly.interfaces.NetworkCallBacks.NetworkCallbackInterfaceJsonObject;
 import com.rtech.threadly.interfaces.NetworkCallbackInterface;
 import com.rtech.threadly.models.FollowRequestModel;
 import com.rtech.threadly.models.Profile_Model_minimal;
 import com.rtech.threadly.network_managers.FollowManager;
+
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
@@ -67,14 +70,14 @@ public class FollowRequestsAdapter extends RecyclerView.Adapter<FollowRequestsAd
             holder.actionTakenTextView.setText(dataList.get(position).getActionText());
             holder.rejectBtn.setVisibility(View.GONE);
             holder.approveBtn.setVisibility(View.GONE);
-            FollowManager.rejectFollowRequest(dataList.get(position).getUserId(), new NetworkCallbackInterface() {
+            FollowManager.rejectFollowRequest(dataList.get(position).getUserId(), new NetworkCallbackInterfaceJsonObject() {
                 @Override
-                public void onSuccess() {
+                public void onSuccess(JSONObject response) {
                     notifyItemChanged(position);
                 }
 
                 @Override
-                public void onError(String err) {
+                public void onError(int err) {
 
                     holder.rejectBtn.setVisibility(View.VISIBLE);
                     holder.approveBtn.setVisibility(View.VISIBLE);
@@ -96,24 +99,24 @@ public class FollowRequestsAdapter extends RecyclerView.Adapter<FollowRequestsAd
             holder.actionTakenTextView.setText(dataList.get(position).getActionText());
             holder.rejectBtn.setVisibility(View.GONE);
             holder.approveBtn.setVisibility(View.GONE);
-            FollowManager.approveFollowRequest(dataList.get(position).getUserId(), new NetworkCallbackInterface() {
+            FollowManager.approveFollowRequest(dataList.get(position).getUserId(), new NetworkCallbackInterfaceJsonObject(){
                 @Override
-                public void onSuccess() {
- notifyItemChanged(position);
+                public void onSuccess(JSONObject response) {
+                    notifyItemChanged(position);
                 }
 
                 @Override
-                public void onError(String err) {
+                public void onError(int err) {
                     holder.rejectBtn.setVisibility(View.VISIBLE);
                     holder.approveBtn.setVisibility(View.VISIBLE);
-                   dataList.get(position).setActionTaken(false);
-                   executor.execute(()->{
-                       DataBase.getInstance().notificationDao().markFollowApprovalStatus(false,Constants.FOLLOW_REQUEST_NOTIFICATION.toString() ,dataList.get(position).getUserId());
-                   });
+                    dataList.get(position).setActionTaken(false);
+                    executor.execute(()->{
+                        DataBase.getInstance().notificationDao().markFollowApprovalStatus(false,Constants.FOLLOW_REQUEST_NOTIFICATION.toString() ,dataList.get(position).getUserId());
+                    });
 
 
                 }
-            });
+            } );
         });
 
 

@@ -115,9 +115,9 @@ public class FollowerFollowing_UserList_adapter extends RecyclerView.Adapter<Fol
             });
         });
 //        unfollow logic
-        holder.unfollow_btn.setOnClickListener(v -> followManager.unfollow(dataList.get(position).userid, new NetworkCallbackInterface() {
+        holder.unfollow_btn.setOnClickListener(v -> followManager.unfollow(dataList.get(position).userid, new NetworkCallbackInterfaceJsonObject() {
             @Override
-            public void onSuccess() {
+            public void onSuccess(JSONObject response) {
                 holder.unfollow_btn.setEnabled(true);
                 holder.unfollow_btn.setVisibility(View.GONE);
                 holder.follow_btn.setVisibility(View.VISIBLE);
@@ -125,8 +125,9 @@ public class FollowerFollowing_UserList_adapter extends RecyclerView.Adapter<Fol
             }
 
             @Override
-            public void onError(String err) {
-                Log.d("followError", "onError: ".concat(err));
+            public void onError(int err) {
+                holder.unfollow_btn.setVisibility(View.VISIBLE);
+                holder.follow_btn.setVisibility(View.GONE);
                 holder.unfollow_btn.setEnabled(true);
 
             }
@@ -135,14 +136,14 @@ public class FollowerFollowing_UserList_adapter extends RecyclerView.Adapter<Fol
         holder.cancelRequestBtn.setOnClickListener(v->{
             holder.cancelRequestBtn.setVisibility(View.GONE);
             holder.follow_btn.setVisibility(View.VISIBLE);
-            followManager.cancelFollowRequest(dataList.get(position).userid, new NetworkCallbackInterface() {
+            followManager.cancelFollowRequest(dataList.get(position).userid, new NetworkCallbackInterfaceJsonObject() {
                 @Override
-                public void onSuccess() {
+                public void onSuccess(JSONObject response) {
 
                 }
 
                 @Override
-                public void onError(String err) {
+                public void onError(int err) {
                     ReUsableFunctions.ShowToast("Something went wrong");
                     holder.cancelRequestBtn.setVisibility(View.VISIBLE);
                     holder.follow_btn.setVisibility(View.GONE);

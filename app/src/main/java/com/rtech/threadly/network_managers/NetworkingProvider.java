@@ -181,9 +181,9 @@ public class NetworkingProvider {
                 });
 
     }
-    public static void delete(String url,String token,JSONArray array,NetworkCallbackInterfaceJsonObject callBack){
+
+    public static void delete(String url,String token,NetworkCallbackInterfaceJsonObject callBack){
         AndroidNetworking.delete(url).addHeaders("Authorization","Bearer "+token)
-                .addJSONArrayBody(array)
                 .setPriority(Priority.HIGH)
                 .build()
                 .getAsJSONObject(new JSONObjectRequestListener() {

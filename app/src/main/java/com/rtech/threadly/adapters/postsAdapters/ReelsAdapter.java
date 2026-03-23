@@ -32,6 +32,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.rtech.threadly.R;
 import com.rtech.threadly.constants.SharedPreferencesKeys;
 import com.rtech.threadly.core.Core;
+import com.rtech.threadly.interfaces.NetworkCallBacks.NetworkCallbackInterfaceJsonObject;
 import com.rtech.threadly.interfaces.NetworkCallbackInterface;
 import com.rtech.threadly.network_managers.CommentsManager;
 import com.rtech.threadly.network_managers.FollowManager;
@@ -43,6 +44,8 @@ import com.rtech.threadly.utils.LoggerUtil;
 import com.rtech.threadly.utils.PostCommentsViewerUtil;
 import com.rtech.threadly.utils.PostShareHelperUtil;
 import com.rtech.threadly.utils.ReUsableFunctions;
+
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 
@@ -145,24 +148,23 @@ public class ReelsAdapter extends RecyclerView.Adapter<ReelsAdapter.viewHolder> 
                 public void onClick(View v) {
                     holder.followBtn.setEnabled(false);
                     holder.followBtn.setVisibility(View.GONE);
-                    followManager.follow(dataList.get(position).userId, new NetworkCallbackInterface() {
+                    followManager.follow(dataList.get(position).userId, new NetworkCallbackInterfaceJsonObject() {
                         @Override
-                        public void onSuccess() {
+                        public void onSuccess(JSONObject response) {
                             dataList.get(position).isFollowed=true;
                             holder.followBtn.setEnabled(true);
                             ReUsableFunctions.ShowToast("Following");
-
                         }
 
                         @Override
-                        public void onError(String err) {
+                        public void onError(int errorCode) {
                             holder.followBtn.setVisibility(View.VISIBLE);
                             holder.followBtn.setEnabled(true);
                             ReUsableFunctions.ShowToast("something went wrong..");
-
                         }
-                    });
-                }
+                    });}
+
+
             });
         }
 
@@ -363,9 +365,9 @@ public class ReelsAdapter extends RecyclerView.Adapter<ReelsAdapter.viewHolder> 
         }
         followBtnLayout.setOnClickListener(v->{
             OptionsDialog.dismiss();
-            followManager.follow(dataList.get(position).userId, new NetworkCallbackInterface() {
+            followManager.follow(dataList.get(position).userId, new NetworkCallbackInterfaceJsonObject() {
                 @Override
-                public void onSuccess() {
+                public void onSuccess(JSONObject response) {
                     dataList.get(position).isFollowed=true;
                     notifyItemChanged(position);
 
@@ -373,8 +375,8 @@ public class ReelsAdapter extends RecyclerView.Adapter<ReelsAdapter.viewHolder> 
                 }
 
                 @Override
-                public void onError(String err) {
-                    LoggerUtil.LogNetworkError(err);
+                public void onError(int err) {
+                    ReUsableFunctions.ShowToast("something went wrong..");
 
                 }
             });
@@ -382,17 +384,18 @@ public class ReelsAdapter extends RecyclerView.Adapter<ReelsAdapter.viewHolder> 
         });
         unfollowBtnLayout.setOnClickListener(v->{
             OptionsDialog.dismiss();
-            followManager.unfollow(dataList.get(position).userId, new NetworkCallbackInterface() {
+            followManager.unfollow(dataList.get(position).userId, new NetworkCallbackInterfaceJsonObject() {
                 @Override
-                public void onSuccess() {
+                public void onSuccess(JSONObject response) {
                     dataList.get(position).isFollowed=false;
                     notifyItemChanged(position);
 
                 }
 
                 @Override
-                public void onError(String err) {
-                    LoggerUtil.LogNetworkError(err);
+                public void onError(int err) {
+                    ReUsableFunctions.ShowToast("something went wrong..");
+
 
                 }
             });

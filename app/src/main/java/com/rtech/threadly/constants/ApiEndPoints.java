@@ -20,7 +20,6 @@ public class ApiEndPoints {
     public static final String UNLIKE_STORY = baseUrl + "/like/unlikeStory/";
 
     // Follows
-    public static final String FOLLOW = baseUrl + "/follow/follow/";
     public static final String FOLLOW_V2 = baseUrl + "/follow/follow/V2/";
     public static final String UNFOLLOW = baseUrl + "/follow/unfollow/";
     public static final String GET_ALL_FOLLOW_REQUEST = baseUrl + "/follow/getAllFollowRequests/";

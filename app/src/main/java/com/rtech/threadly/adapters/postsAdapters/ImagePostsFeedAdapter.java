@@ -39,10 +39,12 @@ import com.rtech.threadly.R;
 import com.rtech.threadly.adapters.commentsAdapter.PostCommentsAdapter;
 import com.rtech.threadly.adapters.messanger.UsersShareSheetGridAdapter;
 import com.rtech.threadly.adapters.mscs.SuggestUsersAdapter;
+import com.rtech.threadly.constants.LogTags;
 import com.rtech.threadly.constants.SharedPreferencesKeys;
 import com.rtech.threadly.constants.TypeConstants;
 import com.rtech.threadly.core.Core;
 import com.rtech.threadly.interfaces.Messanger.OnUserSelectedListener;
+import com.rtech.threadly.interfaces.NetworkCallBacks.NetworkCallbackInterfaceJsonObject;
 import com.rtech.threadly.interfaces.NetworkCallbackInterfaceWithJsonObjectDelivery;
 import com.rtech.threadly.interfaces.NetworkCallbackInterface;
 import com.rtech.threadly.models.UsersModel;
@@ -342,9 +344,9 @@ public class ImagePostsFeedAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         }
         followBtnLayout.setOnClickListener(v->{
             OptionsDialog.dismiss();
-            followManager.follow(list.get(position).userId, new NetworkCallbackInterface() {
+            followManager.follow(list.get(position).userId, new NetworkCallbackInterfaceJsonObject() {
                 @Override
-                public void onSuccess() {
+                public void onSuccess(JSONObject response) {
                     list.get(position).isFollowed=true;
                     notifyItemChanged(position);
 
@@ -352,8 +354,8 @@ public class ImagePostsFeedAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                 }
 
                 @Override
-                public void onError(String err) {
-                    LoggerUtil.LogNetworkError(err);
+                public void onError(int err) {
+                    LoggerUtil.log(LogTags.NETWORK_LOG.toString(),"error in api follow  : with code :"+err);
 
                 }
             });
@@ -361,17 +363,18 @@ public class ImagePostsFeedAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         });
         unfollowBtnLayout.setOnClickListener(v->{
             OptionsDialog.dismiss();
-            followManager.unfollow(list.get(position).userId, new NetworkCallbackInterface() {
+            followManager.unfollow(list.get(position).userId, new NetworkCallbackInterfaceJsonObject() {
                 @Override
-                public void onSuccess() {
+                public void onSuccess(JSONObject response) {
                     list.get(position).isFollowed=false;
                     notifyItemChanged(position);
 
                 }
 
                 @Override
-                public void onError(String err) {
-                    LoggerUtil.LogNetworkError(err);
+                public void onError(int err) {
+                    LoggerUtil.log(LogTags.NETWORK_LOG.toString(),"error in api unfollow  : with code :"+err);
+
 
                 }
             });
