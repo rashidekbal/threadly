@@ -28,7 +28,7 @@ public class StoriesManager {
 
     public void AddStory(File media,String Type, NetworkCallbackInterfaceWithProgressTracking callbackInterface){
         String Url= ApiEndPoints.ADD_STORY;
-        NetworkingProvider.uploadWithType(Url, PreferenceUtil.getJWT(),media,"image",Type,"uploadProfile",callbackInterface);
+        NetworkingProvider.uploadWithType(Url, PreferenceUtil.getJWT(),media,"media",Type,"uploadProfile",callbackInterface);
 
     }
     public void getStories(NetworkCallbackInterfaceJsonObject callback){

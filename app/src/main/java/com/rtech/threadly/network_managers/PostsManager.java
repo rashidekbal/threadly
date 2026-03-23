@@ -1,23 +1,13 @@
 package com.rtech.threadly.network_managers;
 
 
-import android.content.SharedPreferences;
 import android.util.Log;
-import com.androidnetworking.AndroidNetworking;
-import com.androidnetworking.common.Priority;
-import com.androidnetworking.error.ANError;
-import com.androidnetworking.interfaces.JSONObjectRequestListener;
-import com.androidnetworking.interfaces.UploadProgressListener;
+
 import com.rtech.threadly.BuildConfig;
-import com.rtech.threadly.constants.SharedPreferencesKeys;
-import com.rtech.threadly.core.Core;
 import com.rtech.threadly.interfaces.NetworkCallBacks.NetworkCallbackInterfaceJsonObject;
-import com.rtech.threadly.interfaces.NetworkCallbackInterface;
-import com.rtech.threadly.interfaces.NetworkCallbackInterfaceWithJsonObjectDelivery;
 import com.rtech.threadly.constants.ApiEndPoints;
 import com.rtech.threadly.interfaces.NetworkCallbackInterfaceWithProgressTracking;
 import com.rtech.threadly.utils.PreferenceUtil;
-import com.rtech.threadly.utils.ReUsableFunctions;
 
 import org.json.JSONObject;
 import java.io.File;
@@ -47,7 +37,7 @@ public class PostsManager {
     public void getUserPosts(int page,String userId, NetworkCallbackInterfaceJsonObject callbackInterface)
     {
 
-        String url=ApiEndPoints.GET_USER_POSTS.concat(userId);
+        String url=ApiEndPoints.GET_USER_POSTS.concat(userId)+"?page="+page;
         NetworkingProvider.get(url,getToken(),callbackInterface);
     }
     public void getImageFeed(NetworkCallbackInterfaceJsonObject callback){
@@ -70,7 +60,7 @@ public class PostsManager {
 
     public void getLoggedInUserPost(int page,NetworkCallbackInterfaceJsonObject callbackInterface)
     {
-        String url=ApiEndPoints.GET_USER_POSTS.concat(PreferenceUtil.getUserId());
+        String url=ApiEndPoints.GET_USER_POSTS.concat(PreferenceUtil.getUserId())+"?page="+page;
         NetworkingProvider.get(url,getToken(),callbackInterface);
 
 

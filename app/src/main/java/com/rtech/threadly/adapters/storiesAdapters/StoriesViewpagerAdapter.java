@@ -201,7 +201,7 @@ public class StoriesViewpagerAdapter extends RecyclerView.Adapter<StoriesViewpag
                         public void onClick(DialogInterface dialog, int which) {
                             storiesManager.RemoveStory(story.getStoryId(), new NetworkCallbackInterfaceJsonObject() {
                                 @Override
-                                public void onSuccess() {
+                                public void onSuccess(JSONObject response) {
                                     dialog.dismiss();
                                     delete_btn.setEnabled(true);
                                     optionsDialog.hide();
