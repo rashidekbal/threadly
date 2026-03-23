@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.rtech.threadly.R;
 import com.rtech.threadly.interfaces.Comments.RecyclerView.replyClick.OnReplyClick;
+import com.rtech.threadly.interfaces.NetworkCallBacks.NetworkCallbackInterfaceJsonObject;
 import com.rtech.threadly.interfaces.NetworkCallbackInterface;
 import com.rtech.threadly.interfaces.NetworkCallbackInterfaceWithJsonObjectDelivery;
 import com.rtech.threadly.network_managers.CommentsManager;
@@ -146,7 +147,7 @@ public class PostCommentsAdapter extends RecyclerView.Adapter<PostCommentsAdapte
                 return;
             }
             holder.progress_circular.setVisibility(View.VISIBLE);
-           commentsManager.GetCommentReplies(dataList.get(position).getCommentId(), new NetworkCallbackInterfaceWithJsonObjectDelivery() {
+           commentsManager.GetCommentReplies(dataList.get(position).getCommentId(), new NetworkCallbackInterfaceJsonObject() {
                @Override
                public void onSuccess(JSONObject response) {
                    //on data received successFully
@@ -181,8 +182,8 @@ public class PostCommentsAdapter extends RecyclerView.Adapter<PostCommentsAdapte
                }
 
                @Override
-               public void onError(String err) {
-                   Log.d("commentReplyError", "onSuccess: "+err);
+               public void onError(int errCode) {
+                   Log.d("commentReplyError", "onSuccess: "+errCode);
                    holder.progress_circular.setVisibility(View.GONE);
 
 

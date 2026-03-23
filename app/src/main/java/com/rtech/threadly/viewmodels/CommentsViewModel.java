@@ -7,6 +7,7 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.rtech.threadly.interfaces.NetworkCallBacks.NetworkCallbackInterfaceJsonObject;
 import com.rtech.threadly.interfaces.NetworkCallbackInterfaceWithJsonObjectDelivery;
 import com.rtech.threadly.network_managers.CommentsManager;
 import com.rtech.threadly.models.Posts_Comments_Model;
@@ -32,7 +33,7 @@ public class CommentsViewModel extends AndroidViewModel {
     }
 
     private void loadComments(int postId) {
-        commentsManager.getCommentOf(postId, new NetworkCallbackInterfaceWithJsonObjectDelivery() {
+        commentsManager.getCommentOf(postId, new NetworkCallbackInterfaceJsonObject() {
             @Override
             public void onSuccess(JSONObject response) {
                 ArrayList<Posts_Comments_Model> commentsTemp=new ArrayList<>();
@@ -60,7 +61,7 @@ public class CommentsViewModel extends AndroidViewModel {
             }
 
             @Override
-            public void onError(String err) {
+            public void onError(int errorCode) {
                 MutableLiveCommentsData.postValue(new ArrayList<>());
 
             }

@@ -26,6 +26,7 @@ import com.rtech.threadly.adapters.commentsAdapter.PostCommentsAdapter;
 import com.rtech.threadly.constants.SharedPreferencesKeys;
 import com.rtech.threadly.core.Core;
 import com.rtech.threadly.interfaces.Comments.RecyclerView.replyClick.OnReplyClick;
+import com.rtech.threadly.interfaces.NetworkCallBacks.NetworkCallbackInterfaceJsonObject;
 import com.rtech.threadly.interfaces.NetworkCallbackInterface;
 import com.rtech.threadly.interfaces.NetworkCallbackInterfaceWithJsonObjectDelivery;
 import com.rtech.threadly.models.Posts_Comments_Model;
@@ -149,7 +150,7 @@ public class PostCommentsViewerUtil {
 
 /// reply to message functionality ends here
         // Fetch comments from server
-        commentsManager.getCommentOf(postId, new NetworkCallbackInterfaceWithJsonObjectDelivery() {
+        commentsManager.getCommentOf(postId, new NetworkCallbackInterfaceJsonObject() {
             @Override
             public void onSuccess(JSONObject response) {
                 try {
@@ -186,8 +187,8 @@ public class PostCommentsViewerUtil {
             }
 
             @Override
-            public void onError(String err) {
-                Toast.makeText(context, "Error fetching comments: ".concat(Objects.requireNonNull(err)), Toast.LENGTH_SHORT).show();
+            public void onError(int errorCode) {
+                Toast.makeText(context, "Error fetching comments: error code : "+errorCode, Toast.LENGTH_SHORT).show();
                 shimmerFrameLayout.stopShimmer();
                 noCommentsLayout.setVisibility(View.VISIBLE);
                 comments_recyclerView.setVisibility(View.GONE);
@@ -213,9 +214,9 @@ public class PostCommentsViewerUtil {
             }
             if(isReplyMode){
                 try {
-                    commentsManager.ReplyToComment(postId, currentReplyToCommentId, commentText, new NetworkCallbackInterface() {
+                    commentsManager.ReplyToComment(postId, currentReplyToCommentId, commentText, new NetworkCallbackInterfaceJsonObject() {
                         @Override
-                        public void onSuccess() {
+                        public void onSuccess(JSONObject response) {
                             posting_progressbar.setVisibility(View.GONE);
                             sendCommentBtn.setVisibility(View.VISIBLE);
                             sendCommentBtn.setClickable(true);
@@ -227,7 +228,7 @@ public class PostCommentsViewerUtil {
                         }
 
                         @Override
-                        public void onError(String err) {
+                        public void onError(int err) {
                             posting_progressbar.setVisibility(View.GONE);
                             sendCommentBtn.setVisibility(View.VISIBLE);
                             sendCommentBtn.setClickable(true);
@@ -240,7 +241,7 @@ public class PostCommentsViewerUtil {
                     throw new RuntimeException(e);
                 }
             }else{
-                commentsManager.addComment(postId, commentText, new NetworkCallbackInterfaceWithJsonObjectDelivery() {
+                commentsManager.addComment(postId, commentText, new NetworkCallbackInterfaceJsonObject() {
                     @Override
                     public void onSuccess(JSONObject response) {
                         noCommentsLayout.setVisibility(View.GONE);
@@ -290,7 +291,7 @@ public class PostCommentsViewerUtil {
                     }
 
                     @Override
-                    public void onError(String err) {
+                    public void onError(int err) {
                         posting_progressbar.setVisibility(View.GONE);
                         sendCommentBtn.setVisibility(View.VISIBLE);
                         sendCommentBtn.setClickable(true);
