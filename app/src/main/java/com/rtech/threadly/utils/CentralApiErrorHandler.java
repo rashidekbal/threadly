@@ -6,7 +6,9 @@ public class CentralApiErrorHandler {
     public static void handleErrorCode(int errorCode){
        switch (errorCode){
            case 401:ReUsableFunctions.logoutWithoutActivity();
+           break;
            case 404:LoggerUtil.log(LogTags.NETWORK_LOG.toString(),"route not found");
+           break;
        }
     }
 }

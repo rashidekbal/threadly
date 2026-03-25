@@ -108,7 +108,7 @@ public class UsernameEditFragment extends Fragment {
                                 mainXml.cancelButton.setEnabled(true);
                                 profileViewModel.loadProfile();
                                 ReUsableFunctions.ShowToast(activity,"Username Updated Successfully");
-                                activity.onBackPressed();
+                                activity.getOnBackPressedDispatcher().onBackPressed();
 
                             } catch (JSONException e) {
                                 mainXml.errorMessageText.setVisibility(View.VISIBLE);
