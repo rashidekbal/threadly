@@ -30,7 +30,6 @@ import com.rtech.threadly.R;
 import com.rtech.threadly.constants.SharedPreferencesKeys;
 import com.rtech.threadly.core.Core;
 import com.rtech.threadly.interfaces.NetworkCallBacks.NetworkCallbackInterfaceJsonObject;
-import com.rtech.threadly.interfaces.NetworkCallbackInterface;
 import com.rtech.threadly.interfaces.StoriesBackAndForthInterface;
 import com.rtech.threadly.network_managers.LikeManager;
 import com.rtech.threadly.models.StoryMediaModel;
@@ -210,7 +209,7 @@ public class StoriesViewpagerAdapter extends RecyclerView.Adapter<StoriesViewpag
                                 }
 
                                 @Override
-                                public void onError(int err) {
+                                public void onError(int err, JSONObject errorObject) {
                                     delete_btn.setEnabled(true);
                                     optionsDialog.hide();
                                     dialog.dismiss();
@@ -306,7 +305,7 @@ public class StoriesViewpagerAdapter extends RecyclerView.Adapter<StoriesViewpag
                     }
 
                     @Override
-                    public void onError(int err) {
+                    public void onError(int err, JSONObject errorObject) {
                         holder.like_btn_image.setEnabled(true);
                         holder.like_btn_image.setImageResource(R.drawable.red_heart_active_icon);
                         storiesData.get(position).setLiked(true);
@@ -326,7 +325,7 @@ public class StoriesViewpagerAdapter extends RecyclerView.Adapter<StoriesViewpag
                     }
 
                     @Override
-                    public void onError(int err) {
+                    public void onError(int err, JSONObject errorObject) {
                         holder.like_btn_image.setEnabled(true);
                         holder.like_btn_image.setImageResource(R.drawable.heart_inactive_icon_white);
                         storiesData.get(position).setLiked(false);

@@ -1,11 +1,7 @@
 package com.rtech.threadly.network_managers;
 import android.content.SharedPreferences;
 import android.util.Log;
-import com.androidnetworking.AndroidNetworking;
-import com.androidnetworking.common.Priority;
-import com.androidnetworking.error.ANError;
-import com.androidnetworking.interfaces.JSONObjectRequestListener;
-import com.rtech.threadly.BuildConfig;
+
 import com.rtech.threadly.constants.ApiEndPoints;
 import com.rtech.threadly.constants.LogTags;
 import com.rtech.threadly.core.Core;
@@ -36,7 +32,7 @@ public class AuthManager {
                 }
 
                 @Override
-                public void onError(int errorCode) {
+                public void onError(int errorCode, JSONObject errorObject) {
                     callback.onError(Integer.toString(errorCode));
                     LoggerUtil.log(LogTags.NETWORK_LOG.toString(),"api error login mobile with code : "+(errorCode));
                 }
@@ -62,7 +58,7 @@ public class AuthManager {
                 }
 
                 @Override
-                public void onError(int errorCode) {
+                public void onError(int errorCode, JSONObject errorObject) {
                     callback.onError(Integer.toString(errorCode));
                     LoggerUtil.log(LogTags.NETWORK_LOG.toString(),"api error ForgetPasswordWithMobile  with code : "+(errorCode));
                 }
@@ -85,7 +81,7 @@ public class AuthManager {
                 }
 
                 @Override
-                public void onError(int errorCode) {
+                public void onError(int errorCode, JSONObject errorObject) {
                     callback.onError(Integer.toString(errorCode));
                     LoggerUtil.log(LogTags.NETWORK_LOG.toString(),"api error ForgetPasswordWithEmail  with code : "+(errorCode));
 
@@ -111,7 +107,7 @@ public class AuthManager {
                 }
 
                 @Override
-                public void onError(int errorCode) {
+                public void onError(int errorCode, JSONObject errorObject) {
                     callback.onError(Integer.toString(errorCode));
                     LoggerUtil.log(LogTags.NETWORK_LOG.toString(),"api error LoginEmail  with code : "+(errorCode));
 
@@ -137,8 +133,8 @@ public class AuthManager {
                 }
 
                 @Override
-                public void onError(int errorCode) {
-                    callback.onError(errorCode);
+                public void onError(int errorCode, JSONObject errorObject) {
+                    callback.onError(errorCode, errorObject);
                     LoggerUtil.log(LogTags.NETWORK_LOG.toString(),"api error LoginUserId  with code : "+(errorCode));
 
                 }
@@ -158,7 +154,7 @@ public class AuthManager {
             }
 
             @Override
-            public void onError(int errorCode) {
+            public void onError(int errorCode, JSONObject errorObject) {
                 callbackInterface.onError(Integer.toString(errorCode));
                 LoggerUtil.log(LogTags.NETWORK_LOG.toString(),"api error logout  with code : "+(errorCode));
 

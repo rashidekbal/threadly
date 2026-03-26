@@ -16,8 +16,8 @@ public class SearchManager {
             }
 
             @Override
-            public void onError(int errorCode) {
-                callbackInterfaceJsonObject.onError(errorCode);
+            public void onError(int errorCode, JSONObject errorObject) {
+                callbackInterfaceJsonObject.onError(errorCode, errorObject);
             }
         });
 

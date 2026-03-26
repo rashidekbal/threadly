@@ -2,19 +2,10 @@ package com.rtech.threadly.network_managers;
 
 import android.content.SharedPreferences;
 
-import android.util.Log;
-
-import com.androidnetworking.AndroidNetworking;
-import com.androidnetworking.common.Priority;
-import com.androidnetworking.error.ANError;
-import com.androidnetworking.interfaces.JSONObjectRequestListener;
-import com.rtech.threadly.BuildConfig;
 import com.rtech.threadly.constants.ApiEndPoints;
 import com.rtech.threadly.constants.SharedPreferencesKeys;
 import com.rtech.threadly.core.Core;
 import com.rtech.threadly.interfaces.NetworkCallBacks.NetworkCallbackInterfaceJsonObject;
-import com.rtech.threadly.interfaces.NetworkCallbackInterface;
-import com.rtech.threadly.interfaces.NetworkCallbackInterfaceWithJsonObjectDelivery;
 import com.rtech.threadly.interfaces.NetworkCallbackInterfaceWithProgressTracking;
 import com.rtech.threadly.utils.PreferenceUtil;
 
@@ -47,7 +38,7 @@ public class ProfileEditorManager {
             NetworkingProvider.patch(url,getToken(),packet,callbackInterface);
 
         } catch (JSONException e) {
-            callbackInterface.onError(500);
+            callbackInterface.onError(500, new JSONObject());
         }
 
     }
@@ -60,7 +51,7 @@ public class ProfileEditorManager {
             NetworkingProvider.patch(url,getToken(),packet,callbackInterface);
 
         } catch (JSONException e) {
-            callbackInterface.onError(500);
+            callbackInterface.onError(500,new JSONObject() );
         }
 
     }
@@ -75,7 +66,7 @@ public class ProfileEditorManager {
             NetworkingProvider.patch(url,getToken(),packet,callbackInterface);
 
         } catch (JSONException e) {
-            callbackInterface.onError(500);
+            callbackInterface.onError(500, new JSONObject());
         }
 
     }

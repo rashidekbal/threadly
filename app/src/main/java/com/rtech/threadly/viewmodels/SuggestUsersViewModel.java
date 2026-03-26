@@ -9,7 +9,6 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.rtech.threadly.interfaces.NetworkCallBacks.NetworkCallbackInterfaceJsonObject;
-import com.rtech.threadly.interfaces.NetworkCallbackInterfaceWithJsonObjectDelivery;
 
 import com.rtech.threadly.models.Profile_Model_minimal;
 import com.rtech.threadly.network_managers.UserSuggestionManager;
@@ -66,7 +65,7 @@ public class SuggestUsersViewModel extends AndroidViewModel {
             }
 
             @Override
-            public void onError(int err) {
+            public void onError(int err, JSONObject errorObject) {
                 profileModelMutableLiveData.postValue(new ArrayList<>());
 
 

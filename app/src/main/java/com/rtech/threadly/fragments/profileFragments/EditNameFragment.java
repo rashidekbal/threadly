@@ -18,7 +18,6 @@ import com.rtech.threadly.BuildConfig;
 import com.rtech.threadly.R;
 import com.rtech.threadly.databinding.FragmentEditNameBinding;
 import com.rtech.threadly.interfaces.NetworkCallBacks.NetworkCallbackInterfaceJsonObject;
-import com.rtech.threadly.interfaces.NetworkCallbackInterfaceWithJsonObjectDelivery;
 import com.rtech.threadly.network_managers.ProfileEditorManager;
 import com.rtech.threadly.models.Profile_Model;
 import com.rtech.threadly.utils.ReUsableFunctions;
@@ -120,7 +119,7 @@ public class EditNameFragment extends Fragment {
                     }
 
                     @Override
-                    public void onError(int errCode) {
+                    public void onError(int errCode, JSONObject errorObject) {
                         mainXml.progressBar.setVisibility(View.GONE);
                         mainXml.cancelButton.setEnabled(true);
                         mainXml.saveButton.setEnabled(true);

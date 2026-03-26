@@ -95,7 +95,7 @@ public class Password_change_fragment extends Fragment {
                 }
 
                 @Override
-                public void onError(int errorCode) {
+                public void onError(int errorCode, JSONObject errorObject) {
                     //TODO : handle error codes
                     ReUsableFunctions.ShowToast(" "+errorCode);
                     mainXml.progressBar.setVisibility(View.GONE);

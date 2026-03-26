@@ -18,7 +18,6 @@ import android.view.inputmethod.InputMethodManager;
 import com.rtech.threadly.R;
 import com.rtech.threadly.databinding.FragmentEditBioBinding;
 import com.rtech.threadly.interfaces.NetworkCallBacks.NetworkCallbackInterfaceJsonObject;
-import com.rtech.threadly.interfaces.NetworkCallbackInterface;
 import com.rtech.threadly.network_managers.ProfileEditorManager;
 import com.rtech.threadly.models.Profile_Model;
 import com.rtech.threadly.utils.ReUsableFunctions;
@@ -112,7 +111,7 @@ public class EditBioFragment extends Fragment {
                         }
 
                         @Override
-                        public void onError(int err) {
+                        public void onError(int err, JSONObject errorObject) {
                             mainXml.progressBar.setVisibility(View.GONE);
                             mainXml.cancelButton.setEnabled(true);
                             mainXml.saveButton.setEnabled(true);

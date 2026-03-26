@@ -14,7 +14,6 @@ import androidx.core.view.WindowInsetsCompat;
 import com.rtech.threadly.R;
 import com.rtech.threadly.databinding.ActivityVerifyOtpForgetPasswordBinding;
 import com.rtech.threadly.interfaces.NetworkCallBacks.NetworkCallbackInterfaceJsonObject;
-import com.rtech.threadly.interfaces.NetworkCallbackInterfaceWithJsonObjectDelivery;
 import com.rtech.threadly.network_managers.OtpManager;
 
 import org.json.JSONException;
@@ -80,7 +79,7 @@ public class VerifyOtp_forgetPassword_Activity extends AppCompatActivity {
                        }
 
                        @Override
-                       public void onError(int err) {
+                       public void onError(int err, JSONObject errorObject) {
                             mainXml.otpField.setError("invalid otp");
                            mainXml.progressBar.setVisibility(View.GONE);
                            mainXml.verifyOtpBtn.setEnabled(true);
@@ -109,7 +108,7 @@ public class VerifyOtp_forgetPassword_Activity extends AppCompatActivity {
                    }
 
                    @Override
-                   public void onError(int err) {
+                   public void onError(int err, JSONObject errorObject) {
                        mainXml.otpField.setError("invalid otp");
                        mainXml.progressBar.setVisibility(View.GONE);
                        mainXml.verifyOtpBtn.setEnabled(true);

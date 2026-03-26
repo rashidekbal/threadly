@@ -16,9 +16,7 @@ import com.rtech.threadly.R;
 import com.rtech.threadly.RoomDb.DataBase;
 import com.rtech.threadly.constants.Constants;
 import com.rtech.threadly.interfaces.NetworkCallBacks.NetworkCallbackInterfaceJsonObject;
-import com.rtech.threadly.interfaces.NetworkCallbackInterface;
 import com.rtech.threadly.models.FollowRequestModel;
-import com.rtech.threadly.models.Profile_Model_minimal;
 import com.rtech.threadly.network_managers.FollowManager;
 
 import org.json.JSONObject;
@@ -77,7 +75,7 @@ public class FollowRequestsAdapter extends RecyclerView.Adapter<FollowRequestsAd
                 }
 
                 @Override
-                public void onError(int err) {
+                public void onError(int err, JSONObject errorObject) {
 
                     holder.rejectBtn.setVisibility(View.VISIBLE);
                     holder.approveBtn.setVisibility(View.VISIBLE);
@@ -106,7 +104,7 @@ public class FollowRequestsAdapter extends RecyclerView.Adapter<FollowRequestsAd
                 }
 
                 @Override
-                public void onError(int err) {
+                public void onError(int err, JSONObject errorObject) {
                     holder.rejectBtn.setVisibility(View.VISIBLE);
                     holder.approveBtn.setVisibility(View.VISIBLE);
                     dataList.get(position).setActionTaken(false);

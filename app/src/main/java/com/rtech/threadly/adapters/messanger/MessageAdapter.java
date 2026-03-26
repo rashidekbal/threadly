@@ -42,7 +42,6 @@ import com.rtech.threadly.core.Core;
 import com.rtech.threadly.interfaces.Messanger.MessageClickCallBack;
 import com.rtech.threadly.interfaces.Messanger.OnUserSelectedListener;
 import com.rtech.threadly.interfaces.NetworkCallBacks.NetworkCallbackInterfaceJsonObject;
-import com.rtech.threadly.interfaces.NetworkCallbackInterface;
 import com.rtech.threadly.models.UsersModel;
 import com.rtech.threadly.network_managers.MessageManager;
 import com.rtech.threadly.utils.ConnectivityUtil;
@@ -743,7 +742,7 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             }
 
             @Override
-            public void onError(int err) {
+            public void onError(int err, JSONObject errorObject) {
 
 
             }
@@ -760,7 +759,7 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             }
 
             @Override
-            public void onError(int errorCode) {
+            public void onError(int errorCode, JSONObject errorObject) {
 
             }
         });

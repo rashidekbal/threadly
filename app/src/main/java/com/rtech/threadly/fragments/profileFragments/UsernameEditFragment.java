@@ -17,7 +17,6 @@ import android.view.inputmethod.InputMethodManager;
 import com.rtech.threadly.R;
 import com.rtech.threadly.databinding.FragmentUsernameEditBinding;
 import com.rtech.threadly.interfaces.NetworkCallBacks.NetworkCallbackInterfaceJsonObject;
-import com.rtech.threadly.interfaces.NetworkCallbackInterfaceWithJsonObjectDelivery;
 import com.rtech.threadly.network_managers.ProfileEditorManager;
 import com.rtech.threadly.models.Profile_Model;
 import com.rtech.threadly.utils.ReUsableFunctions;
@@ -122,7 +121,7 @@ public class UsernameEditFragment extends Fragment {
                         }
 
                         @Override
-                        public void onError(int errorCode) {
+                        public void onError(int errorCode, JSONObject errorObject) {
 
                             mainXml.errorMessageText.setVisibility(View.VISIBLE);
                             mainXml.saveButton.setEnabled(true);

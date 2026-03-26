@@ -76,7 +76,7 @@ FollowRequestsAdapter adapter;
             }
 
             @Override
-            public void onError(int errorCode) {
+            public void onError(int errorCode, JSONObject errorObject) {
                mainXml.noRequestsText.setVisibility(View.VISIBLE);
                mainXml.progressBar.setVisibility(View.GONE);
             }

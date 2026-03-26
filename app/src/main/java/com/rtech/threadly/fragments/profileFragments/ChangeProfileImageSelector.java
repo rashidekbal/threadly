@@ -21,8 +21,6 @@ import android.view.ViewGroup;
 import com.rtech.threadly.Threadly;
 import com.rtech.threadly.adapters.mediaExplorerAdapter.uploadProfileAdapter;
 import com.rtech.threadly.databinding.FragmentChangeProfileImageSelectorBinding;
-import com.rtech.threadly.interfaces.NetworkCallBacks.NetworkCallbackInterfaceJsonObject;
-import com.rtech.threadly.interfaces.NetworkCallbackInterfaceWithJsonObjectDelivery;
 import com.rtech.threadly.interfaces.NetworkCallbackInterfaceWithProgressTracking;
 import com.rtech.threadly.network_managers.ProfileEditorManager;
 import com.rtech.threadly.utils.PermissionManagementUtil;
@@ -147,7 +145,7 @@ public class ChangeProfileImageSelector extends Fragment {
                       }
 
                       @Override
-                      public void onError(String err) {
+                      public void onError(int errorCode, JSONObject errorObject) {
                           ReUsableFunctions.ShowToast("error uploading profile pic");
                           mainXml.nextBtn.setEnabled(true);
                           mainXml.progressbar.setVisibility(View.GONE);

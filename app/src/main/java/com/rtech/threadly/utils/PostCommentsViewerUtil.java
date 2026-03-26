@@ -27,8 +27,6 @@ import com.rtech.threadly.constants.SharedPreferencesKeys;
 import com.rtech.threadly.core.Core;
 import com.rtech.threadly.interfaces.Comments.RecyclerView.replyClick.OnReplyClick;
 import com.rtech.threadly.interfaces.NetworkCallBacks.NetworkCallbackInterfaceJsonObject;
-import com.rtech.threadly.interfaces.NetworkCallbackInterface;
-import com.rtech.threadly.interfaces.NetworkCallbackInterfaceWithJsonObjectDelivery;
 import com.rtech.threadly.models.Posts_Comments_Model;
 import com.rtech.threadly.network_managers.CommentsManager;
 
@@ -38,7 +36,6 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Objects;
 
 public class PostCommentsViewerUtil {
     Context context;
@@ -187,7 +184,7 @@ public class PostCommentsViewerUtil {
             }
 
             @Override
-            public void onError(int errorCode) {
+            public void onError(int errorCode, JSONObject errorObject) {
                 Toast.makeText(context, "Error fetching comments: error code : "+errorCode, Toast.LENGTH_SHORT).show();
                 shimmerFrameLayout.stopShimmer();
                 noCommentsLayout.setVisibility(View.VISIBLE);
@@ -228,7 +225,7 @@ public class PostCommentsViewerUtil {
                         }
 
                         @Override
-                        public void onError(int err) {
+                        public void onError(int err, JSONObject errorObject) {
                             posting_progressbar.setVisibility(View.GONE);
                             sendCommentBtn.setVisibility(View.VISIBLE);
                             sendCommentBtn.setClickable(true);
@@ -291,7 +288,7 @@ public class PostCommentsViewerUtil {
                     }
 
                     @Override
-                    public void onError(int err) {
+                    public void onError(int err, JSONObject errorObject) {
                         posting_progressbar.setVisibility(View.GONE);
                         sendCommentBtn.setVisibility(View.VISIBLE);
                         sendCommentBtn.setClickable(true);

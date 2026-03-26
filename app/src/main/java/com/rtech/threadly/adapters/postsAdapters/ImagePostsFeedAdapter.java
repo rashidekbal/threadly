@@ -5,12 +5,10 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.Uri;
-import android.os.Build;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -32,11 +30,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.rtech.threadly.R;
-import com.rtech.threadly.adapters.commentsAdapter.PostCommentsAdapter;
 import com.rtech.threadly.adapters.messanger.UsersShareSheetGridAdapter;
 import com.rtech.threadly.adapters.mscs.SuggestUsersAdapter;
 import com.rtech.threadly.constants.LogTags;
@@ -45,13 +41,10 @@ import com.rtech.threadly.constants.TypeConstants;
 import com.rtech.threadly.core.Core;
 import com.rtech.threadly.interfaces.Messanger.OnUserSelectedListener;
 import com.rtech.threadly.interfaces.NetworkCallBacks.NetworkCallbackInterfaceJsonObject;
-import com.rtech.threadly.interfaces.NetworkCallbackInterfaceWithJsonObjectDelivery;
-import com.rtech.threadly.interfaces.NetworkCallbackInterface;
 import com.rtech.threadly.models.UsersModel;
 import com.rtech.threadly.network_managers.CommentsManager;
 import com.rtech.threadly.network_managers.FollowManager;
 import com.rtech.threadly.network_managers.LikeManager;
-import com.rtech.threadly.models.Posts_Comments_Model;
 import com.rtech.threadly.models.Posts_Model;
 import com.rtech.threadly.models.Profile_Model_minimal;
 import com.rtech.threadly.utils.DownloadManagerUtil;
@@ -60,12 +53,9 @@ import com.rtech.threadly.utils.PostCommentsViewerUtil;
 import com.rtech.threadly.utils.ReUsableFunctions;
 import com.rtech.threadly.viewmodels.MessageAbleUsersViewModel;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.Objects;
 
 // Adapter for displaying image posts in a RecyclerView
 public class ImagePostsFeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -222,7 +212,7 @@ public class ImagePostsFeedAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                           }
 
                           @Override
-                          public void onError(int err) {
+                          public void onError(int err, JSONObject errorObject) {
                               holder.like_btn_image.setImageResource(R.drawable.heart_inactive);
                               holder.likes-=1.0;
                               setLikeCount(holder.likes,holder);
@@ -251,7 +241,7 @@ public class ImagePostsFeedAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                           }
 
                           @Override
-                          public void onError(int err) {
+                          public void onError(int err, JSONObject errorObject) {
                               Log.d("errorUnlike", "onError: "+err);
                               holder.like_btn_image.setImageResource(R.drawable.red_heart_active_icon);
                               holder.likes+=1.0;
@@ -354,7 +344,7 @@ public class ImagePostsFeedAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                 }
 
                 @Override
-                public void onError(int err) {
+                public void onError(int err, JSONObject errorObject) {
                     LoggerUtil.log(LogTags.NETWORK_LOG.toString(),"error in api follow  : with code :"+err);
 
                 }
@@ -372,7 +362,7 @@ public class ImagePostsFeedAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                 }
 
                 @Override
-                public void onError(int err) {
+                public void onError(int err, JSONObject errorObject) {
                     LoggerUtil.log(LogTags.NETWORK_LOG.toString(),"error in api unfollow  : with code :"+err);
 
 

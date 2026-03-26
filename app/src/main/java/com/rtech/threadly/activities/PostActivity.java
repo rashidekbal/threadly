@@ -2,24 +2,20 @@ package com.rtech.threadly.activities;
 
 import static com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_EXPANDED;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -33,15 +29,12 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.media3.common.util.UnstableApi;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.rtech.threadly.R;
-import com.rtech.threadly.adapters.commentsAdapter.PostCommentsAdapter;
 import com.rtech.threadly.adapters.messanger.UsersShareSheetGridAdapter;
 import com.rtech.threadly.constants.LogTags;
 import com.rtech.threadly.constants.SharedPreferencesKeys;
@@ -50,14 +43,11 @@ import com.rtech.threadly.core.Core;
 import com.rtech.threadly.databinding.ActivityPostBinding;
 import com.rtech.threadly.interfaces.Messanger.OnUserSelectedListener;
 import com.rtech.threadly.interfaces.NetworkCallBacks.NetworkCallbackInterfaceJsonObject;
-import com.rtech.threadly.interfaces.NetworkCallbackInterface;
-import com.rtech.threadly.interfaces.NetworkCallbackInterfaceWithJsonObjectDelivery;
 import com.rtech.threadly.models.UsersModel;
 import com.rtech.threadly.network_managers.CommentsManager;
 import com.rtech.threadly.network_managers.FollowManager;
 import com.rtech.threadly.network_managers.LikeManager;
 import com.rtech.threadly.network_managers.PostsManager;
-import com.rtech.threadly.models.Posts_Comments_Model;
 import com.rtech.threadly.models.Posts_Model;
 import com.rtech.threadly.utils.DownloadManagerUtil;
 import com.rtech.threadly.utils.ExoplayerUtil;
@@ -71,8 +61,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.Objects;
 
 public class PostActivity extends AppCompatActivity {
     ActivityPostBinding mainXml;
@@ -171,7 +159,7 @@ public class PostActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onError(int err) {
+            public void onError(int err, JSONObject errorObject) {
                 mainXml.errorLayout.setVisibility(View.VISIBLE);
                 mainXml.postContainer.setVisibility(View.GONE);
 
@@ -215,7 +203,7 @@ public class PostActivity extends AppCompatActivity {
                     }
 
                     @Override
-                    public void onError(int err) {
+                    public void onError(int err, JSONObject errorObject) {
                         Log.d("unlikeError", "onError: "+err);
                         mainXml.likeBtnImage.setImageResource(R.drawable.red_heart_active_icon);
                         data.setIsliked(true);
@@ -239,7 +227,7 @@ public class PostActivity extends AppCompatActivity {
                     }
 
                     @Override
-                    public void onError(int err) {
+                    public void onError(int err, JSONObject errorObject) {
                         Log.d("likeError", "onError: "+err);
                         mainXml.likeBtnImage.setImageResource(R.drawable.heart_inactive_icon_white);
                         data.setIsliked(false);
@@ -343,7 +331,7 @@ public class PostActivity extends AppCompatActivity {
                 }
 
                 @Override
-                public void onError(int err) {
+                public void onError(int err, JSONObject errorObject) {
                     LoggerUtil.log(LogTags.NETWORK_LOG.toString(),"error in follow request : code :"+err);
 
                 }
@@ -362,7 +350,7 @@ public class PostActivity extends AppCompatActivity {
                 }
 
                 @Override
-                public void onError(int err) {
+                public void onError(int err, JSONObject errorObject) {
                     LoggerUtil.log(LogTags.NETWORK_LOG.toString(),"error in unfollow request : code :"+err);
 
 

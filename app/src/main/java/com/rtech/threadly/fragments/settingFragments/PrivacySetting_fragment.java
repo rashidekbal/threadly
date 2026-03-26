@@ -12,7 +12,6 @@ import android.view.ViewGroup;
 
 import com.rtech.threadly.databinding.FragmentPrivacySettingBinding;
 import com.rtech.threadly.interfaces.NetworkCallBacks.NetworkCallbackInterfaceJsonObject;
-import com.rtech.threadly.interfaces.NetworkCallbackInterface;
 import com.rtech.threadly.models.Profile_Model;
 import com.rtech.threadly.network_managers.PrivacyManager;
 import com.rtech.threadly.utils.NotificationPageManagerUtil;
@@ -94,7 +93,7 @@ public class PrivacySetting_fragment extends Fragment {
                    }
 
                    @Override
-                   public void onError(int err) {
+                   public void onError(int err, JSONObject errorObject) {
                        onErrorCleanUp();
                        mainXml.privacySwitch.setChecked(false);
 
@@ -112,7 +111,7 @@ public class PrivacySetting_fragment extends Fragment {
                }
 
                @Override
-               public void onError(int err) {
+               public void onError(int err, JSONObject errorObject) {
                    onErrorCleanUp();
                    mainXml.privacySwitch.setChecked(true);
 

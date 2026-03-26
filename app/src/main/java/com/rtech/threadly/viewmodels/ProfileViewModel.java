@@ -9,11 +9,9 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.rtech.threadly.interfaces.NetworkCallBacks.NetworkCallbackInterfaceJsonObject;
-import com.rtech.threadly.interfaces.NetworkCallbackInterfaceWithJsonObjectDelivery;
 import com.rtech.threadly.models.Posts_Model;
 import com.rtech.threadly.network_managers.PostsManager;
 import com.rtech.threadly.network_managers.ProfileManager;
-import com.rtech.threadly.models.Preview_Post_model;
 import com.rtech.threadly.models.Profile_Model;
 
 import org.json.JSONArray;
@@ -74,7 +72,7 @@ public class ProfileViewModel extends AndroidViewModel {
             }
 
             @Override
-            public void onError(int err) {
+            public void onError(int err, JSONObject errorObject) {
               profileLiveData.postValue(null);
 
             }
@@ -131,7 +129,7 @@ public class ProfileViewModel extends AndroidViewModel {
             }
 
             @Override
-            public void onError(int err) {
+            public void onError(int err, JSONObject errorObject) {
                 UserPostsLiveData.postValue(new ArrayList<>());
 
             }
@@ -185,7 +183,7 @@ public class ProfileViewModel extends AndroidViewModel {
                 }
 
                 @Override
-                public void onError(int err) {
+                public void onError(int err, JSONObject errorObject) {
                     isPostLoading=false;
                 }
             });

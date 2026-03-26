@@ -26,7 +26,7 @@ public class OtpManager {
             NetworkingProvider.post(url, data, callbackInterface);
 
         } catch (JSONException e) {
-            callbackInterface.onError(500);
+            callbackInterface.onError(500, new JSONObject());
         }
 
 
@@ -40,7 +40,7 @@ public class OtpManager {
             NetworkingProvider.post(url, data, callbackInterface);
 
         } catch (JSONException e) {
-            callbackInterface.onError(500);
+            callbackInterface.onError(500, new JSONObject());
         }
 
     }
@@ -58,7 +58,7 @@ public class OtpManager {
             NetworkingProvider.post(url,packet,callbackInterface);
 
         } catch (JSONException e) {
-          callbackInterface.onError(500);
+          callbackInterface.onError(500, new JSONObject());
         }
 
     }
@@ -75,7 +75,7 @@ public class OtpManager {
 
 
         } catch (JSONException e) {
-           callbackInterface.onError(500);
+           callbackInterface.onError(500, new JSONObject());
         }
 
     }
@@ -88,7 +88,7 @@ public class OtpManager {
             NetworkingProvider.post(url,data,callbackInterface);
 
         } catch (JSONException e) {
-            callbackInterface.onError(500);
+            callbackInterface.onError(500, new JSONObject());
         }
 
 

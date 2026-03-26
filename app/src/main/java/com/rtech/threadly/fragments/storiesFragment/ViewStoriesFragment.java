@@ -16,7 +16,6 @@ import android.view.ViewGroup;
 import com.rtech.threadly.adapters.storiesAdapters.StoriesViewpagerAdapter;
 import com.rtech.threadly.databinding.FragmentViewStoriesBinding;
 import com.rtech.threadly.interfaces.NetworkCallBacks.NetworkCallbackInterfaceJsonObject;
-import com.rtech.threadly.interfaces.NetworkCallbackInterfaceWithJsonObjectDelivery;
 import com.rtech.threadly.interfaces.OnDestroyFragmentCallback;
 import com.rtech.threadly.interfaces.StoriesBackAndForthInterface;
 import com.rtech.threadly.network_managers.StoriesManager;
@@ -102,7 +101,7 @@ public class ViewStoriesFragment extends Fragment {
             }
 
             @Override
-            public void onError(int err) {
+            public void onError(int err, JSONObject errorObject) {
                 ReUsableFunctions.ShowToast("something went Wrong!");
                 requireActivity().getOnBackPressedDispatcher().onBackPressed();
 

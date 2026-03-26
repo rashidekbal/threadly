@@ -8,7 +8,6 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.rtech.threadly.interfaces.NetworkCallBacks.NetworkCallbackInterfaceJsonObject;
-import com.rtech.threadly.interfaces.NetworkCallbackInterfaceWithJsonObjectDelivery;
 import com.rtech.threadly.network_managers.StoriesManager;
 import com.rtech.threadly.models.StoriesModel;
 import com.rtech.threadly.models.StoryMediaModel;
@@ -58,7 +57,7 @@ public class StoriesViewModel extends AndroidViewModel {
             }
 
             @Override
-            public void onError(int err) {
+            public void onError(int err, JSONObject errorObject) {
                 mutableLiveData.postValue(new ArrayList<>());
 
             }
@@ -105,7 +104,7 @@ public class StoriesViewModel extends AndroidViewModel {
             }
 
             @Override
-            public void onError(int err) {
+            public void onError(int err, JSONObject errorObject) {
                 mutableStoryMediaModelData.postValue(new ArrayList<>());
 
             }

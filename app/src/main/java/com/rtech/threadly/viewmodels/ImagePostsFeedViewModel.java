@@ -9,7 +9,6 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.rtech.threadly.interfaces.NetworkCallBacks.NetworkCallbackInterfaceJsonObject;
-import com.rtech.threadly.interfaces.NetworkCallbackInterfaceWithJsonObjectDelivery;
 import com.rtech.threadly.network_managers.PostsManager;
 import com.rtech.threadly.models.Posts_Model;
 
@@ -85,7 +84,7 @@ public class ImagePostsFeedViewModel extends AndroidViewModel {
                 }
 
                 @Override
-                public void onError(int err) {
+                public void onError(int err, JSONObject errorObject) {
                     postsLiveData.postValue(new ArrayList<>());
 
 

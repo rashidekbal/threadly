@@ -57,9 +57,9 @@ public class UploadMediaWorker extends Worker {
             }
 
             @Override
-            public void onError(String err) {
+            public void onError(int errorCode, JSONObject errorObject) {
                 showUploadProgressNotification(0,0,false,false,notificationCode);
-                Log.d(TAG, "onError: "+err);
+                Log.d(TAG, "onError: "+ errorCode);
 
                 boolean isDeleted=  media.delete();
                 isSuccess[0]=false;

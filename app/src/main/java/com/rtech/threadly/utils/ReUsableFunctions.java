@@ -2,6 +2,7 @@ package com.rtech.threadly.utils;
 
 import static com.rtech.threadly.RoomDb.DataBase.getInstance;
 
+import android.app.Notification;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
@@ -16,6 +17,7 @@ import android.webkit.MimeTypeMap;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.messaging.FirebaseMessaging;
+import com.rtech.threadly.R;
 import com.rtech.threadly.RoomDb.DataBase;
 import com.rtech.threadly.RoomDb.schemas.MessageSchema;
 import com.rtech.threadly.RoomDb.schemas.NotificationSchema;
@@ -23,12 +25,11 @@ import com.rtech.threadly.SocketIo.SocketManager;
 import com.rtech.threadly.Threadly;
 import com.rtech.threadly.activities.authActivities.loginActivities.LoginActivity;
 import com.rtech.threadly.activities.UserProfileActivity;
+import com.rtech.threadly.constants.Constants;
 import com.rtech.threadly.constants.SharedPreferencesKeys;
 import com.rtech.threadly.constants.TypeConstants;
 import com.rtech.threadly.core.Core;
 import com.rtech.threadly.interfaces.NetworkCallBacks.NetworkCallbackInterfaceJsonObject;
-import com.rtech.threadly.interfaces.NetworkCallbackInterface;
-import com.rtech.threadly.interfaces.NetworkCallbackInterfaceWithJsonObjectDelivery;
 import com.rtech.threadly.network_managers.FcmManager;
 
 import org.json.JSONException;
@@ -80,6 +81,11 @@ public class ReUsableFunctions {
             Intent intent = new Intent(Threadly.getGlobalContext(), LoginActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             Threadly.getGlobalContext().startActivity(intent);
+            Notification.Builder notification = new Notification.Builder(Threadly.getGlobalContext())
+                    .setContentTitle("You have been logged out ")
+                    .setContentText("you have been logged out").setChannelId(Constants.MISC_CHANNEL.toString())
+                    .setSmallIcon(R.drawable.splash);
+            Core.getNotificationManager().notify(1, notification.build());
         });
 
 
@@ -134,7 +140,7 @@ public class ReUsableFunctions {
                     }
 
                     @Override
-                    public void onError(int err) {
+                    public void onError(int err, JSONObject errorObject) {
 
                     }
                 });

@@ -1,6 +1,5 @@
 package com.rtech.threadly.workers;
 
-import android.app.Notification;
 import android.content.Context;
 import android.util.Log;
 
@@ -11,10 +10,8 @@ import androidx.work.Worker;
 import androidx.work.WorkerParameters;
 
 import com.rtech.threadly.R;
-import com.rtech.threadly.Threadly;
 import com.rtech.threadly.constants.Constants;
 import com.rtech.threadly.core.Core;
-import com.rtech.threadly.interfaces.NetworkCallbackInterface;
 import com.rtech.threadly.interfaces.NetworkCallbackInterfaceWithProgressTracking;
 import com.rtech.threadly.network_managers.StoriesManager;
 
@@ -49,10 +46,10 @@ public class UploadStoriesWorker extends Worker {
             }
 
             @Override
-            public void onError(String err) {
+            public void onError(int errorCode, JSONObject errorObject) {
                 media.delete();
                 showNotificationWithProgress(0,0,false,false,notificationCode);
-                Log.d("storyUploadError", "onError: "+err);
+                Log.d("storyUploadError", "onError: "+ errorCode);
                 isSuccess[0]=false;
 
             }

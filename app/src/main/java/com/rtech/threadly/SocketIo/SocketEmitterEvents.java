@@ -40,7 +40,7 @@ public class SocketEmitterEvents {
                     }
 
                     @Override
-                    public void onError(int errorCode) {
+                    public void onError(int errorCode, JSONObject errorObject) {
                         Log.d("postViewed", "onError: form http");
 
                     }

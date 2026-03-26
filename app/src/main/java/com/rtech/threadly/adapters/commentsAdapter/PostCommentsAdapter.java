@@ -19,8 +19,6 @@ import com.bumptech.glide.Glide;
 import com.rtech.threadly.R;
 import com.rtech.threadly.interfaces.Comments.RecyclerView.replyClick.OnReplyClick;
 import com.rtech.threadly.interfaces.NetworkCallBacks.NetworkCallbackInterfaceJsonObject;
-import com.rtech.threadly.interfaces.NetworkCallbackInterface;
-import com.rtech.threadly.interfaces.NetworkCallbackInterfaceWithJsonObjectDelivery;
 import com.rtech.threadly.network_managers.CommentsManager;
 import com.rtech.threadly.network_managers.LikeManager;
 import com.rtech.threadly.models.Posts_Comments_Model;
@@ -86,7 +84,7 @@ public class PostCommentsAdapter extends RecyclerView.Adapter<PostCommentsAdapte
                     }
 
                     @Override
-                    public void onError(int err) {
+                    public void onError(int err, JSONObject errorObject) {
                         holder.likeBtn.setImageResource(R.drawable.red_heart_active_icon);
                         Posts_Comments_Model object = dataList.get(position);
                         dataList.set(position, new Posts_Comments_Model(object.commentId, object.postId, object.likesCount + 1, 1, object.userId, object.username, object.userDpUrl, object.comment, object.createdAt));
@@ -112,7 +110,7 @@ public class PostCommentsAdapter extends RecyclerView.Adapter<PostCommentsAdapte
                     }
 
                     @Override
-                    public void onError(int err) {
+                    public void onError(int err, JSONObject errorObject) {
                         holder.likeBtn.setImageResource(R.drawable.heart_inactive_icon);
                         Posts_Comments_Model object=dataList.get(position);
                         dataList.set(position,new Posts_Comments_Model(object.commentId, object.postId,object.likesCount-1,0,object.userId,object.username,object.userDpUrl,object.comment,object.createdAt));
@@ -182,7 +180,7 @@ public class PostCommentsAdapter extends RecyclerView.Adapter<PostCommentsAdapte
                }
 
                @Override
-               public void onError(int errCode) {
+               public void onError(int errCode, JSONObject errorObject) {
                    Log.d("commentReplyError", "onSuccess: "+errCode);
                    holder.progress_circular.setVisibility(View.GONE);
 

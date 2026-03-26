@@ -1,7 +1,6 @@
 package com.rtech.threadly.viewmodels;
 
 import android.app.Application;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -52,7 +51,7 @@ public class SearchViewModel extends AndroidViewModel {
 
             }
             @Override
-            public void onError(int errorCode) {
+            public void onError(int errorCode, JSONObject errorObject) {
                 AccountsResult.postValue(new ArrayList<>());
                 postsResult.postValue(new ArrayList<>());
             }

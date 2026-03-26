@@ -13,8 +13,6 @@ import android.view.ViewGroup;
 
 import com.bumptech.glide.Glide;
 import com.rtech.threadly.databinding.FragmentProfileUploadFinalPreviewBinding;
-import com.rtech.threadly.interfaces.NetworkCallBacks.NetworkCallbackInterfaceJsonObject;
-import com.rtech.threadly.interfaces.NetworkCallbackInterfaceWithJsonObjectDelivery;
 import com.rtech.threadly.interfaces.NetworkCallbackInterfaceWithProgressTracking;
 import com.rtech.threadly.network_managers.ProfileEditorManager;
 import com.rtech.threadly.utils.ReUsableFunctions;
@@ -89,7 +87,7 @@ public class profileUploadFinalPreview extends Fragment {
                     }
 
                     @Override
-                    public void onError(String err) {
+                    public void onError(int errorCode, JSONObject errorObject) {
                         mainXml.uploadBtn.setEnabled(true);
                         mainXml.progressBar.setVisibility(View.GONE);
                         ReUsableFunctions.ShowToast("upload failed");

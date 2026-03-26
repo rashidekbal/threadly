@@ -69,7 +69,7 @@ public class FollowManager {
             NetworkingProvider.post(Url,PreferenceUtil.getJWT(),packet,callBack);
 
         } catch (JSONException e) {
-            callBack.onError(500);
+            callBack.onError(500, new JSONObject());
         }
     }
     public static void getAllFollowRequests(NetworkCallbackInterfaceJsonObject callbackInterfaceJsonObject){

@@ -59,9 +59,9 @@ public class MessageMediaHandlerWorker extends Worker {
             }
 
             @Override
-            public void onError(String err) {
+            public void onError(int errorCode, JSONObject errorObject) {
                 success[0]=false;
-                onFailureCleanUp(latch,messageUid,err);
+                onFailureCleanUp(latch,messageUid);
 
             }
 
@@ -90,8 +90,7 @@ public class MessageMediaHandlerWorker extends Worker {
 
     }
 
-    private void onFailureCleanUp(CountDownLatch latch, String messageUid, String err) {
-        Log.d(TAG, "onFailureCleanUp: "+err);
+    private void onFailureCleanUp(CountDownLatch latch, String messageUid) {
         executor.execute(()->{
                 DataBase.getInstance().MessageDao().updatePostLinkWithState( messageUid,null, MessageStateEnum.FAILED.toString());
         });

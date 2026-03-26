@@ -8,7 +8,6 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.rtech.threadly.interfaces.NetworkCallBacks.NetworkCallbackInterfaceJsonObject;
-import com.rtech.threadly.interfaces.NetworkCallbackInterfaceWithJsonObjectDelivery;
 import com.rtech.threadly.network_managers.CommentsManager;
 import com.rtech.threadly.models.Posts_Comments_Model;
 
@@ -61,7 +60,7 @@ public class CommentsViewModel extends AndroidViewModel {
             }
 
             @Override
-            public void onError(int errorCode) {
+            public void onError(int errorCode, JSONObject errorObject) {
                 MutableLiveCommentsData.postValue(new ArrayList<>());
 
             }

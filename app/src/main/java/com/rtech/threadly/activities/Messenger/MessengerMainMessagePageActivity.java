@@ -56,7 +56,6 @@ import com.rtech.threadly.fragments.PostAddCameraFragment;
 import com.rtech.threadly.fragments.common_ui_pages.Media_Capture_finalizer_fragment;
 import com.rtech.threadly.interfaces.CameraFragmentInterface;
 import com.rtech.threadly.interfaces.NetworkCallBacks.NetworkCallbackInterfaceJsonObject;
-import com.rtech.threadly.interfaces.NetworkCallbackInterface;
 import com.rtech.threadly.interfaces.NetworkCallbackInterfaceWithProgressTracking;
 import com.rtech.threadly.interfaces.general_ui_callbacks.OnCapturedMediaFinalizedCallback;
 import com.rtech.threadly.models.MediaModel;
@@ -225,7 +224,7 @@ public class MessengerMainMessagePageActivity extends AppCompatActivity {
                                                     }
 
                                                     @Override
-                                                    public void onError(int err) {
+                                                    public void onError(int err, JSONObject errorObject) {
 
                                                     }
                                                 });
@@ -523,7 +522,7 @@ public class MessengerMainMessagePageActivity extends AppCompatActivity {
                     }
 
                     @Override
-                    public void onError(String err) {
+                    public void onError(int errorCode, JSONObject errorObject) {
                         executor.execute(() -> DataBase.getInstance().MessageDao().updatePostLinkWithState(messageUid,
                                 null, MessageStateEnum.FAILED.toString()));
                         pendingMessageUids.remove(messageUid);

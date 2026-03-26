@@ -22,8 +22,6 @@ import com.rtech.threadly.constants.Constants;
 import com.rtech.threadly.constants.SharedPreferencesKeys;
 import com.rtech.threadly.core.Core;
 import com.rtech.threadly.interfaces.NetworkCallBacks.NetworkCallbackInterfaceJsonObject;
-import com.rtech.threadly.interfaces.NetworkCallbackInterface;
-import com.rtech.threadly.interfaces.NetworkCallbackInterfaceWithJsonObjectDelivery;
 import com.rtech.threadly.network_managers.FcmManager;
 import com.rtech.threadly.utils.MessengerUtils;
 import com.rtech.threadly.utils.PreferenceUtil;
@@ -50,7 +48,7 @@ public class FcmService extends FirebaseMessagingService {
             }
 
             @Override
-            public void onError(int err) {
+            public void onError(int err, JSONObject errorObject) {
 
             }
         });
@@ -113,11 +111,6 @@ public class FcmService extends FirebaseMessagingService {
                 }
 
                 break;
-            case "logout":
-
-                LogOutSignalHandler(message);
-                break;
-
             case "newFollowRequest":
                 if (ReUsableFunctions.isLoggedIn()) {
                     newFollowRequestNotificationHandler(message);
@@ -319,18 +312,6 @@ public class FcmService extends FirebaseMessagingService {
                 PendingIntent.FLAG_MUTABLE);
     }
 
-    private void LogOutSignalHandler(RemoteMessage message) {
-        if (Core.getPreference().getBoolean(SharedPreferencesKeys.IS_LOGGED_IN, false) && Core.getPreference()
-                .getString(SharedPreferencesKeys.USER_ID, "null").equals(message.getData().get("userId"))) {
-            ReUsableFunctions.logoutWithoutActivity();
-            Notification.Builder notification = new Notification.Builder(Threadly.getGlobalContext())
-                    .setContentTitle("You have been logged out ")
-                    .setContentText(message.getData().get("logoutMessage")).setChannelId(Constants.MISC_CHANNEL.toString())
-                    .setSmallIcon(R.drawable.splash);
-            Core.getNotificationManager().notify(1, notification.build());
-        }
-
-    }
 
     private void newFollowerNotificationHandler(RemoteMessage message) {
         if (!Objects.requireNonNull(message.getData().get("ReceiverUserId")).equals(PreferenceUtil.getUserId())) {

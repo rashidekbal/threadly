@@ -10,7 +10,6 @@ import androidx.lifecycle.MutableLiveData;
 import com.rtech.threadly.constants.SharedPreferencesKeys;
 import com.rtech.threadly.core.Core;
 import com.rtech.threadly.interfaces.NetworkCallBacks.NetworkCallbackInterfaceJsonObject;
-import com.rtech.threadly.interfaces.NetworkCallbackInterfaceWithJsonObjectDelivery;
 import com.rtech.threadly.models.UsersModel;
 import com.rtech.threadly.network_managers.FollowManager;
 
@@ -64,7 +63,7 @@ public class MessageAbleUsersViewModel extends AndroidViewModel {
             }
 
             @Override
-            public void onError(int err) {
+            public void onError(int err, JSONObject errorObject) {
                 mutableLiveDataUsers.postValue(new ArrayList<>());
 
             }

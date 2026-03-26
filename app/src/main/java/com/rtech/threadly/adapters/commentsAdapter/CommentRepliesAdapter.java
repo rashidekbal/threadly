@@ -13,7 +13,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.rtech.threadly.R;
 import com.rtech.threadly.interfaces.NetworkCallBacks.NetworkCallbackInterfaceJsonObject;
-import com.rtech.threadly.interfaces.NetworkCallbackInterface;
 import com.rtech.threadly.models.Posts_Comments_Model;
 import com.rtech.threadly.network_managers.LikeManager;
 import com.rtech.threadly.utils.ReUsableFunctions;
@@ -74,7 +73,7 @@ public class CommentRepliesAdapter extends RecyclerView.Adapter<CommentRepliesAd
                     }
 
                     @Override
-                    public void onError(int err) {
+                    public void onError(int err, JSONObject errorObject) {
                         holder.like_btn_image.setImageResource(R.drawable.red_heart_active_icon);
                         commentsModels.get(position).setLiked(true);
                         commentsModels.get(position).setLikesCount(commentsModels.get(position).getLikesCount()+1);
@@ -98,7 +97,7 @@ public class CommentRepliesAdapter extends RecyclerView.Adapter<CommentRepliesAd
                     }
 
                     @Override
-                    public void onError(int err) {
+                    public void onError(int err, JSONObject errorObject) {
                         holder.like_btn_image.setImageResource(R.drawable.heart_inactive_icon);
                         commentsModels.get(position).setLiked(false);
                         commentsModels.get(position).setLikesCount(commentsModels.get(position).getLikesCount()-1);

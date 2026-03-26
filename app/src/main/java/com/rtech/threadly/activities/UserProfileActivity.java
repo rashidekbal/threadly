@@ -12,7 +12,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import androidx.core.graphics.Insets;
@@ -20,8 +19,6 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.bumptech.glide.Glide;
 import com.facebook.shimmer.ShimmerFrameLayout;
@@ -32,7 +29,6 @@ import com.rtech.threadly.core.Core;
 import com.rtech.threadly.databinding.ActivityUserProfileBinding;
 import com.rtech.threadly.fragments.CustomPostFeed.CustomPostFeedFragment;
 import com.rtech.threadly.interfaces.NetworkCallBacks.NetworkCallbackInterfaceJsonObject;
-import com.rtech.threadly.interfaces.NetworkCallbackInterface;
 import com.rtech.threadly.interfaces.Post_fragmentSetCallback;
 import com.rtech.threadly.models.ExtendedPostModel;
 import com.rtech.threadly.models.Posts_Model;
@@ -41,7 +37,6 @@ import com.rtech.threadly.network_managers.PostsManager;
 import com.rtech.threadly.network_managers.ProfileManager;
 import com.rtech.threadly.models.Profile_Model;
 import com.rtech.threadly.utils.PreferenceUtil;
-import com.rtech.threadly.utils.ReUsableFunctions;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -214,7 +209,7 @@ public class UserProfileActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onError(int errorCode) {
+            public void onError(int errorCode, JSONObject errorObject) {
                 Log.d("error_loadingProfile", Integer.toString(errorCode));
 
             }
@@ -303,7 +298,7 @@ if(data.userid.equals(PreferenceUtil.getUserId())){
             }
 
             @Override
-            public void onError(int errorCode) {
+            public void onError(int errorCode, JSONObject errorObject) {
                 mainXml.followBtn.setVisibility(View.VISIBLE);
 
                 if(data.isPrivate()){
@@ -329,7 +324,7 @@ if(data.userid.equals(PreferenceUtil.getUserId())){
             }
 
             @Override
-            public void onError(int err) {
+            public void onError(int err, JSONObject errorObject) {
                 mainXml.unfollowBtn.setVisibility(View.VISIBLE);
                 mainXml.followBtn.setVisibility(View.GONE);
                 mainXml.unfollowBtn.setEnabled(true);
@@ -350,7 +345,7 @@ if(data.userid.equals(PreferenceUtil.getUserId())){
             }
 
             @Override
-            public void onError(int err) {
+            public void onError(int err, JSONObject errorObject) {
                 mainXml.requestCancelBtn.setVisibility(View.VISIBLE);
                 mainXml.followBtn.setVisibility(View.GONE);
                 mainXml.requestCancelBtn.setEnabled(true);
@@ -427,7 +422,7 @@ page=1;
             }
 
             @Override
-            public void onError(int errorCode) {
+            public void onError(int errorCode, JSONObject errorObject) {
                 isLoading=false;
                 Log.d("PostLoadingErr",Integer.toString(errorCode));
 
@@ -481,7 +476,7 @@ page=1;
             }
 
             @Override
-            public void onError(int errorCode) {
+            public void onError(int errorCode, JSONObject errorObject) {
                 isLoading=false;
                 mainXml.postLoadingPorgressBar.setVisibility(View.GONE);
                 Log.d("PostLoadingErr",Integer.toString(errorCode));

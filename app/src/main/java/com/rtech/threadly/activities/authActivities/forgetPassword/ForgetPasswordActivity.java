@@ -13,7 +13,6 @@ import androidx.core.view.WindowInsetsCompat;
 import com.rtech.threadly.R;
 import com.rtech.threadly.databinding.ActivityForgetPasswordBinding;
 import com.rtech.threadly.interfaces.NetworkCallBacks.NetworkCallbackInterfaceJsonObject;
-import com.rtech.threadly.interfaces.NetworkCallbackInterface;
 import com.rtech.threadly.network_managers.OtpManager;
 import com.rtech.threadly.utils.ReUsableFunctions;
 
@@ -69,7 +68,7 @@ public class ForgetPasswordActivity extends AppCompatActivity {
                         }
 
                         @Override
-                        public void onError(int errorCode) {
+                        public void onError(int errorCode, JSONObject errorObject) {
 
                             if(errorCode==404){
                                 mainXml.useridField.setError("User not found");
@@ -107,7 +106,7 @@ public class ForgetPasswordActivity extends AppCompatActivity {
                         }
 
                         @Override
-                        public void onError(int err) {
+                        public void onError(int err, JSONObject errorObject) {
                             // Handle error, e.g., show a dialog or toast
                             ReUsableFunctions.ShowToast(ForgetPasswordActivity.this, "something went wrong");
                             mainXml.progressBar.setVisibility(View.GONE);

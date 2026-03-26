@@ -2,7 +2,6 @@ package com.rtech.threadly.adapters.mscs;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,7 +17,6 @@ import com.rtech.threadly.constants.FollowRouteResponse;
 import com.rtech.threadly.interfaces.NetworkCallBacks.NetworkCallbackInterfaceJsonObject;
 import com.rtech.threadly.models.Profile_Model_minimal;
 import com.rtech.threadly.network_managers.FollowManager;
-import com.rtech.threadly.interfaces.NetworkCallbackInterface;
 import com.rtech.threadly.utils.ReUsableFunctions;
 
 import org.json.JSONObject;
@@ -69,7 +67,7 @@ public class SuggestUsersAdapter extends RecyclerView.Adapter<SuggestUsersAdapte
                 }
 
                 @Override
-                public void onError(int errorCode) {
+                public void onError(int errorCode, JSONObject errorObject) {
                     holder.unfollow_btn.setVisibility(View.GONE);
                     holder.cancelRequestBtn.setVisibility(View.GONE);
                     holder.follow_btn.setVisibility(View.VISIBLE);
@@ -89,7 +87,7 @@ public class SuggestUsersAdapter extends RecyclerView.Adapter<SuggestUsersAdapte
             }
 
             @Override
-            public void onError(int err) {
+            public void onError(int err, JSONObject errorObject) {
                 holder.unfollow_btn.setVisibility(View.VISIBLE);
                 holder.follow_btn.setVisibility(View.GONE);
                 holder.unfollow_btn.setEnabled(true);
@@ -106,7 +104,7 @@ public class SuggestUsersAdapter extends RecyclerView.Adapter<SuggestUsersAdapte
                 }
 
                 @Override
-                public void onError(int err) {
+                public void onError(int err, JSONObject errorObject) {
                     ReUsableFunctions.ShowToast("Something went wrong");
                     holder.cancelRequestBtn.setVisibility(View.VISIBLE);
                     holder.follow_btn.setVisibility(View.GONE);

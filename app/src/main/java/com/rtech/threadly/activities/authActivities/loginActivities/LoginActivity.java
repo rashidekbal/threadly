@@ -25,7 +25,6 @@ import com.rtech.threadly.Threadly;
 import com.rtech.threadly.activities.HomeActivity;
 import com.rtech.threadly.activities.authActivities.forgetPassword.ForgetPasswordActivity;
 import com.rtech.threadly.activities.authActivities.registerActivities.SignUpEmailActivity;
-import com.rtech.threadly.activities.authActivities.registerActivities.SignUpMobileActivity;
 import com.rtech.threadly.constants.SharedPreferencesKeys;
 import com.rtech.threadly.core.Core;
 import com.rtech.threadly.interfaces.NetworkCallBacks.NetworkCallbackInterfaceJsonObject;
@@ -195,7 +194,7 @@ boolean isTypePassword=true;
 
                         @SuppressLint("SetTextI18n")
                         @Override
-                        public void onError(int errCode) {
+                        public void onError(int errCode, JSONObject errorObject) {
 
                             login_btn.setEnabled(true);
                             login_btn.setText("Log in");

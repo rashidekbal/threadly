@@ -15,7 +15,6 @@ import android.widget.RelativeLayout;
 import com.rtech.threadly.R;
 import com.rtech.threadly.adapters.followersAdapters.FollowerFollowing_UserList_adapter;
 import com.rtech.threadly.interfaces.NetworkCallBacks.NetworkCallbackInterfaceJsonObject;
-import com.rtech.threadly.interfaces.NetworkCallbackInterfaceWithJsonObjectDelivery;
 import com.rtech.threadly.network_managers.FollowManager;
 import com.rtech.threadly.models.Profile_Model_minimal;
 
@@ -106,7 +105,7 @@ public class Followers extends Fragment {
             }
 
             @Override
-            public void onError(int err) {
+            public void onError(int err, JSONObject errorObject) {
                 loadingData_relativeLayout.setVisibility(View.GONE);
                 noData_relativeLayout.setVisibility(View.VISIBLE);
 

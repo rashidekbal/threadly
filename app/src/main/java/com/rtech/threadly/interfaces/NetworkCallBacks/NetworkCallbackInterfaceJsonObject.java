@@ -4,5 +4,5 @@ import org.json.JSONObject;
 
 public interface NetworkCallbackInterfaceJsonObject {
     void onSuccess(JSONObject response);
-    void onError(int errorCode);
+    void onError(int errorCode,JSONObject errorObject);
 }

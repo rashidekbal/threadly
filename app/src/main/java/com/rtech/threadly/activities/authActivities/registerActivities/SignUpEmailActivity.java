@@ -18,7 +18,6 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.rtech.threadly.R;
 import com.rtech.threadly.interfaces.NetworkCallBacks.NetworkCallbackInterfaceJsonObject;
-import com.rtech.threadly.interfaces.NetworkCallbackInterface;
 import com.rtech.threadly.network_managers.OtpManager;
 import com.rtech.threadly.utils.ReUsableFunctions;
 
@@ -78,7 +77,7 @@ OtpManager otpManager;
                         }
 
                         @Override
-                        public void onError(int err) {
+                        public void onError(int err, JSONObject errorObject) {
 
                             switch (err){
                                 case 400:

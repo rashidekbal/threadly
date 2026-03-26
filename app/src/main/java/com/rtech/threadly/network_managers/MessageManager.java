@@ -5,19 +5,9 @@ package com.rtech.threadly.network_managers;
 import android.util.Log;
 
 import com.androidnetworking.AndroidNetworking;
-import com.androidnetworking.common.Priority;
-import com.androidnetworking.error.ANError;
-import com.androidnetworking.interfaces.JSONObjectRequestListener;
-import com.androidnetworking.interfaces.UploadProgressListener;
-import com.rtech.threadly.RoomDb.DataBase;
-import com.rtech.threadly.RoomDb.schemas.MessageSchema;
 import com.rtech.threadly.constants.ApiEndPoints;
 import com.rtech.threadly.constants.Constants;
-import com.rtech.threadly.constants.SharedPreferencesKeys;
-import com.rtech.threadly.core.Core;
 import com.rtech.threadly.interfaces.NetworkCallBacks.NetworkCallbackInterfaceJsonObject;
-import com.rtech.threadly.interfaces.NetworkCallbackInterface;
-import com.rtech.threadly.interfaces.NetworkCallbackInterfaceWithJsonObjectDelivery;
 import com.rtech.threadly.interfaces.NetworkCallbackInterfaceWithProgressTracking;
 import com.rtech.threadly.utils.LoggerUtil;
 import com.rtech.threadly.utils.MessengerUtils;
@@ -46,7 +36,7 @@ public class MessageManager {
             }
 
             @Override
-            public void onError(int errorCode) {
+            public void onError(int errorCode, JSONObject errorObject) {
                 Log.d(Constants.NETWORK_ERROR_TAG.toString(), "Error in sending message via http request with code  : "+errorCode);
             }
         });
@@ -74,7 +64,7 @@ public class MessageManager {
                 }
 
                 @Override
-                public void onError(int errorCode) {
+                public void onError(int errorCode, JSONObject errorObject) {
                     Log.d(Constants.NETWORK_ERROR_TAG.toString(), "onError from getAndUpdateRoute  with code : "+errorCode);
                 }
             });
@@ -122,7 +112,7 @@ public class MessageManager {
             }
 
             @Override
-            public void onError(int errorCode) {
+            public void onError(int errorCode, JSONObject errorObject) {
                 LoggerUtil.log("checkPending","error: with code :  "+errorCode);
             }
         });
@@ -168,7 +158,7 @@ public class MessageManager {
             NetworkingProvider.patch(Url,PreferenceUtil.getJWT(),packet,callbackInterface);
 
         } catch (JSONException e) {
-            callbackInterface.onError(500);
+            callbackInterface.onError(500, new JSONObject());
         }
 
     }
@@ -181,7 +171,7 @@ public class MessageManager {
             NetworkingProvider.patch(Url,PreferenceUtil.getJWT(),packet,callbackInterface);
 
         } catch (JSONException e) {
-           callbackInterface.onError(500);
+           callbackInterface.onError(500, new JSONObject());
         }
 
 

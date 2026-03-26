@@ -12,7 +12,6 @@ import com.rtech.threadly.constants.MessageStateEnum;
 import com.rtech.threadly.constants.SharedPreferencesKeys;
 import com.rtech.threadly.core.Core;
 import com.rtech.threadly.interfaces.NetworkCallBacks.NetworkCallbackInterfaceJsonObject;
-import com.rtech.threadly.interfaces.NetworkCallbackInterfaceWithJsonObjectDelivery;
 import com.rtech.threadly.network_managers.MessageManager;
 import com.rtech.threadly.network_managers.ProfileManager;
 
@@ -38,7 +37,7 @@ public class MessengerUtils {
 
             }
             @Override
-            public void onError(int err) {
+            public void onError(int err, JSONObject errorObject) {
                 LoggerUtil.log(LogTags.NETWORK_LOG.toString(),"error getting all chats associate with user with error code : "+err);
 
             }
@@ -241,7 +240,7 @@ executor.execute(()->{
             }
 
             @Override
-            public void onError(int errCode) {
+            public void onError(int errCode, JSONObject errorObject) {
 
 
             }

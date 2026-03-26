@@ -19,7 +19,6 @@ import com.androidnetworking.interfaces.JSONObjectRequestListener;
 import com.rtech.threadly.constants.ApiEndPoints;
 import com.rtech.threadly.databinding.ActivityVerifyEmailOtpBinding;
 import com.rtech.threadly.interfaces.NetworkCallBacks.NetworkCallbackInterfaceJsonObject;
-import com.rtech.threadly.interfaces.NetworkCallbackInterfaceWithJsonObjectDelivery;
 import com.rtech.threadly.network_managers.OtpManager;
 
 import org.json.JSONException;
@@ -77,7 +76,7 @@ public class VerifyEmailOtpActivity extends AppCompatActivity {
                 }
 
                 @Override
-                public void onError(int errCode) {
+                public void onError(int errCode, JSONObject errorObject) {
 
                     mainXMl.msgTextView.setVisibility(View.VISIBLE);
                     mainXMl.msgTextView.setTextColor(Color.parseColor("#D00707"));

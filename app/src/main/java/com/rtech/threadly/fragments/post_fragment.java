@@ -41,8 +41,6 @@ import com.rtech.threadly.core.Core;
 import com.rtech.threadly.databinding.FragmentPostsBinding;
 import com.rtech.threadly.interfaces.Messanger.OnUserSelectedListener;
 import com.rtech.threadly.interfaces.NetworkCallBacks.NetworkCallbackInterfaceJsonObject;
-import com.rtech.threadly.interfaces.NetworkCallbackInterfaceWithJsonObjectDelivery;
-import com.rtech.threadly.interfaces.NetworkCallbackInterface;
 import com.rtech.threadly.models.UsersModel;
 import com.rtech.threadly.network_managers.CommentsManager;
 import com.rtech.threadly.network_managers.LikeManager;
@@ -154,7 +152,7 @@ private final boolean[] isPlaying={true};
             }
 
             @Override
-            public void onError(int err) {
+            public void onError(int err, JSONObject errorObject) {
 
 
             }
@@ -228,7 +226,7 @@ private final boolean[] isPlaying={true};
                     }
 
                     @Override      
-                    public void onError(int err) {
+                    public void onError(int err, JSONObject errorObject) {
                         Log.d("unlikeError", "onError: "+err);
                         mainXml.likeBtnImage.setImageResource(R.drawable.red_heart_active_icon);
                         data.isliked=true;
@@ -251,7 +249,7 @@ private final boolean[] isPlaying={true};
                     }
 
                     @Override
-                    public void onError(int err) {
+                    public void onError(int err, JSONObject errorObject) {
                         Log.d("likeError", "onError: "+err);
                         mainXml.likeBtnImage.setImageResource(R.drawable.heart_inactive_icon_white);
                         data.isliked=false;
@@ -406,7 +404,7 @@ private void setOptionsBehaviour(BottomSheetDialog Optionsdialog,Posts_Model dat
                                                 }
 
                                                 @Override
-                                                public void onError(int err) {
+                                                public void onError(int err, JSONObject errorObject) {
                                                     delete_btn.setEnabled(true);
                                                     Optionsdialog.hide();
                                                     dialog.dismiss();
