@@ -37,7 +37,7 @@ public class MessageUploadCheckBrokerWorker extends Worker {
                   if(!schema.getMediaUploadState().equals(MessageStateEnum.UPLOADING.toString())){
                       continue;
                   }
-                  Data data=new Data.Builder().putString("messageUid",schema.getMessageUid()).put("path",schema.getMediaLocalPath()).build();
+                  Data data=new Data.Builder().putString("messageUid",schema.getMessageUid()).putString("path",schema.getMediaLocalPath()).build();
                   Core.getWorkManager().enqueue(new OneTimeWorkRequest.Builder(MessageMediaHandlerWorker.class).setInputData(data).build());
               }
               latch.countDown();

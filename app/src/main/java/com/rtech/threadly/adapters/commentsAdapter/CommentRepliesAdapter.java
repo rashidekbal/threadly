@@ -39,7 +39,8 @@ public class CommentRepliesAdapter extends RecyclerView.Adapter<CommentRepliesAd
     }
 
     @Override
-    public void onBindViewHolder(@NonNull viewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull viewHolder holder, int rawPosition) {
+        int position=holder.getAbsoluteAdapterPosition();
         Glide.with(context).load(commentsModels.get(position).getUserDpUrl()).circleCrop().placeholder(R.drawable.blank_profile).into(holder.userProfile_img);
         holder.username_text.setText(commentsModels.get(position).getUserId());
         holder.comment_text.setText(commentsModels.get(position).getComment());
