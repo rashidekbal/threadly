@@ -75,7 +75,7 @@ public class PostsManager {
     public static void markPostViewed(int postId,JSONObject object,NetworkCallbackInterfaceJsonObject callbackInterface){
         String Url=ApiEndPoints.POST_VIEWED+postId;
 
-            NetworkingProvider.post(Url,object,callbackInterface);
+            NetworkingProvider.post(Url,PreferenceUtil.getJWT(),object,callbackInterface);
 
 
 

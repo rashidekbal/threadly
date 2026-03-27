@@ -14,6 +14,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.util.Date;
 
 public class NetworkingProvider {
     public static void get(String Url,String token ,NetworkCallbackInterfaceJsonObject callbackInterfaceJsonObject){
@@ -32,7 +33,7 @@ public class NetworkingProvider {
                         public void onError(ANError anError) {
                             try {
                                 JSONObject errorObject=new JSONObject(anError.getErrorBody());
-                                CentralApiErrorHandler.handleErrorCode(anError.getErrorCode(),errorObject);
+                                CentralApiErrorHandler.handleErrorCode(anError.getErrorCode(),errorObject,Url,new Date().toString());
                                 callbackInterfaceJsonObject.onError(anError.getErrorCode(), errorObject);
                             } catch (JSONException e) {
                                 throw new RuntimeException(e);
@@ -57,7 +58,7 @@ public class NetworkingProvider {
                     public void onError(ANError anError) {
                         try {
                             JSONObject errorObject=new JSONObject(anError.getErrorBody());
-                            CentralApiErrorHandler.handleErrorCode(anError.getErrorCode(),errorObject);
+                            CentralApiErrorHandler.handleErrorCode(anError.getErrorCode(),errorObject,Url,new Date().toString());
                             callbackInterfaceJsonObject.onError(anError.getErrorCode(), errorObject);
                         } catch (JSONException e) {
                             throw new RuntimeException(e);
@@ -81,7 +82,7 @@ public class NetworkingProvider {
                     public void onError(ANError anError) {
                         try {
                             JSONObject errorObject=new JSONObject(anError.getErrorBody());
-                            CentralApiErrorHandler.handleErrorCode(anError.getErrorCode(),errorObject);
+                            CentralApiErrorHandler.handleErrorCode(anError.getErrorCode(),errorObject,Url,new Date().toString() );
                             callbackInterfaceJsonObject.onError(anError.getErrorCode(), errorObject);
                         } catch (JSONException e) {
                             throw new RuntimeException(e);
@@ -106,7 +107,7 @@ public class NetworkingProvider {
                     public void onError(ANError anError) {
                         try {
                             JSONObject errorObject=new JSONObject(anError.getErrorBody());
-                            CentralApiErrorHandler.handleErrorCode(anError.getErrorCode(),errorObject);
+                            CentralApiErrorHandler.handleErrorCode(anError.getErrorCode(),errorObject,Url,new Date().toString());
                             callbackInterfaceJsonObject.onError(anError.getErrorCode(), errorObject);
                         } catch (JSONException e) {
                             throw new RuntimeException(e);
@@ -131,7 +132,7 @@ public class NetworkingProvider {
                     public void onError(ANError anError) {
                         try {
                             JSONObject errorObject=new JSONObject(anError.getErrorBody());
-                            CentralApiErrorHandler.handleErrorCode(anError.getErrorCode(),errorObject);
+                            CentralApiErrorHandler.handleErrorCode(anError.getErrorCode(),errorObject,Url,new Date().toString() );
                             callbackInterfaceJsonObject.onError(anError.getErrorCode(), errorObject);
                         } catch (JSONException e) {
                             throw new RuntimeException(e);
@@ -154,7 +155,7 @@ public class NetworkingProvider {
                     public void onError(ANError anError) {
                         try {
                             JSONObject errorObject=new JSONObject(anError.getErrorBody());
-                            CentralApiErrorHandler.handleErrorCode(anError.getErrorCode(),errorObject);
+                            CentralApiErrorHandler.handleErrorCode(anError.getErrorCode(),errorObject, Url,new Date().toString() );
                             callbackInterfaceJsonObject.onError(anError.getErrorCode(), errorObject);
                         } catch (JSONException e) {
                             throw new RuntimeException(e);
@@ -179,7 +180,7 @@ public class NetworkingProvider {
                     public void onError(ANError anError) {
                         try {
                             JSONObject errorObject=new JSONObject(anError.getErrorBody());
-                            CentralApiErrorHandler.handleErrorCode(anError.getErrorCode(),errorObject);
+                            CentralApiErrorHandler.handleErrorCode(anError.getErrorCode(),errorObject,Url,new Date().toString());
                             callbackInterfaceJsonObject.onError(anError.getErrorCode(), errorObject);
                         } catch (JSONException e) {
                             throw new RuntimeException(e);
@@ -203,7 +204,7 @@ public class NetworkingProvider {
                     public void onError(ANError anError) {
                         try {
                             JSONObject errorObject=new JSONObject(anError.getErrorBody());
-                            CentralApiErrorHandler.handleErrorCode(anError.getErrorCode(),errorObject);
+                            CentralApiErrorHandler.handleErrorCode(anError.getErrorCode(),errorObject, Url,new Date().toString() );
                             callbackInterfaceJsonObject.onError(anError.getErrorCode(), errorObject);
                         } catch (JSONException e) {
                             throw new RuntimeException(e);
@@ -226,7 +227,7 @@ public class NetworkingProvider {
                     public void onError(ANError anError) {
                         try {
                             JSONObject errorObject=new JSONObject(anError.getErrorBody());
-                            CentralApiErrorHandler.handleErrorCode(anError.getErrorCode(),errorObject);
+                            CentralApiErrorHandler.handleErrorCode(anError.getErrorCode(),errorObject, url,new Date().toString() );
                             callBack.onError(anError.getErrorCode(), errorObject);
                         } catch (JSONException e) {
                             throw new RuntimeException(e);
@@ -250,7 +251,7 @@ public class NetworkingProvider {
                     public void onError(ANError anError) {
                         try {
                             JSONObject errorObject=new JSONObject(anError.getErrorBody());
-                            CentralApiErrorHandler.handleErrorCode(anError.getErrorCode(),errorObject);
+                            CentralApiErrorHandler.handleErrorCode(anError.getErrorCode(),errorObject, url,new Date().toString() );
                             callBack.onError(anError.getErrorCode(), errorObject);
                         } catch (JSONException e) {
                             throw new RuntimeException(e);
@@ -276,7 +277,7 @@ public class NetworkingProvider {
                     public void onError(ANError anError) {
                         try {
                             JSONObject errorObject=new JSONObject(anError.getErrorBody());
-                            CentralApiErrorHandler.handleErrorCode(anError.getErrorCode(),errorObject);
+                            CentralApiErrorHandler.handleErrorCode(anError.getErrorCode(),errorObject, url,new Date().toString() );
                             callbackInterfaceWithProgressTracking.onError(anError.getErrorCode(), errorObject);
                         } catch (JSONException e) {
                             throw new RuntimeException(e);
@@ -303,7 +304,7 @@ public class NetworkingProvider {
                     public void onError(ANError anError) {
                         try {
                             JSONObject errorObject=new JSONObject(anError.getErrorBody());
-                            CentralApiErrorHandler.handleErrorCode(anError.getErrorCode(),errorObject);
+                            CentralApiErrorHandler.handleErrorCode(anError.getErrorCode(),errorObject,url,new Date().toString() );
                             callbackInterfaceWithProgressTracking.onError(anError.getErrorCode(), errorObject);
                         } catch (JSONException e) {
                             throw new RuntimeException(e);
@@ -330,7 +331,7 @@ public class NetworkingProvider {
                     public void onError(ANError anError) {
                         try {
                             JSONObject errorObject=new JSONObject(anError.getErrorBody());
-                            CentralApiErrorHandler.handleErrorCode(anError.getErrorCode(),errorObject);
+                            CentralApiErrorHandler.handleErrorCode(anError.getErrorCode(),errorObject, url,new Date().toString());
                             callbackInterfaceWithProgressTracking.onError(anError.getErrorCode(), errorObject);
                         } catch (JSONException e) {
                             throw new RuntimeException(e);
@@ -338,5 +339,6 @@ public class NetworkingProvider {
                     }
                 });
     }
+
 
 }
