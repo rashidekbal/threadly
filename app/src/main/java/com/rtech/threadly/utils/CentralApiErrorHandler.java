@@ -10,19 +10,17 @@ import org.json.JSONObject;
 public class CentralApiErrorHandler {
     public static void handleErrorCode(int errorCode , JSONObject errorObject,String route,String timeStamp){
         String errorLog=formatErrorLog(timeStamp,route,String.valueOf(errorCode),errorObject.toString());
-        LoggerUtil.writeToFile(errorLog);
+        LoggerUtil.writeToFile(errorLog,"ApiError");
         LoggerUtil.log("API_ERROR",errorLog);
-//       switch (errorCode){
-//           case 401:ReUsableFunctions.logoutWithoutActivity();
-//           break;
-//           case 404:LoggerUtil.log(LogTags.NETWORK_LOG.toString(),"route not found");
-//           break;
-//       }
+       switch (errorCode){
+           case 401:ReUsableFunctions.logoutWithoutActivity();
+           break;
+       }
     }
 
 
     public static String formatErrorLog(String time, String route,String errorCode,String errorBody){
-        return ("response time: "+time+"\n"+"route hit: "+route+"\n"+"errorCode: "+errorCode+"\n"+"errorBody: "+errorBody);
+        return ("response time: "+time+"\n"+"route hit: "+route+"\n"+"errorCode: "+errorCode+"\n"+"errorBody: "+errorBody+"\n"+"\n"+"\n"+"\n");
 
     }
 }

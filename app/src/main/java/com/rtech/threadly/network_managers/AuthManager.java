@@ -19,7 +19,7 @@ public class AuthManager {
         // Initialize any necessary components or configurations for authentication
         loginInfo = Core.getPreference();
     }
-    public void LoginMobile(String mobile,String password,NetworkCallbackInterfaceWithJsonObjectDelivery callback){
+    public void LoginMobile(String mobile,String password,NetworkCallbackInterfaceJsonObject callback){
         String url=ApiEndPoints.LOGIN_MOBILE;
         JSONObject packet=new JSONObject();
         try {
@@ -33,7 +33,7 @@ public class AuthManager {
 
                 @Override
                 public void onError(int errorCode, JSONObject errorObject) {
-                    callback.onError(Integer.toString(errorCode));
+                    callback.onError(errorCode,errorObject);
                     LoggerUtil.log(LogTags.NETWORK_LOG.toString(),"api error login mobile with code : "+(errorCode));
                 }
             });
@@ -93,7 +93,7 @@ public class AuthManager {
 
 
     }
-    public void LoginEmail(String email,String password,NetworkCallbackInterfaceWithJsonObjectDelivery callback){
+    public void LoginEmail(String email,String password,NetworkCallbackInterfaceJsonObject callback){
         Log.d("feddhit", "getLoggedInUserProfile: ");
         String url=ApiEndPoints.LOGIN_EMAIL;
         JSONObject packet=new JSONObject();
@@ -108,7 +108,7 @@ public class AuthManager {
 
                 @Override
                 public void onError(int errorCode, JSONObject errorObject) {
-                    callback.onError(Integer.toString(errorCode));
+                    callback.onError(errorCode,errorObject);
                     LoggerUtil.log(LogTags.NETWORK_LOG.toString(),"api error LoginEmail  with code : "+(errorCode));
 
 

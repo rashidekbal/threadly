@@ -24,11 +24,11 @@ public class LoggerUtil {
             Log.d(TAG, "log: "+log);
         }
     }
-    public static void writeToFile(String data){
+    public static void writeToFile(String data,String fileName){
         try {
             File dir=Threadly.getGlobalContext().getExternalFilesDir(null);
             Date date=new Date();
-            File file=new File(dir,date.toString()+".txt");
+            File file=new File(dir,fileName+date.toString()+".txt");
 
             FileOutputStream fileOutputStream= new FileOutputStream(file);
             fileOutputStream.write(data.getBytes());

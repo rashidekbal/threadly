@@ -25,10 +25,12 @@ import com.rtech.threadly.Threadly;
 import com.rtech.threadly.activities.HomeActivity;
 import com.rtech.threadly.activities.authActivities.forgetPassword.ForgetPasswordActivity;
 import com.rtech.threadly.activities.authActivities.registerActivities.SignUpEmailActivity;
+import com.rtech.threadly.constants.ApiErrors;
 import com.rtech.threadly.constants.SharedPreferencesKeys;
 import com.rtech.threadly.core.Core;
 import com.rtech.threadly.interfaces.NetworkCallBacks.NetworkCallbackInterfaceJsonObject;
-import com.rtech.threadly.interfaces.NetworkCallbackInterfaceWithJsonObjectDelivery;
+import com.rtech.threadly.models.Api_Res_AccountRestriction_object_model;
+import com.rtech.threadly.models.Api_Res_Auth_error_object_model;
 import com.rtech.threadly.network_managers.AuthManager;
 import com.rtech.threadly.utils.ExoplayerUtil;
 import com.rtech.threadly.utils.LoginSequenceUtil;
@@ -74,7 +76,7 @@ boolean isTypePassword=true;
 
 
                 if(ReUsableFunctions.isEmail(userid)){
-                    authManager.LoginEmail(userid, password, new NetworkCallbackInterfaceWithJsonObjectDelivery() {
+                    authManager.LoginEmail(userid, password, new NetworkCallbackInterfaceJsonObject() {
                         @Override
                         public void onSuccess(JSONObject response) {
                             String username;
@@ -104,21 +106,22 @@ boolean isTypePassword=true;
 
                         }
 
-                        @SuppressLint("SetTextI18n")
                         @Override
-                        public void onError(String err) {
+                        public void onError(int errorCode, JSONObject errorObject) {
                             login_btn.setEnabled(true);
                             login_btn.setText("Log in");
                             progressBar.setVisibility(View.GONE);
-                            showDialog();
+                            handleErrorCode(errorCode,errorObject);
 
                         }
+
+
                     });
 
 
                 }
                 else if (ReUsableFunctions.isPhone(userid)) {
-                    authManager.LoginMobile(userid, password, new NetworkCallbackInterfaceWithJsonObjectDelivery() {
+                    authManager.LoginMobile(userid, password, new NetworkCallbackInterfaceJsonObject() {
                         @Override
                         public void onSuccess(JSONObject response) {
                             String username;
@@ -148,15 +151,15 @@ boolean isTypePassword=true;
 
                         }
 
-                        @SuppressLint("SetTextI18n")
                         @Override
-                        public void onError(String err) {
+                        public void onError(int errorCode, JSONObject errorObject) {
                             login_btn.setEnabled(true);
                             login_btn.setText("Log in");
                             progressBar.setVisibility(View.GONE);
-                            showDialog();
-
+                            handleErrorCode(errorCode,errorObject);
                         }
+
+
                     });
 
                 }
@@ -199,7 +202,7 @@ boolean isTypePassword=true;
                             login_btn.setEnabled(true);
                             login_btn.setText("Log in");
                             progressBar.setVisibility(View.GONE);
-                            showDialog();
+                            handleErrorCode(errCode,errorObject);
 
                         }
                     });
@@ -218,6 +221,21 @@ boolean isTypePassword=true;
         signup_btn.setOnClickListener(v -> startActivity(new Intent(LoginActivity.this, SignUpEmailActivity.class)));
         forgetPassword_btn.setOnClickListener(v -> startActivity(new Intent(LoginActivity.this, ForgetPasswordActivity.class)));
     }
+
+    private void handleErrorCode(int errorCode, JSONObject errorObject) {
+        if(errorCode==403){
+            String errorType=errorObject.optString("errorType");
+            if(errorType.equals(ApiErrors.ACCOUNT_RESTRICTION_ERROR.toString())){
+                Api_Res_AccountRestriction_object_model data=new Api_Res_AccountRestriction_object_model(errorObject.optJSONObject("errorBody"));
+                showDialog("Account Restricted","Your account has been restricted\n Reason: "+data.getReason());
+
+            }else{
+               Api_Res_Auth_error_object_model data=new Api_Res_Auth_error_object_model(errorObject.optJSONObject("errorBody"));
+                showDialog("Invalid Credentials",data.getInvalid_parameter()+"\n"+data.getMessage());
+            }
+        }
+    }
+
     protected  void init(){
         login_btn=findViewById(R.id.login_btn);
         signup_btn=findViewById(R.id.SignUp_btn);
@@ -252,10 +270,10 @@ boolean isTypePassword=true;
     }
 
 
-    private void showDialog(){
+    private void showDialog(String title,String message){
         AlertDialog dialog=new AlertDialog.Builder(LoginActivity.this).create();
-        dialog.setTitle("That login info didn't work");
-        dialog.setMessage("Check your username, mobile number, email or password");
+        dialog.setTitle(title);
+        dialog.setMessage(message);
         dialog.setButton(AlertDialog.BUTTON_POSITIVE,"ok", (dialog1, which) -> dialog1.dismiss());
         dialog.show();
 
