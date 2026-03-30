@@ -37,6 +37,7 @@ import com.rtech.threadly.adapters.messanger.UsersShareSheetGridAdapter;
 import com.rtech.threadly.adapters.mscs.SuggestUsersAdapter;
 import com.rtech.threadly.constants.LogTags;
 import com.rtech.threadly.constants.SharedPreferencesKeys;
+import com.rtech.threadly.constants.StatsConstants;
 import com.rtech.threadly.constants.TypeConstants;
 import com.rtech.threadly.core.Core;
 import com.rtech.threadly.interfaces.Messanger.OnUserSelectedListener;
@@ -47,9 +48,11 @@ import com.rtech.threadly.network_managers.FollowManager;
 import com.rtech.threadly.network_managers.LikeManager;
 import com.rtech.threadly.models.Posts_Model;
 import com.rtech.threadly.models.Profile_Model_minimal;
+import com.rtech.threadly.network_managers.PostsManager;
 import com.rtech.threadly.utils.DownloadManagerUtil;
 import com.rtech.threadly.utils.LoggerUtil;
 import com.rtech.threadly.utils.PostCommentsViewerUtil;
+import com.rtech.threadly.utils.PostInteractedByViewerUtil;
 import com.rtech.threadly.utils.ReUsableFunctions;
 import com.rtech.threadly.viewmodels.MessageAbleUsersViewModel;
 
@@ -70,6 +73,8 @@ public class ImagePostsFeedAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     LikeManager likeManager;
     CommentsManager commentsManager;
     FollowManager followManager;
+    PostsManager postsManager;
+    PostInteractedByViewerUtil postInteractedByViewerUtil;
 
 
     // Constructor for the adapter
@@ -81,6 +86,8 @@ public class ImagePostsFeedAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         this.likeManager=new LikeManager();
         this.commentsManager=new CommentsManager();
         this.followManager=new FollowManager();
+        this.postsManager=new PostsManager();
+        this.postInteractedByViewerUtil=new PostInteractedByViewerUtil(postsManager,context);
     }
 
     @Override
@@ -255,6 +262,7 @@ public class ImagePostsFeedAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                   }
               }
           });
+          holder.likes_count_text.setOnClickListener(v->handleLikeCountClickHandler(list.get(position).getPostId()));
 
           // open userProfile by clicking userProfilepic
           holder.userprofileImg.setOnClickListener(new View.OnClickListener() {
@@ -547,6 +555,8 @@ public class ImagePostsFeedAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
     }
 
-
+    private void handleLikeCountClickHandler(int postId){
+        postInteractedByViewerUtil.openViewer(StatsConstants.LIKE.toString(),postId);
+    }
 
 }

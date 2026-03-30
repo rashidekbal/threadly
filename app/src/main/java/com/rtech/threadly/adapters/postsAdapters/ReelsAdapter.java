@@ -31,15 +31,18 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.rtech.threadly.R;
 import com.rtech.threadly.constants.SharedPreferencesKeys;
+import com.rtech.threadly.constants.StatsConstants;
 import com.rtech.threadly.core.Core;
 import com.rtech.threadly.interfaces.NetworkCallBacks.NetworkCallbackInterfaceJsonObject;
 import com.rtech.threadly.network_managers.CommentsManager;
 import com.rtech.threadly.network_managers.FollowManager;
 import com.rtech.threadly.network_managers.LikeManager;
 import com.rtech.threadly.models.Posts_Model;
+import com.rtech.threadly.network_managers.PostsManager;
 import com.rtech.threadly.utils.DownloadManagerUtil;
 import com.rtech.threadly.utils.ExoplayerUtil;
 import com.rtech.threadly.utils.PostCommentsViewerUtil;
+import com.rtech.threadly.utils.PostInteractedByViewerUtil;
 import com.rtech.threadly.utils.PostShareHelperUtil;
 import com.rtech.threadly.utils.ReUsableFunctions;
 
@@ -57,6 +60,8 @@ public class ReelsAdapter extends RecyclerView.Adapter<ReelsAdapter.viewHolder> 
       FollowManager followManager;
     GestureDetector.SimpleOnGestureListener videoFeedGestureListener;
     final int gestureLikeDuration=900;
+    PostInteractedByViewerUtil postInteractedByViewerUtil;
+    PostsManager postsManager;
 
 
     public ReelsAdapter(Context context, ArrayList<Posts_Model> reelsList) {
@@ -65,6 +70,8 @@ public class ReelsAdapter extends RecyclerView.Adapter<ReelsAdapter.viewHolder> 
         this.likeManager=new LikeManager();
         this.commentsManager=new CommentsManager();
         this.followManager=new FollowManager();
+        this.postsManager=new PostsManager();
+        this.postInteractedByViewerUtil=new PostInteractedByViewerUtil(postsManager,context);
 
     }
 
@@ -312,6 +319,7 @@ public class ReelsAdapter extends RecyclerView.Adapter<ReelsAdapter.viewHolder> 
             PostShareHelperUtil.OpenPostShareDialog(dataList.get(position),context);
 
         });
+        holder.likes_count_text.setOnClickListener(v->handleLikeCountClickHandler(dataList.get(position).getPostId()));
 
 
 
@@ -399,6 +407,7 @@ public class ReelsAdapter extends RecyclerView.Adapter<ReelsAdapter.viewHolder> 
                 }
             });
         });
+
 
 
 
@@ -501,6 +510,9 @@ public class ReelsAdapter extends RecyclerView.Adapter<ReelsAdapter.viewHolder> 
 
             // Unlike the post if already liked
         }
+    }
+    private void handleLikeCountClickHandler(int postId){
+        postInteractedByViewerUtil.openViewer(StatsConstants.LIKE.toString(),postId);
     }
 
 
