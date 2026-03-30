@@ -676,6 +676,7 @@ public class AllTypePostFeedAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 
         holder.share_icon_white.setOnClickListener(V -> PostShareHelperUtil.OpenPostShareDialog(postModels.get(position),context));
         holder.likes_count_text.setOnClickListener(v->handleLikedCountCLick(position));
+        holder.shares_count_text.setOnClickListener(v->handleShareCountClickHandler(postModels.get(position).getPostId()));
 
     }
     private void SetupFollowBtn(@NonNull VideoPostViewHolder holder, int position) {
@@ -701,6 +702,7 @@ public class AllTypePostFeedAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             });
         });
     }
+
     private void setOptionBtnBehaviourNormalUser(@NonNull BottomSheetDialog OptionsDialog, int position) {
         LinearLayout downloadBtnLayout=OptionsDialog.findViewById(R.id.download_btn);
         LinearLayout addFavouriteBtnLayout=OptionsDialog.findViewById(R.id.add_favourite_btn);
@@ -917,7 +919,10 @@ public class AllTypePostFeedAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     }
 
 
-    /// post share action function
+
+    private void handleShareCountClickHandler(int postId){
+        postInteractedByViewerUtil.openViewer(StatsConstants.SHARE.toString(),postId);
+    }
 
 
 }

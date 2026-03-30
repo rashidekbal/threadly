@@ -22,9 +22,11 @@ import com.rtech.threadly.constants.TypeConstants;
 import com.rtech.threadly.core.Core;
 import com.rtech.threadly.models.Posts_Model;
 import com.rtech.threadly.models.UsersModel;
+import com.rtech.threadly.network_managers.PostsManager;
 import com.rtech.threadly.viewmodels.MessageAbleUsersViewModel;
 
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 
@@ -98,7 +100,12 @@ public class PostShareHelperUtil {
         if(selectedUsers.isEmpty()){return;}
             for(UsersModel model:selectedUsers){
                 try {
+                    JSONObject jsonObject=new JSONObject();
+                    jsonObject.put("postid",postid);
+                    jsonObject.put("senderUserId",PreferenceUtil.getUserId());
+                    jsonObject.put("receiverUserId",model.getUserId());
                     Core.sendCtoS(model.getUuid(),"", TypeConstants.POST,post.postUrl,postid,"sent a reel by "+post.username);
+                    PostsManager.RecordPostShared_Details(jsonObject);
 
                 } catch (JSONException e) {
                     e.printStackTrace();

@@ -129,7 +129,7 @@ public class ImagePostsFeedAdapter extends RecyclerView.Adapter<RecyclerView.Vie
       if(holderView instanceof ContentViewHolder){
           ContentViewHolder holder=(ContentViewHolder)holderView ;
           // Set like, comment, and share counts
-
+            holder.shares_count_text.setOnClickListener(v->handleShareCountClickHandler(list.get(position).getPostId()));
           holder.is_liked=list.get(position).isliked;
           holder.likes=Double.parseDouble(Integer.toString(list.get(position).likeCount));
           double comments=Double.parseDouble(Integer.toString(list.get(position).commentCount));
@@ -558,5 +558,9 @@ public class ImagePostsFeedAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     private void handleLikeCountClickHandler(int postId){
         postInteractedByViewerUtil.openViewer(StatsConstants.LIKE.toString(),postId);
     }
+    private void handleShareCountClickHandler(int postId){
+        postInteractedByViewerUtil.openViewer(StatsConstants.SHARE.toString(),postId);
+    }
+
 
 }

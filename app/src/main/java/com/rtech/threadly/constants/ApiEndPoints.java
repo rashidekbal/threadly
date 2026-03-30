@@ -38,6 +38,8 @@ public class ApiEndPoints {
     public static final String ADD_VIDEO_POST = baseUrl+"/posts/addVideoPost/";
     public static final String POST_VIEWED= baseUrl+"/posts/postViewed/";
 
+    public static final String POST_SHARE_RECORD_HANDLER=baseUrl+"/posts/share/";
+
    // Profile
     public static final String GET_PROFILE = baseUrl + "/users/getUser/";
     public static final String GET_SUGGESTED_USERS = baseUrl + "/users/getUsers/";

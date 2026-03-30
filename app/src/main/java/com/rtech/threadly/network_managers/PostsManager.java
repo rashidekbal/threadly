@@ -81,8 +81,28 @@ public class PostsManager {
 
     }
     public void getLikedByUsersInfo(int postId,NetworkCallbackInterfaceJsonObject callbackInterfaceJsonObject){
-        String url=ApiEndPoints.baseUrl+"/posts/"+postId+"/likedby";
-        NetworkingProvider.get(url,PreferenceUtil.getJWT(),callbackInterfaceJsonObject);
+        String url=ApiEndPoints.baseUrl+"/posts/"+postId+"/likedby/";
+        NetworkingProvider.get(url,getToken(),callbackInterfaceJsonObject);
     }
+    public void getSharedByUserInfo(int postId,NetworkCallbackInterfaceJsonObject callbackInterfaceJsonObject){
+        String url=ApiEndPoints.baseUrl+"/posts/"+postId+"/sharedby/" ;
+        NetworkingProvider.get(url,getToken(),callbackInterfaceJsonObject);
+    }
+    public static void RecordPostShared_Details(JSONObject object){
+        String url=ApiEndPoints.POST_SHARE_RECORD_HANDLER;
+        NetworkingProvider.post(url,PreferenceUtil.getJWT(),object,new NetworkCallbackInterfaceJsonObject(){
+
+            @Override
+            public void onSuccess(JSONObject response) {
+
+            }
+
+            @Override
+            public void onError(int errorCode, JSONObject errorObject) {
+
+            }
+        });
+    }
+
 
 }

@@ -74,9 +74,31 @@ public class PostInteractedByViewerUtil {
         }
         stateLoading();
         if (type.equals(StatsConstants.LIKE.toString())) loadLikedByData(postId);
+        else loadSharedByData(postId);
         currentPostId=postId;
         currentType=type;
     }
+    private void loadSharedByData(int postId) {
+        postsManager.getSharedByUserInfo(postId, new NetworkCallbackInterfaceJsonObject() {
+            @Override
+            public void onSuccess(JSONObject response) {
+                stateLoaded();
+                JSONArray data = response.optJSONArray("data");
+                if (data != null) {
+                    extractData(data);
+                }
+                handleDataExtracted();
+
+            }
+
+            @Override
+            public void onError(int errorCode, JSONObject errorObject) {
+                handleError();
+            }
+        });
+
+    }
+
 
     private void loadLikedByData(int postId) {
         postsManager.getLikedByUsersInfo(postId, new NetworkCallbackInterfaceJsonObject() {

@@ -320,6 +320,7 @@ public class ReelsAdapter extends RecyclerView.Adapter<ReelsAdapter.viewHolder> 
 
         });
         holder.likes_count_text.setOnClickListener(v->handleLikeCountClickHandler(dataList.get(position).getPostId()));
+        holder.shares_count_text.setOnClickListener(v->handleShareCountClickHandler(dataList.get(position).getPostId()));
 
 
 
@@ -513,6 +514,9 @@ public class ReelsAdapter extends RecyclerView.Adapter<ReelsAdapter.viewHolder> 
     }
     private void handleLikeCountClickHandler(int postId){
         postInteractedByViewerUtil.openViewer(StatsConstants.LIKE.toString(),postId);
+    }
+    private void handleShareCountClickHandler(int postId){
+        postInteractedByViewerUtil.openViewer(StatsConstants.SHARE.toString(),postId);
     }
 
 

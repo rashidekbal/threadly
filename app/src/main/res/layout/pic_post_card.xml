@@ -119,7 +119,8 @@
                 android:layout_height="@dimen/dp_25"
                 android:layout_marginStart="@dimen/dp_10"
                 android:layout_marginEnd="@dimen/dp_5"
-                android:src="@drawable/comment_icon" />
+                android:src="@drawable/comment_icon"
+                />
 
             <TextView
                 android:id="@+id/comments_count_text"
@@ -127,7 +128,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/dp_8"
                 android:textColor="@color/black"
-                android:visibility="gone"/>
+                android:padding="@dimen/dp_5"
+                tools:text="53"/>
 
             <ImageView
                 android:id="@+id/share_btn"
@@ -142,7 +144,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/black"
-                android:visibility="gone"/>
+                android:visibility="visible"
+                android:text="65"
+                android:padding="@dimen/dp_5"/>
 
         </LinearLayout>
 
