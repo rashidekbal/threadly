@@ -65,6 +65,7 @@
         android:layout_height="match_parent"
         android:layout_alignParentEnd="true"
         android:orientation="horizontal"
+
         >
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/follow_btn"

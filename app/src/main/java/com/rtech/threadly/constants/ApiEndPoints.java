@@ -3,7 +3,7 @@ package com.rtech.threadly.constants;
 import com.rtech.threadly.BuildConfig;
 
 public class ApiEndPoints {
-    private static final String baseUrl = BuildConfig.BASE_URL;
+    public static final String baseUrl = BuildConfig.BASE_URL;
 
     // Comments
     public static final String GET_COMMENTS = baseUrl + "/comment/getComments/";

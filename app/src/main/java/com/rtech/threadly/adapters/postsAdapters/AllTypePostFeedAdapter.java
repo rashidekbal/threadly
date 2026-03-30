@@ -29,6 +29,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.rtech.threadly.R;
 import com.rtech.threadly.constants.LogTags;
 import com.rtech.threadly.constants.SharedPreferencesKeys;
+import com.rtech.threadly.constants.StatsConstants;
 import com.rtech.threadly.core.Core;
 import com.rtech.threadly.interfaces.NetworkCallBacks.NetworkCallbackInterfaceJsonObject;
 import com.rtech.threadly.models.ExtendedPostModel;
@@ -40,6 +41,7 @@ import com.rtech.threadly.utils.DownloadManagerUtil;
 import com.rtech.threadly.utils.ExoplayerUtil;
 import com.rtech.threadly.utils.LoggerUtil;
 import com.rtech.threadly.utils.PostCommentsViewerUtil;
+import com.rtech.threadly.utils.PostInteractedByViewerUtil;
 import com.rtech.threadly.utils.PostShareHelperUtil;
 import com.rtech.threadly.utils.PreferenceUtil;
 import com.rtech.threadly.utils.ReUsableFunctions;
@@ -60,6 +62,8 @@ public class AllTypePostFeedAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     GestureDetector.SimpleOnGestureListener videoFeedGestureListener;
     GestureDetector.SimpleOnGestureListener imageFeedGestureListener;
     final int gestureLikeDuration=900;
+    PostInteractedByViewerUtil postInteractedByViewerUtil;
+    PostsManager postsManager;
 
     public AllTypePostFeedAdapter(Context context, List<ExtendedPostModel> postModels, int position) {
         this.postModels = postModels;
@@ -69,6 +73,8 @@ public class AllTypePostFeedAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         this.likeManager = new LikeManager();
         this.position = position;
         this.postCommentsViewerUtil = new PostCommentsViewerUtil(context);
+        this.postsManager=new PostsManager();
+        this.postInteractedByViewerUtil=new PostInteractedByViewerUtil(postsManager,context);
     }
 
     @Override
@@ -459,7 +465,7 @@ public class AllTypePostFeedAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 
 
         holder.share_icon_white.setOnClickListener(V -> PostShareHelperUtil.OpenPostShareDialog(postModels.get(position),context));
-
+        holder.likes_count_text.setOnClickListener(v->handleLikedCountCLick(position));
 
     }
 
@@ -669,7 +675,7 @@ public class AllTypePostFeedAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 
 
         holder.share_icon_white.setOnClickListener(V -> PostShareHelperUtil.OpenPostShareDialog(postModels.get(position),context));
-
+        holder.likes_count_text.setOnClickListener(v->handleLikedCountCLick(position));
 
     }
     private void SetupFollowBtn(@NonNull VideoPostViewHolder holder, int position) {
@@ -770,6 +776,11 @@ public class AllTypePostFeedAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 
 
 
+
+    }
+
+    private void handleLikedCountCLick( int position){
+        postInteractedByViewerUtil.openViewer(StatsConstants.LIKE.toString(),postModels.get(position).getPostId());
 
     }
 

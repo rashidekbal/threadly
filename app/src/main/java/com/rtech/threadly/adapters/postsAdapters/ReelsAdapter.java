@@ -58,6 +58,7 @@ public class ReelsAdapter extends RecyclerView.Adapter<ReelsAdapter.viewHolder> 
     GestureDetector.SimpleOnGestureListener videoFeedGestureListener;
     final int gestureLikeDuration=900;
 
+
     public ReelsAdapter(Context context, ArrayList<Posts_Model> reelsList) {
         this.dataList=reelsList;
         this.context=context;

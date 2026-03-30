@@ -80,5 +80,9 @@ public class PostsManager {
 
 
     }
+    public void getLikedByUsersInfo(int postId,NetworkCallbackInterfaceJsonObject callbackInterfaceJsonObject){
+        String url=ApiEndPoints.baseUrl+"/posts/"+postId+"/likedby";
+        NetworkingProvider.get(url,PreferenceUtil.getJWT(),callbackInterfaceJsonObject);
+    }
 
 }

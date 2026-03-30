@@ -137,11 +137,13 @@
                 android:orientation="vertical"
                 android:gravity="center"
                 android:layout_marginBottom="@dimen/dp_30">
+
                 <ImageView
                     android:id="@+id/like_btn_image"
                     android:layout_width="@dimen/dp_36"
                     android:layout_height="@dimen/dp_30"
-                    android:src="@drawable/heart_inactive_icon_white"/>
+                    android:src="@drawable/heart_inactive_icon_white"
+                    />
                 <TextView
                     android:id="@+id/likes_count_text"
                     android:layout_width="match_parent"
@@ -149,7 +151,9 @@
                     android:text="0"
                     android:textStyle="bold"
                     android:textColor="@color/AllWhite"
-                    android:textAlignment="center"/>
+                    android:textAlignment="center"
+                    android:padding="@dimen/dp_5"
+                    />
             </LinearLayout>
             <!-- comment button-->
             <LinearLayout
