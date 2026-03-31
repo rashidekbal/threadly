@@ -77,6 +77,9 @@
         app:layout_constraintTop_toBottomOf="@id/searchSection"
         app:layout_constraintBottom_toTopOf="@id/extras_layout"
         android:layout_marginTop="@dimen/dp_10"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:foregroundGravity="center_horizontal"
         />
     <ProgressBar
         android:id="@+id/progressBar"

@@ -47,6 +47,7 @@ public class PostShareHelperUtil {
         assert Users_List_recyclerView != null;
         Users_List_recyclerView.setLayoutManager(gridLayoutManager);
         ArrayList<UsersModel> usersModelList=new ArrayList<>();
+        Story_add_ll_btn.setOnClickListener(v->ReUsableFunctions.ShowToast("Feature coming Soon..."));
         UsersShareSheetGridAdapter adapter=new UsersShareSheetGridAdapter(context, usersModelList, model -> {
             if(selectedUsers.contains(model)){
                 selectedUsers.remove(model);
@@ -88,9 +89,7 @@ public class PostShareHelperUtil {
 
         //send btn action
         assert sendBtn != null;
-        sendBtn.setOnClickListener(v->{
-           sendPost(post,selectedUsers,sendBtn,actionButtons_rl,shareBottomSheet);
-        });
+        sendBtn.setOnClickListener(v-> sendPost(post,selectedUsers,sendBtn,actionButtons_rl,shareBottomSheet));
 
         shareBottomSheet.show();
 
