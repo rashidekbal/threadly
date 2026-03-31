@@ -466,6 +466,7 @@ public class AllTypePostFeedAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 
         holder.share_icon_white.setOnClickListener(V -> PostShareHelperUtil.OpenPostShareDialog(postModels.get(position),context));
         holder.likes_count_text.setOnClickListener(v->handleLikedCountCLick(position));
+        holder.shares_count_text.setOnClickListener(v->handleShareCountClickHandler(postModels.get(position).getPostId()));
 
     }
 
