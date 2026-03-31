@@ -57,6 +57,29 @@
                 android:layout_marginStart="@dimen/dp_10"
                 android:textSize="@dimen/sp_16"
                 />
+            <LinearLayout
+                android:id="@+id/viewCountLayout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="@dimen/dp_10"
+                android:orientation="horizontal"
+                android:layout_marginStart="@dimen/dp_17">
+                <ImageView
+                    android:layout_width="@dimen/dp_25"
+                    android:layout_height="@dimen/dp_25"
+                    android:src="@drawable/eye_view"
+                    />
+
+                <TextView
+                    android:id="@+id/view_count_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    tools:text="25"
+                    android:textColor="@color/AllWhite" />
+
+            </LinearLayout>
+
 
         </LinearLayout>
         <RelativeLayout
@@ -64,7 +87,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_below="@id/progressBar"
-            android:layout_marginTop="@dimen/dp_15">
+            android:layout_marginTop="@dimen/dp_15"
+            android:visibility="visible">
             <androidx.media3.ui.PlayerView
                 android:id="@+id/videoPlayer_view"
                 android:layout_width="match_parent"
@@ -125,7 +149,7 @@
             android:elevation="5dp"
             android:clickable="true"
             android:focusable="true"
-            android:visibility="gone"
+            android:visibility="visible"
             />
     </RelativeLayout>
 

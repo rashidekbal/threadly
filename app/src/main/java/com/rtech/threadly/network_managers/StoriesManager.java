@@ -54,4 +54,16 @@ public class StoriesManager {
         NetworkingProvider.delete(URL,PreferenceUtil.getJWT(),callbackInterface);
 
     }
+    public static void markStoryViewed(int storyId,JSONObject object,NetworkCallbackInterfaceJsonObject callbackInterface){
+        String Url=ApiEndPoints.STORY_VIEWED+storyId;
+
+        NetworkingProvider.post(Url,PreferenceUtil.getJWT(),object,callbackInterface);
+
+
+
+    }
+    public void getStoryViewers(int storyId,NetworkCallbackInterfaceJsonObject callbackInterfaceJsonObject){
+        String url=ApiEndPoints.baseUrl+"/story/"+storyId+"/viewedby/" ;
+        NetworkingProvider.get(url,PreferenceUtil.getJWT(),callbackInterfaceJsonObject);
+    }
 }

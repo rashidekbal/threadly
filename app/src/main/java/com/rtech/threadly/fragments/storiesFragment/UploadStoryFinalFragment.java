@@ -87,6 +87,7 @@ public class UploadStoryFinalFragment extends Fragment {
                 requireActivity().onBackPressed();
             }
         });
+        mainXml.closeFriendUploadButton.setOnClickListener(v->ReUsableFunctions.ShowToast("feature coming soon..."));
     }
 
 

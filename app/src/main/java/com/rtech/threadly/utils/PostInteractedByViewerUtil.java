@@ -19,6 +19,7 @@ import com.rtech.threadly.constants.StatsConstants;
 import com.rtech.threadly.interfaces.NetworkCallBacks.NetworkCallbackInterfaceJsonObject;
 import com.rtech.threadly.models.UsersModel;
 import com.rtech.threadly.network_managers.PostsManager;
+import com.rtech.threadly.network_managers.StoriesManager;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -36,10 +37,18 @@ public class PostInteractedByViewerUtil {
     TextView heading;
     int currentPostId;
     String currentType;
+    StoriesManager storiesManager;
+
 
     public PostInteractedByViewerUtil(PostsManager postsManager, Context context) {
         this.context = context;
         this.postsManager = postsManager;
+        this.listOfUsersProfile = new ArrayList<>();
+        setUpBottomSheetDialog();
+    }
+    public PostInteractedByViewerUtil(StoriesManager storiesManager, Context context) {
+        this.context = context;
+        this.storiesManager = storiesManager;
         this.listOfUsersProfile = new ArrayList<>();
         setUpBottomSheetDialog();
     }
@@ -63,6 +72,12 @@ public class PostInteractedByViewerUtil {
 
 
     public void openViewer(String type, int postId) {
+        if(type.equals(StatsConstants.STORY_VIEW_COUNT.toString())){
+            stateLoading();
+            loadStoryViewersData(postId);
+            heading.setText("Viewed by");
+            return;
+        }
         if((currentPostId!=-1&&currentType!=null)&&(currentType.equals(type)&&currentPostId==postId)){
             bottomSheetDialog.show();
             return;
@@ -98,6 +113,27 @@ public class PostInteractedByViewerUtil {
         });
 
     }
+    private void loadStoryViewersData(int storyId) {
+        storiesManager.getStoryViewers(storyId, new NetworkCallbackInterfaceJsonObject() {
+            @Override
+            public void onSuccess(JSONObject response) {
+                stateLoaded();
+                JSONArray data = response.optJSONArray("data");
+                if (data != null) {
+                    extractData(data);
+                }
+                handleDataExtracted();
+
+            }
+
+            @Override
+            public void onError(int errorCode, JSONObject errorObject) {
+                handleError();
+            }
+        });
+
+    }
+
 
 
     private void loadLikedByData(int postId) {

@@ -13,6 +13,8 @@ import androidx.viewpager2.widget.ViewPager2;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.rtech.threadly.SocketIo.SocketEmitterEvents;
 import com.rtech.threadly.adapters.storiesAdapters.StoriesViewpagerAdapter;
 import com.rtech.threadly.databinding.FragmentViewStoriesBinding;
 import com.rtech.threadly.interfaces.NetworkCallBacks.NetworkCallbackInterfaceJsonObject;
@@ -21,6 +23,7 @@ import com.rtech.threadly.interfaces.StoriesBackAndForthInterface;
 import com.rtech.threadly.network_managers.StoriesManager;
 import com.rtech.threadly.models.StoryMediaModel;
 import com.rtech.threadly.utils.ExoplayerUtil;
+import com.rtech.threadly.utils.PreferenceUtil;
 import com.rtech.threadly.utils.ReUsableFunctions;
 import com.rtech.threadly.viewmodels.StoriesViewModel;
 
@@ -81,7 +84,10 @@ public class ViewStoriesFragment extends Fragment {
                                     object.getString("storyUrl"),
                                     object.getString("type"),
                                     object.getString("createdAt"),
-                                    object.getInt("isLiked")
+                                    object.getInt("isLiked"),
+                                    object.optInt("viewCount"),
+                                    object.optInt("isViewed")
+
                             ));
 
                         }
@@ -163,7 +169,11 @@ public class ViewStoriesFragment extends Fragment {
                         if(storiesData.get(position).isVideo()){
                             ExoplayerUtil.stop();
                             ExoplayerUtil.playNoLoop(Uri.parse(storiesData.get(position).getStoryUrl()),viewHolder.playerView);
-
+                            //send record of story view to server
+                            if(!storiesData.get(position).isViewed()&&!storiesData.get(position).getUserId().equals(PreferenceUtil.getUserId())){
+                                SocketEmitterEvents.emitStoryViewed(storiesData.get(position).getStoryId());
+                                storiesData.get(position).setViewed(true);
+                            }
                         }else{
                             ExoplayerUtil.stop();
                         }

@@ -5,7 +5,7 @@ import static com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
+import android.net.Uri;
 import android.os.Handler;
 import android.os.Looper;
 import android.view.LayoutInflater;
@@ -28,13 +28,17 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.rtech.threadly.R;
 import com.rtech.threadly.constants.SharedPreferencesKeys;
+import com.rtech.threadly.constants.StatsConstants;
 import com.rtech.threadly.core.Core;
 import com.rtech.threadly.interfaces.NetworkCallBacks.NetworkCallbackInterfaceJsonObject;
 import com.rtech.threadly.interfaces.StoriesBackAndForthInterface;
 import com.rtech.threadly.network_managers.LikeManager;
 import com.rtech.threadly.models.StoryMediaModel;
 import com.rtech.threadly.network_managers.StoriesManager;
+import com.rtech.threadly.utils.DownloadManagerUtil;
 import com.rtech.threadly.utils.ExoplayerUtil;
+import com.rtech.threadly.utils.PostInteractedByViewerUtil;
+import com.rtech.threadly.utils.PreferenceUtil;
 import com.rtech.threadly.utils.ReUsableFunctions;
 
 import org.json.JSONObject;
@@ -57,6 +61,8 @@ public class StoriesViewpagerAdapter extends RecyclerView.Adapter<StoriesViewpag
     private Player.Listener playerListener;
     private viewHolder currentHolder;
     private int currentPosition = -1;
+    PostInteractedByViewerUtil postInteractedByViewerUtil;
+
 
     public StoriesViewpagerAdapter(ArrayList<StoryMediaModel> storiesData,
                                    Context context,
@@ -70,7 +76,7 @@ public class StoriesViewpagerAdapter extends RecyclerView.Adapter<StoriesViewpag
         this.userId = userId;
         this.backAndForthInterface = backAndForthInterface;
         this.storiesManager=new StoriesManager();
-
+        this.postInteractedByViewerUtil=new PostInteractedByViewerUtil(storiesManager,context);
         // Attach only one listener to ExoPlayer
         initPlayerListener();
         ExoplayerUtil.getExoplayer().addListener(playerListener);
@@ -122,7 +128,9 @@ public class StoriesViewpagerAdapter extends RecyclerView.Adapter<StoriesViewpag
         currentHolder = holder;
         currentPosition = position;
          holder.time.setText(getHoursAgo(storiesData.get(position).getCreatedAt()));
-
+        holder.view_count_text.setText(Integer.toString(storiesData.get(position).getViewCount()));
+        holder.view_count_text.setVisibility(View.GONE);
+        if(!storiesData.get(position).getUserId().equals(PreferenceUtil.getUserId()))holder.viewCountLayout.setVisibility(View.GONE);
 
         stopProgressListener();
 
@@ -136,9 +144,7 @@ public class StoriesViewpagerAdapter extends RecyclerView.Adapter<StoriesViewpag
         isLiked = storiesData.get(position).isLiked();
         if(storiesData.get(position).getUserId().equals(Core.getPreference().getString(SharedPreferencesKeys.USER_ID,"null"))){
             holder.options_btn.setVisibility(View.VISIBLE);
-            holder.options_btn.setOnClickListener(v->{
-                showOptionsDialog(storiesData.get(position));
-            });
+            holder.options_btn.setOnClickListener(v-> showOptionsDialog(storiesData.get(position)));
         }else {
             holder.options_btn.setVisibility(View.GONE);
         }
@@ -171,6 +177,7 @@ public class StoriesViewpagerAdapter extends RecyclerView.Adapter<StoriesViewpag
             });
         }
 
+
         holder.like_btn_image.setImageResource(isLiked ?
                 R.drawable.red_heart_active_icon : R.drawable.heart_inactive_icon_white);
 
@@ -190,47 +197,45 @@ public class StoriesViewpagerAdapter extends RecyclerView.Adapter<StoriesViewpag
         LinearLayout delete_btn,download_btn;
         delete_btn=optionsDialog.findViewById(R.id.delete_btn);
         download_btn=optionsDialog.findViewById(R.id.download_btn);
+        assert delete_btn != null;
         delete_btn.setOnClickListener(v->{
             delete_btn.setEnabled(false);
             new AlertDialog.Builder(context)
                     .setTitle("Delete Story")
                     .setMessage("Do you want to delete story")
-                    .setPositiveButton("yes", new DialogInterface.OnClickListener() {
+                    .setPositiveButton("yes", (dialog, which) -> storiesManager.RemoveStory(story.getStoryId(), new NetworkCallbackInterfaceJsonObject() {
                         @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            storiesManager.RemoveStory(story.getStoryId(), new NetworkCallbackInterfaceJsonObject() {
-                                @Override
-                                public void onSuccess(JSONObject response) {
-                                    dialog.dismiss();
-                                    delete_btn.setEnabled(true);
-                                    optionsDialog.hide();
-                                    ReUsableFunctions.ShowToast("Story removed successfully");
-
-                                }
-
-                                @Override
-                                public void onError(int err, JSONObject errorObject) {
-                                    delete_btn.setEnabled(true);
-                                    optionsDialog.hide();
-                                    dialog.dismiss();
-                                    ReUsableFunctions.ShowToast("Something went wrong..");
-
-
-                                }
-                            });
-
-                        }
-                    }).setNegativeButton("no", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            delete_btn.setEnabled(true);
+                        public void onSuccess(JSONObject response) {
                             dialog.dismiss();
+                            delete_btn.setEnabled(true);
+                            optionsDialog.hide();
+                            ReUsableFunctions.ShowToast("Story removed successfully");
 
                         }
+
+                        @Override
+                        public void onError(int err, JSONObject errorObject) {
+                            delete_btn.setEnabled(true);
+                            optionsDialog.hide();
+                            dialog.dismiss();
+                            ReUsableFunctions.ShowToast("Something went wrong..");
+
+
+                        }
+                    })).setNegativeButton("no", (dialog, which) -> {
+                        delete_btn.setEnabled(true);
+                        dialog.dismiss();
+
                     }).setCancelable(false).show();
         });
+        assert download_btn != null;
+        download_btn.setOnClickListener(v->handleStoryDownload(storiesData.get(currentPosition).getStoryUrl()));
         optionsDialog.show();
 
+    }
+
+    private void handleStoryDownload(String storyUrl) {
+        DownloadManagerUtil.downloadFromUri(context, Uri.parse(storyUrl));
     }
 
     String getHoursAgo(String createdAt){
@@ -285,6 +290,9 @@ public class StoriesViewpagerAdapter extends RecyclerView.Adapter<StoriesViewpag
     }
 
     private void setOnclickListeners(viewHolder holder, int position) {
+        holder.viewCountLayout.setOnClickListener(v->{
+            postInteractedByViewerUtil.openViewer(StatsConstants.STORY_VIEW_COUNT.toString(),storiesData.get(position).getStoryId());
+        });
         holder.next_btn.setOnClickListener(v ->
                 backAndForthInterface.next(position, storiesData.size()));
 
@@ -346,7 +354,8 @@ public class StoriesViewpagerAdapter extends RecyclerView.Adapter<StoriesViewpag
         public PlayerView playerView;
         ProgressBar progressBar;
         View previous_btn, next_btn;
-        TextView userid_text_view, time;
+        LinearLayout viewCountLayout;
+        TextView userid_text_view, time,view_count_text;
 
         public viewHolder(@NonNull View itemView) {
             super(itemView);
@@ -362,6 +371,8 @@ public class StoriesViewpagerAdapter extends RecyclerView.Adapter<StoriesViewpag
             userProfile_img = itemView.findViewById(R.id.userProfile_img);
             play_btn = itemView.findViewById(R.id.play_btn);
             options_btn=itemView.findViewById(R.id.options_btn);
+            viewCountLayout=itemView.findViewById(R.id.viewCountLayout);
+            view_count_text=itemView.findViewById(R.id.view_count_text);
         }
     }
 }

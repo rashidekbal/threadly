@@ -90,8 +90,10 @@ public class StoriesViewModel extends AndroidViewModel {
                                 object.getString("storyUrl"),
                                 object.getString("type"),
                                 object.getString("createdAt"),
-                                object.getInt("isLiked")
+                                object.getInt("isLiked"),
+                                object.optInt("viewCount")
                                 ));
+
 
                     }
                     mutableStoryMediaModelData.postValue(arrayList);

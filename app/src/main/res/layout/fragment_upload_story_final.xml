@@ -67,6 +67,7 @@
 
         </LinearLayout>
         <LinearLayout
+            android:id="@+id/closeFriend_uploadButton"
             android:layout_width="0dp"
             android:layout_height="@dimen/dp_50"
             android:layout_weight="3"

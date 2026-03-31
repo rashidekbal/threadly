@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.rtech.threadly.interfaces.NetworkCallBacks.NetworkCallbackInterfaceJsonObject;
 import com.rtech.threadly.network_managers.PostsManager;
+import com.rtech.threadly.network_managers.StoriesManager;
 import com.rtech.threadly.utils.PreferenceUtil;
 
 import org.json.JSONArray;
@@ -51,6 +52,34 @@ public class SocketEmitterEvents {
             SocketManager.getInstance().getSocket().emit("postViewed",object);
         } catch (JSONException e) {
            return;
+        }
+
+    }
+    public static void emitStoryViewed(int storyId){
+        JSONObject object=new JSONObject();
+        try {
+            object.put("uuid", PreferenceUtil.getUUID());
+            object.put("userid",PreferenceUtil.getUserId());
+            object.put("storyid",storyId);
+            if(!SocketManager.getInstance().getSocket().connected()){
+                StoriesManager.markStoryViewed(storyId, object, new NetworkCallbackInterfaceJsonObject() {
+                    @Override
+                    public void onSuccess(JSONObject response) {
+
+                    }
+
+                    @Override
+                    public void onError(int errorCode, JSONObject errorObject) {
+
+
+                    }
+                });
+                return;
+
+            }
+            SocketManager.getInstance().getSocket().emit("StoryViewed",object);
+        } catch (JSONException e) {
+            return;
         }
 
     }

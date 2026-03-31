@@ -3,7 +3,6 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:tools="http://schemas.android.com/tools"
-
     android:orientation="vertical"
     android:layout_marginBottom="@dimen/dp_15"
     android:background="@color/white">
@@ -92,7 +91,7 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_marginStart="@dimen/dp_10"
+            android:layout_marginStart="@dimen/dp_15"
             android:gravity="center_vertical">
 
             <ImageView
@@ -110,6 +109,7 @@
                     android:layout_marginEnd="@dimen/dp_8"
                     android:textColor="@color/black"
                     tools:text="55"
+                    android:layout_marginStart="@dimen/dp_2"
                     />
 
 
@@ -128,6 +128,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/dp_8"
                 android:textColor="@color/black"
+                android:layout_marginStart="@dimen/dp_2"
                 tools:text="53"/>
 
             <ImageView
@@ -145,6 +146,7 @@
                 android:textColor="@color/black"
                 android:visibility="visible"
                 tools:text="65"
+                android:layout_marginStart="@dimen/dp_2"
                />
 
         </LinearLayout>

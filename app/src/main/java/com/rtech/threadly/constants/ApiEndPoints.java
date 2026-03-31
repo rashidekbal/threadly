@@ -86,6 +86,7 @@ public class ApiEndPoints {
     public static String ADD_STORY = baseUrl + "/story/addStory/";
     public static String GET_STORIES = baseUrl + "/story/getStories/";
     public static String GET_MY_STORIES = baseUrl + "/story/getMyStories/";
+    public static final String STORY_VIEWED= baseUrl+"/story/postViewed/";
 
     // delete
     public static String DELETE_POST = baseUrl + "/posts/removePost/";
