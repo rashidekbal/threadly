@@ -119,12 +119,11 @@ public class ImagePostsFeedAdapter extends RecyclerView.Adapter<RecyclerView.Vie
           ContentViewHolder holder=(ContentViewHolder)holderView ;
           // Set like, comment, and share counts
             holder.shares_count_text.setOnClickListener(v->handleShareCountClickHandler(list.get(position).getPostId()));
-          holder.is_liked=list.get(position).isliked;
-          holder.likes=Double.parseDouble(Integer.toString(list.get(position).likeCount));
+
           double comments=Double.parseDouble(Integer.toString(list.get(position).commentCount));
           double shares=Double.parseDouble(Integer.toString(list.get(position).shareCount));
 
-          setLikeCount(holder.likes,holder);
+          setLikeCount((double)list.get(position).getLikeCount(),holder);
 
           // Format comment count
           if(comments>1000){
@@ -134,12 +133,20 @@ public class ImagePostsFeedAdapter extends RecyclerView.Adapter<RecyclerView.Vie
               holder.comments_count_text.setText(Integer.toString((int) comments));
           }
           // Format share count
-          if(shares>1000){
-              shares=shares/1000;
-              holder.shares_count_text.setText(Integer.toString((int) shares).concat("k"));
-          }else{
-              holder.shares_count_text.setText(Integer.toString((int) shares));
-          }
+
+
+             if(list.get(position).getShareCount()==0){
+                 holder.shares_count_text.setVisibility(View.GONE);
+             }else{
+                 holder.shares_count_text.setVisibility(View.VISIBLE);
+             }
+              if (shares > 1000) {
+                  shares = shares / 1000;
+                  holder.shares_count_text.setText(Integer.toString((int) shares).concat("k"));
+              } else {
+                  holder.shares_count_text.setText(Integer.toString((int) shares));
+              }
+
           Glide.with(context).load(list.get(position).postUrl).placeholder(R.drawable.post_placeholder).into(holder.post_image);
 
 
@@ -165,14 +172,14 @@ public class ImagePostsFeedAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
 
           // Show liked by layout if likes > 1
-          if(holder.likes>1){
+          if(list.get(position).getLikeCount()>1){
               holder.likedBy_layout.setVisibility(View.VISIBLE);
-              holder.likesCount_text.setText(Integer.toString(holder.likes.intValue()-1));
+              holder.likesCount_text.setText(Integer.toString(list.get(position).getLikeCount()));
               holder.likedBy_text.setText(list.get(position).likedBy);
           }
 
           // Set like button image if already liked
-          if(list.get(position).isliked){
+          if(list.get(position).getIsliked()){
               holder.like_btn_image.setImageResource(R.drawable.red_heart_active_icon);
           }else{
               holder.like_btn_image.setImageResource(R.drawable.heart_inactive_icon);
@@ -191,14 +198,13 @@ public class ImagePostsFeedAdapter extends RecyclerView.Adapter<RecyclerView.Vie
           holder.like_btn_image.setOnClickListener(new View.OnClickListener() {
               @Override
               public void onClick(View v) {
-                  holder.is_liked=list.get(position).isliked;
                   // Like the post if not already liked
                   if(!list.get(position).isliked){
                       holder.like_btn_image.setImageResource(R.drawable.red_heart_active_icon);
-                      holder.likes+=1.0;
-                      setLikeCount(holder.likes ,holder);
-                      holder.is_liked=true;
-                      list.get(position).isliked=true;
+                      int likeCount=list.get(position).getLikeCount();
+                      list.get(position).setLikeCount(likeCount+1);
+                      setLikeCount((double)list.get(position).getLikeCount() , holder);
+                      list.get(position).setIsliked(true);
                       holder.like_btn_image.setEnabled(false);
                       likeManager.likePost(list.get(position).postId, new NetworkCallbackInterfaceJsonObject() {
                           @Override
@@ -210,10 +216,10 @@ public class ImagePostsFeedAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                           @Override
                           public void onError(int err, JSONObject errorObject) {
                               holder.like_btn_image.setImageResource(R.drawable.heart_inactive);
-                              holder.likes-=1.0;
-                              setLikeCount(holder.likes,holder);
-                              holder.is_liked=false;
-                              list.get(position).isliked=false;
+                              int likeCount=list.get(position).getLikeCount();
+                              list.get(position).setLikeCount(likeCount-1);
+                              setLikeCount((double)list.get(position).getLikeCount() , holder);
+                              list.get(position).setIsliked(false);
                               holder.like_btn_image.setEnabled(true);
 
                           }
@@ -223,10 +229,10 @@ public class ImagePostsFeedAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                   }
                   else {
                       holder.like_btn_image.setImageResource(R.drawable.heart_inactive);
-                      holder.likes-=1.0;
-                      setLikeCount(holder.likes,holder);
-                      holder.is_liked=false;
-                      list.get(position).isliked=false;
+                      int likeCount=list.get(position).getLikeCount();
+                      list.get(position).setLikeCount(likeCount-1);
+                      setLikeCount((double)list.get(position).getLikeCount() , holder);
+                      list.get(position).setIsliked(false);
                       holder.like_btn_image.setEnabled(false);
                       // Send unlike request to server
                       likeManager.UnlikePost(list.get(position).postId, new NetworkCallbackInterfaceJsonObject() {
@@ -240,10 +246,10 @@ public class ImagePostsFeedAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                           public void onError(int err, JSONObject errorObject) {
                               Log.d("errorUnlike", "onError: "+err);
                               holder.like_btn_image.setImageResource(R.drawable.red_heart_active_icon);
-                              holder.likes+=1.0;
-                              setLikeCount(holder.likes ,holder);
-                              holder.is_liked=true;
-                              list.get(position).isliked=true;
+                              int likeCount=list.get(position).getLikeCount();
+                              list.get(position).setLikeCount(likeCount+1);
+                              setLikeCount((double)list.get(position).getLikeCount() , holder);
+                              list.get(position).setIsliked(true);
                               holder.like_btn_image.setEnabled(true);
 
                           }
@@ -397,8 +403,6 @@ public class ImagePostsFeedAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                 likedBy_text,
                 likesCount_text,
                 banner_txt;
-        boolean is_liked;
-        Double likes;
         LinearLayout likedBy_layout;
 
         // ViewHolder constructor
