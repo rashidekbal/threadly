@@ -149,35 +149,30 @@ public class ReelsAdapter extends RecyclerView.Adapter<ReelsAdapter.viewHolder> 
             holder.followBtn.setVisibility(View.GONE);
         }else{
             holder.followBtn.setVisibility(View.VISIBLE);
-            holder.followBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    holder.followBtn.setEnabled(false);
-                    holder.followBtn.setVisibility(View.GONE);
-                    followManager.follow(dataList.get(position).userId, new NetworkCallbackInterfaceJsonObject() {
-                        @Override
-                        public void onSuccess(JSONObject response) {
-                            dataList.get(position).isFollowed=true;
-                            holder.followBtn.setEnabled(true);
-                            ReUsableFunctions.ShowToast("Following");
-                        }
+            holder.followBtn.setOnClickListener(v -> {
+                holder.followBtn.setEnabled(false);
+                holder.followBtn.setVisibility(View.GONE);
+                followManager.follow(dataList.get(position).userId, new NetworkCallbackInterfaceJsonObject() {
+                    @Override
+                    public void onSuccess(JSONObject response) {
+                        dataList.get(position).isFollowed=true;
+                        holder.followBtn.setEnabled(true);
+                        ReUsableFunctions.ShowToast("Following");
+                    }
 
-                        @Override
-                        public void onError(int errorCode, JSONObject errorObject) {
-                            holder.followBtn.setVisibility(View.VISIBLE);
-                            holder.followBtn.setEnabled(true);
-                            ReUsableFunctions.ShowToast("something went wrong..");
-                        }
-                    });}
-
-
-            });
+                    @Override
+                    public void onError(int errorCode, JSONObject errorObject) {
+                        holder.followBtn.setVisibility(View.VISIBLE);
+                        holder.followBtn.setEnabled(true);
+                        ReUsableFunctions.ShowToast("something went wrong..");
+                    }
+                });});
         }
 
 
 
-        holder.is_liked=dataList.get(position).isliked;
-        holder.likes=Double.parseDouble(Integer.toString(dataList.get(position).likeCount));
+
+
         double comments=Double.parseDouble(Integer.toString(dataList.get(position).commentCount));
         double shares=Double.parseDouble(Integer.toString(dataList.get(position).shareCount));
         if(dataList.get(position).likeCount>0){
@@ -196,7 +191,7 @@ public class ReelsAdapter extends RecyclerView.Adapter<ReelsAdapter.viewHolder> 
             holder.shares_count_text.setVisibility(View.GONE);
         }
 
-        setLikeCount(holder.likes,holder);
+        setLikeCount((double) dataList.get(position).getLikeCount(),holder);
 
         // Format comment count
         if(comments>1000){
@@ -248,14 +243,14 @@ public class ReelsAdapter extends RecyclerView.Adapter<ReelsAdapter.viewHolder> 
 
         // Like/unlike post on like button click
         holder.like_btn_image.setOnClickListener(v->{
-            holder.is_liked=dataList.get(position).isliked;
+
             // Like the post if not already liked
             if(!dataList.get(position).isliked){
                 holder.like_btn_image.setImageResource(R.drawable.red_heart_active_icon);
-                holder.likes+=1.0;
-                setLikeCount(holder.likes ,holder);
-                holder.is_liked=true;
-                dataList.get(position).isliked=true;
+                int likeCount=dataList.get(position).getLikeCount();
+                dataList.get(position).setLikeCount((likeCount+1));
+                setLikeCount((double)dataList.get(position).getLikeCount(),holder);
+                dataList.get(position).setIsliked(true);
                 holder.like_btn_image.setEnabled(false);
                 likeManager.likePost(dataList.get(position).postId, new NetworkCallbackInterfaceJsonObject() {
                     @Override
@@ -267,10 +262,11 @@ public class ReelsAdapter extends RecyclerView.Adapter<ReelsAdapter.viewHolder> 
                     @Override
                     public void onError(int err, JSONObject errorObject) {
                         holder.like_btn_image.setImageResource(R.drawable.heart_inactive_icon_white);
-                        holder.likes-=1.0;
-                        setLikeCount(holder.likes,holder);
-                        holder.is_liked=false;
-                        dataList.get(position).isliked=false;
+                        int likeCount=dataList.get(position).getLikeCount();
+                        dataList.get(position).setLikeCount((likeCount-1));
+                        setLikeCount((double)dataList.get(position).getLikeCount(),holder);
+                        dataList.get(position).setIsliked(false);
+
                         holder.like_btn_image.setEnabled(true);
 
                     }
@@ -280,10 +276,10 @@ public class ReelsAdapter extends RecyclerView.Adapter<ReelsAdapter.viewHolder> 
             }
             else {
                 holder.like_btn_image.setImageResource(R.drawable.heart_inactive_icon_white);
-                holder.likes-=1.0;
-                setLikeCount(holder.likes,holder);
-                holder.is_liked=false;
-                dataList.get(position).isliked=false;
+                int likeCount=dataList.get(position).getLikeCount();
+                dataList.get(position).setLikeCount((likeCount-1));
+                dataList.get(position).setIsliked(false);
+                setLikeCount((double)dataList.get(position).getLikeCount(),holder);
                 holder.like_btn_image.setEnabled(false);
                 // Send unlike request to server
                 likeManager.UnlikePost(dataList.get(position).postId, new NetworkCallbackInterfaceJsonObject() {
@@ -296,11 +292,11 @@ public class ReelsAdapter extends RecyclerView.Adapter<ReelsAdapter.viewHolder> 
                     @Override
                     public void onError(int err, JSONObject errorObject) {
                         Log.d("errorUnlike", "onError: "+err);
-                        holder.like_btn_image.setImageResource(R.drawable.red_heart_active_icon);
-                        holder.likes+=1.0;
-                        setLikeCount(holder.likes ,holder);
-                        holder.is_liked=true;
-                        dataList.get(position).isliked=true;
+                        int likeCount=dataList.get(position).getLikeCount();
+                        dataList.get(position).setLikeCount((likeCount+1));
+                        setLikeCount((double)dataList.get(position).getLikeCount(),holder);
+                        dataList.get(position).setIsliked(true);
+
                         holder.like_btn_image.setEnabled(true);
 
                     }
@@ -315,10 +311,7 @@ public class ReelsAdapter extends RecyclerView.Adapter<ReelsAdapter.viewHolder> 
 
 
 
-        holder.share_icon_white.setOnClickListener(V->{
-            PostShareHelperUtil.OpenPostShareDialog(dataList.get(position),context);
-
-        });
+        holder.share_icon_white.setOnClickListener(V-> PostShareHelperUtil.OpenPostShareDialog(dataList.get(position),context));
         holder.likes_count_text.setOnClickListener(v->handleLikeCountClickHandler(dataList.get(position).getPostId()));
         holder.shares_count_text.setOnClickListener(v->handleShareCountClickHandler(dataList.get(position).getPostId()));
 
@@ -350,11 +343,9 @@ public class ReelsAdapter extends RecyclerView.Adapter<ReelsAdapter.viewHolder> 
             DownloadManagerUtil.downloadFromUri(context,Uri.parse(dataList.get(position).postUrl));
             OptionsDialog.dismiss();
         });
-        addFavouriteBtnLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(context, "Coming soon", Toast.LENGTH_SHORT).show();
-                OptionsDialog.dismiss();}});
+        addFavouriteBtnLayout.setOnClickListener(v -> {
+            Toast.makeText(context, "Coming soon", Toast.LENGTH_SHORT).show();
+            OptionsDialog.dismiss();});
         reportBtnLayout.setOnClickListener(v->{
             Toast.makeText(context,"Coming soon",Toast.LENGTH_SHORT).show();
             OptionsDialog.dismiss();
@@ -424,9 +415,7 @@ public class ReelsAdapter extends RecyclerView.Adapter<ReelsAdapter.viewHolder> 
        public PlayerView videoPlayer_view;
         public ImageView heartIconBig, play_btn,profile_img,like_btn_image,comment_btn_image,share_icon_white,optionDots_white;
         TextView username_text,caption_text,likes_count_text,comments_count_text,shares_count_text;
-        boolean is_liked;
-        Double likes;
-        boolean []isPlaying={true};
+
         AppCompatButton followBtn;
 
         public viewHolder(@NonNull View itemView) {
@@ -478,12 +467,7 @@ public class ReelsAdapter extends RecyclerView.Adapter<ReelsAdapter.viewHolder> 
     }
     private void handleGestureLike(viewHolder holder, int position) {
         holder.heartIconBig.setVisibility(View.VISIBLE);
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                holder.heartIconBig.setVisibility(View.GONE);
-            }
-        },gestureLikeDuration);
+        new Handler().postDelayed(() -> holder.heartIconBig.setVisibility(View.GONE),gestureLikeDuration);
         if (!dataList.get(position).isliked) {
 
             holder.like_btn_image.setImageResource(R.drawable.red_heart_active_icon);

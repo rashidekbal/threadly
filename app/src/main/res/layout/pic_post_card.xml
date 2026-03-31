@@ -110,7 +110,7 @@
                     android:layout_marginEnd="@dimen/dp_8"
                     android:textColor="@color/black"
                     tools:text="55"
-                    android:padding="@dimen/dp_5"/>
+                    />
 
 
             <ImageView
@@ -128,7 +128,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/dp_8"
                 android:textColor="@color/black"
-                android:padding="@dimen/dp_5"
                 tools:text="53"/>
 
             <ImageView
@@ -145,8 +144,8 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/black"
                 android:visibility="visible"
-                android:text="65"
-                android:padding="@dimen/dp_5"/>
+                tools:text="65"
+               />
 
         </LinearLayout>
 

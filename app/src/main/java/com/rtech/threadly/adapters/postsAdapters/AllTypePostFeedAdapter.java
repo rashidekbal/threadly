@@ -453,10 +453,7 @@ public class AllTypePostFeedAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 
 
         // Like/unlike post on like button click
-        holder.like_btn_image.setOnClickListener(v -> {
-            handleLike(holder,position);
-
-        });
+        holder.like_btn_image.setOnClickListener(v -> handleLike(holder,position));
 
         // open userProfile by clicking userProfilePic
         holder.profile_img.setOnClickListener(v -> ReUsableFunctions.openProfile(context, postModels.get(position).userId));
@@ -466,15 +463,17 @@ public class AllTypePostFeedAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 
         holder.share_icon_white.setOnClickListener(V -> PostShareHelperUtil.OpenPostShareDialog(postModels.get(position),context));
         holder.likes_count_text.setOnClickListener(v->handleLikedCountCLick(position));
+        holder.shares_count_text.setOnClickListener(v->handleShareCountClickHandler(postModels.get(position).getPostId()));
 
     }
 
     private void handleLike(VideoPostViewHolder holder, int position) {
         if (!postModels.get(position).isliked) {
             holder.like_btn_image.setImageResource(R.drawable.red_heart_active_icon);
-
-            setLikeCount(postModels.get(position).getLikeCount() + 1.0, holder);
-            postModels.get(position).isliked = true;
+            int likeCount=postModels.get(position).getLikeCount();
+            postModels.get(position).setLikeCount(likeCount+1);
+            setLikeCount((double)postModels.get(position).getLikeCount() , holder);
+            postModels.get(position).setIsliked( true);
             holder.like_btn_image.setEnabled(false);
             likeManager.likePost(postModels.get(position).postId, new NetworkCallbackInterfaceJsonObject() {
                 @Override
@@ -486,8 +485,9 @@ public class AllTypePostFeedAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                 @Override
                 public void onError(int err, JSONObject errorObject) {
                     holder.like_btn_image.setImageResource(R.drawable.heart_inactive_icon_white);
-
-                    setLikeCount(postModels.get(position).getLikeCount() - 1.0, holder);
+                    int likeCount=postModels.get(position).getLikeCount();
+                    postModels.get(position).setLikeCount(likeCount-1);
+                    setLikeCount((double)postModels.get(position).getLikeCount() , holder);
                     postModels.get(position).setIsliked(false);
                     holder.like_btn_image.setEnabled(true);
 
@@ -497,8 +497,9 @@ public class AllTypePostFeedAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             // Unlike the post if already liked
         } else {
             holder.like_btn_image.setImageResource(R.drawable.heart_inactive_icon_white);
-
-            setLikeCount(postModels.get(position).getLikeCount() - 1.0, holder);
+            int likeCount=postModels.get(position).getLikeCount();
+            postModels.get(position).setLikeCount(likeCount-1);
+            setLikeCount((double)postModels.get(position).getLikeCount() , holder);
             postModels.get(position).setIsliked(false);
             holder.like_btn_image.setEnabled(false);
             // Send unlike request to server
@@ -513,7 +514,9 @@ public class AllTypePostFeedAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                 public void onError(int err, JSONObject errorObject) {
                     Log.d("errorUnlike", "onError: "+err);
                     holder.like_btn_image.setImageResource(R.drawable.red_heart_active_icon);
-                    setLikeCount(postModels.get(position).getLikeCount() + 1.0, holder);
+                    int likeCount=postModels.get(position).getLikeCount();
+                    postModels.get(position).setLikeCount(likeCount+1);
+                    setLikeCount((double)postModels.get(position).getLikeCount() , holder);
                     postModels.get(position).setIsliked(true);
                     holder.like_btn_image.setEnabled(true);
 
@@ -525,9 +528,10 @@ public class AllTypePostFeedAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         // Like the post if not already liked
         if (!postModels.get(position).isliked) {
             holder.like_btn_image.setImageResource(R.drawable.red_heart_active_icon);
-
-            setLikeCount(postModels.get(position).getLikeCount() + 1.0, holder);
-            postModels.get(position).isliked = true;
+            int likeCount=postModels.get(position).getLikeCount();
+            postModels.get(position).setLikeCount(likeCount+1);
+            setLikeCount((double)postModels.get(position).getLikeCount() , holder);
+            postModels.get(position).setIsliked(true);
             holder.like_btn_image.setEnabled(false);
             likeManager.likePost(postModels.get(position).postId, new NetworkCallbackInterfaceJsonObject() {
                 @Override
@@ -539,8 +543,9 @@ public class AllTypePostFeedAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                 @Override
                 public void onError(int err, JSONObject errorObject) {
                     holder.like_btn_image.setImageResource(R.drawable.heart_inactive_icon_white);
-
-                    setLikeCount(postModels.get(position).getLikeCount() - 1.0, holder);
+                    int likeCount=postModels.get(position).getLikeCount();
+                    postModels.get(position).setLikeCount(likeCount-1);
+                    setLikeCount((double)postModels.get(position).getLikeCount() , holder);
                     postModels.get(position).setIsliked(false);
                     holder.like_btn_image.setEnabled(true);
 
@@ -550,8 +555,9 @@ public class AllTypePostFeedAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             // Unlike the post if already liked
         } else {
             holder.like_btn_image.setImageResource(R.drawable.heart_inactive_icon_white);
-
-            setLikeCount(postModels.get(position).getLikeCount() - 1.0, holder);
+            int likeCount=postModels.get(position).getLikeCount();
+            postModels.get(position).setLikeCount(likeCount-1);
+            setLikeCount((double)postModels.get(position).getLikeCount() , holder);
             postModels.get(position).setIsliked(false);
             holder.like_btn_image.setEnabled(false);
             // Send unlike request to server
@@ -566,7 +572,9 @@ public class AllTypePostFeedAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                 public void onError(int err, JSONObject errorObject) {
                     Log.d("errorUnlike", "onError: "+err);
                     holder.like_btn_image.setImageResource(R.drawable.red_heart_active_icon);
-                    setLikeCount(postModels.get(position).getLikeCount() + 1.0, holder);
+                    int likeCount=postModels.get(position).getLikeCount();
+                    postModels.get(position).setLikeCount(likeCount+1);
+                    setLikeCount((double)postModels.get(position).getLikeCount() , holder);
                     postModels.get(position).setIsliked(true);
                     holder.like_btn_image.setEnabled(true);
 
@@ -576,18 +584,14 @@ public class AllTypePostFeedAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     }
     private void handleGestureLike(VideoPostViewHolder holder, int position) {
         holder.heartIconBig.setVisibility(View.VISIBLE);
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                holder.heartIconBig.setVisibility(View.GONE);
-            }
-        },gestureLikeDuration);
+        new Handler().postDelayed(() -> holder.heartIconBig.setVisibility(View.GONE),gestureLikeDuration);
         if (!postModels.get(position).isliked) {
 
             holder.like_btn_image.setImageResource(R.drawable.red_heart_active_icon);
-
-            setLikeCount(postModels.get(position).getLikeCount() + 1.0, holder);
-            postModels.get(position).isliked = true;
+            int likeCount=postModels.get(position).getLikeCount();
+            postModels.get(position).setLikeCount(likeCount+1);
+            setLikeCount((double)postModels.get(position).getLikeCount() , holder);
+            postModels.get(position).setIsliked(true);
             holder.like_btn_image.setEnabled(false);
             likeManager.likePost(postModels.get(position).postId, new NetworkCallbackInterfaceJsonObject() {
                 @Override
@@ -599,8 +603,9 @@ public class AllTypePostFeedAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                 @Override
                 public void onError(int err, JSONObject errorObject) {
                     holder.like_btn_image.setImageResource(R.drawable.heart_inactive_icon_white);
-
-                    setLikeCount(postModels.get(position).getLikeCount() - 1.0, holder);
+                    int likeCount=postModels.get(position).getLikeCount();
+                    postModels.get(position).setLikeCount(likeCount-1);
+                    setLikeCount((double)postModels.get(position).getLikeCount() , holder);
                     postModels.get(position).setIsliked(false);
                     holder.like_btn_image.setEnabled(true);
 
@@ -612,14 +617,14 @@ public class AllTypePostFeedAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     }
     private void handleGestureLike(ImagePostViewHolder holder, int position) {
         holder.heartBigIcon.setVisibility(View.VISIBLE);
-        new Handler().postDelayed(()->{
-            holder.heartBigIcon.setVisibility(View.GONE);
-        },gestureLikeDuration);
+        new Handler().postDelayed(()-> holder.heartBigIcon.setVisibility(View.GONE),gestureLikeDuration);
         // Like the post if not already liked
         if (!postModels.get(position).isliked) {
             holder.like_btn_image.setImageResource(R.drawable.red_heart_active_icon);
-            setLikeCount(postModels.get(position).getLikeCount() + 1.0, holder);
-            postModels.get(position).isliked = true;
+            int likeCount=postModels.get(position).getLikeCount();
+            postModels.get(position).setLikeCount(likeCount+1);
+            setLikeCount((double)postModels.get(position).getLikeCount() , holder);
+            postModels.get(position).setIsliked(true);
             holder.like_btn_image.setEnabled(false);
             likeManager.likePost(postModels.get(position).postId, new NetworkCallbackInterfaceJsonObject() {
                 @Override
@@ -631,8 +636,9 @@ public class AllTypePostFeedAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                 @Override
                 public void onError(int err, JSONObject errorObject) {
                     holder.like_btn_image.setImageResource(R.drawable.heart_inactive_icon_white);
-
-                    setLikeCount(postModels.get(position).getLikeCount() - 1.0, holder);
+                    int likeCount=postModels.get(position).getLikeCount();
+                    postModels.get(position).setLikeCount(likeCount-1);
+                    setLikeCount((double)postModels.get(position).getLikeCount() , holder);
                     postModels.get(position).setIsliked(false);
                     holder.like_btn_image.setEnabled(true);
 
@@ -664,9 +670,7 @@ public class AllTypePostFeedAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 
 
         // Like/unlike post on like button click
-        holder.like_btn_image.setOnClickListener(v -> {
-            handleLike(holder,position);
-        });
+        holder.like_btn_image.setOnClickListener(v -> handleLike(holder,position));
 
         // open userProfile by clicking userProfilePic
         holder.profile_img.setOnClickListener(v -> ReUsableFunctions.openProfile(context, postModels.get(position).userId));
