@@ -86,7 +86,7 @@ public class MessageManager {
 
                     if(data.length()>0 ){
                         for(int i=0;i<data.length();i++){
-                            JSONObject object=data.optJSONObject(0);
+                            JSONObject object=data.optJSONObject(i);
                             String senderUUid=object.optString("senderUUid");
                             String senderUserId=object.optString("userid");
                             String senderUserName=object.optString("username");
