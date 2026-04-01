@@ -190,7 +190,7 @@ public class NetworkingProvider {
     }
     public static void patch(String Url,String token,JSONArray array, NetworkCallbackInterfaceJsonObject callbackInterfaceJsonObject){
 
-        AndroidNetworking.post(Url).setPriority(Priority.HIGH).addHeaders("Authorization","Bearer "+ token)
+        AndroidNetworking.patch(Url).setPriority(Priority.HIGH).addHeaders("Authorization","Bearer "+ token)
                 .addJSONArrayBody(array)
                 .build()
                 .getAsJSONObject(new JSONObjectRequestListener() {
