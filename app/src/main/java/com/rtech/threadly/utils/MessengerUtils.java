@@ -66,26 +66,26 @@ public class MessengerUtils {
                     boolean isDeleted=false;
                     //check if the message to be stored on my device or not
                     if(senderUUId.equals(PreferenceUtil.getUUID())){
-                        //if i am the sender
+                        //if I am the sender
                         if(isDeletedBySender==1){
-                            //and i deleted from my side
+                            //and I deleted from my side
                             isDeleted=true;
                         }
 
                     }else{
-                        //if i am the receiver
+                        //if I am the receiver
                         if(isDeletedByReceiver==1){
                             isDeleted=true;
                         }
                     }
                     //tweak delivery status accordingly
                     if(senderUUId.equals(PreferenceUtil.getUUID())){
-                        //if i am the sender
+                        //if I am the sender
                         deliveryStatus=chat.optInt("deliveryStatus");
                         otherParty=recieverUUId;
 
                     }else{
-                        //if i am the receiver
+                        //if I am the receiver
                         otherParty=senderUUId;
                         //check if seen by me or not
                         if(chat.optInt("deliveryStatus")==3){
@@ -225,13 +225,10 @@ executor.execute(()->{
                     String username = object.optString("username");
                     String userid = object.optString("userid");
                     String profile = object.optString("profilepic");
-                    executor.execute(new Runnable() {
-                        @Override
-                        public void run() {
-                            DataBase.getInstance().historyOperator().insertHistory(new HistorySchema(OtherPartyUuid + Core.getPreference().getString(SharedPreferencesKeys.UUID, "null")
-                                    , username, userid, profile, OtherPartyUuid, "null",ReUsableFunctions.getTimestamp()));
-                            Log.d("notfound", "data inserted ");
-                        }
+                    executor.execute(() -> {
+                        DataBase.getInstance().historyOperator().insertHistory(new HistorySchema(OtherPartyUuid + Core.getPreference().getString(SharedPreferencesKeys.UUID, "null")
+                                , username, userid, profile, OtherPartyUuid, "null",ReUsableFunctions.getTimestamp()));
+                        Log.d("notfound", "data inserted ");
                     });
 
 
@@ -278,9 +275,7 @@ executor.execute(()->{
         });
     }
     public void deleteMsg(String messageUid){
-       executor.execute(()->{
-            DataBase.getInstance().MessageDao().deleteMessage(messageUid);
-        });
+       executor.execute(()-> DataBase.getInstance().MessageDao().deleteMessage(messageUid));
     }
 
 }

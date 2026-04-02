@@ -11,37 +11,25 @@ import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.widget.AppCompatButton;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.media3.common.util.UnstableApi;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.rtech.threadly.R;
-import com.rtech.threadly.adapters.messanger.UsersShareSheetGridAdapter;
-import com.rtech.threadly.constants.TypeConstants;
+import com.rtech.threadly.SocketIo.SocketEmitterEvents;
+import com.rtech.threadly.constants.StatsConstants;
 import com.rtech.threadly.core.Core;
 import com.rtech.threadly.databinding.FragmentPostsBinding;
-import com.rtech.threadly.interfaces.Messanger.OnUserSelectedListener;
 import com.rtech.threadly.interfaces.NetworkCallBacks.NetworkCallbackInterfaceJsonObject;
-import com.rtech.threadly.models.UsersModel;
 import com.rtech.threadly.network_managers.CommentsManager;
 import com.rtech.threadly.network_managers.LikeManager;
 import com.rtech.threadly.network_managers.PostsManager;
@@ -49,14 +37,12 @@ import com.rtech.threadly.models.Posts_Model;
 import com.rtech.threadly.utils.DownloadManagerUtil;
 import com.rtech.threadly.utils.ExoplayerUtil;
 import com.rtech.threadly.utils.PostCommentsViewerUtil;
+import com.rtech.threadly.utils.PostInteractedByViewerUtil;
+import com.rtech.threadly.utils.PostShareHelperUtil;
 import com.rtech.threadly.utils.ReUsableFunctions;
-import com.rtech.threadly.viewmodels.MessageAbleUsersViewModel;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.util.ArrayList;
 
 
 public class post_fragment extends Fragment {
@@ -68,6 +54,7 @@ CommentsManager commentsManager;
 Posts_Model postData;
 SharedPreferences loginInfo;
 private final boolean[] isPlaying={true};
+PostInteractedByViewerUtil postInteractedByViewerUtil;
 
 
 
@@ -97,9 +84,11 @@ private final boolean[] isPlaying={true};
     }
 
     private void init() {
+        this.postInteractedByViewerUtil=new PostInteractedByViewerUtil(postsManager,requireActivity());
         assert getArguments() != null;
         postId=getArguments().getInt("postid");
         loadData();
+
 
     }
 
@@ -161,6 +150,7 @@ private final boolean[] isPlaying={true};
 
     @UnstableApi
     private void  setData( Posts_Model data){
+
         if(data.isVideo){
             mainXml.videoPlayerView.setVisibility(View.VISIBLE);
             mainXml.postImageView.setVisibility(View.GONE);
@@ -203,8 +193,10 @@ private final boolean[] isPlaying={true};
         }
 
         mainXml.likesCountText.setText(String.valueOf(data.likeCount));
+        mainXml.likesCountText.setOnClickListener(v->handleLikeCountClickHandler(postId));
         mainXml.commentsCountText.setText(String.valueOf(data.commentCount));
         mainXml.sharesCountText.setText(String.valueOf(data.shareCount));
+        mainXml.sharesCountText.setOnClickListener(v->handleShareCountClickHandler(postId));
         if (data.isliked) {
             mainXml.likeBtnImage.setImageResource(R.drawable.red_heart_active_icon);
 
@@ -269,91 +261,15 @@ private final boolean[] isPlaying={true};
        mainXml.optionsBtn.setOnClickListener(v-> showOptions(
                data
        ));
+        if(!postData.isViewed()){
+            SocketEmitterEvents.emitPostViewed(postData.getPostId());
+            postData.setViewed(true);
+        }
     }
 
 
     private void OpenPostShareDialog(Posts_Model post){
-        ArrayList<UsersModel> selectedUsers=new ArrayList<>();
-        BottomSheetDialog shareBottomSheet=new BottomSheetDialog(requireActivity(),R.style.TransparentBottomSheet);
-        shareBottomSheet.setContentView(R.layout.post_share_layout);
-        AppCompatButton sendBtn=shareBottomSheet.findViewById(R.id.sendBtn);
-        RelativeLayout actionButtons_rl=shareBottomSheet.findViewById(R.id.actionButtons_rl);
-        ImageView search_btn=shareBottomSheet.findViewById(R.id.search_btn);
-        EditText search_edit_text=shareBottomSheet.findViewById(R.id.search_edit_text);
-        ImageView suggestUsersBtn=shareBottomSheet.findViewById(R.id.suggestUsersBtn);
-        RecyclerView Users_List_recyclerView=shareBottomSheet.findViewById(R.id.Users_List_recyclerView);
-        LinearLayout Story_add_ll_btn=shareBottomSheet.findViewById(R.id.Story_add_ll_btn);
-        ProgressBar progressBar=shareBottomSheet.findViewById(R.id.progressBar);
-        GridLayoutManager gridLayoutManager=new GridLayoutManager(requireActivity(),3);
-        Users_List_recyclerView.setLayoutManager(gridLayoutManager);
-        ArrayList<UsersModel> usersModelList=new ArrayList<>();
-        UsersShareSheetGridAdapter adapter=new UsersShareSheetGridAdapter(requireActivity(), usersModelList, new OnUserSelectedListener() {
-            @Override
-            public void onSelect(UsersModel model) {
-                if(selectedUsers.contains(model)){
-                    selectedUsers.remove(model);
-                }else{
-                    selectedUsers.add(model);
-                }
-                assert actionButtons_rl != null;
-                if(selectedUsers.isEmpty()){
-                    actionButtons_rl.setVisibility(View.VISIBLE);
-                    assert sendBtn != null;
-                    sendBtn.setVisibility(View.GONE);
-
-                }else{
-                    actionButtons_rl.setVisibility(View.GONE);
-                    assert sendBtn != null;
-                    sendBtn.setVisibility(View.VISIBLE);
-                }
-
-            }
-        });
-        Users_List_recyclerView.setAdapter(adapter);
-
-
-
-        MessageAbleUsersViewModel messageAbleUsersViewModel=new ViewModelProvider(requireActivity()).get(MessageAbleUsersViewModel.class);
-        messageAbleUsersViewModel.getUsersList().observe( requireActivity(), new Observer<ArrayList<UsersModel>>() {
-            @Override
-            public void onChanged(ArrayList<UsersModel> usersModels) {
-                if(usersModels.isEmpty()){
-                    Toast.makeText(requireActivity(), "No users found", Toast.LENGTH_SHORT).show();
-
-                }else{
-                    usersModelList.clear();
-                    usersModelList.addAll(usersModels);
-                    adapter.notifyDataSetChanged();
-
-                }
-                progressBar.setVisibility(View.GONE);
-
-            }
-        });
-
-        //send btn action
-        sendBtn.setOnClickListener(v->{
-            int postid=post.postId;
-            if(!selectedUsers.isEmpty()){
-                for(UsersModel model:selectedUsers){
-                    try {
-                        ReUsableFunctions.ShowToast(" "+postid);
-                        Core.sendCtoS(model.getUuid(),"", TypeConstants.POST,post.postUrl,postid,"sent a reel by "+post.username);
-
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-                selectedUsers.clear();
-                sendBtn.setVisibility(View.GONE);
-                actionButtons_rl.setVisibility(View.VISIBLE);
-
-            }
-            shareBottomSheet.dismiss();
-        });
-
-        shareBottomSheet.show();
-
+        PostShareHelperUtil.OpenPostShareDialog(post,requireActivity());
     }
 
 
@@ -436,6 +352,12 @@ private void setOptionsBehaviour(BottomSheetDialog Optionsdialog,Posts_Model dat
 
 
 }
+    private void handleLikeCountClickHandler(int postId){
+        postInteractedByViewerUtil.openViewer(StatsConstants.LIKE.toString(),postId);
+    }
+    private void handleShareCountClickHandler(int postId){
+        postInteractedByViewerUtil.openViewer(StatsConstants.SHARE.toString(),postId);
+    }
     @Override
     public void onPause() {
         super.onPause();

@@ -22,5 +22,6 @@ add close friend story add (fixed with temporary place holder) ✔️
 add cancel request on destroy
 
 last refactor the blocked feature app wide
+make the story viewer page compatible to show weather the viewer has liked or not with the help of seperate handler and card and adapter  
 
 

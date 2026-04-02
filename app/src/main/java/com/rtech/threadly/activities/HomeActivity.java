@@ -178,29 +178,6 @@ int currentFragment;
                 if(getSupportFragmentManager().getBackStackEntryCount()<1){
                     addFragment(
                             new homeFragment(
-//                                    (userid,profilePic) -> {
-//                        ViewStoriesFragment fragment=new ViewStoriesFragment(() -> {
-//                            binding.bottomNavigation.setVisibility(View.VISIBLE);
-//                            binding.cardView.setBackgroundColor(Color.WHITE);
-//                        }, new StoriesBackAndForthInterface() {
-//                            @Override
-//                            public void previous(int position) {
-//
-//                            }
-//
-//                            @Override
-//                            public void next(int position, int size) {
-//
-//                            }
-//                        });
-//                        Bundle bundle=new Bundle();
-//                        bundle.putString("userId",userid);
-//                        bundle.putString("profilePic",profilePic);
-//                        fragment.setArguments(bundle);
-//                        addFragment(fragment);
-//                        binding.bottomNavigation.setVisibility(View.INVISIBLE);
-//                        binding.cardView.setBackgroundColor(Color.BLACK);
-//                    }
                                     storyOpenCallback
                             ), HomeActivityFragmentsIdEnum.HOME.toString());
                     currentFragment=menuId;
@@ -358,7 +335,7 @@ getOnBackPressedDispatcher().addCallback(this,new OnBackPressedCallback(true) {
     @Override
     public void handleOnBackPressed() {
         int backstackEntryCount=getSupportFragmentManager().getBackStackEntryCount();
-        String entryID=getSupportFragmentManager().getBackStackEntryAt(backstackEntryCount-2).getName();
+        String entryID=getSupportFragmentManager().getBackStackEntryAt(backstackEntryCount-1).getName();
         getSupportFragmentManager().popBackStack();
         assert entryID != null;
         if(entryID.equals(HomeActivityFragmentsIdEnum.HOME.toString())){

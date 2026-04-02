@@ -194,4 +194,5 @@
     <string name="your_activities_header">One place to manage your Activities</string>
     <string name="your_activities_page_header">view and manage your interactions,\n content and account activity.</string>
     <string name="comment_reply_guide">Welcome to the conversation. When commenting, please treat other people with respect.</string>
+    <string name="likeicon">likeIcon</string>
 </resources>

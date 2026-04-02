@@ -15,8 +15,10 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.rtech.threadly.R;
 import com.rtech.threadly.adapters.HorizontalUsersListAdapter;
+import com.rtech.threadly.adapters.UsersList_adapter_with_like_data;
 import com.rtech.threadly.constants.StatsConstants;
 import com.rtech.threadly.interfaces.NetworkCallBacks.NetworkCallbackInterfaceJsonObject;
+import com.rtech.threadly.models.PostLiked_UserModel;
 import com.rtech.threadly.models.UsersModel;
 import com.rtech.threadly.network_managers.PostsManager;
 import com.rtech.threadly.network_managers.StoriesManager;
@@ -29,9 +31,11 @@ import java.util.ArrayList;
 public class PostInteractedByViewerUtil {
     BottomSheetDialog bottomSheetDialog;
     ArrayList<UsersModel> listOfUsersProfile;
+    ArrayList<PostLiked_UserModel> lisOfUsersViewed_and_liked_story_or_post;
     PostsManager postsManager;
     Context context;
     HorizontalUsersListAdapter adapter;
+    UsersList_adapter_with_like_data usersListAdapterWithLikeData;
     ShimmerFrameLayout shimmer_comments_holder;
     RecyclerView recyclerView;
     TextView heading;
@@ -44,12 +48,14 @@ public class PostInteractedByViewerUtil {
         this.context = context;
         this.postsManager = postsManager;
         this.listOfUsersProfile = new ArrayList<>();
+        this.lisOfUsersViewed_and_liked_story_or_post=new ArrayList<>();
         setUpBottomSheetDialog();
     }
     public PostInteractedByViewerUtil(StoriesManager storiesManager, Context context) {
         this.context = context;
         this.storiesManager = storiesManager;
         this.listOfUsersProfile = new ArrayList<>();
+        this.lisOfUsersViewed_and_liked_story_or_post=new ArrayList<>();
         setUpBottomSheetDialog();
     }
 
@@ -73,6 +79,7 @@ public class PostInteractedByViewerUtil {
 
     public void openViewer(String type, int postId) {
         if(type.equals(StatsConstants.STORY_VIEW_COUNT.toString())){
+            lisOfUsersViewed_and_liked_story_or_post.clear();
             stateLoading();
             loadStoryViewersData(postId);
             heading.setText("Viewed by");
@@ -120,9 +127,9 @@ public class PostInteractedByViewerUtil {
                 stateLoaded();
                 JSONArray data = response.optJSONArray("data");
                 if (data != null) {
-                    extractData(data);
+                    extractDataForStoryFormat(data);
                 }
-                handleDataExtracted();
+                handleDataExtractedForStory();
 
             }
 
@@ -166,6 +173,16 @@ public class PostInteractedByViewerUtil {
             adapter.notifyDataSetChanged();
         }
     }
+    private void handleDataExtractedForStory() {
+        if (recyclerView != null) {
+            LinearLayoutManager layoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
+            recyclerView.setLayoutManager(layoutManager);
+            usersListAdapterWithLikeData = new UsersList_adapter_with_like_data(context, lisOfUsersViewed_and_liked_story_or_post);
+            recyclerView.setAdapter(usersListAdapterWithLikeData);
+            usersListAdapterWithLikeData.notifyDataSetChanged();
+        }
+    }
+
 
     private void handleError() {
     }
@@ -178,6 +195,18 @@ public class PostInteractedByViewerUtil {
             String uuid = obj.optString("uuid");
             String profilePic = obj.optString("profilepic");
             listOfUsersProfile.add(new UsersModel(uuid, username, userid, profilePic));
+
+        }
+    }
+    private void extractDataForStoryFormat(JSONArray data) {
+        for (int i = 0; i < data.length(); i++) {
+            JSONObject obj = data.optJSONObject(i);
+            String username = obj.optString("username");
+            String userid = obj.optString("userid");
+            String uuid = obj.optString("uuid");
+            String profilePic = obj.optString("profilepic");
+            int isLikedBy=obj.optInt("isLiked");
+            lisOfUsersViewed_and_liked_story_or_post.add(new PostLiked_UserModel(uuid, username, userid, profilePic,isLikedBy));
 
         }
     }

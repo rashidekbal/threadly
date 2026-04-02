@@ -6,7 +6,8 @@
     android:layout_height="@dimen/dp_132"
     android:orientation="vertical"
     android:visibility="visible"
-    android:gravity="center_horizontal">
+    android:gravity="center_horizontal"
+    android:layout_marginStart="@dimen/dp_5">
     <RelativeLayout
         android:layout_width="@dimen/dp_96"
         android:layout_height="@dimen/dp_96"

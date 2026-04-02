@@ -45,9 +45,11 @@ import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
 import java.util.UUID;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class ReUsableFunctions {
+    private final static ExecutorService executorService=Executors.newSingleThreadExecutor();
     public static void openProfile(Context c, String userid) {
         Intent intent = new Intent(c, UserProfileActivity.class);
         intent.putExtra("userid", userid);
@@ -76,7 +78,7 @@ public class ReUsableFunctions {
         editor.clear();
         editor.apply();
         SocketManager.getInstance().disconnect();
-        Executors.newSingleThreadExecutor().execute(() -> {
+        executorService.execute(() -> {
             DataBase.getInstance().clearAllTables();
             Intent intent = new Intent(Threadly.getGlobalContext(), LoginActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -92,34 +94,60 @@ public class ReUsableFunctions {
     }
 
     public static File getFileFromUri(Context context, Uri uri) throws IOException {
-        ContentResolver cr = context.getContentResolver();
-        String mimeType = cr.getType(uri); // e.g., "image/jpeg" or "video/mp4"
 
-        String extension = "";
+        ContentResolver cr = context.getContentResolver();
+
+        String mimeType = cr.getType(uri); // e.g., "image/jpeg"
+
+        String extension = null;
         if (mimeType != null) {
-            extension = MimeTypeMap.getSingleton().getExtensionFromMimeType(mimeType);
+            extension = MimeTypeMap.getSingleton()
+                    .getExtensionFromMimeType(mimeType);
         }
 
         if (extension == null || extension.isEmpty()) {
-            extension = "tmp"; // fallback
+            extension = "tmp";
         }
 
         String fileName = "gallery_" + System.currentTimeMillis() + "." + extension;
         File file = new File(context.getCacheDir(), fileName);
 
-        InputStream inputStream = cr.openInputStream(uri);
-        FileOutputStream outputStream = new FileOutputStream(file);
-        byte[] buffer = new byte[1024];
-        int len;
-        while (true) {
-            assert inputStream != null;
-            if ((len = inputStream.read(buffer)) == -1)
-                break;
-            outputStream.write(buffer, 0, len);
-        }
+        InputStream inputStream = null;
+        FileOutputStream outputStream = null;
 
-        outputStream.close();
-        inputStream.close();
+        try {
+            inputStream = cr.openInputStream(uri);
+
+            if (inputStream == null) {
+                throw new IOException("Failed to open InputStream for URI: " + uri);
+            }
+
+            outputStream = new FileOutputStream(file);
+
+            byte[] buffer = new byte[8192]; // 8KB better for performance
+            int len;
+
+            while ((len = inputStream.read(buffer)) != -1) {
+                outputStream.write(buffer, 0, len);
+            }
+
+            outputStream.flush();
+
+        } catch (Exception e) {
+            throw new IOException("Error copying file from URI: " + uri, e);
+        } finally {
+            if (outputStream != null) {
+                try {
+                    outputStream.close();
+                } catch (IOException ignored) {}
+            }
+
+            if (inputStream != null) {
+                try {
+                    inputStream.close();
+                } catch (IOException ignored) {}
+            }
+        }
 
         return file;
     }
@@ -164,22 +192,16 @@ public class ReUsableFunctions {
     }
 
     public static void updateMessageStatus(String MsgUid, int status) {
-        Executors.newSingleThreadExecutor()
-                .execute(() -> getInstance().MessageDao().updateDeliveryStatus(MsgUid, status));
-        Executors.newSingleThreadExecutor().execute(() -> {
-            MessageSchema messageSchema = DataBase.getInstance().MessageDao().getMessageWithUid(MsgUid);
-            Log.d("check", "updateMessageStatus: " + messageSchema.getMediaUploadState());
-        });
+        executorService.execute(() -> getInstance().MessageDao().updateDeliveryStatus(MsgUid, status));
     }
 
     public static void DeleteMessage(String messageUid) {
-        Executors.newSingleThreadExecutor()
-                .execute(() -> DataBase.getInstance().MessageDao().deleteMessage(messageUid));
+        executorService.execute(() -> DataBase.getInstance().MessageDao().deleteMessage(messageUid));
     }
 
     // TODO consider media type message with grace and all factors
     public static void resendPendingMessages() {
-        Executors.newSingleThreadExecutor().execute(() -> {
+        executorService.execute(() -> {
             List<MessageSchema> pendingToSendMessagesList = DataBase.getInstance().MessageDao()
                     .getPendingToSendMessages();
             if (pendingToSendMessagesList.isEmpty()) {
@@ -233,13 +255,11 @@ public class ReUsableFunctions {
 
     public static void addNotification(NotificationSchema schema) {
         Log.d("addingNotification", "addNotification: going to add ");
-        Executors.newSingleThreadExecutor()
-                .execute(() -> DataBase.getInstance().notificationDao().addNotification(schema));
+        executorService.execute(() -> DataBase.getInstance().notificationDao().addNotification(schema));
     }
 
     public static void MarkAllNotificationRead() {
-        Executors.newSingleThreadExecutor()
-                .execute(() -> DataBase.getInstance().notificationDao().markAllNotificationsAsViewed());
+        executorService.execute(() -> DataBase.getInstance().notificationDao().markAllNotificationsAsViewed());
     }
 
     public static void hideKeyboard(AppCompatActivity activity) {
