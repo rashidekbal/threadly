@@ -170,15 +170,15 @@ public class ViewStoriesFragment extends Fragment {
                             ExoplayerUtil.stop();
                             ExoplayerUtil.playNoLoop(Uri.parse(storiesData.get(position).getStoryUrl()),viewHolder.playerView);
                             //send record of story view to server
-                            if(!storiesData.get(position).isViewed()&&!storiesData.get(position).getUserId().equals(PreferenceUtil.getUserId())){
-                                SocketEmitterEvents.emitStoryViewed(storiesData.get(position).getStoryId());
-                                storiesData.get(position).setViewed(true);
-                            }
+
                         }else{
                             ExoplayerUtil.stop();
                         }
-
-
+//send record of story view to server
+                        if(!storiesData.get(position).isViewed()&&!storiesData.get(position).getUserId().equals(PreferenceUtil.getUserId())){
+                            SocketEmitterEvents.emitStoryViewed(storiesData.get(position).getStoryId());
+                            storiesData.get(position).setViewed(true);
+                        }
                     }
                 },mainXml.viewPager.isFakeDragging()?150:50);
 
