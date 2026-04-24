@@ -74,7 +74,7 @@ public class ApiEndPoints {
     public static final String LOGIN_MOBILE = baseUrl + "/auth/login/mobile/";
     public static final String LOGIN_EMAIL = baseUrl + "/auth/login/email/";
     public static final String LOGIN_USERID = baseUrl + "/auth/login/userid/";
-    public static final String LOGOUT=baseUrl+"/auth/login/logout/";
+    public static final String LOGOUT=baseUrl+"/auth/logout/";
 
     //Edit userDetails
     public static final String EDIT_USERNAME = baseUrl + "/profile/edit/username/";

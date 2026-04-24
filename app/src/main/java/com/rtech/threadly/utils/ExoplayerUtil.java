@@ -2,7 +2,6 @@ package com.rtech.threadly.utils;
 
 import android.content.Context;
 import android.net.Uri;
-import android.view.View;
 import android.widget.ImageView;
 
 import androidx.annotation.OptIn;
@@ -12,10 +11,6 @@ import androidx.media3.exoplayer.ExoPlayer;
 import androidx.media3.exoplayer.source.MediaSource;
 import androidx.media3.exoplayer.source.ProgressiveMediaSource;
 import androidx.media3.ui.PlayerView;
-
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.rtech.threadly.Threadly;
 
 import java.io.File;
 

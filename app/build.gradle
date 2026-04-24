@@ -30,8 +30,8 @@ android {
         debug {
 //
 
-            buildConfigField "String", "BASE_URL",  "\"https://threadlyserver.onrender.com/api\""
-            buildConfigField "String", "SOCKET_URL",  "\"https://threadlyserver.onrender.com/\""
+            buildConfigField "String", "BASE_URL",  "\"https://threadly-ts-server.onrender.com/api\""
+            buildConfigField "String", "SOCKET_URL",  "\"https://threadly-ts-server.onrender.com/\""
 //            buildConfigField "String", "SOCKET_URL",  "\"https://svdj39w9-8001.inc1.devtunnels.ms/\""
 //              buildConfigField "String", "BASE_URL",  "\"https://svdj39w9-8001.inc1.devtunnels.ms/api\""
 
@@ -40,8 +40,8 @@ android {
 
         }
         release {
-            buildConfigField "String", "SOCKET_URL",  "\"https://threadlyserver.onrender.com/\""
-            buildConfigField "String", "BASE_URL",   "\"https://threadlyserver.onrender.com/api\""
+            buildConfigField "String", "SOCKET_URL",  "\"https://threadly-ts-server.onrender.com/\""
+            buildConfigField "String", "BASE_URL",   "\"https://threadly-ts-server.onrender.com/api\""
 
 
             minifyEnabled false
