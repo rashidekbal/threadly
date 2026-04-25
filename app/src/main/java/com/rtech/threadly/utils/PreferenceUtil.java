@@ -26,4 +26,11 @@ public class PreferenceUtil {
     public static void setPrivate(boolean isPrivate){
         Core.getPreference().edit().putBoolean(SharedPreferencesKeys.IS_PRIVATE,isPrivate).apply();
     }
+    public static boolean isLoggedIn(){
+       return Core.getPreference().getBoolean(SharedPreferencesKeys.IS_LOGGED_IN,false);
+    }
+    public static boolean isFcmUploaded(){
+        return Core.getPreference().getBoolean(SharedPreferencesKeys.IS_FCM_TOKEN_UPLOADED,false);
+
+    }
 }

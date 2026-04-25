@@ -39,10 +39,9 @@ public class FcmService extends FirebaseMessagingService {
     public void onNewToken(@NonNull String token) {
 
         super.onNewToken(token);
-        FcmManager.UpdateFcmToken(token, new NetworkCallbackInterfaceJsonObject() {
+        if(PreferenceUtil.isLoggedIn()&&!PreferenceUtil.isFcmUploaded()){ FcmManager.UpdateFcmToken(token, new NetworkCallbackInterfaceJsonObject() {
             @Override
             public void onSuccess(JSONObject response) {
-                Log.d("fcmToken", "onSuccess: "+response.toString());
                 Core.getPreference().edit().putBoolean(SharedPreferencesKeys.IS_FCM_TOKEN_UPLOADED, true).apply();
 
             }
@@ -51,7 +50,8 @@ public class FcmService extends FirebaseMessagingService {
             public void onError(int err, JSONObject errorObject) {
 
             }
-        });
+        });}
+
     }
 
     @Override

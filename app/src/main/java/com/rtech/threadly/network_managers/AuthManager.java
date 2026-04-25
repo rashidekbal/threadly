@@ -167,7 +167,7 @@ public class AuthManager {
         JSONObject packet=new JSONObject();
             packet.put("oldPassword",oldPassword);
             packet.put("newPassword",newPassword);
-            NetworkingProvider.post(Url,packet,callback);
+            NetworkingProvider.post(Url,PreferenceUtil.getJWT(),packet,callback);
 
     }
 

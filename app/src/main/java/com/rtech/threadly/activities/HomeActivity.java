@@ -57,6 +57,7 @@ import com.rtech.threadly.viewmodels.ExplorePostsViewModel;
 import com.rtech.threadly.viewmodels.ProfileViewModel;
 
 import java.util.ArrayList;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class HomeActivity extends AppCompatActivity {
@@ -67,10 +68,12 @@ SharedPreferences loginInfo;
 OnDestroyFragmentCallback onDestroyStoriesFragmentCallback;
     ProfileViewModel profileViewModel;
     ExplorePostsViewModel explorePostsViewModel;
+    ExecutorService executorService;
 
 int currentFragment;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        executorService=Executors.newSingleThreadExecutor();
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         binding=ActivityHomeBinding.inflate(getLayoutInflater());
@@ -82,7 +85,7 @@ int currentFragment;
         window.setStatusBarColor(Color.BLACK); // or any dark color you're using
 
         init();
-        Executors.newSingleThreadExecutor().execute(() -> {
+        executorService.execute(() -> {
             profileViewModel.getProfileLiveData();
             profileViewModel.getUserPostsLiveData();
         });
@@ -172,6 +175,7 @@ int currentFragment;
             final int profile=R.id.profile;
             int menuId=item.getItemId();
             if(currentFragment==menuId)return  true;
+
 
 
             if(menuId==home){
@@ -338,6 +342,7 @@ getOnBackPressedDispatcher().addCallback(this,new OnBackPressedCallback(true) {
         String entryID=getSupportFragmentManager().getBackStackEntryAt(backstackEntryCount-1).getName();
         getSupportFragmentManager().popBackStack();
         assert entryID != null;
+
         if(entryID.equals(HomeActivityFragmentsIdEnum.HOME.toString())){
             binding.bottomNavigation.setSelectedItemId(R.id.home);
 

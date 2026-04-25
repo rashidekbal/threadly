@@ -20,7 +20,6 @@ public class Threadly extends Application {
         Core.init(instance.getApplicationContext());
         if (Core.getPreference().getBoolean(SharedPreferencesKeys.IS_LOGGED_IN, false)
                 && !Core.getPreference().getBoolean(SharedPreferencesKeys.IS_FCM_TOKEN_UPLOADED, false)) {
-            Log.d("fcmcheck", "onCreate: fcm token not uploaded ");
             ReUsableFunctions.updateFcmTokenToServer();
             MessageManager.checkAndGetPendingMessages();
             return;
