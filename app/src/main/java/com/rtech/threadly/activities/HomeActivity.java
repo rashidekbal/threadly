@@ -325,24 +325,26 @@ int currentFragment;
         });
         binding.bottomNavigation.setSelectedItemId(R.id.home);
 
-        getSupportFragmentManager().addOnBackStackChangedListener(() -> {
-            int backstackEntryCount=getSupportFragmentManager().getBackStackEntryCount();
-            if(backstackEntryCount==0) {
-             HomeActivity.super.getOnBackPressedDispatcher().onBackPressed();
-            }
-
-
-
-        });
-
 getOnBackPressedDispatcher().addCallback(this,new OnBackPressedCallback(true) {
     @Override
     public void handleOnBackPressed() {
-        getSupportFragmentManager().popBackStackImmediate();
-        int backstackEntryCount=getSupportFragmentManager().getBackStackEntryCount();
-        String entryID=getSupportFragmentManager().getBackStackEntryAt(backstackEntryCount-1).getName();
 
-        assert entryID != null;
+        //on back pressed take the current entry count in the stack
+        int backstackEntryCount=getSupportFragmentManager().getBackStackEntryCount();
+        //if backstack has single entry then obviously on back press we have to close the  app so use finish()
+        if(backstackEntryCount-1==0) {
+            finish();
+            return;
+        };
+        //as stack stores values in index from 0 to n so if there would be only one entry i would close the app
+        //if more than one then the least value obtained by entry count -2 would never go below 0 which is a valid index so no crash
+        //and alongside of backstack change the bottom navigation also syncs
+
+        String entryID=getSupportFragmentManager().getBackStackEntryAt(backstackEntryCount-2).getName();
+        //pop back stack immediately for avoiding delay in navigation
+        getSupportFragmentManager().popBackStackImmediate();
+        //safety check
+        if(entryID==null)return;
         if(entryID.equals(HomeActivityFragmentsIdEnum.HOME.toString())){
             binding.bottomNavigation.setSelectedItemId(R.id.home);
 
