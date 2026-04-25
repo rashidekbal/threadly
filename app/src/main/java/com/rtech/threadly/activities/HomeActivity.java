@@ -338,11 +338,11 @@ int currentFragment;
 getOnBackPressedDispatcher().addCallback(this,new OnBackPressedCallback(true) {
     @Override
     public void handleOnBackPressed() {
+        getSupportFragmentManager().popBackStackImmediate();
         int backstackEntryCount=getSupportFragmentManager().getBackStackEntryCount();
         String entryID=getSupportFragmentManager().getBackStackEntryAt(backstackEntryCount-1).getName();
-        getSupportFragmentManager().popBackStack();
-        assert entryID != null;
 
+        assert entryID != null;
         if(entryID.equals(HomeActivityFragmentsIdEnum.HOME.toString())){
             binding.bottomNavigation.setSelectedItemId(R.id.home);
 
