@@ -72,7 +72,7 @@ com.rtech.threadly
 2.  **Open in Android Studio**
     *   Open the project and let Gradle sync.
 3.  **Backend Setup**
-    *   The app requires a running backend. Clone and setup the server: [Threadly Server](https://github.com/rashidekbal/threadlyServer)
+    *   The app requires a running backend. Clone and setup the server: [Threadly Server](https://github.com/rashidekbal/threadly_server_ts)
     *   Update the `BASE_URL` in `app/build.gradle` (debug/release build types) to point to your local or hosted server.
 4.  **Firebase Setup**
     *   Add your `google-services.json` file to the `app/` directory for FCM to work.
