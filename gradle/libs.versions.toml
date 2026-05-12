@@ -1,6 +1,6 @@
 [versions]
 activityVersion = "1.13.0"
-agp = "9.1.0"
+agp = "9.1.1"
 androidNetworking = "1.0.4"
 
 cameraCamera2 = "1.4.0"

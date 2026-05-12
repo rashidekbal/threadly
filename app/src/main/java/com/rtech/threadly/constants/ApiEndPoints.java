@@ -34,6 +34,7 @@ public class ApiEndPoints {
     public static final String GET_USER_POSTS = baseUrl+"/posts/getUserPosts/";
     public static final String GET_IMAGE_FEED = baseUrl+"/posts/getImagePostsFeed/";
     public static final String GET_VIDEO_FEED = baseUrl+"/posts/getVideoPostsFeed/";
+    public static final String GET_VIDEO_FEED_V2=baseUrl+"/posts/getVideoPostsFeedV2/";
     public static final String ADD_IMAGE_POST = baseUrl+"/posts/addImagePost/";
     public static final String ADD_VIDEO_POST = baseUrl+"/posts/addVideoPost/";
     public static final String POST_VIEWED= baseUrl+"/posts/postViewed/";

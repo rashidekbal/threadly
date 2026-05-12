@@ -184,11 +184,9 @@ public class ReUsableFunctions {
     }
 
     public static String getTimestamp() {
-
-        Date now = new Date();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
-        return sdf.format(now);
-
+        sdf.setTimeZone(TimeZone.getTimeZone("Asia/Kolkata")); // 👈 force IST
+        return sdf.format(new Date());
     }
 
     public static void updateMessageStatus(String MsgUid, int status) {

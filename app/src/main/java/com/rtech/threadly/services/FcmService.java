@@ -212,9 +212,10 @@ public class FcmService extends FirebaseMessagingService {
     }
 
     private void ChatReceivedHandler(RemoteMessage message) {
-        if (!Objects.requireNonNull(message.getData().get("receiverUuid")).equals(PreferenceUtil.getUUID())) {
+        if (!(Objects.requireNonNull(message.getData().get("receiverUuid")).equals(PreferenceUtil.getUUID()))) {
             return;
         }
+
         JSONObject object = new JSONObject();
         try {
             object.put("senderUuid", message.getData().get("senderUuid"));
@@ -235,13 +236,14 @@ public class FcmService extends FirebaseMessagingService {
             // here the sender uuid is always the other party
             messengerUtils.AddNewConversationHistory(message.getData().get("senderUuid"));
             notifyReceivedToSender(message.getData().get("senderUuid"), message.getData().get("MsgUid"));
+            generateMessageNotification(message.getData().get("username"), message.getData().get("userid"),
+                    message.getData().get("profile"), message.getData().get("senderUuid"),
+                    message.getData().get("notificationText"));
 
         } catch (JSONException e) {
             throw new RuntimeException(e);
         }
-        generateMessageNotification(message.getData().get("username"), message.getData().get("userid"),
-                message.getData().get("profile"), message.getData().get("senderUuid"),
-                message.getData().get("notificationText"));
+
 
     }
 
