@@ -9,6 +9,7 @@ import com.rtech.threadly.constants.ApiEndPoints;
 import com.rtech.threadly.interfaces.NetworkCallbackInterfaceWithProgressTracking;
 import com.rtech.threadly.utils.PreferenceUtil;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 import java.io.File;
 
@@ -57,7 +58,12 @@ public class PostsManager {
         NetworkingProvider.get(url,getToken(),callback);
 
     }
-
+    public void getVideoFeed(int page,int seed,NetworkCallbackInterfaceJsonObject callback) throws JSONException {
+        JSONObject data=new JSONObject();
+        data.put("seed",seed);
+        String url=ApiEndPoints.GET_VIDEO_FEED_V2+"?page="+page;
+        NetworkingProvider.post(url,PreferenceUtil.getJWT(),data,callback);
+    }
     public void getLoggedInUserPost(int page,NetworkCallbackInterfaceJsonObject callbackInterface)
     {
         String url=ApiEndPoints.GET_USER_POSTS.concat(PreferenceUtil.getUserId())+"?page="+page;
@@ -66,7 +72,7 @@ public class PostsManager {
 
     }
     public void RemovePost(int postId, NetworkCallbackInterfaceJsonObject callbackInterface){
-        String URL=ApiEndPoints.DELETE_POST+Integer.toString(postId);
+        String URL=ApiEndPoints.DELETE_POST+ postId;
         NetworkingProvider.delete(URL,getToken(),callbackInterface);
 
 

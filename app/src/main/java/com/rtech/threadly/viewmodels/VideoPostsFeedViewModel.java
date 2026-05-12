@@ -10,18 +10,26 @@ import androidx.lifecycle.MutableLiveData;
 import com.rtech.threadly.interfaces.NetworkCallBacks.NetworkCallbackInterfaceJsonObject;
 import com.rtech.threadly.network_managers.PostsManager;
 import com.rtech.threadly.models.Posts_Model;
+import com.rtech.threadly.utils.LoggerUtil;
+import com.rtech.threadly.utils.ReUsableFunctions;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 public class VideoPostsFeedViewModel extends AndroidViewModel {
     boolean loading=true;
     PostsManager postsManager=new PostsManager();
+    private int page;
+    private final int SEED;
     public VideoPostsFeedViewModel(@NonNull Application application) {
         super(application);
+        SEED=(int)Math.floor(Math.random()*999999);
+        page=1;
+
     }
     MutableLiveData<ArrayList<Posts_Model>> MutableLiveVideoPostData=new MutableLiveData<>();
     public LiveData<ArrayList<Posts_Model>> getLiveVideoPostsFeed(){
@@ -33,55 +41,62 @@ public class VideoPostsFeedViewModel extends AndroidViewModel {
 // TODO: ADD pagination feature
     public  void loadVideoPostFeed() {
         loading=true;
-        postsManager.getVideoFeed(new NetworkCallbackInterfaceJsonObject() {
-            @Override
-            public void onSuccess(JSONObject response) {
-                loading=false;
-                ArrayList<Posts_Model> tempArrayList = new ArrayList<>();
-                try {
-                    JSONArray data=response.getJSONArray("data");
-                    for(int i=0;i<data.length();i++){
-                        JSONObject postObject=data.getJSONObject(i);
-                        tempArrayList.add(new Posts_Model(0,
-                                postObject.getInt("postid"),
-                                postObject.getString("userid"),
-                                postObject.getString("username"),
-                                postObject.getString("profilepic"),
-                                postObject.getString("imageurl"),
-                                postObject.getString("caption"),
-                                postObject.getString("created_at"),
-                                postObject.getString("likedBy"),
-                                postObject.getInt("likeCount"),
-                                postObject.getInt("commentCount"),
-                                postObject.getInt("shareCount"),
-                                postObject.getInt("isLiked")
-                                ,postObject.getString("type").equals("video"),
-                                postObject.getInt("isFollowed")>0,
-                                false,
-                                postObject.getInt("viewCount")
-                        ));
+        try {
+            postsManager.getVideoFeed(page,SEED,new NetworkCallbackInterfaceJsonObject() {
+                @Override
+                public void onSuccess(JSONObject response) {
+                    loading=false;
+                    ArrayList<Posts_Model> tempArrayList = new ArrayList<>();
+                    try {
+                        JSONArray data=response.getJSONArray("data");
+                        for(int i=0;i<data.length();i++){
+                            JSONObject postObject=data.getJSONObject(i);
+                            tempArrayList.add(new Posts_Model(0,
+                                    postObject.getInt("postid"),
+                                    postObject.getString("userid"),
+                                    postObject.getString("username"),
+                                    postObject.getString("profilepic"),
+                                    postObject.getString("imageurl"),
+                                    postObject.getString("caption"),
+                                    postObject.getString("created_at"),
+                                    postObject.getString("likedBy"),
+                                    postObject.getInt("likeCount"),
+                                    postObject.getInt("commentCount"),
+                                    postObject.getInt("shareCount"),
+                                    postObject.getInt("isLiked")
+                                    ,postObject.getString("type").equals("video"),
+                                    postObject.getInt("isFollowed")>0,
+                                    false,
+                                    postObject.getInt("viewCount")
+                            ));
 
 
+                        }
+
+                        MutableLiveVideoPostData.postValue(tempArrayList);
+                    } catch (JSONException e) {
+                        loading=false;
+                        throw new RuntimeException(e);
                     }
 
-                    MutableLiveVideoPostData.postValue(tempArrayList);
-                } catch (JSONException e) {
-                    loading=false;
-                    throw new RuntimeException(e);
                 }
 
-            }
+                @Override
+                public void onError(int err, JSONObject errorObject) {
+                    MutableLiveVideoPostData.postValue(new ArrayList<>());
 
-            @Override
-            public void onError(int err, JSONObject errorObject) {
-                MutableLiveVideoPostData.postValue(new ArrayList<>());
+                }
+            });
+        } catch (JSONException e) {
+            LoggerUtil.writeToFile(e.toString(),"jsonException"+new Date()+".txt");
+            ReUsableFunctions.ShowToast("error loading feed");
 
-            }
-        });
+        }
 
     }
     public void loadMoreVideoPosts(){
         if(loading)return;
+        page++;
         loadVideoPostFeed();
 
     }
