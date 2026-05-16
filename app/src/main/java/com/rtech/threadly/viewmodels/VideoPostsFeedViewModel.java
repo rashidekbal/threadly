@@ -24,13 +24,19 @@ public class VideoPostsFeedViewModel extends AndroidViewModel {
     boolean loading=true;
     PostsManager postsManager=new PostsManager();
     private int page;
-    private final int SEED;
+    private int SEED;
     public VideoPostsFeedViewModel(@NonNull Application application) {
         super(application);
-        SEED=(int)Math.floor(Math.random()*999999);
+        freshFeedState();
         page=1;
 
     }
+
+    public void freshFeedState() {
+        SEED=(int)Math.floor(Math.random()*999999);
+        page=1;
+    }
+
     MutableLiveData<ArrayList<Posts_Model>> MutableLiveVideoPostData=new MutableLiveData<>();
     public LiveData<ArrayList<Posts_Model>> getLiveVideoPostsFeed(){
         if(MutableLiveVideoPostData.getValue()==null||MutableLiveVideoPostData.getValue().isEmpty()){
@@ -47,6 +53,7 @@ public class VideoPostsFeedViewModel extends AndroidViewModel {
                 public void onSuccess(JSONObject response) {
                     loading=false;
                     ArrayList<Posts_Model> tempArrayList = new ArrayList<>();
+                    LoggerUtil.log("POSTS",response.toString());
                     try {
                         JSONArray data=response.getJSONArray("data");
                         for(int i=0;i<data.length();i++){

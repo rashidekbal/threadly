@@ -59,10 +59,9 @@ public class ReelsFragment extends Fragment {
                     reelsList.addAll(postsModels);
                     adapter.notifyDataSetChanged();
                 }else{
-
+                    if(!reelsList.contains(postsModels.get(0))){
                     reelsList.addAll(postsModels);
-                    adapter.notifyItemRangeInserted(reelsList.size()-postsModels.size(),postsModels.size());
-                    Log.d("newRange", "new data came: ");
+                    adapter.notifyItemRangeInserted(reelsList.size()-postsModels.size(),postsModels.size());}
                 }
                 mainXml.shimmer.setVisibility(View.GONE);
                 mainXml.reelsViewpager.setVisibility(View.VISIBLE);
@@ -144,7 +143,6 @@ public class ReelsFragment extends Fragment {
     @Override
     public void onHiddenChanged(boolean hidden) {
         super.onHiddenChanged(hidden);
-        Log.d("fragmentReel", "onHide change: "+hidden);
         if(hidden){
             ExoplayerUtil.stop();
         }

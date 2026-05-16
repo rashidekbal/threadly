@@ -38,6 +38,7 @@ import com.rtech.threadly.viewmodels.SuggestUsersViewModel;
 import com.rtech.threadly.viewmodels.VideoPostsFeedViewModel;
 
 import java.util.ArrayList;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class homeFragment extends Fragment {
 
@@ -52,6 +53,7 @@ public class homeFragment extends Fragment {
     MessagesViewModel messagesViewModel;
     SuggestUsersViewModel suggestUsersViewModel;
     InteractionNotificationViewModel notificationViewModel;
+    VideoPostsFeedViewModel videoPostsFeedViewModel;
 
 
 public homeFragment(){
@@ -69,12 +71,12 @@ public homeFragment(){
         mainXml = FragmentHomeBinding.inflate(inflater, container, false);
         postsViewModel = new ViewModelProvider(requireActivity()).get(ImagePostsFeedViewModel.class);
         notificationViewModel=new ViewModelProvider(requireActivity()).get(InteractionNotificationViewModel.class);
-        VideoPostsFeedViewModel videoPostsFeedViewModel = new ViewModelProvider(requireActivity()).get(VideoPostsFeedViewModel.class);
         loginInfo = Core.getPreference();
         messagesViewModel=new ViewModelProvider(this).get(MessagesViewModel.class);
         storiesViewModel=new ViewModelProvider(requireActivity()).get(StoriesViewModel.class);
         suggestUsersViewModel=new ViewModelProvider(requireActivity()).get(SuggestUsersViewModel.class);
         storiesData= new ArrayList<>();
+        videoPostsFeedViewModel=new ViewModelProvider(requireActivity()).get(VideoPostsFeedViewModel.class);
 
         // -------------------------
         // Setup  stories/status
@@ -208,11 +210,13 @@ public homeFragment(){
         // ---------------------------------
         mainXml.addPostImageBtn.setOnClickListener(v -> requireActivity().startActivity(new Intent(getContext(), AddStoryActivity.class).putExtra("title","New Story")));
         mainXml.swipeRefresh.setOnRefreshListener(() -> {
+            videoPostsFeedViewModel.freshFeedState();
             mainXml.swipeRefresh.setEnabled(false);
             postsViewModel.loadFeedPosts();
             suggestUsersViewModel.loadSuggestedUsers();
             storiesViewModel.loadStories();
             storiesViewModel.loadMyStories();
+            videoPostsFeedViewModel.loadVideoPostFeed();
 
 
         });
@@ -242,6 +246,7 @@ public homeFragment(){
     @Override
     public void onResume() {
         super.onResume();
+        if(videoPostsFeedViewModel!=null)videoPostsFeedViewModel.freshFeedState();
     }
 
 

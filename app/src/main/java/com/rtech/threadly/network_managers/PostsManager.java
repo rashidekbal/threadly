@@ -1,9 +1,6 @@
 package com.rtech.threadly.network_managers;
 
 
-import android.util.Log;
-
-import com.rtech.threadly.BuildConfig;
 import com.rtech.threadly.interfaces.NetworkCallBacks.NetworkCallbackInterfaceJsonObject;
 import com.rtech.threadly.constants.ApiEndPoints;
 import com.rtech.threadly.interfaces.NetworkCallbackInterfaceWithProgressTracking;
@@ -44,17 +41,6 @@ public class PostsManager {
     public void getImageFeed(NetworkCallbackInterfaceJsonObject callback){
 
         String url=ApiEndPoints.GET_IMAGE_FEED;
-        NetworkingProvider.get(url,getToken(),callback);
-
-    }
-    public void getVideoFeed(NetworkCallbackInterfaceJsonObject callback){
-
-        if(BuildConfig.DEBUG){
-            Log.d("ApiData", "loading started");
-
-        }
-
-        String url=ApiEndPoints.GET_VIDEO_FEED;
         NetworkingProvider.get(url,getToken(),callback);
 
     }

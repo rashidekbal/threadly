@@ -170,9 +170,6 @@ int currentFragment;
         binding.bottomNavigation.setOnItemSelectedListener(item -> {
             final int home=R.id.home;
             final int search=R.id.search;
-            final int addPost=R.id.add_post;
-            final int reels=R.id.reels;
-            final int profile=R.id.profile;
             int menuId=item.getItemId();
             if(currentFragment==menuId)return  true;
 
@@ -335,7 +332,7 @@ getOnBackPressedDispatcher().addCallback(this,new OnBackPressedCallback(true) {
         if(backstackEntryCount-1==0) {
             finish();
             return;
-        };
+        }
         //as stack stores values in index from 0 to n so if there would be only one entry i would close the app
         //if more than one then the least value obtained by entry count -2 would never go below 0 which is a valid index so no crash
         //and alongside of backstack change the bottom navigation also syncs
@@ -382,15 +379,6 @@ getOnBackPressedDispatcher().addCallback(this,new OnBackPressedCallback(true) {
         return false;
 
     }
-//
-//
-//    @Override
-//    public void onBackPressed() {
-//        super.onBackPressed();
-//
-//
-//
-//    }
 
     protected void init(){
         loginInfo= Core.getPreference();
@@ -417,18 +405,6 @@ getOnBackPressedDispatcher().addCallback(this,new OnBackPressedCallback(true) {
         FragmentManager manager=getSupportFragmentManager();
         FragmentTransaction transaction=manager.beginTransaction();
         transaction.add(R.id.fragmentHolder,fragment);
-        transaction.commit();
-
-    }
-    private void addFragment(Fragment fragment,String url,int postid){
-        FragmentManager manager=getSupportFragmentManager();
-        FragmentTransaction transaction=manager.beginTransaction();
-        Bundle bundle=new Bundle();
-        bundle.putString("url",url);
-        bundle.putInt("postid",postid);
-        fragment.setArguments(bundle);
-        transaction.replace(R.id.fragmentHolder, fragment);
-        transaction.addToBackStack(null);
         transaction.commit();
 
     }
