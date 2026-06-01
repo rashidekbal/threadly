@@ -7,9 +7,8 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.OptIn;
 import androidx.fragment.app.Fragment;
-import androidx.media3.common.util.UnstableApi;
+
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
@@ -67,7 +66,7 @@ int position;
 
     }
 
-    @OptIn(markerClass = UnstableApi.class)
+
     private void setUpViewPager() {
 
         List<ExtendedPostModel> postModels;
@@ -77,7 +76,7 @@ int position;
         mainXml.viewPager.setAdapter(feedAdapter);
         mainXml.viewPager.registerOnPageChangeCallback(
                 new ViewPager2.OnPageChangeCallback() {
-                    @UnstableApi
+
                     @Override
                     public void onPageSelected(int position) {
                         super.onPageSelected(position);
@@ -110,7 +109,6 @@ int position;
         ExoplayerUtil.stop();
     }
 
-    @OptIn(markerClass = UnstableApi.class)
     @Override
     public void onResume() {
         super.onResume();

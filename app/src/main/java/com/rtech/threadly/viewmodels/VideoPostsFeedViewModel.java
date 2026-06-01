@@ -28,13 +28,15 @@ public class VideoPostsFeedViewModel extends AndroidViewModel {
     public VideoPostsFeedViewModel(@NonNull Application application) {
         super(application);
         freshFeedState();
-        page=1;
 
     }
 
     public void freshFeedState() {
         SEED=(int)Math.floor(Math.random()*999999);
-        page=1;
+        page=2;
+        //page  is a hack fix for a unknown problem in which every time same set of posts are returned
+        //no matter what the seed is
+
     }
 
     MutableLiveData<ArrayList<Posts_Model>> MutableLiveVideoPostData=new MutableLiveData<>();

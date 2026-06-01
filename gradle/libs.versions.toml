@@ -1,6 +1,6 @@
 [versions]
 activityVersion = "1.13.0"
-agp = "9.1.1"
+agp = "9.1.0"
 androidNetworking = "1.0.4"
 
 cameraCamera2 = "1.4.0"
@@ -69,4 +69,3 @@ androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = 
 android-application = { id = "com.android.application", version.ref = "agp" }
 google-gms-google-services = { id = "com.google.gms.google-services", version.ref = "googleGmsGoogleServices" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
-
