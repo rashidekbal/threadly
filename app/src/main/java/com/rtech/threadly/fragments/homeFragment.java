@@ -10,7 +10,6 @@ import androidx.appcompat.content.res.AppCompatResources;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,12 +26,10 @@ import com.rtech.threadly.constants.SharedPreferencesKeys;
 import com.rtech.threadly.core.Core;
 import com.rtech.threadly.databinding.FragmentHomeBinding;
 import com.rtech.threadly.interfaces.StoryOpenCallback;
-import com.rtech.threadly.models.ExtendedPostModel;
 import com.rtech.threadly.models.Posts_Model;
 import com.rtech.threadly.models.Profile_Model_minimal;
 import com.rtech.threadly.models.StoriesModel;
 import com.rtech.threadly.utils.ExoplayerUtil;
-import com.rtech.threadly.utils.LoggerUtil;
 import com.rtech.threadly.viewmodels.ImagePostsFeedViewModel;
 import com.rtech.threadly.viewmodels.InteractionNotificationViewModel;
 import com.rtech.threadly.viewmodels.MessagesViewModel;
@@ -41,8 +38,6 @@ import com.rtech.threadly.viewmodels.SuggestUsersViewModel;
 import com.rtech.threadly.viewmodels.VideoPostsFeedViewModel;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.concurrent.atomic.AtomicReference;
 
 public class homeFragment extends Fragment {
 
