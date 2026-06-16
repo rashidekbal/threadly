@@ -44,6 +44,16 @@ public class PostsManager {
         NetworkingProvider.get(url,getToken(),callback);
 
     }
+    public void getImageFeedV2(int page,int seed,NetworkCallbackInterfaceJsonObject callback) throws JSONException {
+
+        String url=ApiEndPoints.GET_IMAGE_FEED_V2;
+        JSONObject data=new JSONObject();
+
+            data.put("seed",seed);
+
+        NetworkingProvider.post(url+"?page="+page,getToken(),data,callback);
+
+    }
     public void getVideoFeed(int page,int seed,NetworkCallbackInterfaceJsonObject callback) throws JSONException {
         JSONObject data=new JSONObject();
         data.put("seed",seed);

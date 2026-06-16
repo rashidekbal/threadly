@@ -54,7 +54,7 @@ public class ReelsFragment extends Fragment {
 
         //observe reels feed
         ReelsViewModel.getLiveVideoPostsFeed().observe(getViewLifecycleOwner(), postsModels -> {
-            if(postsModels!=null){
+            if(postsModels!=null&&!postsModels.isEmpty()){
                 if(reelsList.isEmpty()){
                     reelsList.addAll(postsModels);
                     adapter.notifyDataSetChanged();

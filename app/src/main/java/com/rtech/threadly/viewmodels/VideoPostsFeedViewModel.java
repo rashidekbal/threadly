@@ -92,11 +92,13 @@ public class VideoPostsFeedViewModel extends AndroidViewModel {
 
                 @Override
                 public void onError(int err, JSONObject errorObject) {
+                    loading=false;
                     MutableLiveVideoPostData.postValue(new ArrayList<>());
 
                 }
             });
         } catch (JSONException e) {
+            loading=false;
             LoggerUtil.writeToFile(e.toString(),"jsonException"+new Date()+".txt");
             ReUsableFunctions.ShowToast("error loading feed");
 

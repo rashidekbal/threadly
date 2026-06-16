@@ -11,43 +11,49 @@ import androidx.lifecycle.MutableLiveData;
 import com.rtech.threadly.interfaces.NetworkCallBacks.NetworkCallbackInterfaceJsonObject;
 import com.rtech.threadly.network_managers.PostsManager;
 import com.rtech.threadly.models.Posts_Model;
+import com.rtech.threadly.utils.LoggerUtil;
+import com.rtech.threadly.utils.ReUsableFunctions;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 public class ImagePostsFeedViewModel extends AndroidViewModel {
     //creation of PostsManager
     //to manage posts related operations
     PostsManager postsManager;
+    private int page;
+    private int SEED;
+    boolean loading=true;
+
     public ImagePostsFeedViewModel(@NonNull Application application) {
         super(application);
         this.postsManager=new PostsManager();
+        freshFeedState();
+        page=1;
 
     }
 
-// creation of LiveData object to hold posts data
-   final MutableLiveData<ArrayList<Posts_Model>> postsLiveData=new MutableLiveData<>();
-    // method to get LiveData object
-    public LiveData<ArrayList<Posts_Model>> getPostsLiveData(){
-//        Log.d("dataloadException", "called for data: ");
-        if (postsLiveData.getValue() == null || postsLiveData.getValue().isEmpty()) {
-//            Log.d("dataloadException", "going to load data: ");
 
+   final MutableLiveData<ArrayList<Posts_Model>> postsLiveData=new MutableLiveData<>();
+
+    public LiveData<ArrayList<Posts_Model>> getPostsLiveData(){
+        if (postsLiveData.getValue() == null || postsLiveData.getValue().isEmpty()) {
             loadFeedPosts();
         }
-//        Log.d("dataloadException", "returning data ");
+
         return postsLiveData;
     }
-    // method to load posts from server
     public void loadFeedPosts() {
-        Log.d("dataloadException", "data Loading started: ");
-            postsManager.getImageFeed(new NetworkCallbackInterfaceJsonObject() {
+        loading=true;
+        try {
+            postsManager.getImageFeedV2(page,SEED,new NetworkCallbackInterfaceJsonObject() {
                 @Override
                 public void onSuccess(JSONObject response) {
-//                    Log.d("dataloadException", "data Loading sucess: "+response.toString());
+                    loading=false;
                     ArrayList<Posts_Model> tempArrayList = new ArrayList<>();
                     try {
                         JSONArray data=response.getJSONArray("data");
@@ -77,19 +83,27 @@ public class ImagePostsFeedViewModel extends AndroidViewModel {
                         int size=tempArrayList.size();
                         insertSuggestionAtRandom(size,tempArrayList);
                     } catch (JSONException e) {
+                        loading=false;
+                        LoggerUtil.writeToFile(e.toString(),"jsonException"+new Date()+".txt");
                         postsLiveData.postValue(new ArrayList<>());
-                        throw new RuntimeException(e);
                     }
 
                 }
 
                 @Override
                 public void onError(int err, JSONObject errorObject) {
+                    loading=false;
                     postsLiveData.postValue(new ArrayList<>());
+                    LoggerUtil.writeToFile(errorObject.toString(),"ImageFeedViewModel"+new Date()+".txt");
 
 
                 }
             });
+        } catch (JSONException e) {
+            loading=false;
+            postsLiveData.postValue(new ArrayList<>());
+            LoggerUtil.writeToFile(e.toString(),"ImageFeedViewModel"+new Date()+".txt");
+        }
 
     }
     private void insertSuggestionAtRandom(int size,ArrayList<Posts_Model> postsModels){
@@ -100,12 +114,23 @@ public class ImagePostsFeedViewModel extends AndroidViewModel {
             while(randomPosition==0){
                 randomPosition = (int) Math.floor(Math.random() * size);
             }
-
-            Log.d("suggestionInsertedAt", "insertSuggestionAtRandom: "+ randomPosition);
             postsModels.add(randomPosition,new Posts_Model(1,0,"","","","","","","",0,0,0,0,false,false,false,0));
 
         }
         postsLiveData.postValue(postsModels);
+    }
+    public void freshFeedState() {
+        SEED=(int)Math.floor(Math.random()*999999);
+        page=1;
+
+    }
+    public void loadMore(){
+
+        if(loading)return;
+        page++;
+
+        loadFeedPosts();
+
     }
 
 

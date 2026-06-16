@@ -1,7 +1,6 @@
 package com.rtech.threadly.utils;
 
-import android.net.Uri;
-import android.os.Environment;
+
 import android.util.Log;
 
 import com.rtech.threadly.BuildConfig;

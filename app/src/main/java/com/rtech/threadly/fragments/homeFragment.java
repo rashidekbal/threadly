@@ -10,6 +10,7 @@ import androidx.appcompat.content.res.AppCompatResources;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,6 +31,7 @@ import com.rtech.threadly.models.Posts_Model;
 import com.rtech.threadly.models.Profile_Model_minimal;
 import com.rtech.threadly.models.StoriesModel;
 import com.rtech.threadly.utils.ExoplayerUtil;
+import com.rtech.threadly.utils.LoggerUtil;
 import com.rtech.threadly.viewmodels.ImagePostsFeedViewModel;
 import com.rtech.threadly.viewmodels.InteractionNotificationViewModel;
 import com.rtech.threadly.viewmodels.MessagesViewModel;
@@ -186,22 +188,21 @@ public homeFragment(){
         // Observe LiveData from ViewModel
         // ----------------------------
         postsViewModel.getPostsLiveData().observe(getViewLifecycleOwner(), posts_liveData -> {
-
-            if (posts_liveData != null && !posts_liveData.isEmpty()) {
-
-                posts.clear();
-                posts.addAll(posts_liveData);
-                postsFeedAdapter.notifyDataSetChanged();
+            if(posts_liveData!=null&&!posts_liveData.isEmpty()){
                 mainXml.swipeRefresh.setRefreshing(false);
                 mainXml.swipeRefresh.setEnabled(true);
                 // Hide shimmer and show content
                 mainXml.shimmerView.stopShimmer();
                 mainXml.shimmerView.setVisibility(View.GONE);
                 mainXml.postsRecyclerView.setVisibility(View.VISIBLE);
-            } else {
-                // Show shimmer if no data
-                mainXml.shimmerView.setVisibility(View.VISIBLE);
-                mainXml.shimmerView.startShimmer();
+                if(posts.isEmpty()){
+                    posts.addAll(posts_liveData);
+                    postsFeedAdapter.notifyDataSetChanged();
+                }else{
+                    if(!posts.contains(posts_liveData.get(0))){
+                        posts.addAll(posts_liveData);
+                        postsFeedAdapter.notifyItemRangeInserted(posts.size()-posts_liveData.size(),posts_liveData.size());}
+                }
             }
         });
 
@@ -220,8 +221,21 @@ public homeFragment(){
 
 
         });
-
+        handlePostLoadMore();
         return mainXml.getRoot();
+    }
+
+    private void handlePostLoadMore() {
+        mainXml.nestedScrollView.setOnScrollChangeListener((View.OnScrollChangeListener) (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
+            int totalHeight=mainXml.nestedScrollView.getChildAt(0).getHeight();
+            final int triggerPoint=((totalHeight/100)*70);
+            if(scrollY<oldScrollY)return;
+            if(scrollY>triggerPoint){
+
+                postsViewModel.loadMore();
+            }
+
+        });
     }
 
     private void setMyStoryClickCallback(String userid, String profile) {
