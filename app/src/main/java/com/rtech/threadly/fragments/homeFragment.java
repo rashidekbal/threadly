@@ -27,6 +27,7 @@ import com.rtech.threadly.constants.SharedPreferencesKeys;
 import com.rtech.threadly.core.Core;
 import com.rtech.threadly.databinding.FragmentHomeBinding;
 import com.rtech.threadly.interfaces.StoryOpenCallback;
+import com.rtech.threadly.models.ExtendedPostModel;
 import com.rtech.threadly.models.Posts_Model;
 import com.rtech.threadly.models.Profile_Model_minimal;
 import com.rtech.threadly.models.StoriesModel;
@@ -40,6 +41,7 @@ import com.rtech.threadly.viewmodels.SuggestUsersViewModel;
 import com.rtech.threadly.viewmodels.VideoPostsFeedViewModel;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class homeFragment extends Fragment {
@@ -188,13 +190,19 @@ public homeFragment(){
         // Observe LiveData from ViewModel
         // ----------------------------
         postsViewModel.getPostsLiveData().observe(getViewLifecycleOwner(), posts_liveData -> {
-            if(posts_liveData!=null&&!posts_liveData.isEmpty()){
-                mainXml.swipeRefresh.setRefreshing(false);
-                mainXml.swipeRefresh.setEnabled(true);
-                // Hide shimmer and show content
+            if(!posts.isEmpty()){
                 mainXml.shimmerView.stopShimmer();
                 mainXml.shimmerView.setVisibility(View.GONE);
                 mainXml.postsRecyclerView.setVisibility(View.VISIBLE);
+            }
+            if(posts_liveData!=null&&!posts_liveData.isEmpty()){
+                mainXml.swipeRefresh.setRefreshing(false);
+                mainXml.swipeRefresh.setEnabled(true);
+                mainXml.shimmerView.stopShimmer();
+                mainXml.shimmerView.setVisibility(View.GONE);
+                mainXml.postsRecyclerView.setVisibility(View.VISIBLE);
+                // Hide shimmer and show content
+
                 if(posts.isEmpty()){
                     posts.addAll(posts_liveData);
                     postsFeedAdapter.notifyDataSetChanged();
@@ -212,18 +220,20 @@ public homeFragment(){
         mainXml.addPostImageBtn.setOnClickListener(v -> requireActivity().startActivity(new Intent(getContext(), AddStoryActivity.class).putExtra("title","New Story")));
         mainXml.swipeRefresh.setOnRefreshListener(() -> {
             videoPostsFeedViewModel.freshFeedState();
+            postsViewModel.freshFeedState();
             mainXml.swipeRefresh.setEnabled(false);
-            postsViewModel.loadFeedPosts();
             suggestUsersViewModel.loadSuggestedUsers();
             storiesViewModel.loadStories();
             storiesViewModel.loadMyStories();
             videoPostsFeedViewModel.loadVideoPostFeed();
+            postsViewModel.loadFeedPosts();
 
 
         });
         handlePostLoadMore();
         return mainXml.getRoot();
     }
+
 
     private void handlePostLoadMore() {
         mainXml.nestedScrollView.setOnScrollChangeListener((View.OnScrollChangeListener) (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
@@ -261,6 +271,7 @@ public homeFragment(){
     public void onResume() {
         super.onResume();
         if(videoPostsFeedViewModel!=null)videoPostsFeedViewModel.freshFeedState();
+
     }
 
 

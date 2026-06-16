@@ -57,6 +57,7 @@ public class ImagePostsFeedViewModel extends AndroidViewModel {
                     ArrayList<Posts_Model> tempArrayList = new ArrayList<>();
                     try {
                         JSONArray data=response.getJSONArray("data");
+                        if (data.length()<1)return;
                         for(int i=0;i<data.length();i++){
                             JSONObject postObject=data.getJSONObject(i);
                             tempArrayList.add(new Posts_Model(0,
